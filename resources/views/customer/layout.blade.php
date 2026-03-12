@@ -48,6 +48,13 @@
     <link rel="stylesheet" href="{{ url('assets/customer/css/style.css') }}" />
     <!-- responsive CSS -->
     <link rel="stylesheet" href="{{ url('assets/customer/css/responsive.css') }}" />
+    
+    <!-- Modern Design Additions -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url('assets/customer/css/modern-design.css') }}" />
+
     <!-- favicon -->
     <link rel="icon" href="{{ url('assets/customer/img/favicon.png') }}" type="image/png" />
     <link rel="stylesheet" href="{{ url('assets/customer/frontdata/css/owl.carousel.min.css') }}">

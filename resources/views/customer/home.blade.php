@@ -177,23 +177,13 @@
 
 
                                 </div> --}}
-                                <div class="item-single mb-30">
-                                    <div class="image">
-                                        <img src="{{ url('storage/tag/' . $t->image) }}" alt="Demo Image">
-                                    </div>
-                                    <div class="content">
-
-                                        <center>
-                                            <h3>
-                                                <a href="{{ url('category-package/' . $t->id) }}">{{ $t->name }}</a>
-                                            </h3>
-                                        </center>
-
-
-                                        <p>
-                                            {{ $t->desc }}
-                                        </p>
-
+                                <div class="village-card">
+                                    <img src="{{ url('storage/tag/' . $t->image) }}" class="village-img" alt="{{ $t->name }}">
+                                    <div class="village-overlay"></div>
+                                    <div class="village-content">
+                                        <h3 class="village-title">{{ $t->name }}</h3>
+                                        <p class="village-desc">{{ $t->desc }}</p>
+                                        <span class="explore-btn">Explore Now <i class='bx bx-right-arrow-alt'></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -264,7 +254,7 @@
                                             <a data-toggle="modal" data-target="#projectmanagement" href="#">
                                                 <br>
 
-                                                <img src="{{ url('assets/customer/img/etc/portofolio.svg') }}" width="100px" alt="">
+                                                <img src="{{ url('assets/customer/img/etc/portofolio.png') }}" width="100px" alt="">
                                                 <hr>
 
                                                 <h3>@lang('Portofolio')</h3>
@@ -281,7 +271,7 @@
                                             <a data-toggle="modal" data-target="#branding" href="#">
                                                 <br>
 
-                                                <img src="{{ url('assets/customer/img/etc/branding.svg') }}" width="100px"
+                                                <img src="{{ url('assets/customer/img/etc/branding.png') }}" width="100px"
                                                     alt="">
                                                 <hr>
 
@@ -300,7 +290,7 @@
                                             <a data-toggle="modal" data-target="#tren" href="#">
                                                 <br>
 
-                                                <img src="{{ url('assets/customer/img/etc/tren.svg') }}" width="100px" alt="">
+                                                <img src="{{ url('assets/customer/img/etc/tren.png') }}" width="100px" alt="">
                                                 <hr>
 
                                                 <h3>@lang('Consumer Trend and Tourism Insight')
@@ -340,7 +330,7 @@
                 <p>Witness the Wonders of the Village through an Immersive Virtual Reality Experience that Transports You to a Fascinating World.</p>
                 <center> 
 
-                    <video width="100%" controls>
+                    <video width="100%" controls style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden;">
                         <source src="{{url('/')}}/storage/videos/vr-godevi.mp4" type="video/mp4">
                         <source src="https://godestinationvillage.com/storage/videos/vr-godevi.mp4" type="video/ogg">
                      </video>
@@ -515,45 +505,31 @@
                     <div class="testimonial-slider owl-carousel">
 
                         @foreach ($reviews as $r)
-
-                            <div class="slider-item">
-                                <div class="client-img">
-                                    <img src="{{ url('storage/reviews/' . $r->avatar) }}" alt="client-1"
-                                        style=" object-fit: cover;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    width:80px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    height:80px;" />
-                                </div>
-                                <div class="content">
-                                    <div class="client-info">
-                                        <h3>{{ $r->name }}</h3>
-                                        <span>{{ $r->job }}</span>
-                                    </div>
-                                    <div class="quote">
-                                        <i class='bx bxs-quote-left'></i>
-                                    </div>
-                                    <p>
-                                        {{ $r->comment }}.
-                                    </p>
-                                    <div class="review">
-                                        @for ($i = 1; $i <= $r->rating; $i++)
-                                            <i class='bx bxs-star'></i>
-                                        @endfor
+                            <div class="modern-testimonial-card">
+                                <i class='bx bxs-quote-alt-left quote-icon'></i>
+                                <div class="client-content">
+                                    <p class="client-text">"{{ $r->comment }}"</p>
+                                    
+                                    <div class="client-profile">
+                                        <div class="client-img">
+                                            <img src="{{ url('storage/reviews/' . $r->avatar) }}" alt="{{ $r->name }}" />
+                                        </div>
+                                        <div class="client-info text-left">
+                                            <h3>{{ $r->name }}</h3>
+                                            <span>{{ $r->job }}</span>
+                                            <div class="review-stars">
+                                                @for ($i = 1; $i <= $r->rating; $i++)
+                                                    <i class='bx bxs-star'></i>
+                                                @endfor
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
 
-
                     </div>
                 </div>
-            </div>
-            <div class='clients-img'>
-                @foreach ($users as $item)
-                    <img class="image image-{{ $loop->iteration }}" src="{{ url('storage/' . $item) }}" height="100px"
-                        style="object-fit: cover; !important; width:100px ; !important" alt="Demo Image">
-
-                @endforeach
-
             </div>
         </div>
         <div class="shape">
