@@ -5,9 +5,10 @@
 @section('content')
     <style>
         .resize {
-            width: 100px !important;
+            width: 130px !important;
+            height: 130px !important;
+            object-fit: contain;
         }
-
     </style>
     <!-- start page title area-->
 
@@ -34,74 +35,102 @@
             <br>
             <br>
 
-            <div class="row">
-                <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="400"
-                    class="col-lg-4 col-md-6 aos-init aos-animate">
-                    <div class="item-single mb-30">
-                        <div class="services-icon mb-3">
-                            <a data-toggle="modal" data-target="#perencanaan">
-                                <img src="{{url('assets/customer/img/etc/perencanaan.png')}}" class="resize" alt="">
+            <div class="row justify-content-center">
+                <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="200"
+                    class="col-lg-4 col-md-6 mb-4">
+                    <div class="modern-card text-center h-100">
+                        <div class="content">
+                            <a data-toggle="modal" data-target="#perencanaan" style="color: inherit; text-decoration: none;">
+                                <div class="services-icon mb-4">
+                                    <img src="{{url('assets/customer/img/etc/perencanaan.png')}}" class="resize hover-lift" alt="">
+                                </div>
+                                <h4 class="font-weight-bold" style="font-size: 18px;">@lang('Tourism Planning, Strategy and Revitalization')</h4>
+                            </a>
                         </div>
-                        <p>@lang('Tourism Planning, Strategy and Revitalization')</p></a>
                     </div>
                 </div>
-                <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="800"
-                class="col-lg-4 col-md-6 aos-init aos-animate">
-                <div class="item-single mb-30">
-                    <a href="{{url('v-portofolio')}}">
-                        <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/portofolio.png')}}" class="resize" alt="">
+                
+                <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="300"
+                    class="col-lg-4 col-md-6 mb-4">
+                    <div class="modern-card text-center h-100">
+                        <div class="content">
+                            <a href="{{url('v-portofolio')}}" style="color: inherit; text-decoration: none;">
+                                <div class="services-icon mb-4">
+                                    <img src="{{ url('assets/customer/img/etc/portofolio.png')}}" class="resize hover-lift" alt="">
+                                </div>
+                                <h4 class="font-weight-bold" style="font-size: 18px;">@lang('Portofolio')</h4>
+                            </a>
                         </div>
-                        <p class="px-3">@lang('Portofolio')</p>
-                    </a>
-                </div>
-            </div>
-                <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="800"
-                    class="col-lg-4 col-md-6 aos-init aos-animate">
-                    <div class="item-single mb-30">
-                        <a data-toggle="modal" data-target="#projectmanagement">
-                            <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/kajian.png')}}" class="resize" alt="">
-                            </div>
-                            <p class="px-3">@lang('Project Management')</p>
-                        </a>
                     </div>
                 </div>
-                <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="1200"
-                    class="col-lg-4 col-md-6 m-auto aos-init aos-animate">
-                    <div class="item-single mb-30">
-                        <a data-toggle="modal" data-target="#pengembangansdm">
-                            <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/sdm.png')}}" class="resize" alt=""></div>
-                            <p>@lang('Human Resources Development')</p>
-                        </a>
-                    </div>
-                </div>
+                
                 <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="400"
-                    class="col-lg-4 col-md-6 m-auto aos-init aos-animate">
-                    <div class="item-single mb-30">
-                        <a data-toggle="modal" data-target="#branding">
-                            <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/branding.png')}}" class="resize" alt="">
-                            </div>
-                            <p>@lang('Destination Branding and Digital Marketing')</p>
-                        </a>
+                    class="col-lg-4 col-md-6 mb-4">
+                    <div class="modern-card text-center h-100">
+                        <div class="content">
+                            <a data-toggle="modal" data-target="#projectmanagement" style="color: inherit; text-decoration: none;">
+                                <div class="services-icon mb-4">
+                                    <img src="{{ url('assets/customer/img/etc/kajian.png')}}" class="resize hover-lift" alt="">
+                                </div>
+                                <h4 class="font-weight-bold" style="font-size: 18px;">@lang('Project Management')</h4>
+                            </a>
+                        </div>
                     </div>
                 </div>
+                
+                <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="500"
+                    class="col-lg-4 col-md-6 mb-4">
+                    <div class="modern-card text-center h-100">
+                        <div class="content">
+                            <a data-toggle="modal" data-target="#pengembangansdm" style="color: inherit; text-decoration: none;">
+                                <div class="services-icon mb-4">
+                                    <img src="{{ url('assets/customer/img/etc/sdm.png')}}" class="resize hover-lift" alt="">
+                                </div>
+                                <h4 class="font-weight-bold" style="font-size: 18px;">@lang('Human Resources Development')</h4>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="600"
+                    class="col-lg-4 col-md-6 mb-4">
+                    <div class="modern-card text-center h-100">
+                        <div class="content">
+                            <a data-toggle="modal" data-target="#branding" style="color: inherit; text-decoration: none;">
+                                <div class="services-icon mb-4">
+                                    <img src="{{ url('assets/customer/img/etc/branding.png')}}" class="resize hover-lift" alt="">
+                                </div>
+                                <h4 class="font-weight-bold" style="font-size: 18px;">@lang('Destination Branding and Digital Marketing')</h4>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="700"
+                    class="col-lg-4 col-md-6 mb-4">
+                    <div class="modern-card text-center h-100">
+                        <div class="content">
+                            <a data-toggle="modal" data-target="#tren" style="color: inherit; text-decoration: none;">
+                                <div class="services-icon mb-4">
+                                    <img src="{{ url('assets/customer/img/etc/tren.png')}}" class="resize hover-lift" alt="">
+                                </div>
+                                <h4 class="font-weight-bold" style="font-size: 18px;">@lang('Consumer Trend and Tourism Insight')</h4>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
                 <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="800"
-                    class="col-lg-4 col-md-6 m-auto aos-init aos-animate">
-                    <div class="item-single mb-30">
-                        <a data-toggle="modal" data-target="#tren">
-                            <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/tren.png')}}" class="resize" alt="">
-                            </div>
-                            <p>@lang('Consumer Trend and Tourism Insight')</p>
-                        </a>
-                    </div>
-                </div>
-                <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="1200"
-                    class="col-lg-4 col-md-6 m-auto aos-init aos-animate">
-                    <div class="item-single mb-30">
-                        <a data-toggle="modal" data-target="#internship">
-                            <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/internship.png')}}" class="resize"
-                                    alt=""></div>
-                            <p>@lang('Internship Program')</p>
-                        </a>
+                    class="col-lg-4 col-md-6 mb-4">
+                    <div class="modern-card text-center h-100">
+                        <div class="content">
+                            <a data-toggle="modal" data-target="#internship" style="color: inherit; text-decoration: none;">
+                                <div class="services-icon mb-4">
+                                    <img src="{{ url('assets/customer/img/etc/internship.png')}}" class="resize hover-lift" alt="">
+                                </div>
+                                <h4 class="font-weight-bold" style="font-size: 18px;">@lang('Internship Program')</h4>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

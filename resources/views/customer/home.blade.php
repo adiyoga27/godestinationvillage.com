@@ -199,122 +199,108 @@
     <!-- start destination section -->
     <section id="destination" class="destination-section pt-100 pb-70 bg-light">
         <div class="container">
-            <div class="section-title">
+            <div class="section-title text-center">
                 <h2>@lang('Our Services')</h2>
-
-            </div>
-            <div class="col-md-12">
-                <p style="text-align: center">@lang('Subtitle Our Services')
-                </p>
-
-            </div>
-
-            <div class="row">
-                <div class="container text-center my-3">
-                    <div class="row mx-auto my-auto">
-                        <div id="recipeCarousel" class="carousel slide w-100" data-ride="carousel">
-                            <div class="carousel-inner w-100" role="listbox">
-                                <div class="carousel-item active">
-                                    <div class="col-lg-4 ">
-                                        <div class="item-single mb-30" style="background-color: white">
-                                            <a data-toggle="modal" data-target="#internship" href="#">
-                                                <br>
-                                                <img src="{{ url('assets/customer/img/etc/internship.png') }}" width="100px"
-                                                    alt="">
-                                                <hr>
-
-                                                <h3> @lang('Internship Program')
-                                                </h3>
-                                                <br>
-                                            </a>
-
+                <p>@lang('Subtitle Our Services')</p>
+            </div>            <div class="row">
+                <div class="col-lg-12">
+                    <div class="services-slider">
+                        <!-- Service 1 -->
+                        <div class="px-3 py-4">
+                            <div class="modern-card text-center h-100" style="margin-bottom: 10px;">
+                                <div class="content">
+                                    <a data-toggle="modal" data-target="#internship" style="color: inherit; text-decoration: none;">
+                                        <div class="services-icon mb-4">
+                                            <img src="{{ url('assets/customer/img/etc/internship.png') }}" class="img-fluid hover-lift mx-auto" style="height: 120px; object-fit: contain;" alt="">
                                         </div>
-                                    </div>
+                                        <h4 class="font-weight-bold" style="font-size: 16px;">@lang('Internship Program')</h4>
+                                    </a>
                                 </div>
-                                <div class="carousel-item roundedcar">
-                                    <div class="col-lg-4">
-                                        <div class="item-single mb-30" style="background-color: white">
-                                            <a data-toggle="modal" data-target="#perencanaan" href="#">
-                                                <br>
-
-                                                <img src="{{ url('assets/customer/img/etc/perencanaan.png') }}" width="100px"
-                                                    alt="">
-                                                <hr>
-
-                                                <h3><a href="#">@lang('Tourism Planning, Strategy and Revitalization')</a>
-                                                </h3>
-                                                <br>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="carousel-item">
-                                    <div class="col-lg-4">
-                                        <div class="item-single mb-30" style="background-color: white">
-                                            <a data-toggle="modal" data-target="#projectmanagement" href="#">
-                                                <br>
-
-                                                <img src="{{ url('assets/customer/img/etc/portofolio.png') }}" width="100px" alt="">
-                                                <hr>
-
-                                                <h3>@lang('Portofolio')</h3>
-                                                <br>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                           
-
-                                <div class="carousel-item">
-                                    <div class="col-lg-4">
-                                        <div class="item-single mb-30" style="background-color: white">
-                                            <a data-toggle="modal" data-target="#branding" href="#">
-                                                <br>
-
-                                                <img src="{{ url('assets/customer/img/etc/branding.png') }}" width="100px"
-                                                    alt="">
-                                                <hr>
-
-                                                <h3>Branding Destinasi dan <br> Pemasaran Digital
-                                                </h3>
-                                                <br>
-                                            </a>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="carousel-item">
-                                    <div class="col-lg-4">
-                                        <div class="item-single mb-30" style="background-color: white">
-                                            <a data-toggle="modal" data-target="#tren" href="#">
-                                                <br>
-
-                                                <img src="{{ url('assets/customer/img/etc/tren.png') }}" width="100px" alt="">
-                                                <hr>
-
-                                                <h3>@lang('Consumer Trend and Tourism Insight')
-                                                </h3>
-                                                <br>
-                                            </a>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
                             </div>
-                            <a class="carousel-control-prev w-auto" href="#recipeCarousel" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon bg-dark border border-dark rounded-circle"
-                                    aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="carousel-control-next w-auto" href="#recipeCarousel" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon bg-dark border border-dark rounded-circle"
-                                    aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
+                        </div>
+
+                        <!-- Service 2 -->
+                        <div class="px-3 py-4">
+                            <div class="modern-card text-center h-100" style="margin-bottom: 10px;">
+                                <div class="content">
+                                    <a data-toggle="modal" data-target="#perencanaan" style="color: inherit; text-decoration: none;">
+                                        <div class="services-icon mb-4">
+                                            <img src="{{ url('assets/customer/img/etc/perencanaan.png') }}" class="img-fluid hover-lift mx-auto" style="height: 120px; object-fit: contain;" alt="">
+                                        </div>
+                                        <h4 class="font-weight-bold" style="font-size: 16px;">@lang('Tourism Planning, Strategy and Revitalization')</h4>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Service 3 -->
+                        <div class="px-3 py-4">
+                            <div class="modern-card text-center h-100" style="margin-bottom: 10px;">
+                                <div class="content">
+                                    <a href="{{url('v-portofolio')}}" style="color: inherit; text-decoration: none;">
+                                        <div class="services-icon mb-4">
+                                            <img src="{{ url('assets/customer/img/etc/portofolio.png') }}" class="img-fluid hover-lift mx-auto" style="height: 120px; object-fit: contain;" alt="">
+                                        </div>
+                                        <h4 class="font-weight-bold" style="font-size: 16px;">@lang('Portofolio')</h4>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Service 4 -->
+                        <div class="px-3 py-4">
+                            <div class="modern-card text-center h-100" style="margin-bottom: 10px;">
+                                <div class="content">
+                                    <a data-toggle="modal" data-target="#projectmanagement" style="color: inherit; text-decoration: none;">
+                                        <div class="services-icon mb-4">
+                                            <img src="{{ url('assets/customer/img/etc/kajian.png') }}" class="img-fluid hover-lift mx-auto" style="height: 120px; object-fit: contain;" alt="">
+                                        </div>
+                                        <h4 class="font-weight-bold" style="font-size: 16px;">@lang('Project Management')</h4>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Service 5 -->
+                        <div class="px-3 py-4">
+                            <div class="modern-card text-center h-100" style="margin-bottom: 10px;">
+                                <div class="content">
+                                    <a data-toggle="modal" data-target="#pengembangansdm" style="color: inherit; text-decoration: none;">
+                                        <div class="services-icon mb-4">
+                                            <img src="{{ url('assets/customer/img/etc/sdm.png') }}" class="img-fluid hover-lift mx-auto" style="height: 120px; object-fit: contain;" alt="">
+                                        </div>
+                                        <h4 class="font-weight-bold" style="font-size: 16px;">@lang('Human Resources Development')</h4>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Service 6 -->
+                        <div class="px-3 py-4">
+                            <div class="modern-card text-center h-100" style="margin-bottom: 10px;">
+                                <div class="content">
+                                    <a data-toggle="modal" data-target="#branding" style="color: inherit; text-decoration: none;">
+                                        <div class="services-icon mb-4">
+                                            <img src="{{ url('assets/customer/img/etc/branding.png') }}" class="img-fluid hover-lift mx-auto" style="height: 120px; object-fit: contain;" alt="">
+                                        </div>
+                                        <h4 class="font-weight-bold" style="font-size: 16px;">Branding Destinasi dan Pemasaran Digital</h4>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Service 7 -->
+                        <div class="px-3 py-4">
+                            <div class="modern-card text-center h-100" style="margin-bottom: 10px;">
+                                <div class="content">
+                                    <a data-toggle="modal" data-target="#tren" style="color: inherit; text-decoration: none;">
+                                        <div class="services-icon mb-4">
+                                            <img src="{{ url('assets/customer/img/etc/tren.png') }}" class="img-fluid hover-lift mx-auto" style="height: 120px; object-fit: contain;" alt="">
+                                        </div>
+                                        <h4 class="font-weight-bold" style="font-size: 16px;">@lang('Consumer Trend and Tourism Insight')</h4>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -609,6 +595,34 @@
           });
         }
       );
+
+      // Initialize the services slider
+      $('.services-slider').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        arrows: true,
+        dots: true,
+        prevArrow: '<button type="button" class="slick-prev services-prev"><i class="fas fa-chevron-left" style="color: #d81c25; font-size: 24px;"></i></button>',
+        nextArrow: '<button type="button" class="slick-next services-next"><i class="fas fa-chevron-right" style="color: #d81c25; font-size: 24px;"></i></button>',
+        responsive: [
+          {
+            breakpoint: 992,
+            settings: {
+              slidesToShow: 2
+            }
+          },
+          {
+            breakpoint: 576,
+            settings: {
+              slidesToShow: 1,
+              arrows: false
+            }
+          }
+        ]
+      });
+
     });
 
     function firstTake(videoId) {
