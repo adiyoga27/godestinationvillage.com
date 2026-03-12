@@ -19,7 +19,7 @@
     <meta property="og:title" content="{{ $title ?? 'GODEVI - Authentic Village Experiences' }}" />
     <meta property="og:description"
         content="{{ $content ?? 'GODEVI is a socially pro-active business dedicated to uplifting local communities in the developing village through efforts in tourism industry. Beside also support fair trade, we create a marketplace by empowering the village communities. GODEVI adheres to a strict policy of promoting Socially Responsible Village Tourism activities.' }}" />
-    <meta property="og:image" itemprop="image" content="{{ $image ?? url('frontdata/images/bird.png') }}">
+    <meta property="og:image" itemprop="image" content="{{ $image ?? url('assets/customer/frontdata/images/bird.png') }}">
     <meta property="og:type" content="website" />
     <meta property="og:updated_time" content="1440432930" />
 
@@ -50,8 +50,8 @@
     <link rel="stylesheet" href="{{ url('assets/customer/css/responsive.css') }}" />
     <!-- favicon -->
     <link rel="icon" href="{{ url('assets/customer/img/favicon.png') }}" type="image/png" />
-    <link rel="stylesheet" href="{{ url('frontdata/css/owl.carousel.min.css') }}">
-    <link rel="stylesheet" href="{{ url('frontdata/css/owl.theme.default.min.css') }}">
+    <link rel="stylesheet" href="{{ url('assets/customer/frontdata/css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ url('assets/customer/frontdata/css/owl.theme.default.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
     <style>
@@ -286,10 +286,10 @@
                                         {{-- @lang('Language') --}}
 
                                         @if (app()->getLocale() == 'en')
-                                            <img src="{{ url('customer/img/flag-uk.png') }}" alt="flag">&nbsp;&nbsp;
+                                            <img src="{{ url('assets/customer/img/flag-uk.png') }}" alt="flag">&nbsp;&nbsp;
                                             English
                                         @else
-                                            <img src="{{ url('customer/img/flag-indonesia.png') }}"
+                                            <img src="{{ url('assets/customer/img/flag-indonesia.png') }}"
                                                 alt="flag">&nbsp;&nbsp;
                                             Indonesia
                                         @endif
@@ -301,14 +301,14 @@
                                         <li class="menu-item">
                                             <a href="{{ url('locale/en') }}" class="menu-link"
                                                 style="color:{{ app()->getLocale() == 'en' ? 'red' : 'black' }}">
-                                                <img src="{{ url('customer/img/flag-uk.png') }}" alt="flag">
+                                                <img src="{{ url('assets/customer/img/flag-uk.png') }}" alt="flag">
                                                 English
                                             </a>
                                         </li>
 
                                         <li class="menu-item"><a href="{{ url('locale/id') }}" class="menu-link"
                                                 style="color:{{ app()->getLocale() == 'id' ? 'red' : 'black' }}">
-                                                <img src="{{ url('customer/img/flag-indonesia.png') }}" alt="flag">
+                                                <img src="{{ url('assets/customer/img/flag-indonesia.png') }}" alt="flag">
                                                 Indonesia</a>
                                         </li>
 
@@ -345,7 +345,7 @@
                     <div class="main-responsive-menu">
                         <div class="logo">
                             <a href="{{ url('/') }}">
-                                <img src="{{ url('customer/img/logo1.png') }}" alt="logo">
+                                <img src="{{ url('assets/customer/img/logo1.png') }}" alt="logo">
                             </a>
                         </div>
                         <div class="cart responsive">
@@ -416,7 +416,7 @@
                                                 <div class="profile-nav">
                                                     <br>
                                                     @if(Auth::user()->avatar == null)
-                                                    <center><img src="{{ url('customer/img/users.png') }}"
+                                                    <center><img src="{{ url('assets/customer/img/users.png') }}"
                                                             alt="Avatar">
                                                     </center>
                                                     @else
@@ -524,7 +524,7 @@
                             class="col-lg-3 col-md-5 col-sm-6 col-12 aos-init aos-animate" data-v-44716918="">
                             <div class="footer-widget" data-v-44716918="">
                                 <div class="navbar-brand" data-v-44716918=""><a href="/" data-v-44716918=""><img
-                                            src="{{ url('customer/img/logo-white.png') }}" alt="logo"
+                                            src="{{ url('assets/customer/img/logo-white.png') }}" alt="logo"
                                             data-v-44716918=""></a></div>
                                 <p>GODEVI is a company under of PT Banua Wisata Lestari. GODEVI stands for Go
                                     Destination Village. <span class="hides">The GODEVI logo is inspired by Bali
@@ -578,7 +578,7 @@
                             class="col-lg-3 col-md-5 col-sm-6 col-12 aos-init aos-animate" data-v-44716918="">
                             <div class="footer-widget" data-v-44716918="">
                                 <h5 data-v-44716918="">@lang('Payment')</h5> <img
-                                    src="{{ asset('frontdata/images/payment.png') }}" width="80%">
+                                    src="{{ asset('assets/customer/frontdata/images/payment.png') }}" width="80%">
                             </div>
                         </div>
                         <div data-aos="fade-in" data-aos-duration="500" data-aos-delay="800" data-aos-offset="0"
@@ -647,10 +647,10 @@
     <script src="{{ url('assets/customer/js/contact-form-script.js') }}"></script>
     <!-- ajax chimp JS -->
     <script src="{{ url('assets/customer/js/jquery.ajaxchimp.min.js') }}"></script>
-    <script src="{{ url('frontdata/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ url('assets/customer/frontdata/js/owl.carousel.min.js') }}"></script>
 
     <!-- script JS -->
-    <script src="{{ url('customer/js/script.js') }}"></script>
+    <script src="{{ url('assets/customer/js/script.js') }}"></script>
     <script id="pixel-chaty" async="true" src="https://cdn.chaty.app/pixel.js?id=stx7rWCJ"></script>
 
     @yield('js')

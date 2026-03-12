@@ -1,0 +1,139 @@
+.bookbox {
+    background: orange;
+    color: #fff;
+    float: left;
+    padding: 20px;
+}
+
+.tit h3 {
+    color: #eee;
+}
+
+.book,
+.tit,
+.desc {
+    margin: 10px 0;
+}
+
+.book button {
+    width: 100%;
+    background-color: orange;
+    color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.dropdown {
+    padding: 5px;
+}
+
+.dropdown-menu {
+    margin: 0;
+}
+
+.dropdown-menu li a {
+    padding: 5px 10px;
+}
+
+.logshit {
+    background: none;
+    border: none;
+}
+
+.bor {
+    border: 1px solid #eee;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.sideb {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sideb li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.pays {
+    margin-top: 10px !important;
+    z-index: 100;
+    padding: 10px;
+    ;
+}
+
+#paypal-button-container {
+    width: 100%;
+}
+
+.sideb li a {
+    color: #333;
+}
+
+.sideb li a:hover {
+    padding-left: 10px;
+}
+
+.bookfix {
+    width: 100%;
+    height: 60px;
+    padding: 10px;
+    text-align: center;
+    background: #d81c25;
+    color: #fff;
+    bottom: 0;
+    right: 0;
+    position: fixed;
+    z-index: 3000;
+    font-size: 24px;
+}
+
+.bookfix:hover {
+    color: #eee;
+}
+
+.coret {
+    text-decoration: line-through !important;
+    color: #666;
+    margin: 10px 0 0 0;
+    padding: 0;
+    font-size: 18px;
+}
+
+.btnvil {
+    width: 100%;
+    padding: 10px;
+    color: #fff;
+    background: #d81c25;
+    cursor: pointer;
+}
+
+.services .icon span {
+    color: orange
+}
+
+.services:hover {
+    background: orange;
+}
+
+#section-counter:after {
+    background: orangered;
+}
+
+.owl-carousel .owl-stage,
+.owl-carousel.owl-drag .owl-item {
+    -ms-touch-action: auto;
+    touch-action: auto;
+}
+
+.destination .text h3 {
+    height: 80px;
+    overflow: hidden;
+}
+
+.desdis {
+    height: 100px;
+    overflow: hidden;
+}

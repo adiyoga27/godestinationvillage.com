@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="bg-image">
-            <img src="{{ url('customer/img/page-title-area/services.jpg') }}" alt="Services">
+            <img src="{{ url('assets/customer/img/page-title-area/services.jpg') }}" alt="Services">
         </div>
     </div>
     <!-- end page title area -->
@@ -40,7 +40,7 @@
                     <div class="item-single mb-30">
                         <div class="services-icon mb-3">
                             <a data-toggle="modal" data-target="#perencanaan">
-                                <img src="{{url('customer/img/etc/perencanaan.svg')}}" class="resize" alt="">
+                                <img src="{{url('assets/customer/img/etc/perencanaan.svg')}}" class="resize" alt="">
                         </div>
                         <p>@lang('Tourism Planning, Strategy and Revitalization')</p></a>
                     </div>
@@ -49,7 +49,7 @@
                 class="col-lg-4 col-md-6 aos-init aos-animate">
                 <div class="item-single mb-30">
                     <a href="{{url('v-portofolio')}}">
-                        <div class="services-icon mb-3"><img src="{{ url('customer/img/etc/portofolio.svg')}}" class="resize" alt="">
+                        <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/portofolio.svg')}}" class="resize" alt="">
                         </div>
                         <p class="px-3">@lang('Portofolio')</p>
                     </a>
@@ -59,7 +59,7 @@
                     class="col-lg-4 col-md-6 aos-init aos-animate">
                     <div class="item-single mb-30">
                         <a data-toggle="modal" data-target="#projectmanagement">
-                            <div class="services-icon mb-3"><img src="{{ url('customer/img/etc/kajian.svg')}}" class="resize" alt="">
+                            <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/kajian.svg')}}" class="resize" alt="">
                             </div>
                             <p class="px-3">@lang('Project Management')</p>
                         </a>
@@ -69,7 +69,7 @@
                     class="col-lg-4 col-md-6 m-auto aos-init aos-animate">
                     <div class="item-single mb-30">
                         <a data-toggle="modal" data-target="#pengembangansdm">
-                            <div class="services-icon mb-3"><img src="{{ url('customer/img/etc/sdm.svg')}}" class="resize" alt=""></div>
+                            <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/sdm.svg')}}" class="resize" alt=""></div>
                             <p>@lang('Human Resources Development')</p>
                         </a>
                     </div>
@@ -78,7 +78,7 @@
                     class="col-lg-4 col-md-6 m-auto aos-init aos-animate">
                     <div class="item-single mb-30">
                         <a data-toggle="modal" data-target="#branding">
-                            <div class="services-icon mb-3"><img src="{{ url('customer/img/etc/branding.svg')}}" class="resize" alt="">
+                            <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/branding.svg')}}" class="resize" alt="">
                             </div>
                             <p>@lang('Destination Branding and Digital Marketing')</p>
                         </a>
@@ -88,7 +88,7 @@
                     class="col-lg-4 col-md-6 m-auto aos-init aos-animate">
                     <div class="item-single mb-30">
                         <a data-toggle="modal" data-target="#tren">
-                            <div class="services-icon mb-3"><img src="{{ url('customer/img/etc/tren.svg')}}" class="resize" alt="">
+                            <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/tren.svg')}}" class="resize" alt="">
                             </div>
                             <p>@lang('Consumer Trend and Tourism Insight')</p>
                         </a>
@@ -98,7 +98,7 @@
                     class="col-lg-4 col-md-6 m-auto aos-init aos-animate">
                     <div class="item-single mb-30">
                         <a data-toggle="modal" data-target="#internship">
-                            <div class="services-icon mb-3"><img src="{{ url('customer/img/etc/internship.png')}}" class="resize"
+                            <div class="services-icon mb-3"><img src="{{ url('assets/customer/img/etc/internship.png')}}" class="resize"
                                     alt=""></div>
                             <p>@lang('Internship Program')</p>
                         </a>

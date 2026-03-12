@@ -229,7 +229,7 @@
                                         <div class="item-single mb-30" style="background-color: white">
                                             <a data-toggle="modal" data-target="#internship" href="#">
                                                 <br>
-                                                <img src="{{ url('customer/img/etc/internship.png') }}" width="100px"
+                                                <img src="{{ url('assets/customer/img/etc/internship.png') }}" width="100px"
                                                     alt="">
                                                 <hr>
 
@@ -247,7 +247,7 @@
                                             <a data-toggle="modal" data-target="#perencanaan" href="#">
                                                 <br>
 
-                                                <img src="{{ url('customer/img/etc/perencanaan.png') }}" width="100px"
+                                                <img src="{{ url('assets/customer/img/etc/perencanaan.png') }}" width="100px"
                                                     alt="">
                                                 <hr>
 
@@ -264,7 +264,7 @@
                                             <a data-toggle="modal" data-target="#projectmanagement" href="#">
                                                 <br>
 
-                                                <img src="{{ url('customer/img/etc/portofolio.svg') }}" width="100px" alt="">
+                                                <img src="{{ url('assets/customer/img/etc/portofolio.svg') }}" width="100px" alt="">
                                                 <hr>
 
                                                 <h3>@lang('Portofolio')</h3>
@@ -281,7 +281,7 @@
                                             <a data-toggle="modal" data-target="#branding" href="#">
                                                 <br>
 
-                                                <img src="{{ url('customer/img/etc/branding.svg') }}" width="100px"
+                                                <img src="{{ url('assets/customer/img/etc/branding.svg') }}" width="100px"
                                                     alt="">
                                                 <hr>
 
@@ -300,7 +300,7 @@
                                             <a data-toggle="modal" data-target="#tren" href="#">
                                                 <br>
 
-                                                <img src="{{ url('customer/img/etc/tren.svg') }}" width="100px" alt="">
+                                                <img src="{{ url('assets/customer/img/etc/tren.svg') }}" width="100px" alt="">
                                                 <hr>
 
                                                 <h3>@lang('Consumer Trend and Tourism Insight')
@@ -339,10 +339,10 @@
                 <h2>@lang('Virtual')</h2>
                 <p>Witness the Wonders of the Village through an Immersive Virtual Reality Experience that Transports You to a Fascinating World.</p>
                 <center> 
+
                     <video width="100%" controls>
-                        <source src="https://godestinationvillage.com/storage/videos/vr-godevi.mp4" type="video/mp4">
+                        <source src="{{url('/')}}/storage/videos/vr-godevi.mp4" type="video/mp4">
                         <source src="https://godestinationvillage.com/storage/videos/vr-godevi.mp4" type="video/ogg">
-                 
                      </video>
                    </center>
                 <br>
@@ -557,7 +557,7 @@
             </div>
         </div>
         <div class="shape">
-            <img src="customer/img/shape1.png" alt="Background Shape">
+            <img src="{{ url('assets/customer/img/shape1.png') }}" alt="Background Shape">
         </div>
     </section>
     <!-- end testimonial section -->

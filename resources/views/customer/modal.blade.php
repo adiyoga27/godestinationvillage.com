@@ -13,7 +13,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="services-icon mb-3 text-center"><img src="{{url('customer/img/etc/perencanaan.sv')}}g" width="150px"
+                <div class="services-icon mb-3 text-center"><img src="{{url('assets/customer/img/etc/perencanaan.svg')}}" width="150px"
                         alt=""></div>
                 <h4 class="text-center mb-3">@lang('Tourism Planning, Strategy and Revitalization')</h4>
                 <p class="text-justify">Godevi memahami pembangunan pariwisata sangat kompleks dan dinamis sehingga
@@ -62,7 +62,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="services-icon mb-3 text-center"><img src="{{ url('customer/img/etc/kajian.svg')}}" width="150px" alt="">
+                <div class="services-icon mb-3 text-center"><img src="{{ url('assets/customer/img/etc/kajian.svg')}}" width="150px" alt="">
                 </div>
                 <h4 class="text-center mb-3">@lang('Project Management')</h4>
                 <p class="text-justify">Godevi hadir sebagai extension team Anda untuk membantu merancang,
@@ -99,7 +99,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="services-icon mb-3 text-center"><img src="{{ url('customer/img/etc/sdm.svg')}}" width="150px" alt="">
+                <div class="services-icon mb-3 text-center"><img src="{{ url('assets/customer/img/etc/sdm.svg')}}" width="150px" alt="">
                 </div>
                 <h4 class="text-center mb-3">@lang('Human Resources Development')</h4>
                 <p class="text-justify">Seluruh potensi dan peluang pariwisata yang dimiliki oleh destinasi khususnya
@@ -129,7 +129,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="services-icon mb-3 text-center"><img src="{{ url('customer/img/etc/branding.svg')}}" width="150px"
+                <div class="services-icon mb-3 text-center"><img src="{{ url('assets/customer/img/etc/branding.svg')}}" width="150px"
                         alt=""></div>
                 <h4 class="text-center mb-3">@lang('Destination Branding and Digital Marketing')</h4>
                 <p class="text-justify">Godevi mengembangkan strategi pemasaran & branding destinasi berbasis digital
@@ -162,7 +162,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="services-icon mb-3 text-center"><img src="{{ url('customer/img/etc/tren.svg')}}" width="150px" alt="">
+                <div class="services-icon mb-3 text-center"><img src="{{ url('assets/customer/img/etc/tren.svg')}}" width="150px" alt="">
                 </div>
                 <h4 class="text-center mb-3">@lang('Consumer Trend and Tourism Insight')</h4>
                 <p class="text-justify">Perkembangan pariwisata global yang fluktuatif, dinamis, dan rentan terhadap
@@ -197,7 +197,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="services-icon mb-3 text-center"><img src="{{ url('customer/img/etc/internship.png')}}" width="150px"
+                <div class="services-icon mb-3 text-center"><img src="{{ url('assets/customer/img/etc/internship.png')}}" width="150px"
                         alt=""></div>
                 <h4 class="text-center mb-3">@lang('Internship Program')</h4>
                 <p class="text-justify">GODEVI sebagai startup dibidang pariwisata menawarkan peluang magang dan
