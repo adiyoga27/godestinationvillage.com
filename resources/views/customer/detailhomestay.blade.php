@@ -19,7 +19,7 @@
             </ul>
         </div>
     </div>
-    <div class="bg-image"><img src="{{ url('customer/img/page-title-area/homestay.jpg') }}" alt="Image"></div>
+    <div class="bg-image"><img src="{{ url('assets/customer/img/page-title-area/homestay.jpg') }}" alt="Image"></div>
 </div>
 <!-- end page title area -->
 

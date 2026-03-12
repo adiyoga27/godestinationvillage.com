@@ -13,13 +13,13 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{ config('app.name', 'Godevi - Administrator') }}</title>
   <!-- plugins:css -->
-  <link rel="stylesheet" href="{{ asset('dist/vendors/iconfonts/mdi/css/materialdesignicons.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('dist/vendors/css/vendor.bundle.base.css') }}">
+  <link rel="stylesheet" href="{{ url('assets/customer/dist/vendors/iconfonts/mdi/css/materialdesignicons.min.css') }}">
+  <link rel="stylesheet" href="{{ url('assets/customer/dist/vendors/css/vendor.bundle.base.css') }}">
   <!-- endinject -->
   <!-- inject:css -->
-  <link rel="stylesheet" href="{{ asset('dist/css/style.css') }}">
+  <link rel="stylesheet" href="{{ url('assets/customer/dist/css/style.css') }}">
   {{-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"> --}}
-  <link rel="stylesheet" href="{{ asset('dist/css/rating.css') }}">
+  <link rel="stylesheet" href="{{ url('assets/customer/dist/css/rating.css') }}">
   <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
   <link rel="stylesheet" href="{{ asset('node_modules/@ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.min.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
@@ -44,8 +44,8 @@
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo" href="{{ url('administrator/dashboard') }}"><img style="width: 115px; height: auto" src="{{ asset('dist/images/logo.png') }}" alt="logo"/></a>
-        <a class="navbar-brand brand-logo-mini" href="{{ url('administrator/dashboard') }}"><img style="height: 65px !important" src="{{ asset('dist/images/icon.png') }}" alt="logo"/></a>
+        <a class="navbar-brand brand-logo" href="{{ url('administrator/dashboard') }}"><img style="width: 115px; height: auto" src="{{ url('assets/customer/dist/images/logo.png') }}" alt="logo"/></a>
+        <a class="navbar-brand brand-logo-mini" href="{{ url('administrator/dashboard') }}"><img style="height: 65px !important" src="{{ url('assets/customer/dist/images/icon.png') }}" alt="logo"/></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <ul class="navbar-nav navbar-nav-right">
@@ -53,7 +53,7 @@
             <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
               <div class="nav-profile-img">
                 @if(empty(Auth::user()->avatar))
-                    <img src="{{ asset('dist/images/faces/face1.jpg') }}" alt="image">
+                    <img src="{{ url('assets/customer/dist/images/faces/face1.jpg') }}" alt="image">
                 @else
                     <img src="{{ asset('storage/users/'.Auth::user()->avatar) }}" alt="image">
                 @endif
@@ -108,7 +108,7 @@
                     <img style=" border-radius: 50%;  object-fit: cover;
                     object-position: center center;
                     width: 100px;
-                    height: 100px;"  src="{{ asset('dist/images/faces/face1.jpg') }}" alt="profile">
+                    height: 100px;"  src="{{ url('assets/customer/dist/images/faces/face1.jpg') }}" alt="profile">
                 @else
                     <img style=" border-radius: 50%;  object-fit: cover;
                     object-position: center center;
@@ -332,18 +332,18 @@
 
 
   <!-- plugins:js -->
-  <script src="{{ asset('dist/vendors/js/vendor.bundle.base.js') }}"></script>
-  <script src="{{ asset('dist/vendors/js/vendor.bundle.addons.js') }}"></script>
+  <script src="{{ url('assets/customer/dist/vendors/js/vendor.bundle.base.js') }}"></script>
+  <script src="{{ url('assets/customer/dist/vendors/js/vendor.bundle.addons.js') }}"></script>
   <script src="{{ asset('js/select2.min.js') }}"></script>
   <!-- endinject -->
   <!-- Plugin js for this page-->
   <!-- End plugin js for this page-->
   <!-- inject:js -->
-  <script src="{{ asset('dist/js/off-canvas.js') }}"></script>
-  <script src="{{ asset('dist/js/misc.js') }}"></script>
+  <script src="{{ url('assets/customer/dist/js/off-canvas.js') }}"></script>
+  <script src="{{ url('assets/customer/dist/js/misc.js') }}"></script>
   <!-- endinject -->
   <!-- Custom js for this page-->
-  <script src="{{ asset('dist/js/dashboard.js') }}"></script>
+  <script src="{{ url('assets/customer/dist/js/dashboard.js') }}"></script>
   <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>

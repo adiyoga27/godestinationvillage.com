@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="bg-image">
-            <img src="customer/img/page-title-area/terms.jpg" alt="Demo Image">
+            <img src="{{url('assets/customer/img/page-title-area/terms.jpg')}}" alt="Demo Image">
         </div>
     </div>
     <!-- end page title area -->

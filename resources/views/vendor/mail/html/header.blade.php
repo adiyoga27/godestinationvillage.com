@@ -1,7 +1,7 @@
 <tr>
     <td class="header">
     <a href="{{ $url }}">
-                                <img src="{{ url('customer/img/logo.png') }}" width="200px" alt="logo">
+                                <img src="{{ url('assets/customer/img/logo.png') }}" width="200px" alt="logo">
                             </a>   
     <!-- <a href="{{ $url }}">
             {{ $slot }}

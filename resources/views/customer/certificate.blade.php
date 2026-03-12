@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="bg-image">
-            <img src="{{ url('customer/img/page-title-area/surat-sertif-header.png') }}" alt=" Demo Image">
+            <img src="{{ url('assets/customer/img/page-title-area/surat-sertif-header.png') }}" alt=" Demo Image">
         </div>
     </div>
     <!-- start blog details section -->
@@ -83,10 +83,10 @@
                 </div>
             </div>
         </div>
-        <div class="shape shape-1"><img src="{{url('customer/img/shape1.png')}}" alt="Background Shape"></div>
-        <div class="shape shape-2"><img src="{{url('customer/img/shape2.png')}}" alt="Background Shape"></div>
-        <div class="shape shape-3"><img src="{{url('customer/img/shape3.png')}}" alt="Background Shape"></div>
-        <div class="shape shape-4"><img src="{{url('customer/img/shape4.png')}}" alt="Background Shape"></div>
+        <div class="shape shape-1"><img src="{{url('assets/customer/img/shape1.png')}}" alt="Background Shape"></div>
+        <div class="shape shape-2"><img src="{{url('assets/customer/img/shape2.png')}}" alt="Background Shape"></div>
+        <div class="shape shape-3"><img src="{{url('assets/customer/img/shape3.png')}}" alt="Background Shape"></div>
+        <div class="shape shape-4"><img src="{{url('assets/customer/img/shape4.png')}}" alt="Background Shape"></div>
     </section>
     <script>
         /**

@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="bg-image">
-            <img src="customer/img/page-title-area/partner.jpg" alt="Demo Image">
+            <img src="{{url('assets/customer/img/page-title-area/partner.jpg')}}" alt="Demo Image">
         </div>
     </div>
     <!-- end page title area -->
@@ -31,7 +31,7 @@
                         <div class="image">
                             <center>
 
-                                <img src="{{ url('frontdata/images/inbistohpati.png') }}" width="500px" alt="Demo Image">
+                                <img src="{{ url('assets/customer/frontdata/images/inbistohpati.png') }}" width="500px" alt="Demo Image">
                             </center>
                         </div>
                         <div class="content">
@@ -56,7 +56,7 @@
                     <div class="item-single mb-30">
                         <div class="image">
                             <center>
-                                <img src="{{ url('frontdata/images/dewibali.png') }}" width="500px" alt="Demo Image">
+                                <img src="{{ url('assets/customer/frontdata/images/dewibali.png') }}" width="500px" alt="Demo Image">
                             </center>
                         </div>
                         <div class="content">
@@ -81,7 +81,7 @@
                     <div class="item-single mb-30">
                         <div class="image">
                             <center>
-                                <img src="{{ url('frontdata/images/HMPIndonesia.png') }}" width="500px" alt="Demo Image">
+                                <img src="{{ url('assets/customer/frontdata/images/HMPIndonesia.png') }}" width="500px" alt="Demo Image">
                             </center>
                         </div>
                         <div class="content">
@@ -106,7 +106,7 @@
                     <div class="item-single mb-30">
                         <div class="image">
                             <center>
-                                <img src="{{ url('frontdata/images/ezeego.png') }}" width="500px" alt="Demo Image">
+                                <img src="{{ url('assets/customer/frontdata/images/ezeego.png') }}" width="500px" alt="Demo Image">
                             </center>
                         </div>
                         <div class="content">
@@ -131,7 +131,7 @@
                     <div class="item-single mb-30">
                         <div class="image">
                             <center>
-                                <img src="{{ url('frontdata/images/IPBI.png') }}" width="500px" alt="Demo Image">
+                                <img src="{{ url('assets/customer/frontdata/images/IPBI.png') }}" width="500px" alt="Demo Image">
                             </center>
                         </div>
                         <div class="content">
@@ -158,7 +158,7 @@
                     <div class="item-single mb-30">
                         <div class="image">
                             <center>
-                                <img src="{{ url('frontdata/images/unud.png') }}" width="500px" alt="Demo Image">
+                                <img src="{{ url('assets/customer/frontdata/images/unud.png') }}" width="500px" alt="Demo Image">
                             </center>
                         </div>
                         <div class="content">
@@ -183,7 +183,7 @@
                     <div class="item-single mb-30">
                         <div class="image">
                             <center>
-                                <img src="{{ url('frontdata/images/BUHSA.png') }}" width="500px" alt="Demo Image">
+                                <img src="{{ url('assets/customer/frontdata/images/BUHSA.png') }}" width="500px" alt="Demo Image">
                             </center>
                         </div>
                         <div class="content">

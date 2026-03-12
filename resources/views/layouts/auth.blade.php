@@ -8,11 +8,11 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{ config('app.name', 'Wijaya Musik - Admin') }}</title>
   <!-- plugins:css -->
-  <link rel="stylesheet" href="{{ asset('dist/vendors/iconfonts/mdi/css/materialdesignicons.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('dist/vendors/css/vendor.bundle.base.css') }}">
+  <link rel="stylesheet" href="{{ url('assets/customer/dist/vendors/iconfonts/mdi/css/materialdesignicons.min.css') }}">
+  <link rel="stylesheet" href="{{ url('assets/customer/dist/vendors/css/vendor.bundle.base.css') }}">
   <!-- endinject -->
   <!-- inject:css -->
-  <link rel="stylesheet" href="{{ asset('dist/css/style.css') }}">
+  <link rel="stylesheet" href="{{ url('assets/customer/dist/css/style.css') }}">
   <!-- endinject -->
   <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('favicons/apple-icon-57x57.png') }}">
   <link rel="apple-touch-icon" sizes="60x60" href="{{ asset('favicons/apple-icon-60x60.png') }}">
@@ -62,17 +62,17 @@
   <!-- container-scroller -->
 
   <!-- plugins:js -->
-  <script src="{{ asset('dist/vendors/js/vendor.bundle.base.js') }}"></script>
-  <script src="{{ asset('dist/vendors/js/vendor.bundle.addons.js') }}"></script>
+  <script src="{{ url('assets/customer/dist/vendors/js/vendor.bundle.base.js') }}"></script>
+  <script src="{{ url('assets/customer/dist/vendors/js/vendor.bundle.addons.js') }}"></script>
   <!-- endinject -->
   <!-- Plugin js for this page-->
   <!-- End plugin js for this page-->
   <!-- inject:js -->
-  <script src="{{ asset('dist/js/off-canvas.js') }}"></script>
-  <script src="{{ asset('dist/js/misc.js') }}"></script>
+  <script src="{{ url('assets/customer/dist/js/off-canvas.js') }}"></script>
+  <script src="{{ url('assets/customer/dist/js/misc.js') }}"></script>
   <!-- endinject -->
   <!-- Custom js for this page-->
-  <script src="{{ asset('dist/js/dashboard.js') }}"></script>
+  <script src="{{ url('assets/customer/dist/js/dashboard.js') }}"></script>
   <!-- End custom js for this page-->
   @yield('js')
 </body>

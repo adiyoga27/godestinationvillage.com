@@ -197,7 +197,7 @@ Route::get('/surat/{id}', [PageController::class, 'certification']);
 
 Route::get('qrcode-with-image', function () {
     $image = \QrCode::format('png')
-                    ->merge('customer/img/qr.png', 0.5, true)
+                    ->merge('assets/customer/img/qr.png', 0.5, true)
                     ->size(500)->errorCorrection('H')
                     ->generate('http://localhost:8000/surat/056GODEVIB2XII');
  return response($image)->header('Content-type','image/png');

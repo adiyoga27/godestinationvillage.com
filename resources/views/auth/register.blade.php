@@ -8,7 +8,7 @@
   <title>Register - GODEVI</title>
 
   <!-- Font Icon -->
-  <link rel="stylesheet" href="{{ url('frontdata/fonts/material-icon/css/material-design-iconic-font.min.css') }}">
+  <link rel="stylesheet" href="{{ url('assets/customer/frontdata/fonts/material-icon/css/material-design-iconic-font.min.css') }}">
 
   <!-- Main css -->
 </head>
@@ -307,7 +307,7 @@
             </form>
           </div>
           <div class="signup-image">
-            <figure><img src="{{ asset('frontdata/images/logo.png') }}" width="100%" style="margin-top:30px;"></figure>
+            <figure><img src="{{ asset('assets/customer/frontdata/images/logo.png') }}" width="100%" style="margin-top:30px;"></figure>
             <a href="{{url('login')}}" class="signup-image-link">I am already member</a>
           </div>
         </div>
@@ -1075,12 +1075,12 @@
 </style>
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 <!-- JS file -->
-<script src="{{url('frontdata/autocomplete')}}/jquery.easy-autocomplete.min.js"></script>
+<script src="{{url('assets/customer/frontdata/autocomplete')}}/jquery.easy-autocomplete.min.js"></script>
 
 <!-- CSS file -->
-<link rel="stylesheet" href="{{url('frontdata/autocomplete')}}/easy-autocomplete.min.css">
+<link rel="stylesheet" href="{{url('assets/customer/frontdata/autocomplete')}}/easy-autocomplete.min.css">
 
 <!-- Additional CSS Themes file - not required-->
-<link rel="stylesheet" href="{{url('frontdata/autocomplete')}}/easy-autocomplete.themes.min.css">
+<link rel="stylesheet" href="{{url('assets/customer/frontdata/autocomplete')}}/easy-autocomplete.themes.min.css">
 
-<script src="{{ url('frontdata/js/main.js') }}"></script>
+<script src="{{ url('assets/customer/frontdata/js/main.js') }}"></script>

@@ -61,7 +61,7 @@
 <div class="row">
     <div class="col-md-4 stretch-card grid-margin">
       <div class="card bg-gradient-success card-img-holder text-white">
-        <div class="card-body" style="background: url('{{ asset('dist/images/dashboard/circle.svg')  }}') no-repeat right;">
+        <div class="card-body" style="background: url('{{ url('assets/customer/dist/images/dashboard/circle.svg')  }}') no-repeat right;">
           <h4 class="font-weight-normal mb-3">Admin
             <i class="mdi mdi-account mdi-24px float-right"></i>
           </h4>
@@ -72,7 +72,7 @@
     </div>
     <div class="col-md-4 stretch-card grid-margin">
       <div class="card bg-gradient-success card-img-holder text-white">
-        <div class="card-body" style="background: url('{{ asset('dist/images/dashboard/circle.svg')  }}') no-repeat right;">
+        <div class="card-body" style="background: url('{{ url('assets/customer/dist/images/dashboard/circle.svg')  }}') no-repeat right;">
           <h4 class="font-weight-normal mb-3">Desa Wisata
             <i class="mdi mdi-account mdi-24px float-right"></i>
           </h4>
@@ -83,7 +83,7 @@
     </div>
     <div class="col-md-4 stretch-card grid-margin">
       <div class="card bg-gradient-success card-img-holder text-white">
-        <div class="card-body" style="background: url('{{ asset('dist/images/dashboard/circle.svg')  }}') no-repeat right;">
+        <div class="card-body" style="background: url('{{ url('assets/customer/dist/images/dashboard/circle.svg')  }}') no-repeat right;">
           <h4 class="font-weight-normal mb-3">Member
             <i class="mdi mdi-account mdi-24px float-right"></i>
           </h4>
@@ -113,7 +113,7 @@
 <div class="row">
     <div class="col-md-4 stretch-card grid-margin">
       <div class="card bg-gradient-danger card-img-holder text-white">
-        <div class="card-body" style="background: url('{{ asset('dist/images/dashboard/circle.svg')  }}') no-repeat right;">
+        <div class="card-body" style="background: url('{{ url('assets/customer/dist/images/dashboard/circle.svg')  }}') no-repeat right;">
           <h4 class="font-weight-normal mb-3">Paket Wisata
             <i class="mdi mdi-animation mdi-24px float-right"></i>
           </h4>
@@ -124,7 +124,7 @@
     </div>
     <div class="col-md-4 stretch-card grid-margin">
       <div class="card bg-gradient-danger card-img-holder text-white">
-        <div class="card-body" style="background: url('{{ asset('dist/images/dashboard/circle.svg')  }}') no-repeat right;">
+        <div class="card-body" style="background: url('{{ url('assets/customer/dist/images/dashboard/circle.svg')  }}') no-repeat right;">
           <h4 class="font-weight-normal mb-3">Pemesanan
             <i class="mdi mdi-cart mdi-24px float-right"></i>
           </h4>
@@ -135,7 +135,7 @@
     </div>
     <div class="col-md-4 stretch-card grid-margin">
       <div class="card bg-gradient-danger card-img-holder text-white">
-        <div class="card-body" style="background: url('{{ asset('dist/images/dashboard/circle.svg')  }}') no-repeat right;">
+        <div class="card-body" style="background: url('{{ url('assets/customer/dist/images/dashboard/circle.svg')  }}') no-repeat right;">
           <h4 class="font-weight-normal mb-3">Pemasukan
             <i class="mdi mdi-cart mdi-24px float-right"></i>
           </h4>

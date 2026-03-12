@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="bg-image">
-            <img src="customer/img/page-title-area/team.jpg" alt="Demo Image">
+            <img src="{{url('assets/customer/img/page-title-area/team.jpg')}}" alt="Demo Image">
         </div>
     </div>
     <!-- end page title area -->
@@ -30,7 +30,7 @@
                 <div class=" col-lg-4 col-sm-4 col-md-4">
                     <div class="item-single mb-30">
                         <div class="image">
-                            <img src="{{ url('frontdata/images/gian.jpg') }}" alt="Demo Image">
+                            <img src="{{ url('assets/customer/frontdata/images/gian.jpg') }}" alt="Demo Image">
                         </div>
                         <div class="content">
                             <div class="title">
@@ -58,7 +58,7 @@
                 <div class="col-lg-4 col-sm-4 col-md-4">
                     <div class="item-single mb-30">
                         <div class="image">
-                            <img src="{{ url('frontdata/images/gatot.jpg') }}" alt="Demo Image">
+                            <img src="{{ url('assets/customer/frontdata/images/gatot.jpg') }}" alt="Demo Image">
                         </div>
                         <div class="content">
                             <div class="title">
@@ -83,7 +83,7 @@
                 <div class="col-lg-4 col-sm-4 col-md-4">
                     <div class="item-single mb-30">
                         <div class="image">
-                            <img src="{{ url('frontdata/images/pegdua.jpg') }}" alt="Demo Image">
+                            <img src="{{ url('assets/customer/frontdata/images/pegdua.jpg') }}" alt="Demo Image">
                         </div>
                         <div class="content">
                             <div class="title">
@@ -108,7 +108,7 @@
                 <div class="col-lg-4 col-sm-4 col-md-4">
                     <div class="item-single mb-30">
                         <div class="image">
-                            <img src="{{ url('frontdata/images/pegsatu.jpg') }}" alt="Demo Image">
+                            <img src="{{ url('assets/customer/frontdata/images/pegsatu.jpg') }}" alt="Demo Image">
                         </div>
                         <div class="content">
                             <div class="title">
@@ -132,7 +132,7 @@
                 <div class="col-lg-4 col-sm-4 col-md-4">
                     <div class="item-single mb-30">
                         <div class="image">
-                            <img src="{{ url('frontdata/images/Sanjiwani.jpg') }}" alt="Demo Image">
+                            <img src="{{ url('assets/customer/frontdata/images/Sanjiwani.jpg') }}" alt="Demo Image">
                         </div>
                         <div class="content">
                             <div class="title">
@@ -182,7 +182,7 @@
                 <div class="col-lg-4 col-sm-4 col-md-4">
                     <div class="item-single mb-30">
                         <div class="image">
-                            <img src="{{ url('frontdata/images/adiyoga.jpg') }}" alt="Demo Image">
+                            <img src="{{ url('assets/customer/frontdata/images/adiyoga.jpg') }}" alt="Demo Image">
                         </div>
                         <div class="content">
                             <div class="title">
@@ -207,7 +207,7 @@
                 <div class="col-lg-4 col-sm-4 col-md-4">
                     <div class="item-single mb-30">
                         <div class="image">
-                            <img src="{{ url('frontdata/images/sukmaarida.jpg') }}" alt="Demo Image">
+                            <img src="{{ url('assets/customer/frontdata/images/sukmaarida.jpg') }}" alt="Demo Image">
                         </div>
                         <div class="content">
                             <div class="title">

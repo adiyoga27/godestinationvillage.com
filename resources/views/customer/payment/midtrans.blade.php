@@ -10,14 +10,14 @@
     <meta property="og:site_name" content="Godevi">
     <meta property="og:title" content="{{ $title ?? 'GODEVI - Authentic Village Experiences' }}" />
     <meta property="og:description" content="{{ $content ?? 'Automatic Approve Payment' }}" />
-    <meta property="og:image" itemprop="image" content="{{ $image ?? url('frontdata/images/bird.png') }}">
+    <meta property="og:image" itemprop="image" content="{{ $image ?? url('assets/customer/frontdata/images/bird.png') }}">
     <meta property="og:type" content="website" />
     <meta property="og:updated_time" content="1440432930" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>{{ config('app.name', 'Godesination Village') }}</title>
-    <link rel="icon" href="{{ url('customer/img/favicon.png') }}" type="image/png" />
+    <link rel="icon" href="{{ url('assets/customer/img/favicon.png') }}" type="image/png" />
 
 
 </head>

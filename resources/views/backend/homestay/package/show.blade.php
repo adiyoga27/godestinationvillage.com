@@ -24,7 +24,7 @@
         <div class="col-md-4">
             <div class="card">
                 @if(empty($package->default_img))
-                    <img class="card-img-top" src="{{ asset('dist/images/no-image.png') }}" alt="image">
+                    <img class="card-img-top" src="{{ url('assets/customer/dist/images/no-image.png') }}" alt="image">
                 @else
                     <img class="card-img-top" src="{{ asset('storage/packages/'.$package->default_img) }}">
                 @endif

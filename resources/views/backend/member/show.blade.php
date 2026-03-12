@@ -20,7 +20,7 @@
         <div class="col-md-4">
             <div class="card">
                 @if(empty($member->avatar))
-                    <img class="card-img-top" src="{{ asset('dist/images/faces/faces1.png') }}" alt="image">
+                    <img class="card-img-top" src="{{ url('assets/customer/dist/images/faces/faces1.png') }}" alt="image">
                 @else
                     <img class="card-img-top" src="{{ asset('storage/users/'.$member->avatar) }}">
                 @endif

@@ -14,7 +14,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <center>
-                        <img src="{{url('frontdata/images/bird.png') }}"><br><br>
+                        <img src="{{url('assets/customer/frontdata/images/bird.png') }}"><br><br>
                         <h5>Mohon untuk dapat melakukan pembayaran sebesar : </h5>
                         <br>
                         
@@ -62,7 +62,7 @@
     }
 </style>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="{{ url('frontdata/js/jquery.min.js') }}"></script>
+<script src="{{ url('assets/customer/frontdata/js/jquery.min.js') }}"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="https://www.paypal.com/sdk/js?client-id=AZzcGXiUsp84fPHm_PpWICNmWiz6iOi1jkzmofR0q2oQn-6dtl4uhb4HBRzT4IrRq1J3dk6sFIEdK53v"></script>

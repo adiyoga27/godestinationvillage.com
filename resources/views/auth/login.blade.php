@@ -5,7 +5,7 @@
   <div class="col-lg-4 mx-auto">
     <div class="auth-form-light text-left p-5">
       <div class="" align="center">
-        <img src="{{ asset('dist/images/logo.png') }}" width="50%">
+        <img src="{{ url('assets/customer/dist/images/logo.png') }}" width="50%">
       </div>
       <br />
       <br />
