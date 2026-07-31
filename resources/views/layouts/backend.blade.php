@@ -254,8 +254,8 @@
             </a>
           </li> --}}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/blog') }}">
-              <span class="menu-title">Blog</span>
+            <a class="nav-link" href="{{ url('administrator/news') }}">
+              <span class="menu-title">News</span>
               <i class="mdi mdi-chart-areaspline menu-icon"></i>
             </a>
           </li>

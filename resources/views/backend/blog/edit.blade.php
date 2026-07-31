@@ -21,7 +21,7 @@
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                {!! Form::model($blog, ['url' => route('blog.update', $blog->id),
+                {!! Form::model($blog, ['url' => route('news.update', $blog->id),
                   'method'=>'put', 'files'=>true, 'class'=>'form-sample']) !!}
                   @include('backend.blog.form._form')
                 {!! Form::close() !!}

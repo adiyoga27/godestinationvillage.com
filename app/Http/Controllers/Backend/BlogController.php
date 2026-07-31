@@ -40,9 +40,9 @@ class BlogController extends Controller
             ->addColumn('action', function($post){
                 return view('datatable._action_dinamyc', [
                     'model'           => $post,
-                    'delete'          => route('blog.destroy', $post->id),
+                    'delete'          => route('news.destroy', $post->id),
                     'url'             => [
-                        'Edit'            => route('blog.edit', $post->id),
+                        'Edit'            => route('news.edit', $post->id),
                     ],
                     'confirm_message' =>  'Anda yakin untuk menghapus data "' . $post->post_title . '" ?',
                     'padding'         => '85px',
@@ -79,9 +79,9 @@ class BlogController extends Controller
     {
         $result = BlogService::create($request->except('_token'));
         if ($result) 
-            return redirect(route('blog.index'))->with('status', 'Successfully created');
+            return redirect(route('news.index'))->with('status', 'Successfully created');
         else
-            return redirect(route('blog.create'))->with('error', 'Failed to create');
+            return redirect(route('news.create'))->with('error', 'Failed to create');
     }
     public function edit($id)
     {
@@ -94,7 +94,7 @@ class BlogController extends Controller
     {
         $result = BlogService::update($id, $request->except('_token'));
         if ($result) 
-            return redirect(route('blog.index'))->with('status', 'Successfully updated');
+            return redirect(route('news.index'))->with('status', 'Successfully updated');
         else
             return back()->with('error','Failed to update');
     }
@@ -102,9 +102,9 @@ class BlogController extends Controller
     {  
         $result = BlogService::destroy($id);
         if ($result)
-            return redirect(route('blog.index'))->with('status', 'Successfully deleted');
+            return redirect(route('news.index'))->with('status', 'Successfully deleted');
         else
-            return redirect(route('blog.index'))->with('error','Failed to delete');
+            return redirect(route('news.index'))->with('error','Failed to delete');
     }
 
     public function uploadImage(Request $request)
