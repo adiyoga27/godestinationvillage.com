@@ -236,17 +236,37 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="pagination text-center">
+                                @php
+                                    $current = $blog->currentPage();
+                                    $last = $blog->lastPage();
+                                    $start = max(1, $current - 2);
+                                    $end = min($last, $current + 2);
+                                @endphp
 
+                                @if ($current > 1)
+                                    <a href="{{ $blog->previousPageUrl() }}" class="page-numbers"><i class='bx bx-chevron-left'></i></a>
+                                @endif
 
-                                @for ($i = 1; $i <= $blog->lastPage(); $i++)
-                                    <a href="{{ $blog->url($i) }}" class="page-numbers @if ($blog->currentPage() == $i) current @endif">
+                                @if ($start > 1)
+                                    <a href="{{ $blog->url(1) }}" class="page-numbers">1</a>
+                                    @if ($start > 2)
+                                        <span class="page-numbers disabled">...</span>
+                                    @endif
+                                @endif
 
-                                        {{ $i }}
-                                    </a>
+                                @for ($i = $start; $i <= $end; $i++)
+                                    <a href="{{ $blog->url($i) }}" class="page-numbers @if ($current == $i) current @endif">{{ $i }}</a>
                                 @endfor
-                                @if ($blog->lastPage() > 0 && $blog->currentPage() < $blog->lastPage())
-                                    <a href="{{ $blog->nextPageUrl() }}" class="page-numbers">Next</a>
 
+                                @if ($end < $last)
+                                    @if ($end < $last - 1)
+                                        <span class="page-numbers disabled">...</span>
+                                    @endif
+                                    <a href="{{ $blog->url($last) }}" class="page-numbers">{{ $last }}</a>
+                                @endif
+
+                                @if ($current < $last)
+                                    <a href="{{ $blog->nextPageUrl() }}" class="page-numbers"><i class='bx bx-chevron-right'></i></a>
                                 @endif
 
                                 {{-- <span class="page-numbers current" aria-current="page">1</span>
