@@ -27,7 +27,7 @@ class VillageService
 
     public static function get_by_role($role_id)
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         return DB::table('users')->join('village_details', 'users.id', '=', 'village_details.user_id')
         ->select([
             DB::raw('@rownum  := @rownum  + 1 AS rownum'),

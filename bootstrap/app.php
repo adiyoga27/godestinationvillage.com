@@ -11,7 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->validateCsrfTokens(except: [
+            'administrator/tinymce/upload-image',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

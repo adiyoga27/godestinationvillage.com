@@ -11,7 +11,7 @@ class DiscountMemberService
 
 	public static function all()
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         return MemberDiscount::query()->select([
             DB::raw('@rownum  := @rownum  + 1 AS rownum'),
             DB::raw('member_discounts.*')

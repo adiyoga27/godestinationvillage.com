@@ -45,7 +45,7 @@ class UserService
 
     public static function get_by_role($role_id)
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         return User::query()
             ->leftjoin('village_details', 'users.village_id' , '=' , 'village_details.id')
             ->select([

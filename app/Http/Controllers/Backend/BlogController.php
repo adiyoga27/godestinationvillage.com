@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Backend;
 use App\Models\Blog;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Blog\BlogCreateRequest;
 use App\Http\Requests\blog\BlogPostCreateRequest;
 use App\Http\Requests\blog\BlogPostUpdateRequest;
@@ -104,5 +105,15 @@ class BlogController extends Controller
             return redirect(route('blog.index'))->with('status', 'Successfully deleted');
         else
             return redirect(route('blog.index'))->with('error','Failed to delete');
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $file = $request->file('file');
+        if ($file) {
+            $path = $file->store('blog/images', 'public');
+            return response()->json(['location' => asset('storage/' . $path)]);
+        }
+        return response()->json(['error' => 'No file uploaded'], 400);
     }
 }

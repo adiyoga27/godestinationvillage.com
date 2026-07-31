@@ -208,7 +208,9 @@ Route::get('qrcode-with-image', function () {
 //Route Untuk Administrator
 Route::group(['prefix' => 'administrator', 'middleware' => ['auth']], function () {
      Route::resource('bank-account', BankAccountsController::class, ['names' => 'bank_account']);
-    Route::resource('blog', BlogController::class);
+     Route::resource('blog', BlogController::class);
+    Route::post('blog/upload-image', [BlogController::class, 'uploadImage'])->name('blog.upload_image');
+    Route::post('tinymce/upload-image', [BlogController::class, 'uploadImage'])->name('tinymce.upload_image');
     Route::resource('surat', CertificationController::class);
 
     Route::resource('instagram', InstagramController::class);

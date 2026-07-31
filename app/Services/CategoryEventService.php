@@ -9,7 +9,7 @@ class CategoryEventService
 {
     public static function all()
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         return CategoryEvent::query()->select([
             DB::raw('@rownum  := @rownum  + 1 AS rownum'),
             DB::raw('category_events.*')

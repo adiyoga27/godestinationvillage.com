@@ -11,7 +11,7 @@ class BankAccountService
 
 	public static function all()
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         return BankAccount::query()->select([
             DB::raw('@rownum  := @rownum  + 1 AS rownum'),
             DB::raw('bank_accounts.*')

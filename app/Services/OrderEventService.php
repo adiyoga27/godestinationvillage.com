@@ -17,7 +17,7 @@ class OrderEventService
 
     public static function all()
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         return OrderEvent::query()
                 ->leftJoin('bank_accounts', 'order_events.bank_account_id', '=', 'bank_accounts.id')
                 ->leftJoin('events', 'order_events.event_id', '=', 'events.id')                            
@@ -51,7 +51,7 @@ class OrderEventService
 
     public static function get_order_by_user($user_id)
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         return OrderEvent::query()
         ->select([
             DB::raw('@rownum  := @rownum  + 1 AS rownum'),
@@ -61,7 +61,7 @@ class OrderEventService
 
     public static function find_by_user($user_id)
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         return OrderEvent::query()
         ->select([
             DB::raw('@rownum  := @rownum  + 1 AS rownum'),
@@ -71,7 +71,7 @@ class OrderEventService
 
     public static function find_by_package($package_id)
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         return OrderEvent::query()
         ->select([
             DB::raw('@rownum  := @rownum  + 1 AS rownum'),
@@ -94,7 +94,7 @@ class OrderEventService
 
     public static function search_order($village_id = 'All', $package_id = 'All', $start_date = 0, $end_date = 0)
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         $order = OrderEvent::query()
                 ->leftJoin('bank_accounts', 'order_events.bank_account_id', '=', 'bank_accounts.id')                            
                 ->select([

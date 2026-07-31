@@ -37,7 +37,7 @@ class PackageService
 
     public static function find_by_user($user_id)
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         return Package::query()
             ->join('categories', 'packages.category_id', '=', 'categories.id')
             ->select([
@@ -54,7 +54,7 @@ class PackageService
 
     public static function all()
     {
-        DB::statement(DB::raw('set @rownum=0'));
+        DB::statement('set @rownum=0');
         return Package::query()
             ->join('categories', 'packages.category_id', '=', 'categories.id')
             ->leftjoin('village_details', 'packages.village_id', '=', 'village_details.id')
