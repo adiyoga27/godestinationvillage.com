@@ -3,13 +3,13 @@
 @section('content-header')
     <div class="page-header">
         <h3 class="page-title">
-          Tambah Artikel
+          Tambah News
         </h3>
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item">Administrator</li>
-            <li class="breadcrumb-item" aria-current="page"><a href="{{ url('administrator/bank-account') }}">Akun Bank</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Tambah Akun Bank</li>
+            <li class="breadcrumb-item" aria-current="page"><a href="{{ url('administrator/news') }}">News</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Tambah News</li>
           </ol>
         </nav>
     </div>

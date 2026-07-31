@@ -3,12 +3,12 @@
 @section('content-header')
     <div class="page-header">
         <h3 class="page-title">
-          Data Blog
+          Data News
         </h3>
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item">Administrator</li>
-            <li class="breadcrumb-item active" aria-current="page">Blog</li>
+            <li class="breadcrumb-item active" aria-current="page">News</li>
           </ol>
         </nav>
       </div>
@@ -20,7 +20,7 @@
         <div class="card">
             <div class="card-body">
                 <a href="{{ route('news.create') }}" class="btn btn-lg btn-gradient-danger mr-2"> 
-                  <i class="mdi mdi-plus-circle-outline"></i> Tambah Artikel
+                   <i class="mdi mdi-plus-circle-outline"></i> Tambah News
                 </a>
                 <br /><br />
                 <div class="table-responsive"> 
