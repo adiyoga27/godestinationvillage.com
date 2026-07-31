@@ -385,8 +385,8 @@
     <section id="blog" class="blog-section pt-100 pb-70 ">
         <div class="container">
             <div class="section-title">
-                <h2>@lang('News Blogs')</h2>
-                <p>@lang('Subtitle Blogs').</p>
+                <h2>@lang('News')</h2>
+                <p>@lang('Subtitle News').</p>
             </div>
             <div class="row">
                 @foreach ($recent_blog as $rec)
@@ -406,7 +406,7 @@
                                     <li><i class='bx bx-tag'></i>{{ $rec->post_tags }}</li>
                                 </ul>
                                 <h3>
-                                    <a href="{{ url('blog/' . $rec->slug) }}">{{ $rec->post_title }}</a>
+                                    <a href="{{ url('news/' . $rec->slug) }}">{{ $rec->post_title }}</a>
                                 </h3>
                                 <p>
                                     {!! \Illuminate\Support\Str::words($rec->post_content, 25, '...') !!}
@@ -419,7 +419,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <a href="{{ url('blog/' . $rec->slug) }}" class="btn-primary">Read More</a>
+                                        <a href="{{ url('news/' . $rec->slug) }}" class="btn-primary">Read More</a>
                                     </li>
                                 </ul>
                             </div>
@@ -452,7 +452,7 @@
                                         </ul>
                                         
                                         <h3>
-                                            <a href="{{ url('blog/' . $rec->slug) }}">{{ $rec->post_title }}</a>
+                                            <a href="{{ url('news/' . $rec->slug) }}">{{ $rec->post_title }}</a>
                                         </h3>
                                         <p>
                                     {!! \Illuminate\Support\Str::words($rec->post_content, 25, '...') !!}

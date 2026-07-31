@@ -1,5 +1,5 @@
 @extends('customer/layout',array(
-'title' => 'News & Blog - GODEVI',
+ 'title' => 'News - GODEVI',
 )
 )
 @section('content')
@@ -7,10 +7,10 @@
     <div class="page-title-area ptb-100">
         <div class="container">
             <div class="page-title-content">
-                <h1>@lang('News Blogs')</h1>
+                <h1>@lang('News')</h1>
                 <ul>
                     <li class="item"><a href="/">@lang('Home')</a></li>
-                    <li class="item"><a href="#"><i class='bx bx-chevrons-right'></i>@lang('News Blogs')</a></li>
+                    <li class="item"><a href="#"><i class='bx bx-chevrons-right'></i>@lang('News')</a></li>
                 </ul>
             </div>
         </div>
@@ -24,8 +24,8 @@
     <section class="blog-section blog-style-three ptb-100">
         <div class="container">
             <div class="section-title">
-                <h2>@lang('Latest News & Blog')</h2>
-                <p>@lang('Subtitle Blogs')</p>
+                <h2>@lang('Latest News')</h2>
+                <p>@lang('Subtitle News')</p>
             </div>
             <div class="row">
                 <div class="col-lg-8 col-md-12">
@@ -45,7 +45,7 @@
                                             <li><i class='bx bx-tag'></i>Tour, Tourism, Travel</li>
                                         </ul>
                                         <h3>
-                                            <a href="{{ url('blog/' . $val->slug) }}">{{ $val->post_title }}</a>
+                                            <a href="{{ url('news/' . $val->slug) }}">{{ $val->post_title }}</a>
                                         </h3>
 
                                         {{ strip_tags(\Illuminate\Support\Str::limit($val->post_content, $limit = 150, $end = '...')) }}
@@ -63,18 +63,18 @@
                                             <li>
                                                 <div class="social-link">
                                                     <span class="mr-2">Share :</span>
-                                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ url('blog/' . $val->slug) }}"
+                                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ url('news/' . $val->slug) }}"
                                                         target="_blank"><i class='bx bxl-facebook'></i></a>
-                                                    <a href="https://www.twitter.com/share?url={{ url('blog/' . $val->slug) }}"
+                                                    <a href="https://www.twitter.com/share?url={{ url('news/' . $val->slug) }}"
                                                         target="_blank"><i class='bx bxl-twitter'></i></a>
-                                                    <a href="https://www.linkedin.com/cws/share?url={{ url('blog/' . $val->slug) }}"
+                                                    <a href="https://www.linkedin.com/cws/share?url={{ url('news/' . $val->slug) }}"
                                                         target="_blank"><i class='bx bxl-linkedin'></i></a>
                                                     <a href="https://www.instagram.com/godestinationvillage"
                                                         target="_blank"><i class='bx bxl-instagram'></i></a>
                                                 </div>
                                             </li>
                                             <li>
-                                                <a href="{{ url('blog/' . $val->slug) }}" class="btn-primary">Read More</a>
+                                                <a href="{{ url('news/' . $val->slug) }}" class="btn-primary">Read More</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -103,7 +103,7 @@
                             </a>
                         </div>
                         <div class="widget widget-article mb-30">
-                            <h3 class="sub-title">Popular Blog</h3>
+                            <h3 class="sub-title">Popular News</h3>
                             @foreach ($recent as $rec)
 
                                 <article class="article-item">
@@ -112,7 +112,7 @@
                                     </div>
                                     <div class="content">
                                         <h3>
-                                            <a href="{{ url('blog/' . $rec->slug) }}">{{ $rec->post_title }}</a>
+                                            <a href="{{ url('news/' . $rec->slug) }}">{{ $rec->post_title }}</a>
                                         </h3>
                                         <ul class="list">
                                             <li>

@@ -161,11 +161,11 @@ Route::get('/v-board', [PageController::class,'boardExpert']);
 Route::get('/v-portofolio', [PageController::class,'portofolio']);
 
 Route::get('/our-partner', [PageController::class,'ourpartner']);
-Route::get('/blog', [PageController::class,'blog']);
-Route::get('/blog/{slug}', [PageController::class,'detailpost']);
-Route::get('/blog-mobile', [PageController::class,'blog_mobile']);
-Route::get('/blog-mobile/{id}', [PageController::class,'detailpost_mobile']);
-Route::post('/blog/comment/{slug}', [PageController::class, 'postComment'])->middleware('auth');
+Route::get('/news', [PageController::class,'blog']);
+Route::get('/news/{slug}', [PageController::class,'detailpost']);
+Route::get('/news-mobile', [PageController::class,'blog_mobile']);
+Route::get('/news-mobile/{id}', [PageController::class,'detailpost_mobile']);
+Route::post('/news/comment/{slug}', [PageController::class, 'postComment'])->middleware('auth');
 Route::get('/search', [SearchController::class,'searchHome']);
 Route::get('/pay/{id}', [PaymentController::class, 'vtweb']);
 Route::post('/vt-notif', [PaymentController::class, 'notification']);

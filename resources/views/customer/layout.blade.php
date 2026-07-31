@@ -400,7 +400,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="{{ url('blog') }}" class="nav-link">@lang('Blog')</a>
+                                    <a href="{{ url('news') }}" class="nav-link">@lang('News')</a>
                                 </li>
 
                                 <!--<li class="nav-item">-->

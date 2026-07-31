@@ -10,9 +10,9 @@
     <div class="page-title-area ptb-100">
         <div class="container">
             <div class="page-title-content">
-                <h1>@lang('Blog')</h1>
+                <h1>@lang('News')</h1>
                 <ul>
-                    <li class="item"><a href="index.html">@lang('Blog')</a></li>
+                    <li class="item"><a href="index.html">@lang('News')</a></li>
                     <li class="item"><a href="#"><i class='bx bx-chevrons-right'></i>Details</a></li>
                 </ul>
             </div>
@@ -78,7 +78,7 @@
 
                                 @auth
                                     <h3 class="comment-reply-title">Leave a Reply</h3>
-                                    <form class="comment-form" action="{{ url('blog/comment/'.$blog->slug) }}" method="POST">
+                                    <form class="comment-form" action="{{ url('news/comment/'.$blog->slug) }}" method="POST">
                                         @csrf
                                         <div class="form-group">
                                             <label for="comment">Comment</label>
@@ -118,7 +118,7 @@
                             </a>
                         </div>
                         <div class="widget widget-article mb-30">
-                            <h3 class="sub-title">Popular Blog</h3>
+                            <h3 class="sub-title">Popular News</h3>
                             @foreach ($recent as $rec)
 
                                 <article class="article-item">
@@ -127,7 +127,7 @@
                                     </div>
                                     <div class="content">
                                         <h3>
-                                            <a href="{{ url('blog/' . $rec->slug) }}">{{ $rec->post_title }}</a>
+                                            <a href="{{ url('news/' . $rec->slug) }}">{{ $rec->post_title }}</a>
                                         </h3>
                                         <ul class="list">
                                             <li>
