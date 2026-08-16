@@ -1,0 +1,17 @@
+# Blokir eksekusi script apapun di folder upload publik
+<FilesMatch "\.(?i)(php[0-9]?|phtml|phar|shtml|shtm|cgi|pl|py|sh|asp|aspx|jsp|exe|bat|cmd)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+Options -ExecCGI
+RemoveHandler .php .php8 .phtml .phar .shtml .shtm
