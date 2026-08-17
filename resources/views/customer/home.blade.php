@@ -302,6 +302,20 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Service 8 -->
+                        <div class="px-3 py-4">
+                            <div class="modern-card text-center h-100" style="margin-bottom: 10px;">
+                                <div class="content">
+                                    <a data-toggle="modal" data-target="#research" style="color: inherit; text-decoration: none;">
+                                        <div class="services-icon mb-4">
+                                            <img src="{{ url('assets/customer/img/etc/research.jpg') }}" class="img-fluid hover-lift mx-auto" style="height: 120px; object-fit: contain;" alt="">
+                                        </div>
+                                        <h4 class="font-weight-bold" style="font-size: 16px;">@lang('Research Analytics & Scientific Consulting')</h4>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

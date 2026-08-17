@@ -133,6 +133,20 @@
                         </div>
                     </div>
                 </div>
+
+                <div data-aos="fade-in" data-aos-offset="100" data-aos-duration="500" data-aos-delay="900"
+                    class="col-lg-4 col-md-6 mb-4">
+                    <div class="modern-card text-center h-100">
+                        <div class="content">
+                            <a data-toggle="modal" data-target="#research" style="color: inherit; text-decoration: none;">
+                                <div class="services-icon mb-4">
+                                    <img src="{{ url('assets/customer/img/etc/research.jpg')}}" class="resize hover-lift" alt="">
+                                </div>
+                                <h4 class="font-weight-bold" style="font-size: 18px;">@lang('Research Analytics & Scientific Consulting')</h4>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

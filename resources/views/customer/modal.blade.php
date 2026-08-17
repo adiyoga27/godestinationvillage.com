@@ -219,3 +219,39 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="research" tabindex="-1" role="dialog" aria-labelledby="research" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="services-icon mb-3 text-center"><img src="{{ url('assets/customer/img/etc/research.jpg')}}" width="150px"
+                        alt=""></div>
+                <h4 class="text-center mb-3">@lang('Research Analytics & Scientific Consulting')</h4>
+                <p class="text-justify">Godevi menyediakan layanan riset dan konsultasi ilmiah untuk mendukung
+                    pengambilan keputusan berbasis data dalam pengembangan pariwisata desa. Kami membantu pemerintah,
+                    akademisi, dan pelaku usaha dalam menyusun kajian, analisis data, serta studi ilmiah yang valid
+                    dan reliabel, mulai dari identifikasi potensi destinasi, kajian dampak sosial-ekonomi, hingga
+                    evaluasi kebijakan pariwisata. Dengan dukungan metodologi penelitian yang ketat, kolaborasi
+                    bersama para pakar, serta pemanfaatan teknologi analitik terkini, Godevi menghadirkan wawasan
+                    yang komprehensif untuk mewujudkan pengembangan desa wisata yang berkelanjutan dan berbasis
+                    bukti.
+
+
+                </p>
+                <div class="row mt-5">
+                    <div class="col-6"><a href="tel:082236803301" class="btn btn-outline-warning d-block"><i
+                                class="bx bxs-phone mr-1"></i>@lang('Call')</a></div>
+                    <div class="col-6"><a href="http://wa.me/6282236803301" type="button"
+                            class="btn btn-outline-success btn-block"><i
+                                class="bx bxl-whatsapp mr-1"></i>@lang('Message')</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
