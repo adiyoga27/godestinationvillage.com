@@ -1,6 +1,5 @@
 import './bootstrap';
 import { createApp, h } from 'vue';
-import Reveal from './components/Reveal.vue';
 import CountUp from './components/CountUp.vue';
 import GallerySlider from './components/GallerySlider.vue';
 
@@ -107,14 +106,39 @@ if (bookNowLink) {
     });
 }
 
+// ---------- Scroll reveal (vanilla, preserves server-rendered content) ----------
+// NOTE: Reveal must NOT be mounted with Vue because app.mount() replaces the
+// element's content — wiping the SSR markup. We only toggle a class instead.
+const revealEls = document.querySelectorAll('[data-vue="Reveal"]');
+revealEls.forEach((el) => {
+    const delay = el.dataset.props ? (JSON.parse(el.dataset.props).delay || 0) : 0;
+    el.style.setProperty('--reveal-delay', `${delay}ms`);
+    const io = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    el.classList.add('is-revealed');
+                    io.unobserve(el);
+                }
+            });
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    io.observe(el);
+});
+
 // ---------- Vue component mounting ----------
-const components = { Reveal, CountUp, GallerySlider };
+// Only islands that RENDER their own content are mounted here (CountUp,
+// GallerySlider). Reveal is handled above with vanilla JS because app.mount()
+// would wipe its server-rendered content.
+const components = { CountUp, GallerySlider };
 
 document.querySelectorAll('[data-vue]').forEach((el) => {
     const name = el.dataset.vue;
+    if (!components[name]) return;
+
     const props = el.dataset.props ? JSON.parse(el.dataset.props) : {};
     const Cmp = components[name];
-    if (!Cmp) return;
 
     const app = createApp({
         render: () => h(Cmp, props),

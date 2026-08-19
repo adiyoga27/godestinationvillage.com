@@ -16,7 +16,7 @@
 <x-partials.page-hero
     :title="$packages->name"
     :image="$hero"
-    :crumbs="['Home' => '/', 'Homestay' => 'homestay', $packages->name => '']"
+    :crumbs="[__('Home') => '/', __('Homestay') => 'homestay', $packages->name => '']"
 />
 
 <section class="section-pad">
@@ -29,41 +29,41 @@
 
                 <div data-vue="Reveal" data-props='{"delay":100}'>
                     <div class="flex flex-wrap items-center gap-3">
-                        <span class="badge bg-forest-50 text-forest-700">Homestay</span>
+                        <span class="badge bg-forest-50 text-forest-700">{{ __('Homestay') }}</span>
                         @if ($packages->is_breakfast)
-                            <span class="badge bg-cream-50 text-ink-700">Breakfast included</span>
+                            <span class="badge bg-cream-50 text-ink-700">{{ __('Breakfast included') }}</span>
                         @endif
                         @if ($packages->check_in_time)
-                            <span class="badge bg-cream-50 text-ink-700">Check-in {{ $packages->check_in_time }}</span>
+                            <span class="badge bg-cream-50 text-ink-700">{{ __('Check-in') }} {{ $packages->check_in_time }}</span>
                         @endif
                         @if ($packages->check_out_time)
-                            <span class="badge bg-cream-50 text-ink-700">Check-out {{ $packages->check_out_time }}</span>
+                            <span class="badge bg-cream-50 text-ink-700">{{ __('Check-out') }} {{ $packages->check_out_time }}</span>
                         @endif
                     </div>
 
                     <h1 class="mt-4 font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ $packages->name }}</h1>
                     @if ($packages->owner_name)
-                        <p class="mt-2 text-sm font-semibold text-ink-500">Hosted by {{ $packages->owner_name }}</p>
+                        <p class="mt-2 text-sm font-semibold text-ink-500">{{ __('Hosted by') }} {{ $packages->owner_name }}</p>
                     @endif
                     <div class="prose-gd mt-6">{!! $desc !!}</div>
 
                     @if ($facilities)
                         <div class="mt-10">
-                            <h2 class="font-display text-2xl font-bold">Facilities</h2>
+                            <h2 class="font-display text-2xl font-bold">{{ __('Facilities') }}</h2>
                             <div class="prose-gd mt-3">{!! $facilities !!}</div>
                         </div>
                     @endif
 
                     @if ($additional)
                         <div class="mt-10">
-                            <h2 class="font-display text-2xl font-bold">Additional Activities</h2>
+                            <h2 class="font-display text-2xl font-bold">{{ __('Additional Activities') }}</h2>
                             <div class="prose-gd mt-3">{!! $additional !!}</div>
                         </div>
                     @endif
 
                     @if ($notes)
                         <div class="mt-10">
-                            <h2 class="font-display text-2xl font-bold">Note</h2>
+                            <h2 class="font-display text-2xl font-bold">{{ __('Note') }}</h2>
                             <div class="prose-gd mt-3">{!! $notes !!}</div>
                         </div>
                     @endif
@@ -73,7 +73,7 @@
             <aside class="space-y-6 lg:sticky lg:top-28 lg:self-start">
                 <div data-vue="Reveal" class="overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)]">
                     <div class="border-b border-ink-50 p-6">
-                        <p class="text-xs font-bold uppercase tracking-wider text-ink-400">Price per night</p>
+                        <p class="text-xs font-bold uppercase tracking-wider text-ink-400">{{ __('Price per night') }}</p>
                         <p class="mt-1">
                             <span class="text-lg font-bold text-brand-600">Rp {{ number_format($price, 0, ',', '.') }}</span>
                         </p>
@@ -86,10 +86,10 @@
                     </div>
                     <div class="space-y-3 p-6">
                         <a href="{{ url('bookingHomeStay/' . $packages->id) }}" class="btn btn-primary w-full !py-4 !text-base">
-                            Book Stay
+                            {{ __('Book Stay') }}
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                         </a>
-                        <a href="{{ url('homestay') }}" class="btn btn-secondary w-full">View All Homestays</a>
+                        <a href="{{ url('homestay') }}" class="btn btn-secondary w-full">{{ __('View All Homestays') }}</a>
                     </div>
                 </div>
             </aside>

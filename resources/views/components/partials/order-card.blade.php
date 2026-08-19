@@ -31,20 +31,20 @@
 
             <div class="mt-5 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
                 <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-ink-400">Total Payment</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-ink-400">{{ __('Total Payment') }}</span>
                     <p class="mt-0.5 font-bold text-brand-600">Rp {{ number_format($order->total_payment, 0, ',', '.') }}</p>
                 </div>
                 <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-ink-400">Pax</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-ink-400">{{ __('Pax') }}</span>
                     <p class="mt-0.5 text-ink-700">{{ $order->pax }}</p>
                 </div>
                 <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-ink-400">Booking Date</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-ink-400">{{ __('Booking Date') }}</span>
                     <p class="mt-0.5 text-ink-700">{{ date('d M Y H:i', strtotime($order->created_at)) }} WITA</p>
                 </div>
                 @if (!empty($order->payment_type))
                     <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-ink-400">Payment Method</span>
+                        <span class="text-xs font-bold uppercase tracking-wider text-ink-400">{{ __('Payment Method') }}</span>
                         <p class="mt-0.5 text-ink-700">{{ $order->payment_type }}</p>
                     </div>
                 @endif
@@ -52,14 +52,14 @@
 
             @if (!empty($order->special_note))
                 <div class="mt-4 rounded-2xl bg-cream-100 px-4 py-3 text-sm text-ink-600">
-                    <span class="font-bold text-ink-800">Special Note:</span> {{ $order->special_note }}
+                    <span class="font-bold text-ink-800">{{ __('Special Note:') }}</span> {{ $order->special_note }}
                 </div>
             @endif
 
             @if ($actions)
                 <div class="mt-6 flex flex-wrap gap-3">
-                    <a href="{{ url($paymentUrl) }}" class="btn btn-primary !px-6 !py-2.5">Pay Now</a>
-                    <a href="{{ url($cancelUrl) }}" class="btn btn-secondary !px-6 !py-2.5">Cancel</a>
+                    <a href="{{ url($paymentUrl) }}" class="btn btn-primary !px-6 !py-2.5">{{ __('Pay Now') }}</a>
+                    <a href="{{ url($cancelUrl) }}" class="btn btn-secondary !px-6 !py-2.5">{{ __('Cancel') }}</a>
                 </div>
             @endif
         </div>

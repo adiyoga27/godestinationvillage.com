@@ -3,10 +3,10 @@
 @section('content')
 
 <x-partials.page-hero
-    title="Paid Reservation"
-    subtitle="Your confirmed tour package reservations."
+    title="{{ __('Paid Reservation') }}"
+    subtitle="{{ __('Your confirmed tour package reservations.') }}"
     image="assets/customer/img/page-title-area/privacy.jpg"
-    :crumbs="['Home' => '/', 'Reservation' => '', 'Paid' => '']"
+    :crumbs="[__('Home') => '/', __('Reservation') => '', __('Paid') => '']"
 />
 
 <section class="section-pad bg-cream-50">
@@ -23,8 +23,8 @@
                         />
                     @empty
                         <div class="card p-12 text-center">
-                            <p class="font-display text-xl font-bold text-ink-950">No paid reservations</p>
-                            <p class="mt-2 text-sm text-ink-500">You have no confirmed bookings yet.</p>
+                            <p class="font-display text-xl font-bold text-ink-950">{{ __('No paid reservations') }}</p>
+                            <p class="mt-2 text-sm text-ink-500">{{ __('You have no confirmed bookings yet.') }}</p>
                         </div>
                     @endforelse
                 </div>
@@ -35,13 +35,13 @@
                                 class="flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold transition {{ $order->currentPage() == $i ? 'bg-brand-600 text-white' : 'bg-white text-ink-600 hover:bg-cream-100' }}">{{ $i }}</a>
                         @endfor
                         @if ($order->lastPage() > 0 && $order->currentPage() < $order->lastPage())
-                            <a href="{{ $order->nextPageUrl() }}" class="btn btn-secondary !px-5 !py-2.5">Next</a>
+                            <a href="{{ $order->nextPageUrl() }}" class="btn btn-secondary !px-5 !py-2.5">{{ __('Next') }}</a>
                         @endif
                     </div>
                 @endif
             </div>
             <div>
-                <x-partials.reservation-sidebar :email="$isiemail" base="reservation" active="paid" title="Status Booking" />
+                <x-partials.reservation-sidebar :email="$isiemail" base="reservation" active="paid" />
             </div>
         </div>
     </div>

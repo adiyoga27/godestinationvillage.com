@@ -18,26 +18,26 @@
             <div class="row">
                 <div class="col-md-12">
                     <center>
-                        <h3>Total Belanja Anda adalah</h3><h2>Rp <b class="totpay">{{ number_format($order->total_payment,0,',','.')}}</b></h2>
+                        <h3>{{ __('Your total purchase') }}</h3><h2>Rp <b class="totpay">{{ number_format($order->total_payment,0,',','.')}}</b></h2>
                       
                     </center>
                     <br>
                     <center>
-                        <h4> Formulir Pembayaran</h4>
+                        <h4>{{ __('Payment Form') }}</h4>
                     </center>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Your Name</label>
+                        <label for="exampleInputEmail1">{{ __('Your Name') }}</label>
                         @csrf
-                        <input type="text" name="name" class="form-control" id="exampleInputEmail1" placeholder="Your Name" value="{{$order->customer_name}}" readonly>
+                        <input type="text" name="name" class="form-control" id="exampleInputEmail1" placeholder="{{ __('Your Name') }}" value="{{$order->customer_name}}" readonly>
                         <input type="hidden" name="idtrx" class="form-control idtrx" id="exampleInputEmail1" value="{{$order->id}}">
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Your Email</label>
-                        <input type="text" name="email" class="form-control" id="exampleInputEmail1" placeholder="Your Email" value="{{$order->customer_email}}" readonly>
+                        <label for="exampleInputEmail1">{{ __('Your Email') }}</label>
+                        <input type="text" name="email" class="form-control" id="exampleInputEmail1" placeholder="{{ __('Your Email') }}" value="{{$order->customer_email}}" readonly>
                     </div>
                 </div>
                 {{-- <div class="col-md-12">
@@ -54,7 +54,7 @@
 
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Godevi Bank Account</label>
+                        <label for="exampleInputEmail1">{{ __('Godevi Bank Account') }}</label>
                         <select name="bank_godevi" id="" class="form-control">
                             @foreach($bank as $banks)
                             {{-- <option value="{{$banks->id}}">{{$banks->bank_name.'-'.$banks->bank_acc_no.'-'.$banks->bank_acc_name}}</option> --}}
@@ -84,7 +84,7 @@
                     </div>
                 </div> --}}
                 <div class="col-md-12">
-                    <button class="btn btn-lg btn-primary" style="width:100%;">CONFIRM NOW</button>
+                    <button class="btn btn-lg btn-primary" style="width:100%;">{{ __('CONFIRM NOW') }}</button>
 
                 </div>
                 {{-- <div class="col-md-12">

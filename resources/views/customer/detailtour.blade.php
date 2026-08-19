@@ -17,7 +17,7 @@
 <x-partials.page-hero
     :title="$packages->name"
     :image="$hero"
-    :crumbs="['Home' => '/', 'Tour Packages' => 'tour-packages', $packages->name => '']"
+    :crumbs="[__('Home') => '/', __('Tour Packages') => 'tour-packages', $packages->name => '']"
 />
 
 <section class="section-pad">
@@ -59,21 +59,21 @@
 
                     @if ($packages->itenaries || $itenaries)
                         <div class="mt-10">
-                            <h2 class="font-display text-2xl font-bold">Itinerary</h2>
+                            <h2 class="font-display text-2xl font-bold">{{ __('Itinerary') }}</h2>
                             <div class="prose-gd mt-3">{!! $itenaries !!}</div>
                         </div>
                     @endif
 
                     @if ($packages->inclusion || $inclusion)
                         <div class="mt-10">
-                            <h2 class="font-display text-2xl font-bold">Included</h2>
+                            <h2 class="font-display text-2xl font-bold">{{ __('Included') }}</h2>
                             <div class="prose-gd mt-3">{!! $inclusion !!}</div>
                         </div>
                     @endif
 
                     @if ($packages->term || $term)
                         <div class="mt-10">
-                            <h2 class="font-display text-2xl font-bold">Terms & Conditions</h2>
+                            <h2 class="font-display text-2xl font-bold">{{ __('Terms & Conditions') }}</h2>
                             <div class="prose-gd mt-3">{!! $term !!}</div>
                         </div>
                     @endif
@@ -84,7 +84,7 @@
             <aside class="space-y-6 lg:sticky lg:top-28 lg:self-start">
                 <div data-vue="Reveal" class="overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)]">
                     <div class="border-b border-ink-50 p-6">
-                        <p class="text-xs font-bold uppercase tracking-wider text-ink-400">Price per person</p>
+                        <p class="text-xs font-bold uppercase tracking-wider text-ink-400">{{ __('Price per person') }}</p>
                         <p class="mt-1 text-sm">
                             @if ($packages->disc > 0)
                                 <span class="mr-2 text-lg font-bold text-brand-600">Rp {{ number_format($packages->disc, 0, ',', '.') }}</span>
@@ -96,16 +96,16 @@
                     </div>
                     <div class="space-y-3 p-6">
                         <a href="{{ $isEvent ? url('bookingEvents/' . $packages->id) : url('booking/' . $packages->id) }}" class="btn btn-primary w-full !py-4 !text-base">
-                            Book Now
+                            {{ __('Book Now') }}
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                         </a>
-                        <a href="{{ url('tour-packages') }}" class="btn btn-secondary w-full">View All Packages</a>
-                        <p class="text-center text-xs text-ink-400">Secure checkout via Midtrans · Instant confirmation</p>
+                        <a href="{{ url('tour-packages') }}" class="btn btn-secondary w-full">{{ __('View All Packages') }}</a>
+                        <p class="text-center text-xs text-ink-400">{{ __('Secure checkout via Midtrans · Instant confirmation') }}</p>
                     </div>
                 </div>
 
                 <div data-vue="Reveal" class="rounded-3xl border border-ink-100 bg-white p-6 shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)]">
-                    <h2 class="font-display text-lg font-semibold">Recent Tour Packages</h2>
+                    <h2 class="font-display text-lg font-semibold">{{ __('Recent Tour Packages') }}</h2>
                     <ul class="mt-4 space-y-4">
                         @foreach ($recent->take(4) as $rec)
                             <li>

@@ -22,55 +22,23 @@
 
     <div class="container-gd relative z-10 py-24">
         <div class="max-w-3xl">
-            <p data-hero-reveal class="eyebrow !text-white animate-fade-up" style="animation-delay: 0.1s">Go Destination Village · Bali</p>
+            <p data-hero-reveal class="eyebrow !text-white animate-fade-up" style="animation-delay: 0.1s">{{ __('Go Destination Village · Bali') }}</p>
             <h1 class="font-display text-4xl font-bold leading-[1.15] text-white sm:text-5xl lg:text-6xl animate-fade-up" style="animation-delay: 0.25s">
-                Authentic Village <span class="italic text-brand-400">Experiences</span> in the Heart of Bali
+                {{ __('Authentic Village') }} <span class="italic text-brand-400">{{ __('Experiences') }}</span> {{ __('in the Heart of Bali') }}
             </h1>
             <p class="mt-6 max-w-xl text-lg leading-relaxed text-white/80 animate-fade-up" style="animation-delay: 0.4s">
-                Discover socially responsible tourism that empowers local communities. Immerse yourself in genuine
-                Balinese culture, homestays and unforgettable experiences.
+                {{ __('Discover socially responsible tourism that empowers local communities. Immerse yourself in genuine Balinese culture, homestays and unforgettable experiences.') }}
             </p>
             <div class="mt-9 flex flex-wrap items-center gap-4 animate-fade-up" style="animation-delay: 0.55s">
                 <a href="{{ url('village') }}" class="btn btn-primary !px-8 !py-4 text-base">
-                    Explore Villages
+                    {{ __('Explore Villages') }}
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                 </a>
-                <a href="{{ url('tour-packages') }}" class="btn btn-white !px-8 !py-4 text-base">View Tour Packages</a>
+                <a href="{{ url('tour-packages') }}" class="btn btn-white !px-8 !py-4 text-base">{{ __('View Tour Packages') }}</a>
             </div>
         </div>
 
-        {{-- Hero search card --}}
-        <form action="{{ url('search') }}" method="GET"
-            class="glass mt-14 grid max-w-4xl gap-3 rounded-3xl border border-white/40 p-3 shadow-2xl sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] animate-fade-up" style="animation-delay: 0.7s">
-            <label class="block">
-                <span class="mb-1 block px-1 text-[11px] font-bold uppercase tracking-wider text-ink-500">Find villages & tours</span>
-                <input type="text" name="key" placeholder="Village, homestay, Ubud..." class="input-gd !border-white/60 !bg-white/90" />
-            </label>
-            <label class="block">
-                <span class="mb-1 block px-1 text-[11px] font-bold uppercase tracking-wider text-ink-500">Type</span>
-                <select name="type" class="input-gd !border-white/60 !bg-white/90">
-                    <option value="">All experiences</option>
-                    <option value="village">Village Tour</option>
-                    <option value="homestay">Homestay</option>
-                    <option value="event">Events</option>
-                </select>
-            </label>
-            <label class="hidden lg:block">
-                <span class="mb-1 block px-1 text-[11px] font-bold uppercase tracking-wider text-ink-500">Popular</span>
-                <span class="flex flex-wrap gap-1.5 px-1 pt-2">
-                    <a href="{{ url('village') }}" class="rounded-full bg-white/70 px-3 py-1 text-xs font-semibold text-ink-600 transition hover:bg-brand-600 hover:text-white">Villages</a>
-                    <a href="{{ url('homestay') }}" class="rounded-full bg-white/70 px-3 py-1 text-xs font-semibold text-ink-600 transition hover:bg-brand-600 hover:text-white">Homestay</a>
-                    <a href="{{ url('events') }}" class="rounded-full bg-white/70 px-3 py-1 text-xs font-semibold text-ink-600 transition hover:bg-brand-600 hover:text-white">Events</a>
-                </span>
-            </label>
-            <div class="flex items-end">
-                <button type="submit" class="btn btn-primary w-full !py-3.5 sm:w-auto">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-                    Search
-                </button>
-            </div>
-        </form>
-    </div>
+        </div>
 
     {{-- Scroll cue --}}
     <a href="#explore" class="absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-white/60 transition hover:text-white lg:flex" aria-label="Scroll down">
@@ -110,13 +78,12 @@
     <div class="container-gd">
         <div class="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <div data-vue="Reveal" class="max-w-2xl">
-                <p class="eyebrow">Explore Village</p>
-                <h2 class="font-display text-3xl font-bold sm:text-4xl">Beautiful Balinese villages, authentic stories</h2>
-                <p class="mt-4 text-ink-500">Every village has a story. Step into living traditions and meet the
-                    communities whose daily lives inspire our tourism experiences.</p>
+                <p class="eyebrow">{{ __('Explore Village') }}</p>
+                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Beautiful Balinese villages, authentic stories') }}</h2>
+                <p class="mt-4 text-ink-500">{{ __('Every village has a story. Step into living traditions and meet the communities whose daily lives inspire our tourism experiences.') }}</p>
             </div>
             <a href="{{ url('village') }}" class="btn btn-secondary shrink-0">
-                View All Villages
+                {{ __('View All Villages') }}
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
             </a>
         </div>
@@ -124,15 +91,15 @@
         <div class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($tag->take(6) as $t)
                 <a href="{{ url('village/' . $t->slug ?? '') }}" data-vue="Reveal"
-                    class="group relative block h-80 overflow-hidden rounded-3xl" aria-label="Explore {{ $t->name }}">
-                    <img src="{{ asset('storage/tag/' . $t->image) }}" alt="{{ $t->name }}, desa wisata di Bali"
+                    class="group relative block h-80 overflow-hidden rounded-3xl" aria-label="{{ __('Explore') }} {{ $t->name }}">
+                    <img src="{{ asset('storage/tag/' . $t->image) }}" alt="{{ $t->name }}, {{ __('village destination in Bali') }}"
                         class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" onerror="this.onerror=null;this.src='{{ asset('assets/customer/frontdata/images/destination-1.jpg') }}';">
                     <div class="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/30 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-6">
                         <h3 class="font-display text-2xl font-semibold text-white">{{ $t->name }}</h3>
                         <p class="mt-1 line-clamp-2 text-sm text-white/70">{{ $t->desc }}</p>
                         <span class="mt-3 inline-flex items-center gap-2 text-sm font-bold text-brand-400 transition-all group-hover:gap-3">
-                            Explore Now
+                            {{ __('Explore Now') }}
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                         </span>
                     </div>
@@ -151,18 +118,16 @@
                     class="h-[480px] w-full object-cover" loading="lazy">
             </div>
             <div class="absolute -bottom-8 -right-4 hidden w-52 rounded-3xl bg-brand-600 p-6 text-center text-white shadow-xl sm:block animate-float">
-                <p class="font-display text-4xl font-bold">SEE</p>
-                <p class="mt-1 text-xs font-semibold uppercase tracking-wider">Sustainability · Empowerment · Entrepreneurship</p>
+                <p class="font-display text-4xl font-bold">{{ __('SEE') }}</p>
+                <p class="mt-1 text-xs font-semibold uppercase tracking-wider">{{ __('Sustainability · Empowerment · Entrepreneurship') }}</p>
             </div>
         </div>
 
         <div data-vue="Reveal" data-props='{"delay":120}'>
-            <p class="eyebrow">Why GODEVI</p>
-            <h2 class="font-display text-3xl font-bold sm:text-4xl">Tourism that gives back to Bali's villages</h2>
+            <p class="eyebrow">{{ __('Why GODEVI') }}</p>
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Tourism that gives back to Bali\'s villages') }}</h2>
             <p class="mt-5 leading-relaxed text-ink-500">
-                GODEVI (Go Destination Village) is a socially pro-active business dedicated to uplifting local
-                communities in developing villages through tourism. We create a fair-trade marketplace by empowering
-                village communities — ensuring travel benefits the people who call these places home.
+                {{ __('GODEVI (Go Destination Village) is a socially pro-active business dedicated to uplifting local communities in developing villages through tourism. We create a fair-trade marketplace by empowering village communities — ensuring travel benefits the people who call these places home.') }}
             </p>
             <div class="mt-8 grid gap-4 sm:grid-cols-2">
                 @php
@@ -178,8 +143,8 @@
                         <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $f['icon'] }}" /></svg>
                         </span>
-                        <h3 class="mt-3 font-bold">{{ $f['title'] }}</h3>
-                        <p class="mt-1 text-sm text-ink-500">{{ $f['desc'] }}</p>
+                        <h3 class="mt-3 font-bold">{{ __($f['title']) }}</h3>
+                        <p class="mt-1 text-sm text-ink-500">{{ __($f['desc']) }}</p>
                     </div>
                 @endforeach
             </div>
@@ -191,8 +156,8 @@
 <section class="section-pad">
     <div class="container-gd">
         <div class="mx-auto mb-14 max-w-2xl text-center" data-vue="Reveal">
-            <p class="eyebrow justify-center !gap-2">Our Services</p>
-            <h2 class="font-display text-3xl font-bold sm:text-4xl">Beyond travel — we build thriving villages</h2>
+            <p class="eyebrow justify-center !gap-2">{{ __('Our Services') }}</p>
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Beyond travel — we build thriving villages') }}</h2>
         </div>
 
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -215,9 +180,9 @@
                     <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-cream-50 transition-transform duration-300 group-hover:-translate-y-2">
                         <img src="{{ asset('assets/customer/img/etc/' . $s['img']) }}" alt="{{ $s['title'] }}" class="h-16 w-16 object-contain" loading="lazy">
                     </div>
-                    <h3 class="mt-5 font-bold leading-snug">{{ $s['title'] }}</h3>
+                    <h3 class="mt-5 font-bold leading-snug">{{ __($s['title']) }}</h3>
                     <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 opacity-0 transition-opacity group-hover:opacity-100">
-                        Learn more
+                        {{ __('Learn more') }}
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                     </span>
                 </a>
@@ -231,21 +196,19 @@
     <div class="pointer-events-none absolute -left-24 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-forest-600/20 blur-3xl"></div>
     <div class="container-gd relative grid items-center gap-12 lg:grid-cols-2">
         <div data-vue="Reveal">
-            <p class="eyebrow !text-brand-400">Virtual Reality</p>
-            <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">Witness the wonders of Balinese villages — before you arrive</h2>
-            <p class="mt-5 leading-relaxed text-white/70">Step into an immersive virtual reality experience that
-                transports you to the fascinating world of Bali's villages. Preview the culture, landscapes and
-                activities that await you.</p>
+            <p class="eyebrow !text-brand-400">{{ __('Virtual Reality') }}</p>
+            <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ __('Witness the wonders of Balinese villages — before you arrive') }}</h2>
+            <p class="mt-5 leading-relaxed text-white/70">{{ __('Step into an immersive virtual reality experience that transports you to the fascinating world of Bali\'s villages. Preview the culture, landscapes and activities that await you.') }}</p>
             <a href="https://www.vrfmipa.com/meler" target="_blank" rel="noopener" class="btn btn-primary mt-8 !px-8 !py-4">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
-                Go Virtual
+                {{ __('Go Virtual') }}
             </a>
         </div>
         <div data-vue="Reveal" data-props='{"delay":150}' class="overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
             <video controls preload="metadata" playsinline class="aspect-video w-full object-cover"
                 poster="{{ asset('assets/customer/frontdata/images/bg_4.jpg') }}">
                 <source src="{{ asset('storage/videos/vr-godevi.mp4') }}" type="video/mp4">
-                Your browser does not support the video tag.
+                {{ __('Your browser does not support the video tag.') }}
             </video>
         </div>
     </div>
@@ -256,11 +219,11 @@
     <div class="container-gd">
         <div class="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end" data-vue="Reveal">
             <div class="max-w-2xl">
-                <p class="eyebrow">Tour Packages</p>
-                <h2 class="font-display text-3xl font-bold sm:text-4xl">Featured experiences you'll love</h2>
-                <p class="mt-4 text-ink-500">Handpicked village tours and activities curated for authentic cultural immersion.</p>
+                <p class="eyebrow">{{ __('Tour Packages') }}</p>
+                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Featured experiences you\'ll love') }}</h2>
+                <p class="mt-4 text-ink-500">{{ __('Handpicked village tours and activities curated for authentic cultural immersion.') }}</p>
             </div>
-            <a href="{{ url('tour-packages') }}" class="btn btn-secondary shrink-0">See All Packages</a>
+            <a href="{{ url('tour-packages') }}" class="btn btn-secondary shrink-0">{{ __('See All Packages') }}</a>
         </div>
 
         <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
@@ -269,13 +232,13 @@
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-56 overflow-hidden">
                         <img src="{{ $pkg->default_img ? asset('storage/packages/' . $pkg->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $pkg->name }} — Bali village tour package" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $pkg->name }} — {{ __('Bali village tour package') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         <span class="badge absolute left-4 top-4 bg-white/95 text-brand-600 shadow-sm">X</span>
                         <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink-950/60 to-transparent"></div>
                     </div>
                     <div class="flex flex-1 flex-col p-6">
                         <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ink-400">
-                            <span class="rounded-full bg-cream-50 px-2.5 py-1">{{ $pkg->cat_name ?? 'Village Tour' }}</span>
+                            <span class="rounded-full bg-cream-50 px-2.5 py-1">{{ $pkg->cat_name ?? __('Village Tour') }}</span>
                             @if ($pkg->vil_name ?? null)
                                 <span class="flex items-center gap-1"><svg class="h-3.5 w-3.5 text-forest-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>{{ $pkg->vil_name }}</span>
                             @endif
@@ -284,7 +247,7 @@
                         <div class="mt-5 flex items-center justify-between border-t border-ink-50 pt-4">
                             <span class="text-lg font-bold text-brand-600">Rp {{ number_format($pkg->price, 0, ',', '.') }}</span>
                             <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-500 transition group-hover:text-brand-600">
-                                Book Now
+                                {{ __('Book Now') }}
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                             </span>
                         </div>
@@ -300,10 +263,10 @@
     <div class="container-gd">
         <div class="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end" data-vue="Reveal">
             <div class="max-w-2xl">
-                <p class="eyebrow">News & Insights</p>
-                <h2 class="font-display text-3xl font-bold sm:text-4xl">Stories from the villages</h2>
+                <p class="eyebrow">{{ __('News & Insights') }}</p>
+                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Stories from the villages') }}</h2>
             </div>
-            <a href="{{ url('news') }}" class="btn btn-secondary shrink-0">All Articles</a>
+            <a href="{{ url('news') }}" class="btn btn-secondary shrink-0">{{ __('All Articles') }}</a>
         </div>
 
         <div class="grid gap-7 md:grid-cols-3">
@@ -317,7 +280,7 @@
                     <div class="flex flex-1 flex-col p-6">
                         <div class="flex items-center gap-4 text-xs font-semibold text-ink-400">
                             <span class="flex items-center gap-1.5"><svg class="h-4 w-4 text-brand-500" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>{{ \Carbon\Carbon::parse($rec->created_at)->format('M d, Y') }}</span>
-                            <span class="flex items-center gap-1.5"><svg class="h-4 w-4 text-forest-600" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" /></svg>{{ $rec->post_tags ?: 'News' }}</span>
+                            <span class="flex items-center gap-1.5"><svg class="h-4 w-4 text-forest-600" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" /></svg>{{ $rec->post_tags ?: __('News') }}</span>
                         </div>
                         <a href="{{ url('news/' . $rec->slug) }}" class="mt-3 block font-display text-lg font-semibold text-ink-950 transition group-hover:text-brand-600">
                             {{ $rec->post_title }}
@@ -332,9 +295,9 @@
                                         <svg class="m-auto h-4 w-4 text-ink-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2.5c-4.14 0-7.5 2.16-7.5 4.82V21h15v-1.68c0-2.66-3.36-4.82-7.5-4.82z"/></svg>
                                     @endif
                                 </span>
-                                {{ $rec->user?->name ?? 'GODEVI Team' }}
+                                {{ $rec->user?->name ?? __('GODEVI Team') }}
                             </span>
-                            <a href="{{ url('news/' . $rec->slug) }}" class="text-sm font-bold text-brand-600">Read More</a>
+                            <a href="{{ url('news/' . $rec->slug) }}" class="text-sm font-bold text-brand-600">{{ __('Read More') }}</a>
                         </div>
                     </div>
                 </article>
@@ -348,8 +311,8 @@
     <section class="section-pad bg-ink-950">
         <div class="container-gd">
             <div class="mx-auto mb-14 max-w-2xl text-center" data-vue="Reveal">
-                <p class="eyebrow justify-center !gap-2 !text-brand-400">Testimonials</p>
-                <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">What our travelers say</h2>
+                <p class="eyebrow justify-center !gap-2 !text-brand-400">{{ __('Testimonials') }}</p>
+                <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ __('What our travelers say') }}</h2>
             </div>
             <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @foreach ($reviews->take(3) as $r)
@@ -382,11 +345,11 @@
         <div data-vue="Reveal" class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-brand-600 to-brand-800 px-6 py-16 text-center sm:px-16">
             <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-2xl"></div>
             <div class="pointer-events-none absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-white/10 blur-2xl"></div>
-            <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">Ready for an authentic village experience?</h2>
-            <p class="mx-auto mt-4 max-w-xl text-white/80">Book your tour, homestay or event today and support the communities that make Bali extraordinary.</p>
+            <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ __('Ready for an authentic village experience?') }}</h2>
+            <p class="mx-auto mt-4 max-w-xl text-white/80">{{ __('Book your tour, homestay or event today and support the communities that make Bali extraordinary.') }}</p>
             <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
-                <a href="{{ url('tour-packages') }}" class="btn btn-white !px-8 !py-4">Browse Experiences</a>
-                <a href="{{ url('contact') }}" class="btn border border-white/40 text-white hover:bg-white/10 !px-8 !py-4">Contact Us</a>
+                <a href="{{ url('tour-packages') }}" class="btn btn-white !px-8 !py-4">{{ __('Browse Experiences') }}</a>
+                <a href="{{ url('contact') }}" class="btn border border-white/40 text-white hover:bg-white/10 !px-8 !py-4">{{ __('Contact Us') }}</a>
             </div>
         </div>
     </div>

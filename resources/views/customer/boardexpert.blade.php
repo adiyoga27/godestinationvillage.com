@@ -3,10 +3,10 @@
 @section('content')
 
 <x-partials.page-hero
-    title="Board of Experts"
-    subtitle="The advisors guiding GODEVI in sustainable tourism, community development and destination management."
+    title="{{ __('Board of Experts') }}"
+    subtitle="{{ __('The advisors guiding GODEVI in sustainable tourism, community development and destination management.') }}"
     image="assets/customer/img/page-title-area/team.jpg"
-    :crumbs="['Home' => '/', 'Board of Experts' => '']"
+    :crumbs="[__('Home') => '/', __('Board of Experts') => '']"
 />
 
 <section class="section-pad">

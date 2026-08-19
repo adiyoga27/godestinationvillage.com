@@ -19,8 +19,8 @@
                 <img src="{{ asset('assets/customer/frontdata/images/about.jpg') }}" alt="GODEVI village tourism Bali" class="absolute inset-0 h-full w-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-brand-900/80 to-brand-950/60"></div>
                 <div class="absolute bottom-0 p-8">
-                    <p class="font-display text-3xl font-bold text-white">Authentic Bali,<br>one village at a time.</p>
-                    <p class="mt-3 text-sm text-white/70">Login to manage your reservations and bookings.</p>
+                    <p class="font-display text-3xl font-bold text-white">{{ __('Authentic Bali, one village at a time.') }}</p>
+                    <p class="mt-3 text-sm text-white/70">{{ __('Login to manage your reservations and bookings.') }}</p>
                 </div>
             </div>
 
@@ -29,8 +29,8 @@
                 <div class="mb-8 flex items-center gap-3 sm:hidden">
                     <img src="{{ asset('assets/customer/img/logo.png') }}" alt="GODEVI" class="h-10 w-auto">
                 </div>
-                <h1 class="font-display text-2xl font-bold text-ink-950">Welcome back</h1>
-                <p class="mt-1 text-sm text-ink-500">Login to continue to your account.</p>
+                <h1 class="font-display text-2xl font-bold text-ink-950">{{ __('Welcome back') }}</h1>
+                <p class="mt-1 text-sm text-ink-500">{{ __('Login to continue to your account.') }}</p>
 
                 @if ($errors->any())
                     <div class="mt-5 rounded-2xl bg-brand-50 px-4 py-3 text-sm font-semibold text-brand-700">
@@ -43,28 +43,30 @@
                 <form method="POST" action="{{ route('login') }}" class="mt-7 space-y-5">
                     @csrf
                     <label class="block">
-                        <span class="label-gd">Email address</span>
+                        <span class="label-gd">{{ __('Email address') }}</span>
                         <input type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="email"
                             placeholder="you@example.com" class="input-gd">
                     </label>
                     <label class="block">
-                        <span class="label-gd">Password</span>
+                        <span class="label-gd">{{ __('Password') }}</span>
                         <input type="password" name="password" required autocomplete="current-password"
                             placeholder="••••••••" class="input-gd">
                     </label>
                     <div class="flex items-center justify-between text-sm">
                         <label class="flex items-center gap-2 font-medium text-ink-600">
                             <input type="checkbox" name="remember" id="remember" class="h-4 w-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500">
-                            Remember me
+                            {{ __('Remember me') }}
                         </label>
-                        <a href="{{ url('password/reset') }}" class="font-semibold text-brand-600 hover:underline">Forgot password?</a>
+                        <a href="{{ url('password/reset') }}" class="font-semibold text-brand-600 hover:underline">{{ __('Forgot password?') }}</a>
                     </div>
-                    <button type="submit" class="btn btn-primary w-full !py-3.5">Login</button>
+                    <button type="submit" class="btn btn-primary w-full !py-3.5">{{ __('Login') }}</button>
                 </form>
 
+                <x-partials.social-login />
+
                 <p class="mt-7 text-center text-sm text-ink-500">
-                    Don't have an account?
-                    <a href="{{ url('user/register') }}" class="font-bold text-brand-600 hover:underline">Create one</a>
+                    {{ __('Don\'t have an account?') }}
+                    <a href="{{ url('user/register') }}" class="font-bold text-brand-600 hover:underline">{{ __('Create one') }}</a>
                 </p>
             </div>
         </div>

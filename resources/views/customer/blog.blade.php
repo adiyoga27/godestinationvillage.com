@@ -3,10 +3,10 @@
 @section('content')
 
 <x-partials.page-hero
-    title="News & Insights"
-    subtitle="Stories, updates and insights about sustainable village tourism and community empowerment in Bali."
+    title="{{ __('News & Insights') }}"
+    subtitle="{{ __('Stories, updates and insights about sustainable village tourism and community empowerment in Bali.') }}"
     image="assets/customer/img/page-title-area/blog-style3.jpg"
-    :crumbs="['Home' => '/', 'News' => '']"
+    :crumbs="[__('Home') => '/', __('News') => '']"
 />
 
 <section class="section-pad">
@@ -42,15 +42,15 @@
                                     <span class="flex h-8 w-8 overflow-hidden rounded-full bg-cream-100">
                                         <svg class="m-auto h-4 w-4 text-ink-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2.5c-4.14 0-7.5 2.16-7.5 4.82V21h15v-1.68c0-2.66-3.36-4.82-7.5-4.82z"/></svg>
                                     </span>
-                                    GODEVI Team
+                                    {{ __('GODEVI Team') }}
                                 </span>
-                                <a href="{{ url('news/' . $val->slug) }}" class="text-sm font-bold text-brand-600">Read More →</a>
+                                <a href="{{ url('news/' . $val->slug) }}" class="text-sm font-bold text-brand-600">{{ __('Read More') }} →</a>
                             </div>
                         </div>
                     </article>
                 @empty
                     <div class="col-span-full py-20 text-center">
-                        <p class="text-ink-400">No articles published yet.</p>
+                        <p class="text-ink-400">{{ __('No articles published yet.') }}</p>
                     </div>
                 @endforelse
 
@@ -80,7 +80,7 @@
 
             <aside class="space-y-6 lg:sticky lg:top-28 lg:self-start">
                 <div data-vue="Reveal" class="rounded-3xl border border-ink-100 bg-white p-6 shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)]">
-                    <h2 class="font-display text-lg font-semibold">Recent Articles</h2>
+                    <h2 class="font-display text-lg font-semibold">{{ __('Recent Articles') }}</h2>
                     <ul class="mt-4 space-y-4">
                         @foreach ($recent as $rec)
                             <li>

@@ -2,14 +2,15 @@
     'email',
     'base' => 'reservation',
     'active' => 'unpaid',
-    'title' => 'Status Booking',
+    'title' => null,
 ])
 
 @php
+    $title = $title ?? __('Status Booking');
     $links = [
-        'unpaid' => ['label' => 'Unpaid', 'url' => url($base . '/' . $email)],
-        'paid' => ['label' => 'Paid', 'url' => url($base . '/paid/' . $email)],
-        'cancel' => ['label' => 'Cancel', 'url' => url($base . '/cancel/' . $email)],
+        'unpaid' => ['label' => __('Unpaid'), 'url' => url($base . '/' . $email)],
+        'paid' => ['label' => __('Paid'), 'url' => url($base . '/paid/' . $email)],
+        'cancel' => ['label' => __('Cancel'), 'url' => url($base . '/cancel/' . $email)],
     ];
 @endphp
 

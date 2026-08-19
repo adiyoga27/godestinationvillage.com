@@ -3,10 +3,10 @@
 @section('content')
 
 <x-partials.page-hero
-    title="Company Profile"
-    subtitle="GODEVI (PT Banua Wisata Lestari) — dedicated to socially responsible and sustainable village tourism in Bali."
+    title="{{ __('Company Profile') }}"
+    subtitle="{{ __('GODEVI (PT Banua Wisata Lestari) — dedicated to socially responsible and sustainable village tourism in Bali.') }}"
     image="assets/customer/img/page-title-area/explorer.jpg"
-    :crumbs="['Home' => '/', 'Company Profile' => '']"
+    :crumbs="[__('Home') => '/', __('Company Profile') => '']"
 />
 
 <section class="section-pad">
@@ -21,9 +21,9 @@
                 title="GODEVI Company Profile"></iframe>
         </div>
         <div class="mx-auto mt-10 max-w-3xl text-center">
-            <h2 class="font-display text-2xl font-bold text-ink-950 sm:text-3xl">GODEVI — Go Destination Village</h2>
-            <p class="mt-4 leading-relaxed text-ink-600">GODEVI is a socially pro-active business dedicated to uplifting local communities in developing villages through the tourism industry. Besides supporting fair trade, we create a marketplace by empowering village communities. GODEVI adheres to a strict policy of promoting Socially Responsible Village Tourism activities.</p>
-            <a href="{{ url('v-founding') }}" class="btn btn-secondary mt-8">Read Our Founding Story</a>
+            <h2 class="font-display text-2xl font-bold text-ink-950 sm:text-3xl">{{ __('GODEVI — Go Destination Village') }}</h2>
+            <p class="mt-4 leading-relaxed text-ink-600">{{ __('GODEVI is a socially pro-active business dedicated to uplifting local communities in developing villages through the tourism industry. Besides supporting fair trade, we create a marketplace by empowering village communities. GODEVI adheres to a strict policy of promoting Socially Responsible Village Tourism activities.') }}</p>
+            <a href="{{ url('v-founding') }}" class="btn btn-secondary mt-8">{{ __('Read Our Founding Story') }}</a>
         </div>
     </div>
 </section>

@@ -27,6 +27,10 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <script>
+        document.documentElement.classList.add('js');
+    </script>
+
     <style>
         .header-scrolled .site-header {
             box-shadow: 0 1px 0 0 rgb(26 26 38 / 0.06), 0 12px 40px -20px rgb(26 26 38 / 0.25);
@@ -113,7 +117,7 @@
                     @foreach ($nav as $item)
                         <a href="{{ url($item['url']) }}"
                             class="group relative rounded-full px-4 py-2 text-sm font-semibold text-ink-700 transition hover:bg-ink-50 hover:text-brand-600 {{ request()->is(ltrim($item['url'], '/')) ? 'text-brand-600' : '' }}">
-                            {{ $item['key'] }}
+                            {{ __($item['key']) }}
                             <span class="absolute inset-x-4 -bottom-0.5 h-0.5 origin-left scale-x-0 rounded-full bg-brand-600 transition-transform duration-300 group-hover:scale-x-100"></span>
                         </a>
                     @endforeach
@@ -148,25 +152,25 @@
                                     <p class="truncate text-sm font-bold text-ink-900">{{ Auth::user()->name }}</p>
                                     <p class="truncate text-xs text-ink-500">{{ Auth::user()->email }}</p>
                                 </div>
-                                <a href="{{ url('account') }}" class="mt-1 block rounded-xl px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:bg-cream-50 hover:text-brand-600">My Account</a>
-                                <a href="{{ url('reservation/' . Auth::user()->email) }}" class="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:bg-cream-50 hover:text-brand-600">My Reservations</a>
-                                <a href="{{ url('reservation-events/' . Auth::user()->email) }}" class="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:bg-cream-50 hover:text-brand-600">My Events</a>
-                                <a href="{{ url('reservation-homestay/' . Auth::user()->email) }}" class="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:bg-cream-50 hover:text-brand-600">My Homestays</a>
+                                <a href="{{ url('account') }}" class="mt-1 block rounded-xl px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:bg-cream-50 hover:text-brand-600">{{ __('My Account') }}</a>
+                                <a href="{{ url('reservation/' . Auth::user()->email) }}" class="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:bg-cream-50 hover:text-brand-600">{{ __('My Reservations') }}</a>
+                                <a href="{{ url('reservation-events/' . Auth::user()->email) }}" class="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:bg-cream-50 hover:text-brand-600">{{ __('My Events') }}</a>
+                                <a href="{{ url('reservation-homestay/' . Auth::user()->email) }}" class="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink-700 transition hover:bg-cream-50 hover:text-brand-600">{{ __('My Homestays') }}</a>
                                 <div class="mt-1 border-t border-ink-50 pt-1">
                                     <form method="POST" action="{{ url('logout') }}">
                                         {{ csrf_field() }}
-                                        <button type="submit" class="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-brand-600 transition hover:bg-brand-50">Sign out</button>
+                                        <button type="submit" class="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium text-brand-600 transition hover:bg-brand-50">{{ __('Sign out') }}</button>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     @else
-                        <a href="{{ url('login') }}" class="hidden sm:inline-flex btn btn-secondary !px-5 !py-2.5 text-sm">Login</a>
-                        <a href="{{ url('user/register') }}" class="hidden md:inline-flex btn btn-primary !px-5 !py-2.5 text-sm">Register</a>
+                        <a href="{{ url('login') }}" class="hidden sm:inline-flex btn btn-secondary !px-5 !py-2.5 text-sm">{{ __('Login') }}</a>
+                        <a href="{{ url('user/register') }}" class="hidden md:inline-flex btn btn-primary !px-5 !py-2.5 text-sm">{{ __('Register') }}</a>
                     @endauth
 
                     <a href="#searchBox" data-mfp-src="#searchBox" id="bookNowLink" class="hidden btn btn-primary !px-6 !py-2.5 text-sm lg:inline-flex">
-                        Book Now
+                        {{ __('Book Now') }}
                     </a>
 
                     <button type="button" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu"
@@ -184,14 +188,14 @@
         <form action="{{ url('search') }}" method="GET"
             class="container-gd mt-28 sm:mt-40">
             <div class="mx-auto max-w-2xl">
-                <label for="searchInput" class="sr-only">Search tours, villages, homestays and news</label>
+                <label for="searchInput" class="sr-only">{{ __('Search tours, villages, homestays and news') }}</label>
                 <div class="flex items-center gap-3 rounded-full border border-white/20 bg-white p-2 pl-6 shadow-2xl">
                     <svg class="h-5 w-5 shrink-0 text-ink-400" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-                    <input id="searchInput" type="text" name="key" autocomplete="off" placeholder="Search tours, villages, homestays, news..."
+                    <input id="searchInput" type="text" name="key" autocomplete="off" placeholder="{{ __('Search tours, villages, homestays, news...') }}"
                         class="w-full bg-transparent py-2 text-ink-900 placeholder-ink-400 focus:outline-none">
-                    <button type="submit" class="btn btn-primary shrink-0 !py-2.5">Search</button>
+                    <button type="submit" class="btn btn-primary shrink-0 !py-2.5">{{ __('Search') }}</button>
                 </div>
-                <p class="mt-4 text-center text-sm text-white/70">Try: village tour, homestay, Ubud, cultural experience</p>
+                <p class="mt-4 text-center text-sm text-white/70">{{ __('Try: village tour, homestay, Ubud, cultural experience') }}</p>
             </div>
         </form>
     </div>
@@ -212,14 +216,14 @@
                         <li>
                             <a href="{{ url($item['url']) }}"
                                 class="flex items-center justify-between rounded-xl px-4 py-3 font-semibold text-ink-800 transition hover:bg-cream-50 hover:text-brand-600">
-                                {{ $item['key'] }}
+                                {{ __($item['key']) }}
                                 <svg class="h-4 w-4 text-ink-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                             </a>
                         </li>
                     @endforeach
                     <li>
                         <a href="{{ url('tour-packages') }}" class="flex items-center justify-between rounded-xl px-4 py-3 font-semibold text-ink-800 transition hover:bg-cream-50 hover:text-brand-600">
-                            Tour Packages
+                            {{ __('Tour Packages') }}
                             <svg class="h-4 w-4 text-ink-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                         </a>
                     </li>
@@ -240,14 +244,14 @@
                             <span class="block truncate text-xs text-ink-500">{{ Auth::user()->email }}</span>
                         </span>
                     </a>
-                    <a href="{{ url('reservation/' . Auth::user()->email) }}" class="btn btn-secondary w-full">My Reservations</a>
+                    <a href="{{ url('reservation/' . Auth::user()->email) }}" class="btn btn-secondary w-full">{{ __('My Reservations') }}</a>
                     <form method="POST" action="{{ url('logout') }}">
                         {{ csrf_field() }}
-                        <button type="submit" class="btn btn-ghost w-full">Sign Out</button>
+                        <button type="submit" class="btn btn-ghost w-full">{{ __('Sign Out') }}</button>
                     </form>
                 @else
-                    <a href="{{ url('login') }}" class="btn btn-primary w-full">Login</a>
-                    <a href="{{ url('user/register') }}" class="btn btn-secondary w-full">Create Account</a>
+                    <a href="{{ url('login') }}" class="btn btn-primary w-full">{{ __('Login') }}</a>
+                    <a href="{{ url('user/register') }}" class="btn btn-secondary w-full">{{ __('Create Account') }}</a>
                 @endauth
             </div>
         </div>
@@ -266,13 +270,13 @@
             <!-- Newsletter -->
             <div class="flex flex-col items-start justify-between gap-6 border-b border-white/10 py-12 lg:flex-row lg:items-center">
                 <div class="max-w-xl">
-                    <h2 class="font-display text-2xl font-semibold text-white sm:text-3xl">Discover authentic village experiences in Bali</h2>
-                    <p class="mt-2 text-sm text-ink-400">Subscribe for village stories, new experiences and travel inspiration.</p>
+                    <h2 class="font-display text-2xl font-semibold text-white sm:text-3xl">{{ __('Discover authentic village experiences in Bali') }}</h2>
+                    <p class="mt-2 text-sm text-ink-400">{{ __('Subscribe for village stories, new experiences and travel inspiration.') }}</p>
                 </div>
                 <form class="flex w-full max-w-md items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1.5 backdrop-blur" action="{{ url('news') }}" method="GET">
-                    <input type="email" name="email" placeholder="Your email address" aria-label="Email address" disabled
+                    <input type="email" name="email" placeholder="{{ __('Your email address') }}" aria-label="{{ __('Email address') }}" disabled
                         class="w-full bg-transparent px-4 py-2.5 text-sm text-white placeholder-ink-400 focus:outline-none disabled:opacity-50">
-                    <button type="submit" disabled class="btn btn-primary shrink-0 !px-5 !py-2.5 text-sm disabled:opacity-50">Subscribe</button>
+                    <button type="submit" disabled class="btn btn-primary shrink-0 !px-5 !py-2.5 text-sm disabled:opacity-50">{{ __('Subscribe') }}</button>
                 </form>
             </div>
 
@@ -280,7 +284,7 @@
             <div class="grid grid-cols-2 gap-10 py-14 md:grid-cols-4 lg:grid-cols-5">
                 <div class="col-span-2 lg:col-span-2">
                     <img src="{{ url('assets/customer/img/logo-white.png') }}" alt="GODEVI" class="h-12 w-auto">
-                    <p class="mt-5 max-w-sm text-sm leading-relaxed text-ink-400">GODEVI (Go Destination Village) is a socially pro-active tourism business under PT Banua Wisata Lestari — empowering village communities near coastal and developing areas of Bali through responsible tourism.</p>
+                    <p class="mt-5 max-w-sm text-sm leading-relaxed text-ink-400">{{ __('GODEVI (Go Destination Village) is a socially pro-active tourism business under PT Banua Wisata Lestari — empowering village communities near coastal and developing areas of Bali through responsible tourism.') }}</p>
                     <div class="mt-6 flex items-center gap-3">
                         <a href="https://www.facebook.com/godestinationvillage/" target="_blank" rel="noopener" aria-label="Facebook" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-ink-200 transition hover:border-brand-600 hover:bg-brand-600 hover:text-white">
                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.52 1.49-3.92 3.78-3.92 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.45 2.9h-2.33V22c4.78-.79 8.43-4.94 8.43-9.94z"/></svg>
@@ -295,31 +299,31 @@
                 </div>
 
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-white">Explore</h3>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white">{{ __('Explore') }}</h3>
                     <ul class="mt-5 space-y-3 text-sm">
-                        <li><a href="{{ url('village') }}" class="transition hover:text-white">Villages</a></li>
-                        <li><a href="{{ url('tour-packages') }}" class="transition hover:text-white">Tour Packages</a></li>
-                        <li><a href="{{ url('events') }}" class="transition hover:text-white">Events</a></li>
-                        <li><a href="{{ url('homestay') }}" class="transition hover:text-white">Homestays</a></li>
-                        <li><a href="{{ url('services') }}" class="transition hover:text-white">Our Services</a></li>
+                        <li><a href="{{ url('village') }}" class="transition hover:text-white">{{ __('Villages') }}</a></li>
+                        <li><a href="{{ url('tour-packages') }}" class="transition hover:text-white">{{ __('Tour Packages') }}</a></li>
+                        <li><a href="{{ url('events') }}" class="transition hover:text-white">{{ __('Events') }}</a></li>
+                        <li><a href="{{ url('homestay') }}" class="transition hover:text-white">{{ __('Homestays') }}</a></li>
+                        <li><a href="{{ url('services') }}" class="transition hover:text-white">{{ __('Our Services') }}</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-white">Information</h3>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white">{{ __('Information') }}</h3>
                     <ul class="mt-5 space-y-3 text-sm">
-                        <li><a href="{{ url('faq') }}" class="transition hover:text-white">FAQ</a></li>
-                        <li><a href="{{ url('term') }}" class="transition hover:text-white">Terms & Conditions</a></li>
-                        <li><a href="{{ url('v-founding') }}" class="transition hover:text-white">The Founding</a></li>
-                        <li><a href="{{ url('our-team') }}" class="transition hover:text-white">Our Team</a></li>
-                        <li><a href="{{ url('v-board') }}" class="transition hover:text-white">Board of Experts</a></li>
-                        <li><a href="{{ url('our-partner') }}" class="transition hover:text-white">Our Partners</a></li>
-                        <li><a href="{{ url('news') }}" class="transition hover:text-white">News & Insights</a></li>
+                        <li><a href="{{ url('faq') }}" class="transition hover:text-white">{{ __('FAQ') }}</a></li>
+                        <li><a href="{{ url('term') }}" class="transition hover:text-white">{{ __('Terms & Conditions') }}</a></li>
+                        <li><a href="{{ url('v-founding') }}" class="transition hover:text-white">{{ __('The Founding') }}</a></li>
+                        <li><a href="{{ url('our-team') }}" class="transition hover:text-white">{{ __('Our Team') }}</a></li>
+                        <li><a href="{{ url('v-board') }}" class="transition hover:text-white">{{ __('Board of Experts') }}</a></li>
+                        <li><a href="{{ url('our-partner') }}" class="transition hover:text-white">{{ __('Our Partners') }}</a></li>
+                        <li><a href="{{ url('news') }}" class="transition hover:text-white">{{ __('News & Insights') }}</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-white">Contact</h3>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white">{{ __('Contact') }}</h3>
                     <ul class="mt-5 space-y-4 text-sm">
                         <li class="flex items-start gap-2.5">
                             <svg class="mt-0.5 h-4 w-4 shrink-0 text-brand-500" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
@@ -337,11 +341,11 @@
             </div>
 
             <div class="flex flex-col items-center justify-between gap-3 border-t border-white/10 py-6 text-xs text-ink-500 sm:flex-row">
-                <p>&copy; 2026 GODEVI — PT Banua Wisata Lestari. All rights reserved.</p>
+                <p>&copy; 2026 GODEVI — PT Banua Wisata Lestari. {{ __('All rights reserved.') }}</p>
                 <p class="flex items-center gap-4">
-                    <a href="{{ url('term') }}" class="transition hover:text-white">Terms</a>
-                    <a href="{{ url('company-profile') }}" class="transition hover:text-white">Company Profile</a>
-                    <a href="{{ url('sitemap.xml') }}" class="transition hover:text-white">Sitemap</a>
+                    <a href="{{ url('term') }}" class="transition hover:text-white">{{ __('Terms') }}</a>
+                    <a href="{{ url('company-profile') }}" class="transition hover:text-white">{{ __('Company Profile') }}</a>
+                    <a href="{{ url('sitemap.xml') }}" class="transition hover:text-white">{{ __('Sitemap') }}</a>
                 </p>
             </div>
         </div>

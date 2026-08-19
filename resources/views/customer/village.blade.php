@@ -3,10 +3,10 @@
 @section('content')
 
 <x-partials.page-hero
-    title="Explore Villages in Bali"
-    subtitle="Discover authentic Balinese villages, culture and community-driven tourism experiences curated by GODEVI."
+    title="{{ __('Explore Villages in Bali') }}"
+    subtitle="{{ __('Discover authentic Balinese villages, culture and community-driven tourism experiences curated by GODEVI.') }}"
     image="assets/customer/img/page-title-area/explorer.jpg"
-    :crumbs="['Home' => '/', 'Explore Village' => '']"
+    :crumbs="[__('Home') => '/', __('Explore Village') => '']"
 />
 
 <section class="section-pad">
@@ -23,11 +23,11 @@
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-64 overflow-hidden">
                         <img src="{{ $val->avatar ? asset('storage/users/' . $val->avatar) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $name }} — desa wisata di Bali" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $name }} — {{ __('village destination in Bali') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         <div class="absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent to-transparent"></div>
                         <div class="absolute bottom-4 left-4 flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink-700 backdrop-blur">
                             <svg class="h-3.5 w-3.5 text-forest-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
-                            Bali · Village
+                            Bali · {{ __('Village') }}
                         </div>
                     </div>
                     <div class="flex flex-1 flex-col p-6">
@@ -42,14 +42,14 @@
                             <p class="mt-3 flex-1 line-clamp-2 text-sm text-ink-500">{{ $vd->desc }}</p>
                         @endif
                         <span class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-brand-600 transition-all group-hover:gap-3">
-                            Explore Village
+                            {{ __('Explore Village') }}
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                         </span>
                     </div>
                 </a>
             @empty
                 <div class="col-span-full py-20 text-center">
-                    <p class="text-ink-400">No villages published yet. Check back soon.</p>
+                    <p class="text-ink-400">{{ __('No villages published yet. Check back soon.') }}</p>
                 </div>
             @endforelse
         </div>

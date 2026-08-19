@@ -47,6 +47,6 @@
             </div>
         </div>
     @empty
-        <p class="col-span-full text-center text-ink-400">No members yet.</p>
+        <p class="col-span-full text-center text-ink-400">{{ __('No members yet.') }}</p>
     @endforelse
 </div>

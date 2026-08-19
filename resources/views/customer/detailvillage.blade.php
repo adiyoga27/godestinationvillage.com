@@ -10,7 +10,7 @@
     :title="$vd->village_name ?? $village->name"
     :subtitle="$vd->village_address"
     :image="$hero"
-    :crumbs="['Home' => '/', 'Explore Village' => 'village', ($vd->village_name ?? 'Village') => '']"
+    :crumbs="[__('Home') => '/', __('Explore Village') => 'village', ($vd->village_name ?? __('Village')) => '']"
 />
 
 <section class="section-pad">
@@ -20,8 +20,8 @@
             <div class="space-y-10">
                 <div data-vue="Reveal" class="overflow-hidden rounded-3xl border border-ink-100 shadow-[0_25px_50px_-12px_rgb(26_26_38/0.25)]">
                     <div class="relative aspect-[16/9] w-full sm:aspect-[16/7]">
-                        <img src="{{ $hero }}" alt="{{ $vd->village_name ?? '' }} — desa wisata Bali" class="h-full w-full object-cover" loading="eager">
-                        <span class="badge absolute left-5 top-5 bg-white/95 text-forest-700">Authentic Village</span>
+                        <img src="{{ $hero }}" alt="{{ $vd->village_name ?? '' }} — {{ __('village destination in Bali') }}" class="h-full w-full object-cover" loading="eager">
+                        <span class="badge absolute left-5 top-5 bg-white/95 text-forest-700">{{ __('Authentic Village') }}</span>
                     </div>
                 </div>
 
@@ -41,11 +41,11 @@
                 @if ($vd->lat && $vd->lng)
                     <div data-vue="Reveal" class="overflow-hidden rounded-3xl border border-ink-100">
                         <div class="flex items-center justify-between border-b border-ink-100 bg-white px-6 py-4">
-                            <h2 class="font-display text-xl font-semibold">Location</h2>
-                            <a href="https://www.google.com/maps?q={{ $vd->lat }},{{ $vd->lng }}" target="_blank" rel="noopener" class="text-sm font-bold text-brand-600 hover:underline">Open in Google Maps</a>
+                            <h2 class="font-display text-xl font-semibold">{{ __('Location') }}</h2>
+                            <a href="https://www.google.com/maps?q={{ $vd->lat }},{{ $vd->lng }}" target="_blank" rel="noopener" class="text-sm font-bold text-brand-600 hover:underline">{{ __('Open in Google Maps') }}</a>
                         </div>
                         <iframe
-                            title="Map of {{ $vd->village_name ?? 'the village' }}"
+                            title="Map of {{ $vd->village_name ?? __('the village') }}"
                             src="https://www.openstreetmap.org/export/embed.html?bbox={{ $vd->lng - 0.02 }}%2C{{ $vd->lat - 0.015 }}%2C{{ $vd->lng + 0.02 }}%2C{{ $vd->lat + 0.015 }}&amp;layer=mapnik&amp;marker={{ $vd->lat }}%2C{{ $vd->lng }}"
                             class="h-[380px] w-full border-0" loading="lazy"></iframe>
                     </div>
@@ -55,7 +55,7 @@
             {{-- Sidebar --}}
             <aside class="space-y-6 lg:sticky lg:top-28 lg:self-start">
                 <div data-vue="Reveal" class="rounded-3xl border border-ink-100 bg-white p-6 shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)]">
-                    <h2 class="font-display text-lg font-semibold">Tour Packages</h2>
+                    <h2 class="font-display text-lg font-semibold">{{ __('Tour Packages') }}</h2>
                     <ul class="mt-4 space-y-4">
                         @forelse ($recent as $rec)
                             <li>
@@ -70,7 +70,7 @@
                                 </a>
                             </li>
                         @empty
-                            <li class="text-sm text-ink-400">Packages coming soon.</li>
+                            <li class="text-sm text-ink-400">{{ __('Packages coming soon.') }}</li>
                         @endforelse
                     </ul>
                 </div>
@@ -79,7 +79,7 @@
                     target="_blank" rel="noopener" data-vue="Reveal"
                     class="flex items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-6 py-4 font-bold text-white shadow-lg transition hover:-translate-y-1">
                     <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.21-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49 0 1.47 1.07 2.89 1.22 3.09.15.2 2.11 3.22 5.1 4.51.71.31 1.27.49 1.7.63.72.23 1.37.2 1.88.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35zm-5.42 7.4h-.004a9.87 9.87 0 01-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 01-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88a9.83 9.83 0 019.88 9.89c0 5.45-4.43 9.88-9.88 9.88zM12.05 21.5c2.6 0 5.03-1.01 6.86-2.84a9.66 9.66 0 002.84-6.87 9.66 9.66 0 00-2.84-6.87c-1.83-1.82-4.26-2.83-6.86-2.83a9.68 9.68 0 00-9.69 9.69c0 1.7.45 3.37 1.3 4.83l-1.4 5.12 5.24-1.37a9.67 9.67 0 004.55 1.14z"/></svg>
-                    Chat with local host
+                    {{ __('Chat with local host') }}
                 </a>
             </aside>
         </div>
@@ -91,8 +91,8 @@
     <section class="section-pad bg-cream-50">
         <div class="container-gd">
             <div class="mb-10" data-vue="Reveal">
-                <p class="eyebrow">Experiences</p>
-                <h2 class="font-display text-3xl font-bold sm:text-4xl">Tours & activities in {{ $vd->village_name ?? 'this village' }}</h2>
+                <p class="eyebrow">{{ __('Experiences') }}</p>
+                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Tours & activities in') }} {{ $vd->village_name ?? __('this village') }}</h2>
             </div>
             <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
                 @foreach ($packages as $pack)
@@ -111,7 +111,7 @@
                                         Rp {{ number_format($pack->price, 0, ',', '.') }}
                                     @endif
                                 </span>
-                                <span class="text-sm font-bold text-ink-500 transition group-hover:text-brand-600">Details →</span>
+                                <span class="text-sm font-bold text-ink-500 transition group-hover:text-brand-600">{{ __('Details') }} →</span>
                             </div>
                         </div>
                     </a>

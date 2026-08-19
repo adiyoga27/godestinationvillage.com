@@ -41,8 +41,8 @@
       <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;">
         <i class="checkmark">X</i>
       </div>
-        <h1>Failed</h1> 
-        <p>Your purchase is Failed;<br/>Let's Try Again!</p>
+        <h1>{{ __('Failed') }}</h1> 
+        <p>{{ __('Your purchase is Failed;') }}<br/>{{ __('Let\'s Try Again!') }}</p>
       </div>
     </body>
 </html>

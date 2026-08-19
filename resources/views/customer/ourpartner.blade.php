@@ -3,23 +3,23 @@
 @section('content')
 
 <x-partials.page-hero
-    title="Our Partners"
-    subtitle="The partners and collaborators supporting GODEVI in building sustainable village tourism communities across Bali."
+    title="{{ __('Our Partners') }}"
+    subtitle="{{ __('The partners and collaborators supporting GODEVI in building sustainable village tourism communities across Bali.') }}"
     image="assets/customer/img/page-title-area/partner.jpg"
-    :crumbs="['Home' => '/', 'Our Partners' => '']"
+    :crumbs="[__('Home') => '/', __('Our Partners') => '']"
 />
 
 <section class="section-pad">
     <div class="container-gd">
         @php
             $partners = [
-                ['image' => 'inbistohpati.png', 'title' => 'Tohpati Business Incubator', 'link' => null, 'desc' => 'Business incubation partner supporting tourism village entrepreneurship.'],
-                ['image' => 'dewibali.png', 'title' => 'Bali Tourism Village Communication Forum', 'link' => null, 'desc' => 'Collaboration forum connecting tourism villages across Bali.'],
-                ['image' => 'HMPIndonesia.png', 'title' => 'Himpunan Mahasiswa Pariwisata Indonesia', 'link' => 'https://hmpiofficial.org', 'desc' => 'National tourism student association (HMPI).'],
-                ['image' => 'ezeego.png', 'title' => 'EZZEGO.APP', 'link' => 'https://EzeeGo.app', 'desc' => 'Digital travel technology partner.'],
-                ['image' => 'IPBI.png', 'title' => 'Institut Pariwisata dan Bisnis Internasional', 'link' => 'https://www.ipb-intl.ac.id', 'desc' => 'International tourism and business institute (IPBI).'],
-                ['image' => 'unud.png', 'title' => 'Universitas Udayana', 'link' => 'https://www.unud.ac.id', 'desc' => 'Academic partner for tourism research and development.'],
-                ['image' => 'BUHSA.png', 'title' => 'Buleleng Homestay Association', 'link' => 'https://www.instagram.com/buleleng_homestay', 'desc' => 'Homestay association of Buleleng regency.'],
+                ['image' => 'inbistohpati.png', 'title' => __('Tohpati Business Incubator'), 'link' => null, 'desc' => __('Business incubation partner supporting tourism village entrepreneurship.')],
+                ['image' => 'dewibali.png', 'title' => __('Bali Tourism Village Communication Forum'), 'link' => null, 'desc' => __('Collaboration forum connecting tourism villages across Bali.')],
+                ['image' => 'HMPIndonesia.png', 'title' => __('Himpunan Mahasiswa Pariwisata Indonesia'), 'link' => 'https://hmpiofficial.org', 'desc' => __('National tourism student association (HMPI).')],
+                ['image' => 'ezeego.png', 'title' => 'EZZEGO.APP', 'link' => 'https://EzeeGo.app', 'desc' => __('Digital travel technology partner.')],
+                ['image' => 'IPBI.png', 'title' => __('Institut Pariwisata dan Bisnis Internasional'), 'link' => 'https://www.ipb-intl.ac.id', 'desc' => __('International tourism and business institute (IPBI).')],
+                ['image' => 'unud.png', 'title' => __('Universitas Udayana'), 'link' => 'https://www.unud.ac.id', 'desc' => __('Academic partner for tourism research and development.')],
+                ['image' => 'BUHSA.png', 'title' => __('Buleleng Homestay Association'), 'link' => 'https://www.instagram.com/buleleng_homestay', 'desc' => __('Homestay association of Buleleng regency.')],
             ];
         @endphp
 

@@ -3,10 +3,10 @@
 @section('content')
 
 <x-partials.page-hero
-    title="My Account"
-    subtitle="Update your profile details and keep your information up to date."
+    title="{{ __('My Account') }}"
+    subtitle="{{ __('Update your profile details and keep your information up to date.') }}"
     image="assets/customer/img/page-title-area/account.jpg"
-    :crumbs="['Home' => '/', 'My Account' => '']"
+    :crumbs="[__('Home') => '/', __('My Account') => '']"
 />
 
 <section class="section-pad bg-cream-50">
@@ -15,7 +15,7 @@
             @csrf
 
             <div class="card p-8 text-center sm:p-10">
-                <h2 class="font-display text-xl font-bold text-ink-950">Profile Picture</h2>
+                <h2 class="font-display text-xl font-bold text-ink-950">{{ __('Profile Picture') }}</h2>
                 <div class="mt-6 flex flex-col items-center gap-5">
                     <div class="relative">
                         <div class="h-28 w-28 overflow-hidden rounded-full bg-cream-100 ring-4 ring-white shadow-lift">
@@ -31,29 +31,29 @@
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" /><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" /></svg>
                         </label>
                     </div>
-                    <label for="chooseFile" class="cursor-pointer text-sm font-semibold text-brand-600 hover:underline">Click to upload a new picture</label>
+                    <label for="chooseFile" class="cursor-pointer text-sm font-semibold text-brand-600 hover:underline">{{ __('Click to upload a new picture') }}</label>
                     <input type="file" name="uploadfile" id="chooseFile" class="hidden" accept="image/*">
                 </div>
             </div>
 
             <div class="card p-8 sm:p-10">
-                <h2 class="font-display text-xl font-bold text-ink-950">Customer Information</h2>
+                <h2 class="font-display text-xl font-bold text-ink-950">{{ __('Customer Information') }}</h2>
                 <div class="mt-6 grid gap-5 sm:grid-cols-2">
                     <input type="hidden" name="customerid" value="{{ $user->id }}">
                     <label class="block">
-                        <span class="label-gd">Customer Name</span>
+                        <span class="label-gd">{{ __('Customer Name') }}</span>
                         <input type="text" name="customername" value="{{ $user->name }}" class="input-gd">
                     </label>
                     <label class="block">
-                        <span class="label-gd">Email</span>
+                        <span class="label-gd">{{ __('Email') }}</span>
                         <input type="email" name="email" value="{{ $user->email }}" class="input-gd">
                     </label>
                     <label class="block">
-                        <span class="label-gd">Phone</span>
+                        <span class="label-gd">{{ __('Phone') }}</span>
                         <input type="text" name="phone" value="{{ $user->phone }}" class="input-gd">
                     </label>
                     <label class="block">
-                        <span class="label-gd">Country</span>
+                        <span class="label-gd">{{ __('Country') }}</span>
                         <select name="country" class="input-gd">
                             <option value="{{ $user->country }}" selected>{{ $user->country }}</option>
                             <option value="United States">United States</option>
@@ -117,13 +117,13 @@
                         </select>
                     </label>
                     <label class="block sm:col-span-2">
-                        <span class="label-gd">Address</span>
+                        <span class="label-gd">{{ __('Address') }}</span>
                         <input type="text" name="address" value="{{ $user->address }}" class="input-gd">
                     </label>
                 </div>
                 <div class="mt-8 flex flex-col items-center justify-between gap-4 sm:flex-row">
-                    <p class="text-xs text-ink-400">* Please check your form before submitting.</p>
-                    <button type="submit" class="btn btn-primary shrink-0">Update Profile</button>
+                    <p class="text-xs text-ink-400">{{ __('* Please check your form before submitting.') }}</p>
+                    <button type="submit" class="btn btn-primary shrink-0">{{ __('Update Profile') }}</button>
                 </div>
             </div>
         </form>

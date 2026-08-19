@@ -9,7 +9,7 @@
 <x-partials.page-hero
     :title="$blog->post_title"
     :image="$blogImg"
-    :crumbs="['Home' => '/', 'News' => 'news', 'Article' => '']"
+    :crumbs="[__('Home') => '/', __('News') => 'news', __('Article') => '']"
 />
 
 <section class="section-pad">
@@ -39,7 +39,7 @@
 
                 {{-- Share --}}
                 <div data-vue="Reveal" class="flex flex-wrap items-center justify-between gap-4 rounded-3xl bg-cream-50 p-6">
-                    <span class="font-bold text-ink-800">Share this article</span>
+                    <span class="font-bold text-ink-800">{{ __('Share this article') }}</span>
                     <div class="flex items-center gap-2">
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url('news/' . $blog->slug)) }}" target="_blank" rel="noopener" aria-label="Share on Facebook"
                             class="flex h-10 w-10 items-center justify-center rounded-full bg-white text-ink-600 shadow-sm transition hover:bg-[#1877f2] hover:text-white">
@@ -62,7 +62,7 @@
 
                 {{-- Comments --}}
                 <section data-vue="Reveal" class="border-t border-ink-100 pt-10">
-                    <h2 class="font-display text-2xl font-bold">{{ count($comments) }} Comments</h2>
+                    <h2 class="font-display text-2xl font-bold">{{ count($comments) }} {{ __('Comments') }}</h2>
                     <ul class="mt-6 space-y-6">
                         @forelse ($comments as $comment)
                             <li class="flex gap-4">
@@ -75,14 +75,14 @@
                                 </span>
                                 <div class="flex-1 rounded-2xl bg-cream-50 p-5">
                                     <div class="flex flex-wrap items-center justify-between gap-2">
-                                        <span class="font-bold text-ink-900">{{ $comment->users ? $comment->users->name : 'Anonymous' }}</span>
+                                        <span class="font-bold text-ink-900">{{ $comment->users ? $comment->users->name : __('Anonymous') }}</span>
                                         <time class="text-xs font-semibold text-ink-400">{{ \Carbon\Carbon::parse($comment->created_at)->format('F d, Y h:i a') }}</time>
                                     </div>
                                     <p class="mt-2 text-sm leading-relaxed text-ink-700">{{ $comment->comment }}</p>
                                 </div>
                             </li>
                         @empty
-                            <li class="text-ink-400">Be the first to comment.</li>
+                            <li class="text-ink-400">{{ __('Be the first to comment.') }}</li>
                         @endforelse
                     </ul>
 
@@ -95,19 +95,19 @@
                         @endif
 
                         @auth
-                            <h3 class="font-display text-xl font-bold">Leave a Reply</h3>
+                            <h3 class="font-display text-xl font-bold">{{ __('Leave a Reply') }}</h3>
                             <form action="{{ url('news/comment/' . $blog->slug) }}" method="POST" class="mt-4 space-y-4">
                                 @csrf
                                 <label class="block">
-                                    <span class="label-gd">Comment</span>
-                                    <textarea name="comment" required rows="4" class="input-gd" placeholder="Share your thoughts..."></textarea>
+                                    <span class="label-gd">{{ __('Comment') }}</span>
+                                    <textarea name="comment" required rows="4" class="input-gd" placeholder="{{ __('Share your thoughts...') }}"></textarea>
                                 </label>
-                                <button type="submit" class="btn btn-primary">Post Comment</button>
+                                <button type="submit" class="btn btn-primary">{{ __('Post Comment') }}</button>
                             </form>
                         @else
                             <div class="flex items-center justify-between gap-4 rounded-2xl bg-cream-50 px-5 py-4">
-                                <p class="text-sm font-semibold text-ink-600">Please login to leave a comment.</p>
-                                <a href="{{ url('user/login') }}" class="btn btn-primary !py-2.5 text-sm">Login</a>
+                                <p class="text-sm font-semibold text-ink-600">{{ __('Please login to leave a comment.') }}</p>
+                                <a href="{{ url('user/login') }}" class="btn btn-primary !py-2.5 text-sm">{{ __('Login') }}</a>
                             </div>
                         @endauth
                     </div>
@@ -116,7 +116,7 @@
 
             <aside class="space-y-6 lg:sticky lg:top-28 lg:self-start">
                 <div data-vue="Reveal" class="rounded-3xl border border-ink-100 bg-white p-6 shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)]">
-                    <h2 class="font-display text-lg font-semibold">Recent Articles</h2>
+                    <h2 class="font-display text-lg font-semibold">{{ __('Recent Articles') }}</h2>
                     <ul class="mt-4 space-y-4">
                         @foreach ($recent as $rec)
                             <li>

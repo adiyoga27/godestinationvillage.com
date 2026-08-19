@@ -3,10 +3,10 @@
 @section('content')
 
 <x-partials.page-hero
-    title="Cancel Reservation"
-    subtitle="Your cancelled homestay reservations."
+    title="{{ __('Cancel Reservation') }}"
+    subtitle="{{ __('Your cancelled homestay reservations.') }}"
     image="assets/customer/img/page-title-area/privacy.jpg"
-    :crumbs="['Home' => '/', 'Reservation' => '', 'Cancel' => '']"
+    :crumbs="[__('Home') => '/', __('Reservation') => '', __('Cancel') => '']"
 />
 
 <section class="section-pad bg-cream-50">
@@ -23,8 +23,8 @@
                         />
                     @empty
                         <div class="card p-12 text-center">
-                            <p class="font-display text-xl font-bold text-ink-950">No cancelled reservations</p>
-                            <p class="mt-2 text-sm text-ink-500">You have no cancelled homestay bookings.</p>
+                            <p class="font-display text-xl font-bold text-ink-950">{{ __('No cancelled reservations') }}</p>
+                            <p class="mt-2 text-sm text-ink-500">{{ __('You have no cancelled homestay bookings.') }}</p>
                         </div>
                     @endforelse
                 </div>
@@ -35,13 +35,13 @@
                                 class="flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold transition {{ $order->currentPage() == $i ? 'bg-brand-600 text-white' : 'bg-white text-ink-600 hover:bg-cream-100' }}">{{ $i }}</a>
                         @endfor
                         @if ($order->lastPage() > 0 && $order->currentPage() < $order->lastPage())
-                            <a href="{{ $order->nextPageUrl() }}" class="btn btn-secondary !px-5 !py-2.5">Next</a>
+                            <a href="{{ $order->nextPageUrl() }}" class="btn btn-secondary !px-5 !py-2.5">{{ __('Next') }}</a>
                         @endif
                     </div>
                 @endif
             </div>
             <div>
-                <x-partials.reservation-sidebar :email="$isiemail" base="reservation-homestay" active="cancel" title="Status Booking HomeStay" />
+                <x-partials.reservation-sidebar :email="$isiemail" base="reservation-homestay" active="cancel" title="{{ __('Status Booking Homestay') }}" />
             </div>
         </div>
     </div>

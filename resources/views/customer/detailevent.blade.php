@@ -19,7 +19,7 @@
 <x-partials.page-hero
     :title="$packages->name"
     :image="$hero"
-    :crumbs="['Home' => '/', 'Events' => 'events', $packages->name => '']"
+    :crumbs="[__('Home') => '/', __('Events') => 'events', $packages->name => '']"
 />
 
 <section class="section-pad">
@@ -51,21 +51,21 @@
 
                     @if ($interary)
                         <div class="mt-10">
-                            <h2 class="font-display text-2xl font-bold">Program</h2>
+                            <h2 class="font-display text-2xl font-bold">{{ __('Program') }}</h2>
                             <div class="prose-gd mt-3">{!! $interary !!}</div>
                         </div>
                     @endif
 
                     @if ($inclusion)
                         <div class="mt-10">
-                            <h2 class="font-display text-2xl font-bold">Included</h2>
+                            <h2 class="font-display text-2xl font-bold">{{ __('Included') }}</h2>
                             <div class="prose-gd mt-3">{!! $inclusion !!}</div>
                         </div>
                     @endif
 
                     @if ($additional)
                         <div class="mt-10">
-                            <h2 class="font-display text-2xl font-bold">Additional Information</h2>
+                            <h2 class="font-display text-2xl font-bold">{{ __('Additional Information') }}</h2>
                             <div class="prose-gd mt-3">{!! $additional !!}</div>
                         </div>
                     @endif
@@ -75,10 +75,10 @@
             <aside class="space-y-6 lg:sticky lg:top-28 lg:self-start">
                 <div data-vue="Reveal" class="overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)]">
                     <div class="border-b border-ink-50 p-6">
-                        <p class="text-xs font-bold uppercase tracking-wider text-ink-400">Price per person</p>
+                        <p class="text-xs font-bold uppercase tracking-wider text-ink-400">{{ __('Price per person') }}</p>
                         <p class="mt-1 text-lg font-bold text-brand-600">
                             @if ($packages->is_free)
-                                Free Event
+                                {{ __('Free Event') }}
                             @else
                                 Rp {{ number_format($price, 0, ',', '.') }}
                             @endif
@@ -86,15 +86,15 @@
                     </div>
                     <div class="space-y-3 p-6">
                         <a href="{{ url('bookingEvents/' . $packages->id) }}" class="btn btn-primary w-full !py-4 !text-base">
-                            Reserve Now
+                            {{ __('Reserve Now') }}
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                         </a>
-                        <a href="{{ url('events') }}" class="btn btn-secondary w-full">View All Events</a>
+                        <a href="{{ url('events') }}" class="btn btn-secondary w-full">{{ __('View All Events') }}</a>
                     </div>
                 </div>
 
                 <div data-vue="Reveal" class="rounded-3xl border border-ink-100 bg-white p-6 shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)]">
-                    <h2 class="font-display text-lg font-semibold">Other Events</h2>
+                    <h2 class="font-display text-lg font-semibold">{{ __('Other Events') }}</h2>
                     <ul class="mt-4 space-y-4">
                         @foreach ($recent->take(4) as $rec)
                             <li>

@@ -3,31 +3,31 @@
 @section('content')
 
 <x-partials.page-hero
-    title="Our Services"
-    subtitle="From tourism planning to destination branding — we help villages thrive through responsible tourism."
+    title="{{ __('Our Services') }}"
+    subtitle="{{ __('From tourism planning to destination branding — we help villages thrive through responsible tourism.') }}"
     image="assets/customer/img/page-title-area/services.jpg"
-    :crumbs="['Home' => '/', 'Our Services' => '']"
+    :crumbs="[__('Home') => '/', __('Our Services') => '']"
 />
 
 <section class="section-pad">
     <div class="container-gd">
         <div class="mx-auto mb-14 max-w-2xl text-center">
-            <p class="eyebrow justify-center">What We Do</p>
-            <h2 class="font-display text-3xl font-bold text-ink-950 sm:text-4xl">Services that empower villages</h2>
-            <p class="mt-4 text-ink-600">GODEVI supports tourism villages with end-to-end solutions — from planning and development to branding and research.</p>
+            <p class="eyebrow justify-center">{{ __('What We Do') }}</p>
+            <h2 class="font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ __('Services that empower villages') }}</h2>
+            <p class="mt-4 text-ink-600">{{ __('GODEVI supports tourism villages with end-to-end solutions — from planning and development to branding and research.') }}</p>
         </div>
 
         <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-4">
             @php
                 $services = [
-                    ['icon' => 'perencanaan.png', 'title' => 'Tourism Planning, Strategy & Revitalization', 'link' => null],
-                    ['icon' => 'portofolio.png', 'title' => 'Portfolio', 'link' => url('v-portofolio')],
-                    ['icon' => 'kajian.png', 'title' => 'Project Management', 'link' => null],
-                    ['icon' => 'sdm.png', 'title' => 'Human Resources Development', 'link' => null],
-                    ['icon' => 'branding.png', 'title' => 'Destination Branding & Digital Marketing', 'link' => null],
-                    ['icon' => 'tren.png', 'title' => 'Consumer Trend & Tourism Insight', 'link' => null],
-                    ['icon' => 'internship.png', 'title' => 'Internship Program', 'link' => null],
-                    ['icon' => 'research.jpg', 'title' => 'Research Analytics & Scientific Consulting', 'link' => null],
+                    ['icon' => 'perencanaan.png', 'title' => __('Tourism Planning, Strategy & Revitalization'), 'link' => null],
+                    ['icon' => 'portofolio.png', 'title' => __('Portfolio'), 'link' => url('v-portofolio')],
+                    ['icon' => 'kajian.png', 'title' => __('Project Management'), 'link' => null],
+                    ['icon' => 'sdm.png', 'title' => __('Human Resources Development'), 'link' => null],
+                    ['icon' => 'branding.png', 'title' => __('Destination Branding & Digital Marketing'), 'link' => null],
+                    ['icon' => 'tren.png', 'title' => __('Consumer Trend & Tourism Insight'), 'link' => null],
+                    ['icon' => 'internship.png', 'title' => __('Internship Program'), 'link' => null],
+                    ['icon' => 'research.jpg', 'title' => __('Research Analytics & Scientific Consulting'), 'link' => null],
                 ];
             @endphp
 
@@ -55,10 +55,10 @@
 <section class="bg-ink-950 py-16">
     <div class="container-gd flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
         <div>
-            <h2 class="font-display text-2xl font-bold text-white sm:text-3xl">Ready to build something together?</h2>
-            <p class="mt-2 text-white/60">Partner with GODEVI to grow your tourism village sustainably.</p>
+            <h2 class="font-display text-2xl font-bold text-white sm:text-3xl">{{ __('Ready to build something together?') }}</h2>
+            <p class="mt-2 text-white/60">{{ __('Partner with GODEVI to grow your tourism village sustainably.') }}</p>
         </div>
-        <a href="{{ url('contact') }}" class="btn btn-white shrink-0">Get in Touch</a>
+        <a href="{{ url('contact') }}" class="btn btn-white shrink-0">{{ __('Get in Touch') }}</a>
     </div>
 </section>
 @endsection

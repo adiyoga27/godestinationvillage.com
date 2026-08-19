@@ -3,10 +3,10 @@
 @section('content')
 
 <x-partials.page-hero
-    title="Our Portfolio"
-    subtitle="Village tourism projects, community empowerment programs and sustainable tourism initiatives across Bali."
+    title="{{ __('Our Portfolio') }}"
+    subtitle="{{ __('Village tourism projects, community empowerment programs and sustainable tourism initiatives across Bali.') }}"
     image="assets/customer/img/page-title-area/founding-timenile.jpg"
-    :crumbs="['Home' => '/', 'Portfolio' => '']"
+    :crumbs="[__('Home') => '/', __('Portfolio') => '']"
 />
 
 <section class="section-pad">
@@ -34,7 +34,7 @@
                     </div>
                 </article>
             @empty
-                <p class="col-span-full text-center text-ink-400">No portfolio items yet.</p>
+                <p class="col-span-full text-center text-ink-400">{{ __('No portfolio items yet.') }}</p>
             @endforelse
         </div>
     </div>
