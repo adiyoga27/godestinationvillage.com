@@ -28,6 +28,7 @@ use App\Services\EventService;
 use App\Services\HomeStayServices;
 use App\Services\InstagramServices;
 use App\Services\Midtrans\CreateSnapTokenService;
+use App\Support\Seo;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -47,6 +48,16 @@ class PageController extends Controller
         $data['users'] = Storage::files('reviews');
         $data['reviews'] = Review::with('users')->where('is_active', 1)->get();
         $data['tag'] = Tag::all();
+        $data['seo'] = Seo::make()
+            ->title('Authentic Village Experiences in Bali')
+            ->description('GODEVI (Go Destination Village) connects travelers with authentic Balinese village experiences — village tours, homestays, events and socially responsible tourism packages in Bali, Indonesia.')
+            ->keywords(['village tourism bali', 'homestay bali', 'desa wisata bali', 'godevi', 'bali village tour'])
+            ->image('assets/customer/img/logo.png')
+            ->canonical('/')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->webPageSchema('GODEVI - Authentic Village Experiences in Bali')
+            ->toArray();
         return view('customer.home', $data);
     }
     public function homebaru()
@@ -61,20 +72,45 @@ class PageController extends Controller
     {
         $data['blog'] = Blog::where('isPublished', '1')->latest('id')->paginate(5);
         $data['recent'] = Blog::where('isPublished', '1')->latest('id')->limit(4)->get();
+        $data['seo'] = Seo::make()
+            ->title('News & Insights')
+            ->description('Read the latest news, stories and insights about sustainable village tourism in Bali from GODEVI — community empowerment, homestay experiences and authentic travel.')
+            ->keywords(['godevi news', 'village tourism news bali', 'desa wisata', 'sustainable tourism'])
+            ->canonical('/news')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'News' => '/news'])
+            ->toArray();
         return view('customer/blog', $data);
     }
     public function detailpost($slug)
     {
-        $id = Blog::where('slug', $slug)->first()->id;
-
-        $data['blog'] = Blog::where('isPublished', '1')->find($id);
+        $data['blog'] = Blog::where('isPublished', '1')->where('slug', $slug)->first();
         if (!$data['blog']) {
             return abort(404);
         }
+        $id = $data['blog']->id;
         $data['recent'] = Blog::where('isPublished', '1')->latest('id')->limit(5)->get();
         $data['comments'] = PostComment::with('users')->whereHas('blog', function($q) use($slug){
              $q->where('slug', $slug);
         })->where('parent_id', 0)->orderBy('id', 'desc')->get();
+        $data['seo'] = Seo::make()
+            ->title($data['blog']->post_title)
+            ->description(Str::words(strip_tags($data['blog']->post_content), 30, '...'))
+            ->image('storage/blogs/'.$data['blog']->post_thumbnail)
+            ->keywords(collect(explode(',', $data['blog']->post_tags))->filter()->values()->all())
+            ->canonical('/news/'.$slug)
+            ->type('article')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'News' => '/news', $data['blog']->post_title => '/news/'.$slug])
+            ->articleSchema([
+                'headline' => $data['blog']->post_title,
+                'datePublished' => $data['blog']->created_at?->toIso8601String(),
+                'dateModified' => $data['blog']->updated_at?->toIso8601String(),
+                'author' => ['@type' => 'Person', 'name' => $data['blog']->user?->name ?? 'GODEVI'],
+            ])
+            ->toArray();
         return view('customer/detail-blog', $data);
     }
     public function blog_mobile()
@@ -95,6 +131,15 @@ class PageController extends Controller
     public function village()
     {
         $data['village'] = User::with(['village_detail'])->where('role_id', '2')->where('is_active', '1')->paginate(30);
+        $data['seo'] = Seo::make()
+            ->title('Explore Villages in Bali')
+            ->description('Discover authentic Balinese villages with GODEVI. Explore village tourism destinations, community homestays and immersive local experiences across Bali.')
+            ->keywords(['desa wisata bali', 'village tourism bali', 'explore villages', 'balinese village'])
+            ->canonical('/village')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Explore Village' => '/village'])
+            ->toArray();
         return view('customer/village', $data);
     }
     public function certification($id)
@@ -134,6 +179,25 @@ class PageController extends Controller
                     ->where('packages.is_active', '1')
                     ->orderBy('packages.id', 'desc')
                     ->limit(5)->get();
+            $data['seo'] = Seo::make()
+                ->title($result->village_name.' Village Tourism')
+                ->description(Str::limit(strip_tags($result->desc ?? ''), 158))
+                ->image('storage/village/'.$result->image ?? null)
+                ->keywords([$result->village_name, 'desa wisata', 'village tourism bali'])
+                ->canonical('/village/'.$slug)
+                ->type('place')
+                ->organizationSchema()
+                ->websiteSchema()
+                ->breadcrumbSchema(['Home' => '/', 'Explore Village' => '/village', $result->village_name => '/village/'.$slug])
+                ->schema([
+                    '@context' => 'https://schema.org',
+                    '@type' => 'TouristDestination',
+                    'name' => $result->village_name,
+                    'description' => $result->desc ?? null,
+                    'url' => '/village/'.$slug,
+                    'address' => ['@type' => 'PostalAddress', 'addressRegion' => 'Bali', 'addressCountry' => 'ID'],
+                ])
+                ->toArray();
             return view('customer/detailvillage', $data);
         } catch (\Throwable $th) {
             return abort(404);
@@ -143,19 +207,44 @@ class PageController extends Controller
     public function tourpackages()
     {
         $data['packages'] = Package::select('packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'price', 'packages.desc', 'packages.id', 'default_img')->join('users', 'users.id', 'user_id')->join('village_details', 'users.id', 'village_details.user_id')->join('categories', 'categories.id', 'category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->paginate(10);
-        // dd($data);
+        $data['seo'] = Seo::make()
+            ->title('Tour Packages & Experiences')
+            ->description('Browse affordable bali village adventure packages with GODEVI — immersive tours, cultural experiences and socially responsible travel in Bali villages.')
+            ->keywords(['bali tour packages', 'village tour bali', 'desa wisata bali paket', 'cultural experiences'])
+            ->canonical('/tour-packages')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Tour Packages' => '/tour-packages'])
+            ->toArray();
         return view('customer/tourpackages', $data);
     }
     public function homeStay()
     {
         $data['packages'] = HomeStayServices::active();
-        // dd($data);
+        $data['seo'] = Seo::make()
+            ->title('Bali Homestay & Village Stay')
+            ->description('Stay overnight in authentic Balinese homestays with GODEVI. Immerse yourself in village life, local traditions and warm Balinese hospitality.')
+            ->keywords(['bali homestay', 'village homestay bali', 'desa wisata menginap', 'homestay godevi'])
+            ->canonical('/homestay')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Homestay' => '/homestay'])
+            ->toArray();
         return view('customer/homestay', $data);
     }
     public function eventsGodevi()
     {
         // $data['packages'] = Package::select('packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'price', 'packages.desc', 'packages.id', 'default_img', 'paywish')->join('users', 'users.id', 'user_id')->join('village_details', 'users.id', 'village_details.user_id')->join('categories', 'categories.id', 'category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->where('packages.category_id', '5')->paginate(10);
         $data['packages'] = EventService::active();
+        $data['seo'] = Seo::make()
+            ->title('Village Events & Festivals')
+            ->description('Discover authentic village events and cultural festivals in Bali with GODEVI. Join local ceremonies, workshops and community activities.')
+            ->keywords(['bali events', 'village festival bali', 'cultural events bali', 'godevi events'])
+            ->canonical('/events')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Events' => '/events'])
+            ->toArray();
         return view('customer/events', $data);
     }
     public function categorypackage(Request $request, $id)
@@ -174,7 +263,11 @@ class PageController extends Controller
     }
     public function detailtour($slug)
     {
-        $id = Package::where('slug', $slug)->first()->id;
+        $package = Package::where('slug', $slug)->first();
+        if (!$package) {
+            return abort(404);
+        }
+        $id = $package->id;
 
         $data['instagram'] = InstagramServices::randomPost();
         $data['images'] = Storage::files('packages/' . $id);
@@ -187,6 +280,30 @@ class PageController extends Controller
                                     ->join('users', 'users.id', 'user_id')
                                     ->join('village_details', 'users.id', 'village_details.user_id')
                                     ->join('categories', 'categories.id', 'category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->orderBy('packages.id', 'desc')->limit(5)->get();
+        $data['seo'] = Seo::make()
+            ->title($data['packages']->name)
+            ->description(Str::limit(strip_tags($data['packages']->desc ?? ''), 158))
+            ->image('storage/packages/'.$data['packages']->default_img)
+            ->keywords([$data['packages']->name, 'bali village tour', 'tour package bali'])
+            ->canonical('/tour-packages/'.$slug)
+            ->type('product')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Tour Packages' => '/tour-packages', $data['packages']->name => '/tour-packages/'.$slug])
+            ->schema([
+                '@context' => 'https://schema.org',
+                '@type' => 'Product',
+                'name' => $data['packages']->name,
+                'description' => $data['packages']->desc ?? null,
+                'image' => url('storage/packages/'.$data['packages']->default_img),
+                'offers' => [
+                    '@type' => 'Offer',
+                    'price' => $data['packages']->price ?? 0,
+                    'priceCurrency' => 'IDR',
+                    'availability' => 'https://schema.org/InStock',
+                ],
+            ])
+            ->toArray();
         // $data['recent'] = Package::orderBy('desc')->limit(5)->get();
         // var_dump($data['packages']);
         return view('customer/detailtour', $data);
@@ -194,7 +311,11 @@ class PageController extends Controller
     public function detailEvent($slug)
     {
 
-        $id = Event::where('slug', $slug)->first()->id;
+        $event = Event::where('slug', $slug)->first();
+        if (!$event) {
+            return abort(404);
+        }
+        $id = $event->id;
         $data['instagram'] = InstagramServices::randomPost();
         $data['images'] = Storage::files('events/' . $id);
             $data['packages'] = Event::with(['category','translate'])->where('id', $id)
@@ -203,16 +324,36 @@ class PageController extends Controller
             return abort(404);
         }
         $data['recent'] = EventService::recent();
-        // $data['recent'] = Package::select('packages.id', 'packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'default_img')
-        //                             ->join('users', 'users.id', 'user_id')
-        //                             ->join('village_details', 'users.id', 'village_details.user_id')
-        //                             ->join('categories', 'categories.id', 'category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->orderBy('packages.id', 'desc')->limit(5)->get();
+        $data['seo'] = Seo::make()
+            ->title($data['packages']->name)
+            ->description(Str::limit(strip_tags($data['packages']->description ?? ''), 158))
+            ->image('storage/events/'.$data['packages']->default_img)
+            ->keywords([$data['packages']->name, 'bali village event', 'cultural event'])
+            ->canonical('/events/'.$slug)
+            ->type('event')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Events' => '/events', $data['packages']->name => '/events/'.$slug])
+            ->schema([
+                '@context' => 'https://schema.org',
+                '@type' => 'Event',
+                'name' => $data['packages']->name,
+                'description' => $data['packages']->description ?? null,
+                'image' => url('storage/events/'.$data['packages']->default_img),
+                'location' => $data['packages']->location ? ['@type' => 'Place', 'name' => $data['packages']->location] : null,
+                'startDate' => $data['packages']->date_event ? \Illuminate\Support\Carbon::parse($data['packages']->date_event)->toIso8601String() : null,
+                'offers' => [
+                    '@type' => 'Offer',
+                    'price' => $data['packages']->price ?? 0,
+                    'priceCurrency' => 'IDR',
+                    'url' => '/events/'.$slug,
+                ],
+            ])
+            ->toArray();
         return view('customer/detailevent', $data);
     }
-    public function detailHomestay($slug)
+    public function detailHomestay($id)
     {
-        $id = Homestay::where('slug', $slug)->first()->id;
-
         $data['instagram'] = InstagramServices::randomPost();
 
         $data['images'] = Storage::files('homestay/' . $id);
@@ -222,52 +363,149 @@ class PageController extends Controller
             return abort(404);
         }
 $data['recent'] = HomeStayServices::recent();
-        // $data['recent'] = Package::select('packages.id', 'packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'default_img')
-        //                             ->join('users', 'users.id', 'user_id')
-        //                             ->join('village_details', 'users.id', 'village_details.user_id')
-        //                             ->join('categories', 'categories.id', 'category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->orderBy('packages.id', 'desc')->limit(5)->get();
+        $data['seo'] = Seo::make()
+            ->title($data['packages']->name)
+            ->description(Str::limit(strip_tags($data['packages']->description ?? ''), 158))
+            ->image('storage/homestay/'.$data['packages']->default_img)
+            ->keywords([$data['packages']->name, 'bali homestay', 'village stay'])
+            ->canonical('/homestay/'.$data['packages']->id)
+            ->type('product')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Homestay' => '/homestay', $data['packages']->name => '/homestay/'.$data['packages']->id])
+            ->schema([
+                '@context' => 'https://schema.org',
+                '@type' => 'Product',
+                'name' => $data['packages']->name,
+                'description' => $data['packages']->description ?? null,
+                'image' => url('storage/homestay/'.$data['packages']->default_img),
+                'offers' => [
+                    '@type' => 'Offer',
+                    'price' => $data['packages']->price ?? 0,
+                    'priceCurrency' => 'IDR',
+                    'availability' => 'https://schema.org/InStock',
+                ],
+            ])
+            ->toArray();
         return view('customer/detailhomestay', $data);
     }
     public function faq()
     {
-        return view('customer/faq');
+        $data['seo'] = Seo::make()
+            ->title('Frequently Asked Questions')
+            ->description('Answers to common questions about GODEVI village tourism, homestays, booking, payments and travel experiences in Bali.')
+            ->keywords(['godevi faq', 'village tourism faq', 'homestay booking faq'])
+            ->canonical('/faq')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'FAQ' => '/faq'])
+            ->toArray();
+
+        return view('customer/faq', $data);
     }
     public function services()
     {
-        return view('customer/services');
+        $data['seo'] = Seo::make()
+            ->title('Our Services')
+            ->description('GODEVI services — tourism planning and strategy, village revitalization, project management, human resources development, destination branding and research.')
+            ->keywords(['godevi services', 'tourism planning bali', 'destination branding', 'research tourism'])
+            ->canonical('/services')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Our Services' => '/services'])
+            ->toArray();
+
+        return view('customer/services', $data);
     }
     public function term()
     {
+        $data['seo'] = Seo::make()
+            ->title('Terms & Conditions')
+            ->description('Terms and conditions for booking tours, homestays and events with GODEVI (Go Destination Village).')
+            ->canonical('/term')
+            ->noindex()
+            ->toArray();
 
-        return view('customer/terms');
+        return view('customer/terms', $data);
     }
     
     public function deleteAccount(){
-        return view('customer/delete-account');
+        $data['seo'] = Seo::make()->title('Delete Account')->noindex()->toArray();
+
+        return view('customer/delete-account', $data);
     }
     public function ourteam()
     {
         $ours = OurTeam::all();
-        return view('customer/ourteam', compact('ours'));
+        $data = compact('ours');
+        $data['seo'] = Seo::make()
+            ->title('Our Team')
+            ->description('Meet the passionate team behind GODEVI who are dedicated to uplifting local communities through socially responsible village tourism in Bali.')
+            ->canonical('/our-team')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Our Team' => '/our-team'])
+            ->toArray();
+
+        return view('customer/ourteam', $data);
     }
     public function founding()
     {
         $foundings = Founding::all();
-        return view('customer/founding', compact('foundings'));
+        $data = compact('foundings');
+        $data['seo'] = Seo::make()
+            ->title('The Founding')
+            ->description('The story behind the founding of GODEVI — Go Destination Village, a socially pro-active business dedicated to uplifting village communities in Bali.')
+            ->canonical('/v-founding')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'The Founding' => '/v-founding'])
+            ->toArray();
+
+        return view('customer/founding', $data);
     } 
     public function portofolio()
     {
         $portofolios = Portofolio::orderby('dates', 'DESC')->get();
-        return view('customer/portofolio', compact('portofolios'));
+        $data = compact('portofolios');
+        $data['seo'] = Seo::make()
+            ->title('Our Portfolio')
+            ->description('Explore GODEVI portfolio — village tourism projects, community empowerment programs and sustainable tourism initiatives across Bali.')
+            ->canonical('/v-portofolio')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Portfolio' => '/v-portofolio'])
+            ->toArray();
+
+        return view('customer/portofolio', $data);
     }
     public function boardExpert()
     {
         $boards = BoardExpert::all();
-        return view('customer/boardexpert', compact('boards'));
+        $data = compact('boards');
+        $data['seo'] = Seo::make()
+            ->title('Board of Experts')
+            ->description('Meet the board of experts guiding GODEVI in sustainable tourism, community development and destination management.')
+            ->canonical('/v-board')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Board of Experts' => '/v-board'])
+            ->toArray();
+
+        return view('customer/boardexpert', $data);
     }
     public function ourpartner()
     {
-        return view('customer/ourpartner');
+        $data['seo'] = Seo::make()
+            ->title('Our Partners')
+            ->description('The partners and collaborators supporting GODEVI in building sustainable village tourism communities across Bali.')
+            ->canonical('/our-partner')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Our Partners' => '/our-partner'])
+            ->toArray();
+
+        return view('customer/ourpartner', $data);
     }
     public function reservation(Request $request)
     {
@@ -283,7 +521,17 @@ $data['recent'] = HomeStayServices::recent();
     }
     public function contact()
     {
-        return view('customer/contact');
+        $data['seo'] = Seo::make()
+            ->title('Contact Us')
+            ->description('Get in touch with GODEVI — Go Destination Village. Reach us by phone, email or visit us in Denpasar, Bali for village tourism and homestay inquiries.')
+            ->keywords(['contact godevi', 'godevi contact', 'village tourism bali contact'])
+            ->canonical('/contact')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->webPageSchema('Contact GODEVI - Go Destination Village')
+            ->toArray();
+
+        return view('customer/contact', $data);
     }
     public function payment($id)
     {
@@ -453,6 +701,7 @@ $data['recent'] = HomeStayServices::recent();
             $data['user'] = User::where('id', $userId)
                 ->first();
         }
+        $data['seo'] = Seo::make()->title('Book Your Experience')->noindex()->toArray();
 
         return view('customer/bookform', $data);
     }
@@ -465,6 +714,8 @@ $data['recent'] = HomeStayServices::recent();
             $data['user'] = User::where('id', $userId)
                 ->first();
         }
+        $data['seo'] = Seo::make()->title('Book Event')->noindex()->toArray();
+
         return view('customer/bookformEvents', $data);
     }
     public function bookingHomeStay($id)
@@ -476,6 +727,8 @@ $data['recent'] = HomeStayServices::recent();
             $data['user'] = User::where('id', $userId)
                 ->first();
         }
+        $data['seo'] = Seo::make()->title('Book Homestay')->noindex()->toArray();
+
         return view('customer/bookformHomeStay', $data);
     }
     public function account()
@@ -485,6 +738,8 @@ $data['recent'] = HomeStayServices::recent();
             $data['user'] = User::where('id', $userId)
                 ->first();
         }
+        $data['seo'] = Seo::make()->title('My Account')->noindex()->toArray();
+
         return view('customer/account', $data);
     }
     public function accountUpdate(Request $request)
@@ -509,15 +764,28 @@ $data['recent'] = HomeStayServices::recent();
     }
     public function login()
     {
-        return view('customer/login');
+        $data['seo'] = Seo::make()->title('Login')->noindex()->toArray();
+
+        return view('customer/login', $data);
     }
     public function register()
     {
-        return view('auth/register');
+        $data['seo'] = Seo::make()->title('Register')->noindex()->toArray();
+
+        return view('auth/register', $data);
     }
     public function companyprofile()
     {
-        return view('customer/companyprofile');
+        $data['seo'] = Seo::make()
+            ->title('Company Profile')
+            ->description('Learn about GODEVI (PT Banua Wisata Lestari) — our vision, mission and commitment to socially responsible and sustainable village tourism in Bali.')
+            ->canonical('/company-profile')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Company Profile' => '/company-profile'])
+            ->toArray();
+
+        return view('customer/companyprofile', $data);
     }
 
     

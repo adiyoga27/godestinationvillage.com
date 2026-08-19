@@ -1,90 +1,30 @@
-<html>
+@extends('customer/layout')
 
-<head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous">
-    </script>
-    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
-    <!-- MDB -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet" />
+@section('content')
 
-    <!-- MDB -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js"></script>
-</head>
-<style>
-    body {
-        text-align: center;
-        padding: 40px 0;
-        background: #EBF0F5;
-    }
+@php
+    $seo = \App\Support\Seo::make()
+        ->title('Payment Failed — GODEVI')
+        ->noindex()
+        ->toArray();
+@endphp
 
-    h1 {
-        color: #bc6666;
-        font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
-        font-weight: 900;
-        font-size: 40px;
-        margin-bottom: 10px;
-    }
-
-    p {
-        color: #404F5E;
-        font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
-        font-size: 20px;
-        margin: 0;
-    }
-
-    i {
-        color: #bc6666;
-        font-size: 100px;
-        line-height: 200px;
-        margin-left: -15px;
-    }
-
-    #icon {
-        margin-left: 0px;
-        color: white !important;
-    }
-
-    button {
-
-        background-color: #bc6666 !important;
-        border: none !important;
-    }
-
-    .card {
-        background: white;
-        padding: 60px;
-        border-radius: 4px;
-        box-shadow: 0 2px 3px #C8D0D8;
-        display: inline-block;
-        margin: 0 auto;
-    }
-
-</style>
-
-<body>
-    <div class="card">
-        <div style="border-radius:200px; height:200px; width:200px; background: #faf5f5; margin:0 auto;">
-            <i class="checkmark">X</i>
+<section class="section-pad bg-ink-50/60">
+    <div class="container-gd flex min-h-[60vh] items-center justify-center">
+        <div class="w-full max-w-xl rounded-3xl border border-ink-100 bg-white p-10 text-center shadow-xl shadow-ink-950/5 sm:p-14">
+            <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-rose-100">
+                <svg class="h-10 w-10 text-rose-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </div>
+            <h1 class="mt-7 font-display text-3xl font-semibold text-ink-950 sm:text-4xl">Payment Failed</h1>
+            <p class="mt-4 text-ink-500">
+                Sorry, your transaction failed. Please check your payment details and try again in a few moments.
+            </p>
+            <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <a href="{{ url('/') }}" class="btn btn-primary w-full sm:w-auto">Back to Home</a>
+                <a href="{{ url('contact') }}" class="btn btn-secondary w-full sm:w-auto">Contact Us</a>
+            </div>
         </div>
-        <h1>Error</h1>
-        <p>
-            Sorry, your transaction failed<br />Please check your spending and come back in a few moments!</p>
-        <br>
-        <a href="{{ url('/') }}"><button type="button" class="btn btn-success"><i id="icon"
-                    class="fa fa-home fa-fw"></i> <span>Back to Home</span></button></a>
-
     </div>
-</body>
+</section>
 
-</html>
+@endsection

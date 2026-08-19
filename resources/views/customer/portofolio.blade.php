@@ -1,116 +1,42 @@
 @extends('customer/layout')
+
 @section('content')
-    <!-- start page title area-->
-    <div class="page-title-area ptb-100">
-        <div class="container">
-            <div class="page-title-content">
-                <h1>Portofolio</h1>
-                <ul>
-                    <li class="item"><a href="/">Home</a></li>
-                    <li class="item"><a href="#"><i class='bx bx-chevrons-right'></i>Portofolio</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="bg-image">
-            <img src="{{url('assets/customer/img/page-title-area/founding-timenile.jpg')}}" alt="Demo Image" style="background-repeat: no-repeat;
-            background-size: auto;">
+
+<x-partials.page-hero
+    title="Our Portfolio"
+    subtitle="Village tourism projects, community empowerment programs and sustainable tourism initiatives across Bali."
+    image="assets/customer/img/page-title-area/founding-timenile.jpg"
+    :crumbs="['Home' => '/', 'Portfolio' => '']"
+/>
+
+<section class="section-pad">
+    <div class="container-gd">
+        <div class="grid gap-7 md:grid-cols-2">
+            @forelse ($portofolios as $f)
+                <article data-vue="Reveal" class="group card card-hover overflow-hidden">
+                    <div class="relative h-64 overflow-hidden bg-cream-100">
+                        @if (!empty($f->attachment))
+                            <img src="{{ asset('storage/portofolio/' . $f->attachment) }}" alt="{{ $f->title }}"
+                                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy">
+                        @elseif (!empty($f->thumbnail))
+                            <img src="{{ asset('storage/portofolio/' . $f->thumbnail) }}" alt="{{ $f->title }}"
+                                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy">
+                        @endif
+                        @if (!empty($f->dates))
+                            <span class="badge absolute left-4 top-4 bg-brand-600 text-white shadow-lg">{{ date('M Y', strtotime($f->dates)) }}</span>
+                        @endif
+                    </div>
+                    <div class="p-7">
+                        <h3 class="font-display text-xl font-bold text-ink-950 transition group-hover:text-brand-600">{{ $f->title }}</h3>
+                        @if (!empty($f->description))
+                            <p class="mt-3 text-sm leading-relaxed text-ink-500">{!! $f->description !!}</p>
+                        @endif
+                    </div>
+                </article>
+            @empty
+                <p class="col-span-full text-center text-ink-400">No portfolio items yet.</p>
+            @endforelse
         </div>
     </div>
-    <!-- end page title area -->
-
-    <!-- start team section -->
-    <section id="team" class="team-section ptb-100">
-        <div class="container">
-            {{-- <div class="section-title">
-                <h2>Founding</h2>
-                <p>Travel has helped us to understand the meaning of life and it has helped us become better people. Each
-                    time we travel, we see the world with new eyes.</p>
-            </div> --}}
-            <div class="row">
-
-                        @foreach ($portofolios as $f)
-                            <!-- column  -->
-                            <div class="col-md-6 mb-4">
-                                <!-- Row -->
-                                <div class="item-single ">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <img src="{{ url('storage') }}/portofolio/{{ $f->attachment }}" alt="wrapkit"
-                                                class="img-fluid" />
-                                        </div>
-                                        <div class="col-md-12">
-                                            <center>
-                                                <h5 class="mt-4 font-weight-medium mb-0">{{ $f->title }}</h5>
-                                                <h6 class="subtitle">( {{ $f->dates }} )</h6>
-                                            </center>
-                                            <div class="ml-4 mr-4 description">
-                                                {!! $f->description !!}
-                                            </div>
-                                            <br>
-                                            <center>
-                                                <div class="social-link">
-                                                    @if (!empty($f->attachment))
-                                                        <a href="tel:{{ $f->attachment }}" target="_blank">
-                                                            <i class='bx bxs-download'></i> Download</a>
-                                                    @endif
-                                                   
-
-
-                                                </div>
-                                            </center>
-                                            <br>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                                <!-- Row -->
-                        @endforeach
-                        <!-- column  -->
-                        <!-- column  -->
-
-                        <!-- column  -->
-
-            </div>
-        </div>
-    </section>
-    <!-- end team section -->
-@endsection()
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-        var paragraphs = document.querySelectorAll(".description");
-
-        paragraphs.forEach(function(paragraph) {
-            var text = paragraph.textContent;
-            var truncatedText = text.slice(0, 200);
-            var lastSpaceIndex = truncatedText.lastIndexOf(" ");
-            var lastWordTruncated = truncatedText.slice(lastSpaceIndex);
-            var isFullText = false;
-
-            if (text.length > 200) {
-                var truncatedContent = truncatedText.slice(0, lastSpaceIndex) + "...";
-                paragraph.textContent = truncatedContent;
-
-                var readMoreLink = document.createElement("a");
-                readMoreLink.textContent = "Read More";
-                readMoreLink.setAttribute("href", "#");
-                readMoreLink.style.color = "red"; // Set color to red
-
-                readMoreLink.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    if (isFullText) {
-                        paragraph.textContent = truncatedContent + " ";
-                        readMoreLink.textContent = "Read More";
-                        isFullText = false;
-                    } else {
-                        paragraph.textContent = text;
-                        readMoreLink.textContent = "Hide More";
-                        isFullText = true;
-                    }
-                });
-
-                paragraph.appendChild(readMoreLink);
-            }
-        });
-    });
-</script>
+</section>
+@endsection

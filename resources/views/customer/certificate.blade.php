@@ -1,110 +1,59 @@
 @extends('customer/layout')
+
 @section('content')
-    <!-- start page title area-->
-    <div class="page-title-area ptb-100">
-        <div class="container">
-            <div class="page-title-content">
-                <h1>{{$certificate->category}}</h1>
-                <ul>
-                    <li class="item"><a href="index.html">Surat</a></li>
-                    <li class="item"><a href="#"><i class='bx bx-chevrons-right'></i>Details</a></li>
-                </ul>
+
+@php
+    $seo = \App\Support\Seo::make()->title('Certificate — GODEVI')->noindex()->toArray();
+@endphp
+
+<x-partials.page-hero
+    title="Certificate Details"
+    subtitle="View and download your official GODEVI certificate."
+    image="assets/customer/img/page-title-area/surat-sertif-header.png"
+    :crumbs="['Home' => '/', 'Certificate' => '']"
+/>
+
+<section class="section-pad bg-cream-50">
+    <div class="container-gd mx-auto max-w-2xl">
+        <div class="card overflow-hidden">
+            <div class="border-b border-ink-100 bg-ink-950 px-8 py-6">
+                <p class="text-xs font-bold uppercase tracking-wider text-ink-400">Certificate</p>
+                <p class="mt-1 font-display text-xl font-bold text-white">{{ $certificate->category }}</p>
             </div>
-        </div>
-        <div class="bg-image">
-            <img src="{{ url('assets/customer/img/page-title-area/surat-sertif-header.png') }}" alt=" Demo Image">
+            <dl class="divide-y divide-ink-100">
+                <div class="grid grid-cols-3 gap-4 px-8 py-5 text-sm">
+                    <dt class="font-bold text-ink-800">No Surat</dt>
+                    <dd class="col-span-2 text-ink-600">{{ $certificate->reference_number }}</dd>
+                </div>
+                <div class="grid grid-cols-3 gap-4 px-8 py-5 text-sm">
+                    <dt class="font-bold text-ink-800">Tanggal</dt>
+                    <dd class="col-span-2 text-ink-600">{{ date('d M Y', strtotime($certificate->date_at)) }}</dd>
+                </div>
+                <div class="grid grid-cols-3 gap-4 px-8 py-5 text-sm">
+                    <dt class="font-bold text-ink-800">Perihal</dt>
+                    <dd class="col-span-2 text-ink-600">{{ $certificate->regarding }}</dd>
+                </div>
+                <div class="grid grid-cols-3 gap-4 px-8 py-5 text-sm">
+                    <dt class="font-bold text-ink-800">Ditujukan Kepada</dt>
+                    <dd class="col-span-2 text-ink-600">{{ $certificate->addressed_to }}</dd>
+                </div>
+                <div class="grid grid-cols-3 gap-4 px-8 py-5 text-sm">
+                    <dt class="font-bold text-ink-800">Penandatangan</dt>
+                    <dd class="col-span-2 text-ink-600">{{ $certificate->signer }}</dd>
+                </div>
+                <div class="grid grid-cols-3 gap-4 px-8 py-5 text-sm">
+                    <dt class="font-bold text-ink-800">Jabatan</dt>
+                    <dd class="col-span-2 text-ink-600">{{ $certificate->departemen }}</dd>
+                </div>
+            </dl>
+            <div class="p-8">
+                <a href="{{ url('storage/certification/' . $certificate->file) }}" class="btn btn-primary w-full !py-4">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                    Download
+                </a>
+            </div>
         </div>
     </div>
-    <!-- start blog details section -->
-    <section id="about" class="about-section about-style-three ptb-100">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-10 m-auto">
-                    <div class="about-content">
-                    <div class="col-md-8 m-auto">
+</section>
 
-                        <table  style="text-align: left;" align="left">
-                        <tr height="40px">
-
-                                <td width='35%'><b>No Surat</b></td>
-                                <td width='10%'>:</td>
-                                <td width='60%'>{{$certificate->reference_number}}</td>
-
-                            </tr>
-                            <tr height="40px">
-
-                                <td width='30%'><b>Tanggal</b></td>
-                                <td width='5%'>:</td>
-                                <td width='60%'>{{date('d M y', strtotime($certificate->date_at))}}</td>
-
-                            </tr>
-                            <tr height="40px">
-
-                                <td width='30%'><b>Perihal</b></td>
-                                <td width='10%'>:</td>
-                                <td width='60%'>{{$certificate->regarding}}</td>
-
-                            </tr>
-                            <tr height="40px">
-
-                                <td width='30%'><b>Ditujukan kepada</b></td>
-                                <td width='10%'>:</td>
-                                <td width='60%'>{{$certificate->addressed_to}}</td>
-
-                            </tr>
-                            <tr height="40px">
-
-                                <td width='30%'><b>Penandatangan</b></td>
-                                <td width='10%'>:</td>
-                                <td width='60%'>{{$certificate->signer}}</td>
-
-                            </tr>
-                            <tr height="40px">
-                                <td width='30%'><b>Jabatan</b></td>
-                                <td width='10%'>:</td>
-                                <td width='60%'>{{$certificate->departemen}}</td>
-
-                            </tr>
-                            <tr height="150px">
-                                <td colspan="3">
-                                <center><a href="{{url('storage/certification/'.$certificate->file)}}" class="btn-primary">Download</a>
-                                </center>
-
-                                </td>
-
-                            </tr>
-                        </table>
-                    </div>
-                              
-                        <br>
-                        <div class="about-btn">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="shape shape-1"><img src="{{url('assets/customer/img/shape1.png')}}" alt="Background Shape"></div>
-        <div class="shape shape-2"><img src="{{url('assets/customer/img/shape2.png')}}" alt="Background Shape"></div>
-        <div class="shape shape-3"><img src="{{url('assets/customer/img/shape3.png')}}" alt="Background Shape"></div>
-        <div class="shape shape-4"><img src="{{url('assets/customer/img/shape4.png')}}" alt="Background Shape"></div>
-    </section>
-    <script>
-        /**
-         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-        /*
-        var disqus_config = function () {
-        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-        };
-        */
-        (function() { // DON'T EDIT BELOW THIS LINE
-            var d = document,
-                s = d.createElement('script');
-            s.src = 'https://godestinationvillage.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
-    </script>
-    <!-- end blog details section -->
 @endsection

@@ -1,149 +1,77 @@
-<html>
+@extends('customer/layout')
 
-<head>
-    <title>PAYMENT GODEVI</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+@section('content')
 
+@php
+    $seo = \App\Support\Seo::make()->title('Confirm Payment — GODEVI')->noindex()->toArray();
+@endphp
 
+<x-partials.page-hero
+    title="Confirm Payment"
+    subtitle="Complete your bank transfer confirmation so our team can verify and approve your booking."
+    image="assets/customer/img/page-title-area/privacy.jpg"
+    :crumbs="['Home' => '/', 'Confirm Payment' => '']"
+/>
 
-</head>
-
-<body>
-    <div class="container-mini">
-{{-- {{dd($order)}} --}}
-        <form action="{{url('payment/pay/confirm-payment')}}" method="post" enctype="multipart/form-data">
-            @csrf
-            <input type="hidden" name="idtrx" class="form-control idtrx" id="exampleInputEmail1" value="{{$order->id}}">
-            <div class="row">
-                <div class="col-md-12">
-                 
-                    <center>
-                    <img src="{{url('assets/customer/frontdata/images/bird.png') }}"><br>
-                    <h4> Konfirmasi Pembayaran</h4>
-                    <br>
-
-                    </center>
-                </div>
-           
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Your Bank Account</label>
-                        <select name="bank" id="" class="form-control">
-                            @foreach($bank as $banks)
-                            <option value="{{$banks->bank_name}}">{{$banks->bank_name}}</option>
-                            @endforeach
-
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Name Account</label>
-                        <input type="text" name="name" class="form-control" id="exampleInputEmail1" placeholder="Masukkan nama akun bank">
-                    </div>
-                </div>
-              
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Date of transfer</label>
-                        <input type="text" name="date" class="form-control" id="date" placeholder="22/04/2019">
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Message</label>
-                        <input type="text" name="message" class="form-control" id="exampleInputEmail1" placeholder="Message">
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Evidence of transfer</label>
-                        <input name="bukti" type="file" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <button class="btn btn-lg btn-primary" style="width:100%;">CONFIRM NOW</button>
-
-                </div>
-                {{-- <div class="col-md-12">
-                    <br>
-                    <center>
-                        <h5>Or Pay With</h5>
-                    </center>
-                    <br>
-                </div>
-                <div class="col-md-12">
-                    <div id="paypal-button-container"></div>
-                </div> --}}
+<section class="section-pad bg-cream-50">
+    <div class="container-gd mx-auto max-w-2xl">
+        <div class="card overflow-hidden">
+            <div class="border-b border-ink-100 bg-ink-950 px-8 py-6">
+                <p class="text-xs font-bold uppercase tracking-wider text-ink-400">Order Code</p>
+                <p class="mt-1 font-display text-xl font-bold text-white">{{ $order->code ?? '-' }}</p>
             </div>
+            <form action="{{ url('payment/pay/confirm-payment') }}" method="POST" enctype="multipart/form-data" class="space-y-6 p-8 sm:p-10">
+                @csrf
+                <input type="hidden" name="idtrx" value="{{ $order->id }}">
 
-        </form>
+                <div>
+                    <label for="bank" class="mb-2 block text-sm font-bold text-ink-800">Your Bank Account</label>
+                    <select name="bank" id="bank" class="w-full rounded-xl border border-ink-200 bg-white px-4 py-3 text-sm text-ink-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                        @foreach ($bank as $banks)
+                            <option value="{{ $banks->bank_name }}">{{ $banks->bank_name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="name" class="mb-2 block text-sm font-bold text-ink-800">Name Account</label>
+                    <input type="text" name="name" id="name" placeholder="Enter your bank account name"
+                        class="w-full rounded-xl border border-ink-200 bg-white px-4 py-3 text-sm text-ink-800 placeholder-ink-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                </div>
+
+                <div>
+                    <label for="date" class="mb-2 block text-sm font-bold text-ink-800">Date of Transfer</label>
+                    <input type="text" name="date" id="date" placeholder="22/04/2019"
+                        class="w-full rounded-xl border border-ink-200 bg-white px-4 py-3 text-sm text-ink-800 placeholder-ink-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                </div>
+
+                <div>
+                    <label for="message" class="mb-2 block text-sm font-bold text-ink-800">Message</label>
+                    <input type="text" name="message" id="message" placeholder="Message"
+                        class="w-full rounded-xl border border-ink-200 bg-white px-4 py-3 text-sm text-ink-800 placeholder-ink-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                </div>
+
+                <div>
+                    <label for="bukti" class="mb-2 block text-sm font-bold text-ink-800">Evidence of Transfer</label>
+                    <input type="file" name="bukti" id="bukti"
+                        class="w-full rounded-xl border border-dashed border-ink-300 bg-cream-50 px-4 py-6 text-sm text-ink-600 focus:outline-none">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full !py-4">Confirm Now</button>
+            </form>
+        </div>
     </div>
+</section>
 
-</body>
+@endsection
 
-</html>
-<style>
-    body {
-        padding: 50px 10px;
-        ;
-        background: #eee;
-    }
-
-    .container-mini {
-        max-width: 600px;
-        margin: 0 auto;
-        background: #fff;
-        border: 1px solid #ccc;
-        padding: 20px;
-    }
-</style>
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+@section('js')
 <script src="{{ url('assets/customer/frontdata/js/jquery.min.js') }}"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script src="https://www.paypal.com/sdk/js?client-id=AZzcGXiUsp84fPHm_PpWICNmWiz6iOi1jkzmofR0q2oQn-6dtl4uhb4HBRzT4IrRq1J3dk6sFIEdK53v"></script>
-
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script>
-    $(document).ready(function() {
-        var nilai = $('.totpay').html()
-        var id = $('.idtrx').val()
-        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: nilai
-                        }
-                    }]
-                });
-            },
-            onApprove: function(data, actions) {
-                // Capture the funds from the transaction
-                return actions.order.capture().then(function(details) {
-                    // Show a success message to your buyer
-                    $.ajax({
-                        url: 'pay/paypal-payment',
-                        type: 'get',
-                        data: {
-                            _token: CSRF_TOKEN,
-                            editid: id
-                        },
-                        success: function(response) {
-                            window.location = '/reservation/paid/'+response;
-                        }
-                    });
-                });
-            }
-        }).render('#paypal-button-container');
-    })
+    $(function() {
+        $("#date").datepicker({ dateFormat: 'dd/mm/yy' });
+    });
 </script>
-<script>
-  $( function() {
-    $( "#date").datepicker({ dateFormat: 'yy-mm-dd' });
-  } );
-  </script>
+@endsection

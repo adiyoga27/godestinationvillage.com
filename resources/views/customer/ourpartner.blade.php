@@ -1,213 +1,51 @@
 @extends('customer/layout')
+
 @section('content')
 
-    <!-- start page title area-->
-    <div class="page-title-area ptb-100">
-        <div class="container">
-            <div class="page-title-content">
-                <h1>Our Partner</h1>
-                <ul>
-                    <li class="item"><a href="index.html">Home</a></li>
-                    <li class="item"><a href="team.html"><i class='bx bx-chevrons-right'></i>Our Partner</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="bg-image">
-            <img src="{{url('assets/customer/img/page-title-area/partner.jpg')}}" alt="Demo Image">
+<x-partials.page-hero
+    title="Our Partners"
+    subtitle="The partners and collaborators supporting GODEVI in building sustainable village tourism communities across Bali."
+    image="assets/customer/img/page-title-area/partner.jpg"
+    :crumbs="['Home' => '/', 'Our Partners' => '']"
+/>
+
+<section class="section-pad">
+    <div class="container-gd">
+        @php
+            $partners = [
+                ['image' => 'inbistohpati.png', 'title' => 'Tohpati Business Incubator', 'link' => null, 'desc' => 'Business incubation partner supporting tourism village entrepreneurship.'],
+                ['image' => 'dewibali.png', 'title' => 'Bali Tourism Village Communication Forum', 'link' => null, 'desc' => 'Collaboration forum connecting tourism villages across Bali.'],
+                ['image' => 'HMPIndonesia.png', 'title' => 'Himpunan Mahasiswa Pariwisata Indonesia', 'link' => 'https://hmpiofficial.org', 'desc' => 'National tourism student association (HMPI).'],
+                ['image' => 'ezeego.png', 'title' => 'EZZEGO.APP', 'link' => 'https://EzeeGo.app', 'desc' => 'Digital travel technology partner.'],
+                ['image' => 'IPBI.png', 'title' => 'Institut Pariwisata dan Bisnis Internasional', 'link' => 'https://www.ipb-intl.ac.id', 'desc' => 'International tourism and business institute (IPBI).'],
+                ['image' => 'unud.png', 'title' => 'Universitas Udayana', 'link' => 'https://www.unud.ac.id', 'desc' => 'Academic partner for tourism research and development.'],
+                ['image' => 'BUHSA.png', 'title' => 'Buleleng Homestay Association', 'link' => 'https://www.instagram.com/buleleng_homestay', 'desc' => 'Homestay association of Buleleng regency.'],
+            ];
+        @endphp
+
+        <div class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            @foreach ($partners as $i => $p)
+                @if ($p['link'])
+                    <a href="{{ $p['link'] }}" target="_blank" rel="noopener" data-vue="Reveal" class="group card card-hover flex flex-col items-center justify-center p-10 text-center">
+                        <div class="flex h-32 items-center justify-center">
+                            <img src="{{ asset('assets/customer/frontdata/images/' . $p['image']) }}" alt="{{ $p['title'] }}"
+                                class="max-h-28 w-auto object-contain opacity-90 grayscale transition duration-500 group-hover:grayscale-0" loading="lazy">
+                        </div>
+                        <h3 class="mt-6 font-display text-lg font-bold text-ink-950 transition group-hover:text-brand-600">{{ $p['title'] }}</h3>
+                        <p class="mt-2 text-sm text-ink-500">{{ $p['desc'] }}</p>
+                    </a>
+                @else
+                    <div data-vue="Reveal" class="card flex flex-col items-center justify-center p-10 text-center">
+                        <div class="flex h-32 items-center justify-center">
+                            <img src="{{ asset('assets/customer/frontdata/images/' . $p['image']) }}" alt="{{ $p['title'] }}"
+                                class="max-h-28 w-auto object-contain opacity-90 grayscale transition duration-500 group-hover:grayscale-0" loading="lazy">
+                        </div>
+                        <h3 class="mt-6 font-display text-lg font-bold text-ink-950">{{ $p['title'] }}</h3>
+                        <p class="mt-2 text-sm text-ink-500">{{ $p['desc'] }}</p>
+                    </div>
+                @endif
+            @endforeach
         </div>
     </div>
-    <!-- end page title area -->
-
-    <!-- start team section -->
-    <section id="team" class="team-section ptb-100">
-        <div class="container">
-            <div class="section-title">
-                <p>Travel has helped us to understand the meaning of life and it has helped us become better people. Each
-                    time we travel, we see the world with new eyes.</p>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="item-single mb-30">
-                        <div class="image">
-                            <center>
-
-                                <img src="{{ url('assets/customer/frontdata/images/inbistohpati.png') }}" width="500px" alt="Demo Image">
-                            </center>
-                        </div>
-                        <div class="content">
-                            <div class="title">
-                                <h3>
-                                    <a href="team.html">Tohpati Business Incubator</a>
-                                </h3>
-                                <br>
-
-                                <span></span>
-                            </div>
-                            <div class="social-link">
-                                <a href="#" target="_blank"><i class='bx bxl-facebook'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-twitter'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-linkedin'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-instagram'></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="item-single mb-30">
-                        <div class="image">
-                            <center>
-                                <img src="{{ url('assets/customer/frontdata/images/dewibali.png') }}" width="500px" alt="Demo Image">
-                            </center>
-                        </div>
-                        <div class="content">
-                            <div class="title">
-                                <h3>
-                                    <a href="team.html">Bali Tourism Village
-                                        Communication Forum</a>
-                                </h3>
-                                <br>
-                                <span></span>
-                            </div>
-                            <div class="social-link">
-                                <a href="#" target="_blank"><i class='bx bxl-facebook'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-twitter'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-linkedin'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-instagram'></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="item-single mb-30">
-                        <div class="image">
-                            <center>
-                                <img src="{{ url('assets/customer/frontdata/images/HMPIndonesia.png') }}" width="500px" alt="Demo Image">
-                            </center>
-                        </div>
-                        <div class="content">
-                            <div class="title">
-                                <h3>
-                                    <a href="https://hmpiofficial.org">Himpunan Mahasiswa Pariwisata Indonesia
-                                       </a>
-                                </h3>
-                                <br>
-                                <span></span>
-                            </div>
-                            <!-- <div class="social-link">
-                                <a href="#" target="_blank"><i class='bx bxl-facebook'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-twitter'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-linkedin'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-instagram'></i></a>
-                            </div> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="item-single mb-30">
-                        <div class="image">
-                            <center>
-                                <img src="{{ url('assets/customer/frontdata/images/ezeego.png') }}" width="500px" alt="Demo Image">
-                            </center>
-                        </div>
-                        <div class="content">
-                            <div class="title">
-                                <h3>
-                                    <a href="https://EzeeGo.app">EZZEGO.APP
-                                       </a>
-                                </h3>
-                                <br>
-                                <span></span>
-                            </div>
-                            <!-- <div class="social-link">
-                                <a href="#" target="_blank"><i class='bx bxl-facebook'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-twitter'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-linkedin'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-instagram'></i></a>
-                            </div> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="item-single mb-30">
-                        <div class="image">
-                            <center>
-                                <img src="{{ url('assets/customer/frontdata/images/IPBI.png') }}" width="500px" alt="Demo Image">
-                            </center>
-                        </div>
-                        <div class="content">
-                            <div class="title">
-                                <h3>
-                                    <a href="https://www.ipb-intl.ac.id">Institut Pariwisata dan Bisnis Internasional
-                                       </a>
-                                </h3>
-                                <br>
-                                <span></span>
-                            </div>
-                            <!-- <div class="social-link">
-                                <a href="#" target="_blank"><i class='bx bxl-facebook'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-twitter'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-linkedin'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-instagram'></i></a>
-                            </div> -->
-                        </div>
-                    </div>
-                </div>
-  
-
-                <div class="col-md-6">
-                    <div class="item-single mb-30">
-                        <div class="image">
-                            <center>
-                                <img src="{{ url('assets/customer/frontdata/images/unud.png') }}" width="500px" alt="Demo Image">
-                            </center>
-                        </div>
-                        <div class="content">
-                            <div class="title">
-                                <h3>
-                                    <a href="https://www.unud.ac.id">Universitas Udayana
-                                       </a>
-                                </h3>
-                                <br>
-                                <span></span>
-                            </div>
-                            <!-- <div class="social-link">
-                                <a href="#" target="_blank"><i class='bx bxl-facebook'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-twitter'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-linkedin'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-instagram'></i></a>
-                            </div> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="item-single mb-30">
-                        <div class="image">
-                            <center>
-                                <img src="{{ url('assets/customer/frontdata/images/BUHSA.png') }}" width="500px" alt="Demo Image">
-                            </center>
-                        </div>
-                        <div class="content">
-                            <div class="title">
-                                <h3>
-                                    <a href="https://www.instagram.com/buleleng_homestay">Buleleng Homestay Association
-                                       </a>
-                                </h3>
-                                <br>
-                                <span></span>
-                            </div>
-                            <!-- <div class="social-link">
-                                <a href="#" target="_blank"><i class='bx bxl-facebook'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-twitter'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-linkedin'></i></a>
-                                <a href="#" target="_blank"><i class='bx bxl-instagram'></i></a>
-                            </div> -->
-                        </div>
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
-    </section>
-    <!-- end team section -->
-@endsection()
+</section>
+@endsection

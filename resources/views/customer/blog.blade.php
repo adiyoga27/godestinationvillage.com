@@ -1,285 +1,104 @@
-@extends('customer/layout',array(
- 'title' => 'News - GODEVI',
-)
-)
+@extends('customer/layout')
+
 @section('content')
-    <!-- start page title area-->
-    <div class="page-title-area ptb-100">
-        <div class="container">
-            <div class="page-title-content">
-                <h1>@lang('News')</h1>
-                <ul>
-                    <li class="item"><a href="/">@lang('Home')</a></li>
-                    <li class="item"><a href="#"><i class='bx bx-chevrons-right'></i>@lang('News')</a></li>
-                </ul>
+
+<x-partials.page-hero
+    title="News & Insights"
+    subtitle="Stories, updates and insights about sustainable village tourism and community empowerment in Bali."
+    image="assets/customer/img/page-title-area/blog-style3.jpg"
+    :crumbs="['Home' => '/', 'News' => '']"
+/>
+
+<section class="section-pad">
+    <div class="container-gd">
+        <div class="grid gap-10 lg:grid-cols-[1fr_320px]">
+            <div class="grid gap-7 sm:grid-cols-2">
+                @forelse ($blog as $val)
+                    <article data-vue="Reveal" class="group card card-hover flex flex-col overflow-hidden">
+                        <a href="{{ url('news/' . $val->slug) }}" class="relative block h-52 overflow-hidden" aria-label="{{ $val->post_title }}">
+                            <img src="{{ asset('storage/blogs/' . $val->post_thumbnail) }}" alt="{{ $val->post_title }}"
+                                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy"
+                                onerror="this.onerror=null;this.src='{{ asset('assets/customer/img/etc/slider/blog%201%205x2.png') }}';">
+                        </a>
+                        <div class="flex flex-1 flex-col p-6">
+                            <div class="flex flex-wrap items-center gap-3 text-xs font-semibold text-ink-400">
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="h-4 w-4 text-brand-500" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
+                                    {{ \Carbon\Carbon::parse($val->created_at)->format('M d, Y') }}
+                                </span>
+                                @if ($val->post_tags)
+                                    <span class="flex items-center gap-1.5">
+                                        <svg class="h-4 w-4 text-forest-600" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" /></svg>
+                                        {{ $val->post_tags }}
+                                    </span>
+                                @endif
+                            </div>
+                            <a href="{{ url('news/' . $val->slug) }}" class="mt-3 block font-display text-lg font-semibold leading-snug text-ink-950 transition group-hover:text-brand-600">
+                                {{ $val->post_title }}
+                            </a>
+                            <p class="mt-2 flex-1 text-sm text-ink-500">{!! \Illuminate\Support\Str::words(strip_tags($val->post_content), 24, '...') !!}</p>
+                            <div class="mt-5 flex items-center justify-between border-t border-ink-50 pt-4">
+                                <span class="flex items-center gap-2 text-sm font-semibold text-ink-500">
+                                    <span class="flex h-8 w-8 overflow-hidden rounded-full bg-cream-100">
+                                        <svg class="m-auto h-4 w-4 text-ink-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2.5c-4.14 0-7.5 2.16-7.5 4.82V21h15v-1.68c0-2.66-3.36-4.82-7.5-4.82z"/></svg>
+                                    </span>
+                                    GODEVI Team
+                                </span>
+                                <a href="{{ url('news/' . $val->slug) }}" class="text-sm font-bold text-brand-600">Read More →</a>
+                            </div>
+                        </div>
+                    </article>
+                @empty
+                    <div class="col-span-full py-20 text-center">
+                        <p class="text-ink-400">No articles published yet.</p>
+                    </div>
+                @endforelse
+
+                @if ($blog->hasPages())
+                    <div class="col-span-full mt-6 flex justify-center">
+                        <div class="flex items-center gap-2">
+                            @if ($blog->onFirstPage())
+                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-300">‹</span>
+                            @else
+                                <a href="{{ $blog->previousPageUrl() }}" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-600 transition hover:border-brand-600 hover:text-brand-600">‹</a>
+                            @endif
+                            @for ($i = 1; $i <= $blog->lastPage(); $i++)
+                                <a href="{{ $blog->url($i) }}"
+                                    class="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition {{ $blog->currentPage() == $i ? 'bg-brand-600 text-white' : 'border border-ink-200 text-ink-600 hover:border-brand-600 hover:text-brand-600' }}">
+                                    {{ $i }}
+                                </a>
+                            @endfor
+                            @if ($blog->hasMorePages())
+                                <a href="{{ $blog->nextPageUrl() }}" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-600 transition hover:border-brand-600 hover:text-brand-600">›</a>
+                            @else
+                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-300">›</span>
+                            @endif
+                        </div>
+                    </div>
+                @endif
             </div>
-        </div>
-        <div class="bg-image">
-            <img src="{{url('assets/customer/img/page-title-area/blog-style3.jpg')}}" alt="Demo Image">
+
+            <aside class="space-y-6 lg:sticky lg:top-28 lg:self-start">
+                <div data-vue="Reveal" class="rounded-3xl border border-ink-100 bg-white p-6 shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)]">
+                    <h2 class="font-display text-lg font-semibold">Recent Articles</h2>
+                    <ul class="mt-4 space-y-4">
+                        @foreach ($recent as $rec)
+                            <li>
+                                <a href="{{ url('news/' . $rec->slug) }}" class="group flex items-center gap-4">
+                                    <img src="{{ asset('storage/blogs/' . $rec->post_thumbnail) }}" alt="{{ $rec->post_title }}"
+                                        class="h-16 w-20 flex-shrink-0 rounded-xl object-cover" loading="lazy"
+                                        onerror="this.onerror=null;this.src='{{ asset('assets/customer/img/etc/slider/blog%201%205x2.png') }}';">
+                                    <span class="min-w-0">
+                                        <span class="block line-clamp-2 text-sm font-semibold leading-snug text-ink-800 transition group-hover:text-brand-600">{{ $rec->post_title }}</span>
+                                        <span class="mt-0.5 block text-xs font-semibold uppercase tracking-wide text-ink-400">{{ \Carbon\Carbon::parse($rec->created_at)->format('M d, Y') }}</span>
+                                    </span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </aside>
         </div>
     </div>
-    <!-- end page title area -->
-
-    <!-- start blog details section -->
-    <section class="blog-section blog-style-three ptb-100">
-        <div class="container">
-            <div class="section-title">
-                <h2>@lang('Latest News')</h2>
-                <p>@lang('Subtitle News')</p>
-            </div>
-            <div class="row">
-                <div class="col-lg-8 col-md-12">
-                    <div class="row">
-                        @foreach ($blog as $val)
-
-                            <div class="col-lg-12">
-                                <div class="item-single item-big mb-30">
-                                    <div class="image">
-                                        <img style="width:100%;object-fit: cover; margin:auto "
-                                            src="{{ url('storage/blogs/' . $val->post_thumbnail) }}"
-                                            alt="{{ $val->post_title }}" />
-                                    </div>
-                                    <div class="content">
-                                        <ul class="info-list">
-                                            <li><i class='bx bx-calendar'></i> October 5, 2020</li>
-                                            <li><i class='bx bx-tag'></i>Tour, Tourism, Travel</li>
-                                        </ul>
-                                        <h3>
-                                            <a href="{{ url('news/' . $val->slug) }}">{{ $val->post_title }}</a>
-                                        </h3>
-
-                                        {{ strip_tags(\Illuminate\Support\Str::limit($val->post_content, $limit = 150, $end = '...')) }}
-                                        <ul class="list">
-                                            <li>
-                                                <div class="author">
-                                                    <!--<img src="{{ url('storage/users/' . $val->user->avatar) }}"-->
-                                                    <!--    alt="{{ $val->user->name }}">-->
-                                                         <img src="https://godestinationvillage.com/storage/users/img-16341303996166d9df88729.png"
-                                                        alt="Godevi">
-                                                    <!--<span>By - {{ $val->user->name }}</span>-->
-                                                     <span>By -  Godevi</span>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="social-link">
-                                                    <span class="mr-2">Share :</span>
-                                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ url('news/' . $val->slug) }}"
-                                                        target="_blank"><i class='bx bxl-facebook'></i></a>
-                                                    <a href="https://www.twitter.com/share?url={{ url('news/' . $val->slug) }}"
-                                                        target="_blank"><i class='bx bxl-twitter'></i></a>
-                                                    <a href="https://www.linkedin.com/cws/share?url={{ url('news/' . $val->slug) }}"
-                                                        target="_blank"><i class='bx bxl-linkedin'></i></a>
-                                                    <a href="https://www.instagram.com/godestinationvillage"
-                                                        target="_blank"><i class='bx bxl-instagram'></i></a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <a href="{{ url('news/' . $val->slug) }}" class="btn-primary">Read More</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-12">
-                    <aside class="widget-area">
-                        <div class="widget widget-search mb-30">
-                            <form class="search-form search-top">
-                                <input type="search" class="form-control" placeholder="Search..." />
-                                <button type="submit" class="btn-text-only">
-                                    <i class='bx bx-search-alt'></i>
-                                </button>
-                            </form>
-                        </div>
-                        <div class="widget widget-video mb-30">
-                            <div class="video-image">
-                                <img src="https://img.youtube.com/vi/kIFVo2qgI-g/sddefault.jpg" width="900px" width="600px"
-                                    alt="video" />
-                            </div>
-                            <a href="https://www.youtube.com/watch?v=kIFVo2qgI-g" class="youtube-popup video-btn">
-                                <i class='bx bx-right-arrow'></i>
-                            </a>
-                        </div>
-                        <div class="widget widget-article mb-30">
-                            <h3 class="sub-title">Popular News</h3>
-                            @foreach ($recent as $rec)
-
-                                <article class="article-item">
-                                    <div class="image">
-                                        <img src="{{ url('storage/blogs/' . $rec->post_thumbnail) }}" alt="Demo Image" />
-                                    </div>
-                                    <div class="content">
-                                        <h3>
-                                            <a href="{{ url('news/' . $rec->slug) }}">{{ $rec->post_title }}</a>
-                                        </h3>
-                                        <ul class="list">
-                                            <li>
-                                                <div class="author">
-                                                    <img src="{{ url('storage/users/' . $val->user->avatar) }}"
-                                                        alt="Demo Image">
-                                                    <span>By - {{ $rec->user->name }}</span>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </article>
-                                <hr>
-                            @endforeach
-                        </div>
-
-                        <div class="widget widget-gallery mb-30">
-                            <h3 class="sub-title">Instagram Post</h3>
-                             <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/godestinationvillage/" data-instgrm-version="13"></blockquote>
-                            <!--<blockquote class="instagram-media" data-instgrm-captioned-->
-                            <!--    data-instgrm-permalink="https://www.instagram.com/p/CNzrGhILx-D/?utm_source=ig_embed&amp;utm_campaign=loading"-->
-                            <!--    data-instgrm-version="13"-->
-                            <!--    style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);">-->
-                            <!--    <div style="padding:16px;"> <a-->
-                            <!--            href="https://www.instagram.com/p/CNzrGhILx-D/?utm_source=ig_embed&amp;utm_campaign=loading"-->
-                            <!--            style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;"-->
-                            <!--            target="_blank">-->
-                            <!--            <div style=" display: flex; flex-direction: row; align-items: center;">-->
-                            <!--                <div-->
-                            <!--                    style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;">-->
-                            <!--                </div>-->
-                            <!--                <div-->
-                            <!--                    style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;">-->
-                            <!--                    <div-->
-                            <!--                        style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 100px;">-->
-                            <!--                    </div>-->
-                            <!--                    <div-->
-                            <!--                        style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 60px;">-->
-                            <!--                    </div>-->
-                            <!--                </div>-->
-                            <!--            </div>-->
-                            <!--            <div style="padding: 19% 0;"></div>-->
-                            <!--            <div style="display:block; height:50px; margin:0 auto 12px; width:50px;"><svg-->
-                            <!--                    width="50px" height="50px" viewBox="0 0 60 60" version="1.1"-->
-                            <!--                    xmlns="https://www.w3.org/2000/svg"-->
-                            <!--                    xmlns:xlink="https://www.w3.org/1999/xlink">-->
-                            <!--                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">-->
-                            <!--                        <g transform="translate(-511.000000, -20.000000)" fill="#000000">-->
-                            <!--                            <g>-->
-                            <!--                                <path-->
-                            <!--                                    d="M556.869,30.41 C554.814,30.41 553.148,32.076 553.148,34.131 C553.148,36.186 554.814,37.852 556.869,37.852 C558.924,37.852 560.59,36.186 560.59,34.131 C560.59,32.076 558.924,30.41 556.869,30.41 M541,60.657 C535.114,60.657 530.342,55.887 530.342,50 C530.342,44.114 535.114,39.342 541,39.342 C546.887,39.342 551.658,44.114 551.658,50 C551.658,55.887 546.887,60.657 541,60.657 M541,33.886 C532.1,33.886 524.886,41.1 524.886,50 C524.886,58.899 532.1,66.113 541,66.113 C549.9,66.113 557.115,58.899 557.115,50 C557.115,41.1 549.9,33.886 541,33.886 M565.378,62.101 C565.244,65.022 564.756,66.606 564.346,67.663 C563.803,69.06 563.154,70.057 562.106,71.106 C561.058,72.155 560.06,72.803 558.662,73.347 C557.607,73.757 556.021,74.244 553.102,74.378 C549.944,74.521 548.997,74.552 541,74.552 C533.003,74.552 532.056,74.521 528.898,74.378 C525.979,74.244 524.393,73.757 523.338,73.347 C521.94,72.803 520.942,72.155 519.894,71.106 C518.846,70.057 518.197,69.06 517.654,67.663 C517.244,66.606 516.755,65.022 516.623,62.101 C516.479,58.943 516.448,57.996 516.448,50 C516.448,42.003 516.479,41.056 516.623,37.899 C516.755,34.978 517.244,33.391 517.654,32.338 C518.197,30.938 518.846,29.942 519.894,28.894 C520.942,27.846 521.94,27.196 523.338,26.654 C524.393,26.244 525.979,25.756 528.898,25.623 C532.057,25.479 533.004,25.448 541,25.448 C548.997,25.448 549.943,25.479 553.102,25.623 C556.021,25.756 557.607,26.244 558.662,26.654 C560.06,27.196 561.058,27.846 562.106,28.894 C563.154,29.942 563.803,30.938 564.346,32.338 C564.756,33.391 565.244,34.978 565.378,37.899 C565.522,41.056 565.552,42.003 565.552,50 C565.552,57.996 565.522,58.943 565.378,62.101 M570.82,37.631 C570.674,34.438 570.167,32.258 569.425,30.349 C568.659,28.377 567.633,26.702 565.965,25.035 C564.297,23.368 562.623,22.342 560.652,21.575 C558.743,20.834 556.562,20.326 553.369,20.18 C550.169,20.033 549.148,20 541,20 C532.853,20 531.831,20.033 528.631,20.18 C525.438,20.326 523.257,20.834 521.349,21.575 C519.376,22.342 517.703,23.368 516.035,25.035 C514.368,26.702 513.342,28.377 512.574,30.349 C511.834,32.258 511.326,34.438 511.181,37.631 C511.035,40.831 511,41.851 511,50 C511,58.147 511.035,59.17 511.181,62.369 C511.326,65.562 511.834,67.743 512.574,69.651 C513.342,71.625 514.368,73.296 516.035,74.965 C517.703,76.634 519.376,77.658 521.349,78.425 C523.257,79.167 525.438,79.673 528.631,79.82 C531.831,79.965 532.853,80.001 541,80.001 C549.148,80.001 550.169,79.965 553.369,79.82 C556.562,79.673 558.743,79.167 560.652,78.425 C562.623,77.658 564.297,76.634 565.965,74.965 C567.633,73.296 568.659,71.625 569.425,69.651 C570.167,67.743 570.674,65.562 570.82,62.369 C570.966,59.17 571,58.147 571,50 C571,41.851 570.966,40.831 570.82,37.631">-->
-                            <!--                                </path>-->
-                            <!--                            </g>-->
-                            <!--                        </g>-->
-                            <!--                    </g>-->
-                            <!--                </svg></div>-->
-                            <!--            <div style="padding-top: 8px;">-->
-                            <!--                <div-->
-                            <!--                    style=" color:#3897f0; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;">-->
-                            <!--                    View this post on Instagram</div>-->
-                            <!--            </div>-->
-                            <!--            <div style="padding: 12.5% 0;"></div>-->
-                            <!--            <div-->
-                            <!--                style="display: flex; flex-direction: row; margin-bottom: 14px; align-items: center;">-->
-                            <!--                <div>-->
-                            <!--                    <div-->
-                            <!--                        style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(0px) translateY(7px);">-->
-                            <!--                    </div>-->
-                            <!--                    <div-->
-                            <!--                        style="background-color: #F4F4F4; height: 12.5px; transform: rotate(-45deg) translateX(3px) translateY(1px); width: 12.5px; flex-grow: 0; margin-right: 14px; margin-left: 2px;">-->
-                            <!--                    </div>-->
-                            <!--                    <div-->
-                            <!--                        style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(9px) translateY(-18px);">-->
-                            <!--                    </div>-->
-                            <!--                </div>-->
-                            <!--                <div style="margin-left: 8px;">-->
-                            <!--                    <div-->
-                            <!--                        style=" background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 20px; width: 20px;">-->
-                            <!--                    </div>-->
-                            <!--                    <div-->
-                            <!--                        style=" width: 0; height: 0; border-top: 2px solid transparent; border-left: 6px solid #f4f4f4; border-bottom: 2px solid transparent; transform: translateX(16px) translateY(-4px) rotate(30deg)">-->
-                            <!--                    </div>-->
-                            <!--                </div>-->
-                            <!--                <div style="margin-left: auto;">-->
-                            <!--                    <div-->
-                            <!--                        style=" width: 0px; border-top: 8px solid #F4F4F4; border-right: 8px solid transparent; transform: translateY(16px);">-->
-                            <!--                    </div>-->
-                            <!--                    <div-->
-                            <!--                        style=" background-color: #F4F4F4; flex-grow: 0; height: 12px; width: 16px; transform: translateY(-4px);">-->
-                            <!--                    </div>-->
-                            <!--                    <div-->
-                            <!--                        style=" width: 0; height: 0; border-top: 8px solid #F4F4F4; border-left: 8px solid transparent; transform: translateY(-4px) translateX(8px);">-->
-                            <!--                    </div>-->
-                            <!--                </div>-->
-                            <!--            </div>-->
-                            <!--            <div-->
-                            <!--                style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center; margin-bottom: 24px;">-->
-                            <!--                <div-->
-                            <!--                    style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 224px;">-->
-                            <!--                </div>-->
-                            <!--                <div-->
-                            <!--                    style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 144px;">-->
-                            <!--                </div>-->
-                            <!--            </div>-->
-                            <!--        </a>-->
-                            <!--        <p-->
-                            <!--            style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;">-->
-                            <!--            <a href="https://www.instagram.com/p/CNzrGhILx-D/?utm_source=ig_embed&amp;utm_campaign=loading"-->
-                            <!--                style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;"-->
-                            <!--                target="_blank">A post shared by 𝗚𝗢𝗗𝗘𝗩𝗜 (@godestinationvillage)</a>-->
-                            <!--        </p>-->
-                            <!--    </div>-->
-                            <!--</blockquote>-->
-                            <script async src="//www.instagram.com/embed.js"></script>
-                        </div>
-                    </aside>
-                </div>
-
-
-                <div class="item col-md-12">
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12">
-                            <div class="pagination text-center">
-                                @php
-                                    $current = $blog->currentPage();
-                                    $last = $blog->lastPage();
-                                    $start = max(1, $current - 2);
-                                    $end = min($last, $current + 2);
-                                @endphp
-
-                                @if ($current > 1)
-                                    <a href="{{ $blog->previousPageUrl() }}" class="page-numbers"><i class='bx bx-chevron-left'></i></a>
-                                @endif
-
-                                @if ($start > 1)
-                                    <a href="{{ $blog->url(1) }}" class="page-numbers">1</a>
-                                    @if ($start > 2)
-                                        <span class="page-numbers disabled">...</span>
-                                    @endif
-                                @endif
-
-                                @for ($i = $start; $i <= $end; $i++)
-                                    <a href="{{ $blog->url($i) }}" class="page-numbers @if ($current == $i) current @endif">{{ $i }}</a>
-                                @endfor
-
-                                @if ($end < $last)
-                                    @if ($end < $last - 1)
-                                        <span class="page-numbers disabled">...</span>
-                                    @endif
-                                    <a href="{{ $blog->url($last) }}" class="page-numbers">{{ $last }}</a>
-                                @endif
-
-                                @if ($current < $last)
-                                    <a href="{{ $blog->nextPageUrl() }}" class="page-numbers"><i class='bx bx-chevron-right'></i></a>
-                                @endif
-
-                                {{-- <span class="page-numbers current" aria-current="page">1</span>
-                                <a href="#" class="page-numbers">2</a>
-                                <a href="#" class="page-numbers">3</a>
-                                <a href="#" class="page-numbers">Next</a> --}}
-                            </div>
-                        </div>
-                    </div>
-                    {{-- {{ $packages->links() }} --}}
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- end blog details section -->
-@endsection()
+</section>
+@endsection

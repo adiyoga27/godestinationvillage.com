@@ -1,91 +1,80 @@
-@extends('customer/layout',array(
-'title' => 'Best Offers - GODEVI',
-)
-)
+@extends('customer/layout')
+
 @section('content')
-    <!-- start page title area-->
-    <div class="page-title-area ptb-100">
-        <div data-aos="fade-up" data-aos-offset="100" data-aos-duration="500" class="container aos-init aos-animate">
-            <div class="page-title-content">
-                <h1>@lang('Best Offers')</h1>
-                <ul>
-                    <li class="item"><a href="/">@lang('Home')</a></li>
-                    <li class="item"><a href="#"><i class="bx bx-chevrons-right"></i>@lang('Best Offers')</a>
-                    </li>
-                </ul>
-            </div>
+
+<x-partials.page-hero
+    title="Bali Tour Packages"
+    subtitle="Curated village experiences, cultural immersion and unforgettable adventures designed with local communities."
+    image="assets/customer/img/page-title-area/bestoffer.jpg"
+    :crumbs="['Home' => '/', 'Tour Packages' => '']"
+/>
+
+<section class="section-pad">
+    <div class="container-gd">
+        <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+            @forelse ($packages as $pack)
+                <a href="{{ url('tour-packages/' . $pack->slug) }}" data-vue="Reveal"
+                    class="group card card-hover flex flex-col overflow-hidden">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="{{ $pack->default_img ? asset('storage/packages/' . $pack->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
+                            alt="{{ $pack->name }} — paket tour desa di Bali" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                        <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink-950/60 to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 flex flex-wrap items-center gap-2">
+                            @if ($pack->cat_name ?? null)
+                                <span class="badge bg-white/95 text-ink-700">{{ $pack->cat_name }}</span>
+                            @endif
+                            @if ($pack->vil_name ?? null)
+                                <span class="badge bg-forest-600/90 text-white">
+                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+                                    {{ $pack->vil_name }}
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="flex flex-1 flex-col p-6">
+                        <h2 class="font-display text-xl font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $pack->name }}</h2>
+                        <p class="mt-2 line-clamp-2 flex-1 text-sm text-ink-500">{{ strip_tags($pack->desc ?? '') }}</p>
+                        <div class="mt-5 flex items-center justify-between border-t border-ink-50 pt-4">
+                            <div>
+                                <span class="block text-xs font-semibold uppercase tracking-wide text-ink-400">From</span>
+                                <span class="text-lg font-bold text-brand-600">Rp {{ number_format($pack->price, 0, ',', '.') }}</span>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-cream-50 px-4 py-2 text-sm font-bold text-ink-700 transition group-hover:bg-brand-600 group-hover:text-white">
+                                Book Now
+                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            @empty
+                <div class="col-span-full py-20 text-center">
+                    <p class="text-ink-400">No tour packages available yet.</p>
+                </div>
+            @endforelse
         </div>
-        <div class="bg-image"><img src="{{ url('assets/customer/img/page-title-area/bestoffer.jpg') }}" alt="Image"></div>
-    </div>
-    <!-- end page title area -->
-    <!-- start top destination section -->
-    <section id="top-destination" class="top-destination-section pt-100 pb-70 bg-light">
-        <div class="container">
-            {{-- <div class="section-title">
-                <h2>Top Destinations</h2>
-                <p>Travel has helped us to understand the meaning of life and it has helped us become better people. Each
-                    time we travel, we see the world with new eyes.</p>
-            </div> --}}
-            <div class="row">
-                @foreach ($packages as $pack)
 
-                    <div class="col-lg-4 col-md-6">
-                        <div class="item-single mb-50">
-                            <div class="image">
-                                <img src="{{ url('storage/packages/' . $pack->default_img) }}" alt="{{ $pack->name }}">
-                            </div>
-                            <div class="content">
-                                <span class="location"><i class='bx bx-map'></i>{{ $pack->vil_name }}</span>
-                                <h3>
-                                    <a href="{{ url('tour-packages/' . $pack->slug) }}">{{ $pack->name }}</a>
-                                </h3>
-
-                                <p>
-                                    {{ strip_tags(substr($pack->desc, 0, 100)) }}.
-                                </p>
-                                <hr>
-                                <ul class="list">
-                                    <li><i class='bx bx-time'></i>{{ $pack->cat_name }}</li>
-                                    <li><i class='bx bx-group'></i>10+</li>
-                                    <li>Rp {{ number_format($pack->price,0,',','.') }}</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                @endforeach
-
-
-                <div class="item col-md-12">
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12">
-                            <div class="pagination text-center">
-
-
-                                @for ($i = 1; $i <= $packages->lastPage(); $i++)
-                                    <a href="{{ $packages->url($i) }}" class="page-numbers @if ($packages->currentPage() == $i) current @endif">
-
-                                        {{ $i }}
-                                    </a>
-                                @endfor
-                                @if ($packages->lastPage() > 0 && $packages->currentPage() < $packages->lastPage())
-                                    <a href="{{ $packages->nextPageUrl() }}" class="page-numbers">Next</a>
-                                @endif
-
-                                {{-- <span class="page-numbers current" aria-current="page">1</span>
-                                <a href="#" class="page-numbers">2</a>
-                                <a href="#" class="page-numbers">3</a>
-                                <a href="#" class="page-numbers">Next</a> --}}
-                            </div>
-                        </div>
-                    </div>
-                    {{-- {{ $packages->links() }} --}}
+        @if ($packages->hasPages())
+            <div class="mt-14 flex justify-center">
+                <div class="flex items-center gap-2">
+                    @if ($packages->onFirstPage())
+                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-300">‹</span>
+                    @else
+                        <a href="{{ $packages->previousPageUrl() }}" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-600 transition hover:border-brand-600 hover:text-brand-600">‹</a>
+                    @endif
+                    @for ($i = 1; $i <= $packages->lastPage(); $i++)
+                        <a href="{{ $packages->url($i) }}"
+                            class="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition {{ $packages->currentPage() == $i ? 'bg-brand-600 text-white' : 'border border-ink-200 text-ink-600 hover:border-brand-600 hover:text-brand-600' }}">
+                            {{ $i }}
+                        </a>
+                    @endfor
+                    @if ($packages->hasMorePages())
+                        <a href="{{ $packages->nextPageUrl() }}" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-600 transition hover:border-brand-600 hover:text-brand-600">›</a>
+                    @else
+                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-300">›</span>
+                    @endif
                 </div>
             </div>
-        </div>
-    </section>
-    <!-- end top destination section -->
-    <!-- end our tour section -->
-
-
-@endsection()
+        @endif
+    </div>
+</section>
+@endsection

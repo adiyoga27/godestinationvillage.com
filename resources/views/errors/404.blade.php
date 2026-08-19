@@ -1,87 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Author: HiBootstrap, Category: Tourism, Multipurpose, HTML, SASS, Bootstrap" />
-        <!-- title -->
-   
+@extends('customer/layout')
 
-    <!-- title -->
-    <title>{{ $title ?? 'GODEVI - Authentic Village Experiences' }}</title>
-    <!-- bootstrap CSS -->
-    <link rel="stylesheet" href="{{ url('assets/customer/css/bootstrap.min.css') }}" />
-    <!-- font-awesome CSS -->
-    <link rel="stylesheet" href="{{ url('assets/customer/css/fontawesome.css') }}" />
-    <!-- box-icon CSS -->
-    <link rel="stylesheet" href="{{ url('assets/customer/css/boxicons.min.css') }}">
-    <!-- animate CSS -->
-    <link rel="stylesheet" href="{{ url('assets/customer/css/animate.min.css') }}" />
-    <!-- bootstrap date-picker CSS -->
-    <link rel="stylesheet" href="{{ url('assets/customer/css/bootstrap-datepicker.min.css') }}">
-    <!-- nice select CSS -->
-    <link rel="stylesheet" href="{{ url('assets/customer/css/nice-select.css') }}">
-    <!-- magnific popup CSS -->
-    <link rel="stylesheet" href="{{ url('assets/customer/css/magnific-popup.min.css') }}" />
-    <!-- owl-carousel CSS -->
-    <link rel="stylesheet" href="{{ url('assets/customer/css/owl.carousel.min.css') }}" />
-    <!-- mean-menu CSS -->
-    <link rel="stylesheet" href="{{ url('assets/customer/css/meanmenu.min.css') }}" />
-    <!-- main style CSS -->
-    <link rel="stylesheet" href="{{ url('assets/customer/css/style.css') }}" />
-    <!-- responsive CSS -->
-    <link rel="stylesheet" href="{{ url('assets/customer/css/responsive.css') }}" />
-    <!-- favicon -->
-    <link rel="icon" href="{{ url('assets/customer/img/favicon.png') }}" type="image/png" />
-    <link rel="stylesheet" href="{{ url('assets/customer/frontdata/css/owl.carousel.min.css') }}">
-    <link rel="stylesheet" href="{{ url('assets/customer/frontdata/css/owl.theme.default.min.css') }}">
-        <!-- favicon -->
-        <link rel="icon" href="{{ url('assets/customer/img/favicon.png')}}" type="image/png"/>
-    </head>
-    <body>
+@section('content')
 
-        <!-- start error area -->
-        <section class="error-area ptb-100">
-            <div class="container">
-                <div class="error-content">
-                    <img src="{{ url('assets/customer/img/404.png')}}" alt="image" />
-                    <h3>Ooops! Page Not Found</h3>
-                    <p>
-                        The page you are looking for might have been removed had its name changed or is temporarily unavailable.
-                    </p>
-                    <a href="{{url('/')}}" class="btn-primary">Back to Home</a>
-                </div>
-            </div>
-        </section>
-        <!-- end error area -->
+@php
+    $seo = \App\Support\Seo::make()
+        ->title($title ?? 'Page Not Found — GODEVI')
+        ->description('The page you are looking for could not be found.')
+        ->noindex()
+        ->toArray();
+@endphp
 
-    <!-- jquery JS -->
-    <script src="{{ url('assets/customer/js/jquery.min.js') }}"></script>
-    <!-- popper JS -->
-    <script src="{{ url('assets/customer/js/popper.min.js') }}"></script>
-    <!-- bootstrap JS -->
-    <script src="{{ url('assets/customer/js/bootstrap.min.js') }}"></script>
-    <!-- bootstrap datepicker JS -->
-    <script src="{{ url('assets/customer/js/bootstrap-datepicker.min.js') }}"></script>
-    <!-- nice select JS -->
-    <script src="{{ url('assets/customer/js/jquery.nice-select.min.js') }}"></script>
-    <!-- magnific popup JS -->
-    <script src="{{ url('assets/customer/js/jquery.magnific-popup.min.js') }}"></script>
-    <!-- filterizr JS -->
-    <script src="{{ url('assets/customer/js/jquery.filterizr.min.js') }}"></script>
-    <!-- owl carousel JS -->
-    <script src="{{ url('assets/customer/js/owl.carousel.min.js') }}"></script>
-    <!-- mean menu JS -->
-    <script src="{{ url('assets/customer/js/meanmenu.min.js') }}"></script>
-    <!-- form validator -->
-    <script src="{{ url('assets/customer/js/form-validator.min.js') }}"></script>
-    <!-- contact form JS -->
-    <script src="{{ url('assets/customer/js/contact-form-script.js') }}"></script>
-    <!-- ajax chimp JS -->
-    <script src="{{ url('assets/customer/js/jquery.ajaxchimp.min.js') }}"></script>
-    <script src="{{ url('assets/customer/frontdata/js/owl.carousel.min.js') }}"></script>
+<section class="section-pad bg-ink-50/60">
+    <div class="container-gd flex min-h-[65vh] items-center justify-center">
+        <div class="w-full max-w-lg text-center">
+            <p class="font-display text-[7rem] font-bold leading-none text-brand-600/15">404</p>
+            <h1 class="mt-4 font-display text-3xl font-semibold text-ink-950 sm:text-4xl">Ooops! Page Not Found</h1>
+            <p class="mx-auto mt-4 max-w-md text-ink-500">
+                The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+            </p>
+            <a href="{{ url('/') }}" class="btn btn-primary mt-8">Back to Home</a>
+        </div>
+    </div>
+</section>
 
-    <!-- script JS -->
-    <script src="{{ url('assets/customer/js/script.js') }}"></script>
-	</body>
-</html>
+@endsection

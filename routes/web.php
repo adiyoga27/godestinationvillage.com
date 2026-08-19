@@ -36,6 +36,7 @@ use App\Http\Controllers\Front\PageController;
 use App\Http\Controllers\Front\ReservationEventController;
 use App\Http\Controllers\Front\ReservationHomeStayController;
 use App\Http\Controllers\Front\SearchController;
+use App\Http\Controllers\Front\SitemapController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TestController;
@@ -61,6 +62,7 @@ use Illuminate\Support\Facades\Session;
 // Route::get('analytic', [AnalyticController::class, 'index']);
 
 Route::get('/', [PageController::class, 'index']);
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 Route::get('/home', [PageController::class, 'index']);
 Route::get('/redirects', function(){
 	return redirect(Redirect::intended()->getTargetUrl());

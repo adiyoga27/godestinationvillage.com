@@ -3,62 +3,91 @@
 
 <head>
     <meta charset="UTF-8" />
-    {{-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> --}}
-    <meta name="viewport"
-        content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi">
-
-    <meta property="og:site_name" content="Godevi">
-    <meta property="og:title" content="{{ $title ?? 'GODEVI - Authentic Village Experiences' }}" />
-    <meta property="og:description" content="{{ $content ?? 'Automatic Approve Payment' }}" />
-    <meta property="og:image" itemprop="image" content="{{ $image ?? url('assets/customer/frontdata/images/bird.png') }}">
-    <meta property="og:type" content="website" />
-    <meta property="og:updated_time" content="1440432930" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>{{ config('app.name', 'Godesination Village') }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Secure Payment — GODEVI</title>
     <link rel="icon" href="{{ url('assets/customer/img/favicon.png') }}" type="image/png" />
 
+    @vite(['resources/css/app.css'])
 
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        #snap-container {
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .pay-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.25rem;
+            background: #ffffff;
+            transition: opacity .35s ease;
+        }
+
+        .pay-loader.is-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
 </head>
 
-<body>
-    <script src="{{config('midtrans.uri')}}" data-client-key="{{ config('midtrans.client_key') }}">
-    </script>
+<body class="bg-white antialiased">
+    <div id="pay-loader" class="pay-loader">
+        <img src="{{ url('assets/customer/img/logo.png') }}" alt="GODEVI" class="h-14 w-auto">
+        <div class="flex items-center gap-2 text-sm font-semibold text-ink-500">
+            <svg class="h-5 w-5 animate-spin text-brand-600" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            Loading secure payment…
+        </div>
+    </div>
+
+    <div id="snap-container"></div>
+
+    <script src="{{ config('midtrans.uri') }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
     <script>
-        window.snap.embed('{{ $snapToken }}', {
-            embedId: 'snap-container',
-            // Optional
-            onSuccess: function(result) {
-                /* You may add your own js here, this is just example */
-                // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
-                console.log(result);
+        (function() {
+            var loader = document.getElementById('pay-loader');
+            var started = false;
+            var ready = function() {
+                if (loader && !loader.classList.contains('is-hidden')) {
+                    loader.classList.add('is-hidden');
+                }
+            };
 
-                window.location.href = '{{ $redirectURISuccess }}';
-            },
-            // Optional
-            onPending: function(result) {
-                /* You may add your own js here, this is just example */
-                // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+            // Hide loader as soon as the Snap popup/embed is up, or after a safe timeout.
+            setTimeout(ready, 6000);
 
-                window.location.href = '{{ $redirectURIError }}';
-
-                console.log(result);
-            },
-            // Optional
-            onError: function(result) {
-
-                /* You may add your own js here, this is just example */
-                // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
-                window.location.href = '{{ $redirectURIError }}';
-
-                console.log(result);
-            },
-            onClose: function(){
-                /* You may add your own implementation here */
-                window.location.href = '{{ $redirectURIError }}';
-            }
-        });
+            window.snap.embed('{{ $snapToken }}', {
+                embedId: 'snap-container',
+                onSuccess: function(result) {
+                    console.log(result);
+                    window.location.href = '{{ $redirectURISuccess }}';
+                },
+                onPending: function(result) {
+                    console.log(result);
+                    window.location.href = '{{ $redirectURIError }}';
+                },
+                onError: function(result) {
+                    console.log(result);
+                    window.location.href = '{{ $redirectURIError }}';
+                },
+                onClose: function() {
+                    window.location.href = '{{ $redirectURIError }}';
+                }
+            });
+        })();
     </script>
 </body>
 

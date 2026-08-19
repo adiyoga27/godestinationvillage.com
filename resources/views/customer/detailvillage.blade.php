@@ -1,231 +1,123 @@
-@extends('customer/layout',array(
-'title' => $village->village_detail->village_name,
-'content'=> strip_tags($village->village_detail->desc),
-'image'=> url('storage/users/'.$village->avatar))
-)
+@extends('customer/layout')
 
 @section('content')
-    <!-- start page title area-->
-    <div class="page-title-area ptb-100">
-        <div class="container">
-            <div class="page-title-content">
-                <h1>{{ $village->village_detail->village_name }}</h1>
-                <ul>
-                    <li class="item"><a href="index.html">Home</a></li>
-                    <li class="item"><a href="destination-details.html"><i class='bx bx-chevrons-right'></i>Explore
-                            Village</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="bg-image">
-            <img src="{{ url('storage/users/' . $village->avatar) }}" alt="Demo Image">
-        </div>
-    </div>
-    <!-- end page title area -->
+@php
+    $vd = $village->village_detail;
+    $hero = $village->avatar ? asset('storage/users/' . $village->avatar) : asset('assets/customer/frontdata/images/about.jpg');
+@endphp
 
-    <!-- start destination details section -->
-    <section class="destinations-details-section pt-100 pb-70">
-        <div class="container">
-            <div class="section-title">
-                <h2>{{ $village->village_detail->village_name }}</h2>
-                <h6><i class='bx bx-current-location'> </i> {{ $village->village_detail->village_address }}</h6>
+<x-partials.page-hero
+    :title="$vd->village_name ?? $village->name"
+    :subtitle="$vd->village_address"
+    :image="$hero"
+    :crumbs="['Home' => '/', 'Explore Village' => 'village', ($vd->village_name ?? 'Village') => '']"
+/>
 
-                <hr>
-
-            </div>
-
-            <div class="row">
-                <div class="col-lg-8 col-md-12">
-                    <div class="destination-details-desc mb-30">
-                        <div class="row align-items-center">
-                            <div class="col-md-12">
-                                <div class="image mb-30">
-                                    <img src="{{ url('storage/users/' . $village->avatar) }}" alt="Demo Image" />
-                                </div>
-                            </div>
-                            {{-- <div class="col-md-6 col-sm-12">
-                                <div class="image mb-30">
-                                    <img src="assets/img/destination14.jpg" alt="Demo Image" />
-                                </div>
-                            </div> --}}
-                        </div>
-                        <div class="content mb-20">
-
-                            {!! $village->village_detail->desc !!}
-
-
-                        </div>
-
-
-                        <div id="map"></div>
+<section class="section-pad">
+    <div class="container-gd">
+        <div class="grid gap-10 lg:grid-cols-[1fr_340px]">
+            {{-- Main --}}
+            <div class="space-y-10">
+                <div data-vue="Reveal" class="overflow-hidden rounded-3xl border border-ink-100 shadow-[0_25px_50px_-12px_rgb(26_26_38/0.25)]">
+                    <div class="relative aspect-[16/9] w-full sm:aspect-[16/7]">
+                        <img src="{{ $hero }}" alt="{{ $vd->village_name ?? '' }} — desa wisata Bali" class="h-full w-full object-cover" loading="eager">
+                        <span class="badge absolute left-5 top-5 bg-white/95 text-forest-700">Authentic Village</span>
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-12">
-                    <aside class="widget-area">
+                <article data-vue="Reveal" data-props='{"delay":100}'>
+                    <h1 class="font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ $vd->village_name ?? $village->name }}</h1>
+                    <div class="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-500">
+                        @if ($vd->village_address ?? null)
+                            <span class="flex items-center gap-2"><svg class="h-4 w-4 text-brand-500" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>{{ $vd->village_address }}</span>
+                        @endif
+                        @if ($vd->contact_person ?? null)
+                            <span class="flex items-center gap-2"><svg class="h-4 w-4 text-forest-600" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>{{ $vd->contact_person }}</span>
+                        @endif
+                    </div>
+                    <div class="prose-gd mt-6 text-ink-700">{!! $vd->desc ?? '' !!}</div>
+                </article>
 
-                        <div class="widget widget-video mb-30">
-                            <div class="video-image">
-                                <img src="https://img.youtube.com/vi/kIFVo2qgI-g/sddefault.jpg" width="900px" width="600px"
-                                    alt="video" />
-                            </div>
-                            <a href="https://www.youtube.com/watch?v=kIFVo2qgI-g" class="youtube-popup video-btn">
-                                <i class='bx bx-right-arrow'></i>
-                            </a>
+                @if ($vd->lat && $vd->lng)
+                    <div data-vue="Reveal" class="overflow-hidden rounded-3xl border border-ink-100">
+                        <div class="flex items-center justify-between border-b border-ink-100 bg-white px-6 py-4">
+                            <h2 class="font-display text-xl font-semibold">Location</h2>
+                            <a href="https://www.google.com/maps?q={{ $vd->lat }},{{ $vd->lng }}" target="_blank" rel="noopener" class="text-sm font-bold text-brand-600 hover:underline">Open in Google Maps</a>
                         </div>
-                        <div class="widget widget-article mb-30">
-                            <h3 class="sub-title">Recent Tour Packages</h3>
-                            <hr>
-                            @foreach ($recent as $rec)
-                                <article class="article-item">
-                                    <div class="image">
-                                        <img src="{{ url('storage/packages/' . $rec->default_img) }}" alt="Demo Image" wi/>
-                                    </div>
-                                    <div class="content">
-                                        {{-- <span class="location"><i class='bx bx-map'></i>95 Fleet, London</span> --}}
-                                        <h4>
-                                            <a href="{{ url('tour-packages/' . $rec->slug) }}">{{ $rec->name }}.</a>
-                                        </h4>
-                                        <ul class="list">
-                                            <li><i class='bx bx-time' style="color:red"></i>{{ $rec->cat_name }}</li>
+                        <iframe
+                            title="Map of {{ $vd->village_name ?? 'the village' }}"
+                            src="https://www.openstreetmap.org/export/embed.html?bbox={{ $vd->lng - 0.02 }}%2C{{ $vd->lat - 0.015 }}%2C{{ $vd->lng + 0.02 }}%2C{{ $vd->lat + 0.015 }}&amp;layer=mapnik&amp;marker={{ $vd->lat }}%2C{{ $vd->lng }}"
+                            class="h-[380px] w-full border-0" loading="lazy"></iframe>
+                    </div>
+                @endif
+            </div>
 
-                                        </ul>
-                                    </div>
-                                </article>
-                            @endforeach
-
-
-                        </div>
-
-
-                    </aside>
+            {{-- Sidebar --}}
+            <aside class="space-y-6 lg:sticky lg:top-28 lg:self-start">
+                <div data-vue="Reveal" class="rounded-3xl border border-ink-100 bg-white p-6 shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)]">
+                    <h2 class="font-display text-lg font-semibold">Tour Packages</h2>
+                    <ul class="mt-4 space-y-4">
+                        @forelse ($recent as $rec)
+                            <li>
+                                <a href="{{ url('tour-packages/' . $rec->slug) }}" class="group flex items-center gap-4">
+                                    <img src="{{ asset('storage/packages/' . $rec->default_img) }}"
+                                        alt="{{ $rec->name }}" class="h-16 w-20 flex-shrink-0 rounded-xl object-cover"
+                                        loading="lazy" onerror="this.onerror=null;this.src='{{ asset('assets/customer/frontdata/images/destination-1.jpg') }}';">
+                                    <span class="min-w-0">
+                                        <span class="block line-clamp-2 text-sm font-semibold text-ink-800 transition group-hover:text-brand-600">{{ $rec->name }}</span>
+                                        <span class="mt-0.5 block text-xs font-semibold uppercase tracking-wide text-ink-400">{{ $rec->cat_name }}</span>
+                                    </span>
+                                </a>
+                            </li>
+                        @empty
+                            <li class="text-sm text-ink-400">Packages coming soon.</li>
+                        @endforelse
+                    </ul>
                 </div>
-                <div class="col-lg-12 col-md-12">
-                    <hr>
 
-                    <!-- start destination section -->
-                    <section id="destination" class="destination-section ptb-50 ">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-8 m-auto">
-                                    <div class="filter-group">
-                                        <!-- Control List -->
-                                        <h2>Tour Package</h2>
-                                        <p>Travel has helped us to understand the meaning of life and it has helped us
-                                            become
-                                            better
-                                            people. Each time we travel, we see the world with new eyes.</p>
-                                        </li>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row filtr-container">
-                                @foreach ($packages as $pack)
-                                    <div class="col-lg-4 col-md-6 filtr-item" data-category="1" data-sort="value">
-                                        <div class="item-single mb-30">
-                                            <div class="image">
-                                                <img src="{{ url('storage/packages/' . $pack->default_img) }}"
-                                                    alt="{{ $pack->name }}">
-                                            </div>
-                                            <div class="content">
+                <a href="https://wa.me/6281997674778?text=Hi%20GODEVI%2C%20I%20want%20to%20book%20a%20tour%20in%20{{ urlencode($vd->village_name ?? '') }}"
+                    target="_blank" rel="noopener" data-vue="Reveal"
+                    class="flex items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-6 py-4 font-bold text-white shadow-lg transition hover:-translate-y-1">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.21-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49 0 1.47 1.07 2.89 1.22 3.09.15.2 2.11 3.22 5.1 4.51.71.31 1.27.49 1.7.63.72.23 1.37.2 1.88.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35zm-5.42 7.4h-.004a9.87 9.87 0 01-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 01-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88a9.83 9.83 0 019.88 9.89c0 5.45-4.43 9.88-9.88 9.88zM12.05 21.5c2.6 0 5.03-1.01 6.86-2.84a9.66 9.66 0 002.84-6.87 9.66 9.66 0 00-2.84-6.87c-1.83-1.82-4.26-2.83-6.86-2.83a9.68 9.68 0 00-9.69 9.69c0 1.7.45 3.37 1.3 4.83l-1.4 5.12 5.24-1.37a9.67 9.67 0 004.55 1.14z"/></svg>
+                    Chat with local host
+                </a>
+            </aside>
+        </div>
+    </div>
+</section>
 
-                                                <h3>
-                                                    <a
-                                                        href="{{ url('tour-packages/' . $pack->slug) }}">{{ $pack->name }}</a>
-                                                </h3>
-                                                <span class="location"><i
-                                                        class='bx bx-time'></i>{{ $pack->category->name ?? '' }}&nbsp
-                                                    <i class='bx bx-group'></i>1 Person
-                                                </span>
-                                                <br>
-                        
-                                                <p>
-                                                    {{ strip_tags(substr($pack->desc, 0, 100)) }}.
-                                                </p>
-                                                
-                                                <hr>
-                                                <ul class="list">
-                                                    <li>
-                                                        Price :
-                                                    </li>
-                                           
-                                                    <li> 
-                                                        @if($pack->disc > 0)
-                                                       
-                                                        <font style="font-size: 13pt; color: red">&nbsp Rp {{ number_format($pack->disc,0,',','.') }}</font>
-/
-
-                                                        <a class="coret">
-                                                            <font style="font-size: 10pt; color: rgb(0, 0, 0)">
-                                                                {{ number_format($pack->price,0,',','.') }} 
-                                                            </font>
-                                                        </a>
-                                                        @else 
-                                                         <font style="font-size: 13pt;color: red">&nbsp Rp {{ number_format($pack->price,0,',','.') }}</font>
-                                                        @endif
-                                                    </li>
-                                                </ul>
-                                         
-                                            </div>
-                                            <div class="spacer"></div>
-                                        </div>
-                                    </div>
-                                @endforeach
-
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="pagination text-center">
-                                        @if ($packages->lastPage() != 1)
-                                            @for ($i = 1; $i <= $packages->lastPage(); $i++)
-                                                <a href="{{ $packages->url($i) }}" class="page-numbers @if ($packages->currentPage() == $i) current @endif">
-
-                                                    {{ $i }}
-                                                </a>
-                                            @endfor
-
-                                            <a href="{{ $packages->nextPageUrl() }}" class="page-numbers">Next</a>
-
-                                        @endif
-                                    </div>
-                                </div>
+{{-- Packages in this village --}}
+@if (count($packages))
+    <section class="section-pad bg-cream-50">
+        <div class="container-gd">
+            <div class="mb-10" data-vue="Reveal">
+                <p class="eyebrow">Experiences</p>
+                <h2 class="font-display text-3xl font-bold sm:text-4xl">Tours & activities in {{ $vd->village_name ?? 'this village' }}</h2>
+            </div>
+            <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+                @foreach ($packages as $pack)
+                    <a href="{{ url('tour-packages/' . $pack->slug) }}" data-vue="Reveal" class="group card card-hover flex flex-col overflow-hidden">
+                        <div class="relative h-52 overflow-hidden">
+                            <img src="{{ $pack->default_img ? asset('storage/packages/' . $pack->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
+                                alt="{{ $pack->name }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                        </div>
+                        <div class="flex flex-1 flex-col p-6">
+                            <h3 class="font-display text-lg font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $pack->name }}</h3>
+                            <div class="mt-4 flex items-center justify-between border-t border-ink-50 pt-4">
+                                <span class="text-lg font-bold text-brand-600">
+                                    @if ($pack->disc > 0)
+                                        Rp {{ number_format($pack->disc, 0, ',', '.') }}
+                                    @else
+                                        Rp {{ number_format($pack->price, 0, ',', '.') }}
+                                    @endif
+                                </span>
+                                <span class="text-sm font-bold text-ink-500 transition group-hover:text-brand-600">Details →</span>
                             </div>
                         </div>
-                    </section>
-                </div>
-                <!-- end destination section -->
+                    </a>
+                @endforeach
             </div>
         </div>
     </section>
-    <!-- end blog details section -->
-@endsection()
-
-@section('js')
-    <script type="text/javascript">
-        function initMap() {
-            var latStr = "{{ $village->village_detail->lat }}";
-            var lngStr = "{{ $village->village_detail->lng }}";
-            var latCoor = parseFloat(latStr.replace(',', '.'));
-            var lngCoor = parseFloat(lngStr.replace(',', '.'));
-            var myLatLng = {
-                lat: latCoor,
-                lng: lngCoor
-            }
-            // var myLatLng = {lat: -8.614762, lng: 115.193850};
-            var map = new google.maps.Map(document.getElementById('map'), {
-                center: myLatLng,
-                zoom: 10
-            });
-
-            var marker = new google.maps.Marker({
-                map: map,
-                title: 'Hello World!',
-                position: new google.maps.LatLng(latCoor, lngCoor)
-            });
-
-        }
-
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgAQOKoaiYIXHi0UxM76u3B50dVJLBZKk&callback=initMap" async
-        defer></script>
+@endif
 @endsection
