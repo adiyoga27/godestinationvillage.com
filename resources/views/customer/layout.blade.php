@@ -166,7 +166,6 @@
                         </div>
                     @else
                         <a href="{{ url('login') }}" class="hidden sm:inline-flex btn btn-secondary !px-5 !py-2.5 text-sm">{{ __('Login') }}</a>
-                        <a href="{{ url('user/register') }}" class="hidden md:inline-flex btn btn-primary !px-5 !py-2.5 text-sm">{{ __('Register') }}</a>
                     @endauth
 
                     <a href="#searchBox" data-mfp-src="#searchBox" id="bookNowLink" class="hidden btn btn-primary !px-6 !py-2.5 text-sm lg:inline-flex">
@@ -251,7 +250,6 @@
                     </form>
                 @else
                     <a href="{{ url('login') }}" class="btn btn-primary w-full">{{ __('Login') }}</a>
-                    <a href="{{ url('user/register') }}" class="btn btn-secondary w-full">{{ __('Create Account') }}</a>
                 @endauth
             </div>
         </div>
@@ -350,13 +348,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Floating WhatsApp -->
-    <a href="https://wa.me/6281997674778?text=Hi%20GODEVI,%20I%20want%20to%20book%20a%20village%20experience"
-        target="_blank" rel="noopener" aria-label="Chat on WhatsApp"
-        class="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-110">
-        <svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.13.3-.35.44-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.21-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49 0 1.47 1.07 2.89 1.22 3.09.15.2 2.11 3.22 5.1 4.51.71.31 1.27.49 1.7.63.72.23 1.37.2 1.88.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35zm-5.42 7.4h-.004a9.87 9.87 0 01-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 01-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88a9.83 9.83 0 019.88 9.89c0 5.45-4.43 9.88-9.88 9.88zM12.05 21.5c2.6 0 5.03-1.01 6.86-2.84a9.66 9.66 0 002.84-6.87 9.66 9.66 0 00-2.84-6.87c-1.83-1.82-4.26-2.83-6.86-2.83a9.68 9.68 0 00-9.69 9.69c0 1.7.45 3.37 1.3 4.83l-1.4 5.12 5.24-1.37a9.67 9.67 0 004.55 1.14z"/></svg>
-    </a>
 
     @yield('js')
 
