@@ -177,8 +177,8 @@
                 <a data-vue="Reveal" data-props="{{ json_encode(['delay' => ($i % 4) * 80]) }}"
                     href="{{ url('services') }}"
                     class="group card card-hover p-6 text-center">
-                    <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-cream-50 transition-transform duration-300 group-hover:-translate-y-2">
-                        <img src="{{ asset('assets/customer/img/etc/' . $s['img']) }}" alt="{{ $s['title'] }}" class="h-16 w-16 object-contain" loading="lazy">
+                    <div class="mx-auto flex h-40 w-40 items-center justify-center">
+                        <img src="{{ asset('assets/customer/img/etc/' . $s['img']) }}" alt="{{ $s['title'] }}" class="h-full w-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-2 group-hover:scale-105" loading="lazy">
                     </div>
                     <h3 class="mt-5 font-bold leading-snug">{{ __($s['title']) }}</h3>
                     <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 opacity-0 transition-opacity group-hover:opacity-100">
