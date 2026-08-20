@@ -165,7 +165,7 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ url('login') }}" class="hidden sm:inline-flex btn btn-secondary !px-5 !py-2.5 text-sm">{{ __('Login') }}</a>
+                        <a href="{{ url('login') }}" class="hidden sm:inline-flex btn btn-primary !px-5 !py-2.5 text-sm">{{ __('Login') }}</a>
                     @endauth
 
                     <button type="button" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu"
