@@ -72,7 +72,7 @@
                         @endif
                         <svg class="h-3 w-3 text-white/70" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
                     </button>
-                    <div data-lang-menu class="invisible absolute right-0 top-full z-50 mt-2 w-40 origin-top-right scale-95 rounded-xl border border-ink-100 bg-white p-1 opacity-0 shadow-2xl transition-all duration-200">
+                    <div data-lang-menu class="invisible absolute right-0 top-full z-[80] mt-2 w-40 origin-top-right scale-95 rounded-xl border border-ink-100 bg-white p-1 opacity-0 shadow-2xl transition-all duration-200">
                         <a href="{{ url('locale/id') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-700 transition hover:bg-cream-50 {{ app()->getLocale() == 'id' ? 'bg-cream-50 font-bold text-brand-600' : '' }}">
                             <img src="{{ url('assets/customer/img/flag-indonesia.png') }}" alt="Indonesian flag" class="h-3.5 w-5 rounded-sm object-cover">
                             Indonesia
