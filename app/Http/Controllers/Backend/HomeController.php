@@ -9,6 +9,7 @@ use Session;
 use App\Services\UserService;
 use App\Services\PackageService;
 use App\Services\OrderService;
+use App\Services\InstagramServices;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -49,13 +50,16 @@ class HomeController extends Controller
             $sum_order = OrderService::income(Auth::user()->id);
         }
 
+        $instagram = InstagramServices::randomPost();
+
         return view('backend.dashboard')->with(compact(
             'count_admin',
             'count_village',
             'count_member',
             'count_package',
             'count_order',
-            'sum_order'
+            'sum_order',
+            'instagram'
         ));
     }
 }

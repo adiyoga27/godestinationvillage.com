@@ -92,6 +92,13 @@
                         <a href="{{ url('homestay') }}" class="btn btn-secondary w-full">{{ __('View All Homestays') }}</a>
                     </div>
                 </div>
+
+                <div data-vue="Reveal" class="overflow-hidden rounded-3xl border border-ink-100 bg-white p-6 shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)]">
+                    <h2 class="font-display text-lg font-semibold">{{ __('Instagram Post') }}</h2>
+                    <div class="mt-4">
+                        <x-partials.instagram-post :url="$instagram" />
+                    </div>
+                </div>
             </aside>
         </div>
     </div>

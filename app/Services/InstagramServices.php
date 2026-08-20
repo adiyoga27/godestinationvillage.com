@@ -24,7 +24,10 @@ class InstagramServices
 
     public static function randomPost()
     {
-        return Instragram::all()->shuffle()->first()->url;
+        $post = Instragram::where('is_active', 1)->inRandomOrder()->first()
+                ?? Instragram::inRandomOrder()->first();
+
+        return $post?->url;
     }
     public static function create($payload)
     {
