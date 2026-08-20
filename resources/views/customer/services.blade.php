@@ -20,12 +20,12 @@
         <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-4">
             @php
                 $services = [
-                    ['icon' => 'perencanaan.svg', 'title' => __('Tourism Planning, Strategy & Revitalization'), 'link' => null, 'desc' => __('modal_planning')],
-                    ['icon' => 'portofolio.svg', 'title' => __('Portfolio'), 'link' => url('v-portofolio'), 'desc' => null],
-                    ['icon' => 'kajian.svg', 'title' => __('Project Management'), 'link' => null, 'desc' => __('modal_project')],
-                    ['icon' => 'sdm.svg', 'title' => __('Human Resources Development'), 'link' => null, 'desc' => __('modal_sdm')],
-                    ['icon' => 'branding.svg', 'title' => __('Destination Branding & Digital Marketing'), 'link' => null, 'desc' => __('modal_branding')],
-                    ['icon' => 'tren.svg', 'title' => __('Consumer Trend & Tourism Insight'), 'link' => null, 'desc' => __('modal_tren')],
+                    ['icon' => 'perencanaan.png', 'title' => __('Tourism Planning, Strategy & Revitalization'), 'link' => null, 'desc' => __('modal_planning')],
+                    ['icon' => 'portofolio.png', 'title' => __('Portfolio'), 'link' => url('v-portofolio'), 'desc' => null],
+                    ['icon' => 'kajian.png', 'title' => __('Project Management'), 'link' => null, 'desc' => __('modal_project')],
+                    ['icon' => 'sdm.png', 'title' => __('Human Resources Development'), 'link' => null, 'desc' => __('modal_sdm')],
+                    ['icon' => 'branding.png', 'title' => __('Destination Branding & Digital Marketing'), 'link' => null, 'desc' => __('modal_branding')],
+                    ['icon' => 'tren.png', 'title' => __('Consumer Trend & Tourism Insight'), 'link' => null, 'desc' => __('modal_tren')],
                     ['icon' => 'internship.png', 'title' => __('Internship Program'), 'link' => null, 'desc' => __('modal_internship')],
                     ['icon' => 'research.jpg', 'title' => __('Research Analytics & Scientific Consulting'), 'link' => null, 'desc' => __('modal_research')],
                 ];
