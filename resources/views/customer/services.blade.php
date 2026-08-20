@@ -20,12 +20,12 @@
         <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-4">
             @php
                 $services = [
-                    ['icon' => 'perencanaan.png', 'title' => __('Tourism Planning, Strategy & Revitalization'), 'link' => null, 'desc' => __('modal_planning')],
-                    ['icon' => 'portofolio.png', 'title' => __('Portfolio'), 'link' => url('v-portofolio'), 'desc' => null],
-                    ['icon' => 'kajian.png', 'title' => __('Project Management'), 'link' => null, 'desc' => __('modal_project')],
-                    ['icon' => 'sdm.png', 'title' => __('Human Resources Development'), 'link' => null, 'desc' => __('modal_sdm')],
-                    ['icon' => 'branding.png', 'title' => __('Destination Branding & Digital Marketing'), 'link' => null, 'desc' => __('modal_branding')],
-                    ['icon' => 'tren.png', 'title' => __('Consumer Trend & Tourism Insight'), 'link' => null, 'desc' => __('modal_tren')],
+                    ['icon' => 'perencanaan.svg', 'title' => __('Tourism Planning, Strategy & Revitalization'), 'link' => null, 'desc' => __('modal_planning')],
+                    ['icon' => 'portofolio.svg', 'title' => __('Portfolio'), 'link' => url('v-portofolio'), 'desc' => null],
+                    ['icon' => 'kajian.svg', 'title' => __('Project Management'), 'link' => null, 'desc' => __('modal_project')],
+                    ['icon' => 'sdm.svg', 'title' => __('Human Resources Development'), 'link' => null, 'desc' => __('modal_sdm')],
+                    ['icon' => 'branding.svg', 'title' => __('Destination Branding & Digital Marketing'), 'link' => null, 'desc' => __('modal_branding')],
+                    ['icon' => 'tren.svg', 'title' => __('Consumer Trend & Tourism Insight'), 'link' => null, 'desc' => __('modal_tren')],
                     ['icon' => 'internship.png', 'title' => __('Internship Program'), 'link' => null, 'desc' => __('modal_internship')],
                     ['icon' => 'research.jpg', 'title' => __('Research Analytics & Scientific Consulting'), 'link' => null, 'desc' => __('modal_research')],
                 ];
@@ -34,8 +34,8 @@
             @foreach ($services as $service)
                 @if ($service['link'])
                     <a href="{{ $service['link'] }}" data-vue="Reveal" class="group card card-hover flex flex-col items-center p-8 text-center">
-                        <div class="flex h-28 w-28 items-center justify-center rounded-full bg-cream-100 p-4 transition group-hover:bg-brand-50">
-                            <img src="{{ asset('assets/customer/img/etc/' . $service['icon']) }}" alt="{{ $service['title'] }}" class="h-full w-full object-contain" loading="lazy">
+                        <div class="flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-cream-100 p-5 ring-4 ring-brand-600/10 shadow-[0_12px_30px_-10px_rgb(216_28_37/0.45)] transition duration-300 group-hover:scale-110 group-hover:ring-brand-600/30 group-hover:shadow-[0_20px_40px_-12px_rgb(216_28_37/0.55)]">
+                            <img src="{{ asset('assets/customer/img/etc/' . $service['icon']) }}" alt="{{ $service['title'] }}" class="h-full w-full object-contain drop-shadow-sm transition duration-300 group-hover:scale-105" loading="lazy">
                         </div>
                         <h3 class="mt-6 font-display text-lg font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $service['title'] }}</h3>
                     </a>
@@ -49,8 +49,8 @@
                         data-whatsapp="6282236803301"
                         data-vue="Reveal"
                         class="group card card-hover flex flex-col items-center p-8 text-center">
-                        <div class="flex h-28 w-28 items-center justify-center rounded-full bg-cream-100 p-4 transition group-hover:bg-brand-50">
-                            <img src="{{ asset('assets/customer/img/etc/' . $service['icon']) }}" alt="{{ $service['title'] }}" class="h-full w-full object-contain" loading="lazy">
+                        <div class="flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-cream-100 p-5 ring-4 ring-brand-600/10 shadow-[0_12px_30px_-10px_rgb(216_28_37/0.45)] transition duration-300 group-hover:scale-110 group-hover:ring-brand-600/30 group-hover:shadow-[0_20px_40px_-12px_rgb(216_28_37/0.55)]">
+                            <img src="{{ asset('assets/customer/img/etc/' . $service['icon']) }}" alt="{{ $service['title'] }}" class="h-full w-full object-contain drop-shadow-sm transition duration-300 group-hover:scale-105" loading="lazy">
                         </div>
                         <h3 class="mt-6 font-display text-lg font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $service['title'] }}</h3>
                         <span class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-600">
