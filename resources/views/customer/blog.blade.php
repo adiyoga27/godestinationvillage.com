@@ -55,25 +55,51 @@
                 @endforelse
 
                 @if ($blog->hasPages())
-                    <div class="col-span-full mt-6 flex justify-center">
-                        <div class="flex items-center gap-2">
+                    @php
+                        $current = $blog->currentPage();
+                        $last = $blog->lastPage();
+                        $start = max(1, $current - 2);
+                        $end = min($last, $current + 2);
+                    @endphp
+                    <div class="col-span-full mt-8">
+                        <nav class="flex flex-wrap items-center justify-center gap-2">
                             @if ($blog->onFirstPage())
-                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-300">‹</span>
+                                <span class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-ink-200 text-ink-300">‹</span>
                             @else
-                                <a href="{{ $blog->previousPageUrl() }}" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-600 transition hover:border-brand-600 hover:text-brand-600">‹</a>
+                                <a href="{{ $blog->previousPageUrl() }}" rel="prev" aria-label="Previous"
+                                    class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-ink-200 text-ink-600 transition hover:border-brand-600 hover:bg-brand-50 hover:text-brand-600">‹</a>
                             @endif
-                            @for ($i = 1; $i <= $blog->lastPage(); $i++)
+
+                            @if ($start > 1)
+                                <a href="{{ $blog->url(1) }}"
+                                    class="inline-flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition {{ $current == 1 ? 'bg-brand-600 text-white shadow-[0_8px_20px_-8px_rgb(216_28_37/0.5)]' : 'border border-ink-200 text-ink-600 hover:border-brand-600 hover:text-brand-600' }}">1</a>
+                                @if ($start > 2)
+                                    <span class="inline-flex h-11 w-11 items-center justify-center text-sm font-bold text-ink-300">…</span>
+                                @endif
+                            @endif
+
+                            @for ($i = $start; $i <= $end; $i++)
                                 <a href="{{ $blog->url($i) }}"
-                                    class="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition {{ $blog->currentPage() == $i ? 'bg-brand-600 text-white' : 'border border-ink-200 text-ink-600 hover:border-brand-600 hover:text-brand-600' }}">
+                                    class="inline-flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition {{ $current == $i ? 'bg-brand-600 text-white shadow-[0_8px_20px_-8px_rgb(216_28_37/0.5)]' : 'border border-ink-200 text-ink-600 hover:border-brand-600 hover:text-brand-600' }}">
                                     {{ $i }}
                                 </a>
                             @endfor
-                            @if ($blog->hasMorePages())
-                                <a href="{{ $blog->nextPageUrl() }}" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-600 transition hover:border-brand-600 hover:text-brand-600">›</a>
-                            @else
-                                <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-300">›</span>
+
+                            @if ($end < $last)
+                                @if ($end < $last - 1)
+                                    <span class="inline-flex h-11 w-11 items-center justify-center text-sm font-bold text-ink-300">…</span>
+                                @endif
+                                <a href="{{ $blog->url($last) }}"
+                                    class="inline-flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition {{ $current == $last ? 'bg-brand-600 text-white shadow-[0_8px_20px_-8px_rgb(216_28_37/0.5)]' : 'border border-ink-200 text-ink-600 hover:border-brand-600 hover:text-brand-600' }}">{{ $last }}</a>
                             @endif
-                        </div>
+
+                            @if ($blog->hasMorePages())
+                                <a href="{{ $blog->nextPageUrl() }}" rel="next" aria-label="Next"
+                                    class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-ink-200 text-ink-600 transition hover:border-brand-600 hover:bg-brand-50 hover:text-brand-600">›</a>
+                            @else
+                                <span class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-ink-200 text-ink-300">›</span>
+                            @endif
+                        </nav>
                     </div>
                 @endif
             </div>
