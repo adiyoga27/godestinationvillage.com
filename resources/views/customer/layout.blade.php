@@ -60,18 +60,28 @@
                 </a>
             </div>
             <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2">
-                    @if (app()->getLocale() == 'en')
-                        <a href="{{ url('locale/id') }}" class="flex items-center gap-1.5 rounded-full px-3 py-1 hover:bg-white/10 transition">
+                <div class="relative" id="langDropdown" data-lang-dropdown>
+                    <button type="button" data-lang-toggle aria-label="Change language" aria-haspopup="true" aria-expanded="false"
+                        class="flex items-center gap-1.5 rounded-full px-3 py-1 hover:bg-white/10 transition">
+                        @if (app()->getLocale() == 'id')
+                            <img src="{{ url('assets/customer/img/flag-indonesia.png') }}" alt="Indonesian flag" class="h-3.5 w-5 rounded-sm object-cover">
+                            <span class="text-white">Indonesia</span>
+                        @else
+                            <img src="{{ url('assets/customer/img/flag-uk.png') }}" alt="English flag" class="h-3.5 w-5 rounded-sm object-cover">
+                            <span class="text-white">English</span>
+                        @endif
+                        <svg class="h-3 w-3 text-white/70" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                    </button>
+                    <div data-lang-menu class="invisible absolute right-0 top-full z-50 mt-2 w-40 origin-top-right scale-95 rounded-xl border border-ink-100 bg-white p-1 opacity-0 shadow-2xl transition-all duration-200">
+                        <a href="{{ url('locale/id') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-700 transition hover:bg-cream-50 {{ app()->getLocale() == 'id' ? 'bg-cream-50 font-bold text-brand-600' : '' }}">
                             <img src="{{ url('assets/customer/img/flag-indonesia.png') }}" alt="Indonesian flag" class="h-3.5 w-5 rounded-sm object-cover">
                             Indonesia
                         </a>
-                    @else
-                        <a href="{{ url('locale/en') }}" class="flex items-center gap-1.5 rounded-full px-3 py-1 hover:bg-white/10 transition">
+                        <a href="{{ url('locale/en') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-700 transition hover:bg-cream-50 {{ app()->getLocale() == 'en' ? 'bg-cream-50 font-bold text-brand-600' : '' }}">
                             <img src="{{ url('assets/customer/img/flag-uk.png') }}" alt="English flag" class="h-3.5 w-5 rounded-sm object-cover">
                             English
                         </a>
-                    @endif
+                    </div>
                 </div>
                 <span class="hidden h-4 w-px bg-white/20 sm:block"></span>
                 <div class="hidden items-center gap-3 sm:flex">
@@ -346,6 +356,26 @@
     </footer>
 
     @yield('js')
+
+    <script>
+        // Language dropdown
+        const langToggle = document.querySelector('[data-lang-toggle]');
+        const langMenu = document.querySelector('[data-lang-menu]');
+        if (langToggle && langMenu) {
+            langToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const open = langMenu.classList.toggle('visible');
+                langMenu.classList.toggle('invisible', !open);
+                langMenu.classList.toggle('opacity-0', !open);
+                langMenu.classList.toggle('scale-95', !open);
+                langToggle.setAttribute('aria-expanded', String(open));
+            });
+            document.addEventListener('click', () => {
+                langMenu.classList.add('invisible', 'opacity-0', 'scale-95');
+                langToggle.setAttribute('aria-expanded', 'false');
+            });
+        }
+    </script>
 
     <!-- Google Analytics (GA4) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CD6TPM6T4N"></script>
