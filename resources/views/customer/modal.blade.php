@@ -18,9 +18,9 @@
                 <h4 class="text-center mb-3">@lang('Tourism Planning, Strategy and Revitalization')</h4>
                 <p class="text-justify">{!! __('modal_planning') !!}</p>
                 <div class="row mt-5">
-                    <div class="col-6"><a href="tel:082236803301" class="btn btn-outline-warning d-block"><i
+                    <div class="col-6"><a href="tel:081997674778" class="btn btn-outline-warning d-block"><i
                                 class="bx bxs-phone mr-1"></i>@lang('Call')</a></div>
-                    <div class="col-6"><a href="http://wa.me/6282236803301" type="button"
+                    <div class="col-6"><a href="http://wa.me/6281997674778" type="button"
                             class="btn btn-outline-success btn-block"><i
                                 class="bx bxl-whatsapp mr-1"></i>@lang('Message')</a>
                     </div>
@@ -45,9 +45,9 @@
                 <h4 class="text-center mb-3">@lang('Project Management')</h4>
                 <p class="text-justify">{!! __('modal_project') !!}</p>
                 <div class="row mt-5">
-                    <div class="col-6"><a href="tel:082236803301" class="btn btn-outline-warning d-block"><i
+                    <div class="col-6"><a href="tel:081997674778" class="btn btn-outline-warning d-block"><i
                                 class="bx bxs-phone mr-1"></i>@lang('Call')</a></div>
-                    <div class="col-6"><a href="http://wa.me/6282236803301" type="button"
+                    <div class="col-6"><a href="http://wa.me/6281997674778" type="button"
                             class="btn btn-outline-success btn-block"><i
                                 class="bx bxl-whatsapp mr-1"></i>@lang('Message')</a>
                     </div>
@@ -72,9 +72,9 @@
                 <h4 class="text-center mb-3">@lang('Human Resources Development')</h4>
                 <p class="text-justify">{!! __('modal_sdm') !!}</p>
                 <div class="row mt-5">
-                    <div class="col-6"><a href="tel:082236803301" class="btn btn-outline-warning d-block"><i
+                    <div class="col-6"><a href="tel:081997674778" class="btn btn-outline-warning d-block"><i
                                 class="bx bxs-phone mr-1"></i>@lang('Call')</a></div>
-                    <div class="col-6"><a href="http://wa.me/6282236803301" type="button"
+                    <div class="col-6"><a href="http://wa.me/6281997674778" type="button"
                             class="btn btn-outline-success btn-block"><i
                                 class="bx bxl-whatsapp mr-1"></i>@lang('Message')</a>
                     </div>
@@ -97,9 +97,9 @@
                 <h4 class="text-center mb-3">@lang('Destination Branding and Digital Marketing')</h4>
                 <p class="text-justify">{!! __('modal_branding') !!}</p>
                 <div class="row mt-5">
-                    <div class="col-6"><a href="tel:082236803301" class="btn btn-outline-warning d-block"><i
+                    <div class="col-6"><a href="tel:081997674778" class="btn btn-outline-warning d-block"><i
                                 class="bx bxs-phone mr-1"></i>@lang('Call')</a></div>
-                    <div class="col-6"><a href="http://wa.me/6282236803301" type="button"
+                    <div class="col-6"><a href="http://wa.me/6281997674778" type="button"
                             class="btn btn-outline-success btn-block"><i
                                 class="bx bxl-whatsapp mr-1"></i>@lang('Message')</a>
                     </div>
@@ -123,9 +123,9 @@
                 <h4 class="text-center mb-3">@lang('Consumer Trend and Tourism Insight')</h4>
                 <p class="text-justify">{!! __('modal_tren') !!}</p>
                 <div class="row mt-5">
-                    <div class="col-6"><a href="tel:082236803301" class="btn btn-outline-warning d-block"><i
+                    <div class="col-6"><a href="tel:081997674778" class="btn btn-outline-warning d-block"><i
                                 class="bx bxs-phone mr-1"></i>@lang('Call')</a></div>
-                    <div class="col-6"><a href="http://wa.me/6282236803301" type="button"
+                    <div class="col-6"><a href="http://wa.me/6281997674778" type="button"
                             class="btn btn-outline-success btn-block"><i
                                 class="bx bxl-whatsapp mr-1"></i>@lang('Message')</a>
                     </div>
@@ -150,9 +150,9 @@
                 <h4 class="text-center mb-3">@lang('Internship Program')</h4>
                 <p class="text-justify">{!! __('modal_internship') !!}</p>
                 <div class="row mt-5">
-                    <div class="col-6"><a href="tel:082236803301" class="btn btn-outline-warning d-block"><i
+                    <div class="col-6"><a href="tel:081997674778" class="btn btn-outline-warning d-block"><i
                                 class="bx bxs-phone mr-1"></i>@lang('Call')</a></div>
-                    <div class="col-6"><a href="http://wa.me/6282236803301" type="button"
+                    <div class="col-6"><a href="http://wa.me/6281997674778" type="button"
                             class="btn btn-outline-success btn-block"><i
                                 class="bx bxl-whatsapp mr-1"></i>@lang('Message')</a>
                     </div>
@@ -176,9 +176,9 @@
                 <h4 class="text-center mb-3">@lang('Research Analytics & Scientific Consulting')</h4>
                 <p class="text-justify">{!! __('modal_research') !!}</p>
                 <div class="row mt-5">
-                    <div class="col-6"><a href="tel:082236803301" class="btn btn-outline-warning d-block"><i
+                    <div class="col-6"><a href="tel:081997674778" class="btn btn-outline-warning d-block"><i
                                 class="bx bxs-phone mr-1"></i>@lang('Call')</a></div>
-                    <div class="col-6"><a href="http://wa.me/6282236803301" type="button"
+                    <div class="col-6"><a href="http://wa.me/6281997674778" type="button"
                             class="btn btn-outline-success btn-block"><i
                                 class="bx bxl-whatsapp mr-1"></i>@lang('Message')</a>
                     </div>

@@ -45,8 +45,8 @@
                         data-title="{{ $service['title'] }}"
                         data-desc="{{ $service['desc'] }}"
                         data-icon="{{ asset('assets/customer/img/etc/' . $service['icon']) }}"
-                        data-phone="082236803301"
-                        data-whatsapp="6282236803301"
+                        data-phone="081997674778"
+                        data-whatsapp="6281997674778"
                         data-vue="Reveal"
                         class="group card card-hover flex flex-col items-center p-8 text-center">
                         <div class="flex h-40 w-40 items-center justify-center">
