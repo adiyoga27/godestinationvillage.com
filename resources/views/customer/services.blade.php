@@ -34,8 +34,8 @@
             @foreach ($services as $service)
                 @if ($service['link'])
                     <a href="{{ $service['link'] }}" data-vue="Reveal" class="group card card-hover flex flex-col items-center p-8 text-center">
-                        <div class="flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-cream-100 p-5 ring-4 ring-brand-600/10 shadow-[0_12px_30px_-10px_rgb(216_28_37/0.45)] transition duration-300 group-hover:scale-110 group-hover:ring-brand-600/30 group-hover:shadow-[0_20px_40px_-12px_rgb(216_28_37/0.55)]">
-                            <img src="{{ asset('assets/customer/img/etc/' . $service['icon']) }}" alt="{{ $service['title'] }}" class="h-full w-full object-contain drop-shadow-sm transition duration-300 group-hover:scale-105" loading="lazy">
+                        <div class="flex h-40 w-40 items-center justify-center">
+                            <img src="{{ asset('assets/customer/img/etc/' . $service['icon']) }}" alt="{{ $service['title'] }}" class="h-full w-full object-contain drop-shadow-lg transition duration-300 group-hover:scale-105" loading="lazy">
                         </div>
                         <h3 class="mt-6 font-display text-lg font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $service['title'] }}</h3>
                     </a>
@@ -49,8 +49,8 @@
                         data-whatsapp="6282236803301"
                         data-vue="Reveal"
                         class="group card card-hover flex flex-col items-center p-8 text-center">
-                        <div class="flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-brand-50 to-cream-100 p-5 ring-4 ring-brand-600/10 shadow-[0_12px_30px_-10px_rgb(216_28_37/0.45)] transition duration-300 group-hover:scale-110 group-hover:ring-brand-600/30 group-hover:shadow-[0_20px_40px_-12px_rgb(216_28_37/0.55)]">
-                            <img src="{{ asset('assets/customer/img/etc/' . $service['icon']) }}" alt="{{ $service['title'] }}" class="h-full w-full object-contain drop-shadow-sm transition duration-300 group-hover:scale-105" loading="lazy">
+                        <div class="flex h-40 w-40 items-center justify-center">
+                            <img src="{{ asset('assets/customer/img/etc/' . $service['icon']) }}" alt="{{ $service['title'] }}" class="h-full w-full object-contain drop-shadow-lg transition duration-300 group-hover:scale-105" loading="lazy">
                         </div>
                         <h3 class="mt-6 font-display text-lg font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $service['title'] }}</h3>
                         <span class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-600">
