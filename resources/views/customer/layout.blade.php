@@ -168,10 +168,6 @@
                         <a href="{{ url('login') }}" class="hidden sm:inline-flex btn btn-secondary !px-5 !py-2.5 text-sm">{{ __('Login') }}</a>
                     @endauth
 
-                    <a href="#searchBox" data-mfp-src="#searchBox" id="bookNowLink" class="hidden btn btn-primary !px-6 !py-2.5 text-sm lg:inline-flex">
-                        {{ __('Book Now') }}
-                    </a>
-
                     <button type="button" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu"
                         class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-ink-200 text-ink-700 lg:hidden">
                         <svg id="iconOpen" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
