@@ -13,11 +13,16 @@
     <div class="container-gd">
         <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
             @forelse ($packages as $pack)
+                @php
+                    $tr = $pack->translate?->firstWhere('lang', App::getLocale());
+                    $name = $tr?->name ?: $pack->name;
+                    $desc = $tr?->desc ?: $pack->desc;
+                @endphp
                 <a href="{{ url('tour-packages/' . $pack->slug) }}" data-vue="Reveal"
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-56 overflow-hidden">
                         <img src="{{ $pack->default_img ? asset('storage/packages/' . $pack->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $pack->name }} — {{ __('village tour package in Bali') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $name }} — {{ __('village tour package in Bali') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink-950/60 to-transparent"></div>
                         <div class="absolute bottom-4 left-4 flex flex-wrap items-center gap-2">
                             @if ($pack->cat_name ?? null)
@@ -32,8 +37,8 @@
                         </div>
                     </div>
                     <div class="flex flex-1 flex-col p-6">
-                        <h2 class="font-display text-xl font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $pack->name }}</h2>
-                        <p class="mt-2 line-clamp-2 flex-1 text-sm text-ink-500">{{ strip_tags($pack->desc ?? '') }}</p>
+                        <h2 class="font-display text-xl font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $name }}</h2>
+                        <p class="mt-2 line-clamp-2 flex-1 text-sm text-ink-500">{{ strip_tags($desc ?? '') }}</p>
                         <div class="mt-5 flex items-center justify-between border-t border-ink-50 pt-4">
                             <div>
                                 <span class="block text-xs font-semibold uppercase tracking-wide text-ink-400">{{ __('From') }}</span>

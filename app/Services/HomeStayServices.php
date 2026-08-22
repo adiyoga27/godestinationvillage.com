@@ -26,7 +26,7 @@ class HomeStayServices
 
     public static function active()
     {
-        return Homestay::where('is_active', 1)->paginate(5);
+        return Homestay::with('translate')->where('is_active', 1)->paginate(5);
     }
     public static function recent()
     {

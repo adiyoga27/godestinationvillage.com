@@ -3,13 +3,28 @@
 @section('content')
 @php
     $locale = App::getLocale();
-    $tr = ($locale === 'id' && isset($packages->translate[0])) ? $packages->translate[0] : null;
+    $tr = $packages->translate?->firstWhere('lang', $locale);
+    $name = $tr?->name ?: $packages->name;
     $desc = $tr?->description ?: $packages->description;
     $interary = $tr?->interary ?: $packages->interary;
     $inclusion = $tr?->inclusion ?: $packages->inclusion;
     $additional = $tr?->additional ?: $packages->additional;
-    $hero = $packages->default_img ? asset('storage/events/' . $packages->default_img) : asset('assets/customer/frontdata/images/destination-1.jpg');
-    $gallery = collect($images)->map(fn ($img) => asset('storage/' . $img))->push($hero)->unique()->values()->all();
+    $disk = \Illuminate\Support\Facades\Storage::disk('public');
+    $default = $packages->default_img;
+    $candidates = collect($disk->files('events/' . $packages->id))
+        ->filter(fn ($f) => !$default || basename($f) !== $default)
+        ->map(fn ($f) => ['url' => asset('storage/' . $f), 'hash' => md5($disk->get($f))])
+        ->unique('hash')
+        ->values();
+    $heroExists = $default && $disk->exists('events/' . $default);
+    if ($heroExists) {
+        $hero = asset('storage/events/' . $default);
+        $heroHash = md5($disk->get('events/' . $default));
+        $gallery = collect([$hero])->merge($candidates->reject(fn ($c) => $c['hash'] === $heroHash)->pluck('url'))->unique()->values()->all();
+    } else {
+        $hero = $candidates->first()['url'] ?? asset('assets/customer/frontdata/images/destination-1.jpg');
+        $gallery = $candidates->pluck('url')->values()->all();
+    }
     $price = $packages->price;
     if ($packages->disc > 0 && !$packages->is_paywish && !$packages->is_free) {
         $price = $packages->disc;
@@ -17,9 +32,9 @@
 @endphp
 
 <x-partials.page-hero
-    :title="$packages->name"
+    :title="$name"
     :image="$hero"
-    :crumbs="[__('Home') => '/', __('Events') => 'events', $packages->name => '']"
+    :crumbs="[__('Home') => '/', __('Events') => 'events', $name => '']"
 />
 
 <section class="section-pad">
@@ -27,7 +42,7 @@
         <div class="grid gap-10 lg:grid-cols-[1fr_360px]">
             <div class="space-y-10">
                 <div data-vue="Reveal">
-                    <span data-vue="GallerySlider" data-props='{{ json_encode(["images" => $gallery, "alt" => $packages->name]) }}' class="block" style="display:block"></span>
+                    <span data-vue="GallerySlider" data-props='{{ json_encode(["images" => $gallery, "alt" => $name]) }}' class="block" style="display:block"></span>
                 </div>
 
                 <div data-vue="Reveal" data-props='{"delay":100}'>
@@ -46,7 +61,7 @@
                         @endif
                     </div>
 
-                    <h1 class="mt-4 font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ $packages->name }}</h1>
+                    <h1 class="mt-4 font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ $name }}</h1>
                     <div class="prose-gd mt-6">{!! $desc !!}</div>
 
                     @if ($interary)
@@ -97,13 +112,14 @@
                     <h2 class="font-display text-lg font-semibold">{{ __('Other Events') }}</h2>
                     <ul class="mt-4 space-y-4">
                         @foreach ($recent->take(4) as $rec)
+                            @php $recTr = $rec->translate?->firstWhere('lang', $locale); @endphp
                             <li>
                                 <a href="{{ url('events/' . $rec->slug) }}" class="group flex items-center gap-4">
                                     <img src="{{ asset('storage/events/' . $rec->default_img) }}"
-                                        alt="{{ $rec->name }}" class="h-16 w-20 flex-shrink-0 rounded-xl object-cover" loading="lazy"
+                                        alt="{{ $recTr?->name ?: $rec->name }}" class="h-16 w-20 flex-shrink-0 rounded-xl object-cover" loading="lazy"
                                         onerror="this.onerror=null;this.src='{{ asset('assets/customer/frontdata/images/destination-1.jpg') }}';">
                                     <span class="min-w-0">
-                                        <span class="block line-clamp-2 text-sm font-semibold text-ink-800 transition group-hover:text-brand-600">{{ $rec->name }}</span>
+                                        <span class="block line-clamp-2 text-sm font-semibold text-ink-800 transition group-hover:text-brand-600">{{ $recTr?->name ?: $rec->name }}</span>
                                         @if ($rec->date_event)
                                             <span class="mt-0.5 block text-xs font-semibold uppercase tracking-wide text-ink-400">{{ \Carbon\Carbon::parse($rec->date_event)->format('d M Y') }}</span>
                                         @endif

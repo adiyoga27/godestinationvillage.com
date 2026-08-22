@@ -3,20 +3,35 @@
 @section('content')
 @php
     $locale = App::getLocale();
-    $tr = ($locale === 'id' && isset($packages->translate[0])) ? $packages->translate[0] : null;
+    $tr = $packages->translate?->firstWhere('lang', $locale);
+    $name = $tr?->name ?: $packages->name;
     $desc = $tr?->description ?: $packages->description;
     $facilities = $tr?->facilities ?: $packages->facilities;
     $additional = $tr?->additional_activities ?: $packages->additional_activities;
     $notes = $tr?->additional_notes ?: $packages->additional_notes;
-    $hero = $packages->default_img ? asset('storage/homestay/' . $packages->default_img) : asset('assets/customer/frontdata/images/destination-1.jpg');
-    $gallery = collect($images)->map(fn ($img) => asset('storage/' . $img))->push($hero)->unique()->values()->all();
+    $disk = \Illuminate\Support\Facades\Storage::disk('public');
+    $default = $packages->default_img;
+    $candidates = collect($disk->files('homestay/' . $packages->id))
+        ->filter(fn ($f) => !$default || basename($f) !== $default)
+        ->map(fn ($f) => ['url' => asset('storage/' . $f), 'hash' => md5($disk->get($f))])
+        ->unique('hash')
+        ->values();
+    $heroExists = $default && $disk->exists('homestay/' . $default);
+    if ($heroExists) {
+        $hero = asset('storage/homestay/' . $default);
+        $heroHash = md5($disk->get('homestay/' . $default));
+        $gallery = collect([$hero])->merge($candidates->reject(fn ($c) => $c['hash'] === $heroHash)->pluck('url'))->unique()->values()->all();
+    } else {
+        $hero = $candidates->first()['url'] ?? asset('assets/customer/frontdata/images/destination-1.jpg');
+        $gallery = $candidates->pluck('url')->values()->all();
+    }
     $price = $packages->disc > 0 ? $packages->disc : $packages->price;
 @endphp
 
 <x-partials.page-hero
-    :title="$packages->name"
+    :title="$name"
     :image="$hero"
-    :crumbs="[__('Home') => '/', __('Homestay') => 'homestay', $packages->name => '']"
+    :crumbs="[__('Home') => '/', __('Homestay') => 'homestay', $name => '']"
 />
 
 <section class="section-pad">
@@ -24,7 +39,7 @@
         <div class="grid gap-10 lg:grid-cols-[1fr_360px]">
             <div class="space-y-10">
                 <div data-vue="Reveal">
-                    <span data-vue="GallerySlider" data-props='{{ json_encode(["images" => $gallery, "alt" => $packages->name]) }}' class="block" style="display:block"></span>
+                    <span data-vue="GallerySlider" data-props='{{ json_encode(["images" => $gallery, "alt" => $name]) }}' class="block" style="display:block"></span>
                 </div>
 
                 <div data-vue="Reveal" data-props='{"delay":100}'>
@@ -41,7 +56,7 @@
                         @endif
                     </div>
 
-                    <h1 class="mt-4 font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ $packages->name }}</h1>
+                    <h1 class="mt-4 font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ $name }}</h1>
                     @if ($packages->owner_name)
                         <p class="mt-2 text-sm font-semibold text-ink-500">{{ __('Hosted by') }} {{ $packages->owner_name }}</p>
                     @endif

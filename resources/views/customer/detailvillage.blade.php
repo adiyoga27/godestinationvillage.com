@@ -58,13 +58,14 @@
                     <h2 class="font-display text-lg font-semibold">{{ __('Tour Packages') }}</h2>
                     <ul class="mt-4 space-y-4">
                         @forelse ($recent as $rec)
+                            @php $recTr = $rec->translate?->firstWhere('lang', App::getLocale()); @endphp
                             <li>
                                 <a href="{{ url('tour-packages/' . $rec->slug) }}" class="group flex items-center gap-4">
                                     <img src="{{ asset('storage/packages/' . $rec->default_img) }}"
-                                        alt="{{ $rec->name }}" class="h-16 w-20 flex-shrink-0 rounded-xl object-cover"
+                                        alt="{{ $recTr?->name ?: $rec->name }}" class="h-16 w-20 flex-shrink-0 rounded-xl object-cover"
                                         loading="lazy" onerror="this.onerror=null;this.src='{{ asset('assets/customer/frontdata/images/destination-1.jpg') }}';">
                                     <span class="min-w-0">
-                                        <span class="block line-clamp-2 text-sm font-semibold text-ink-800 transition group-hover:text-brand-600">{{ $rec->name }}</span>
+                                        <span class="block line-clamp-2 text-sm font-semibold text-ink-800 transition group-hover:text-brand-600">{{ $recTr?->name ?: $rec->name }}</span>
                                         <span class="mt-0.5 block text-xs font-semibold uppercase tracking-wide text-ink-400">{{ $rec->cat_name }}</span>
                                     </span>
                                 </a>
@@ -96,13 +97,14 @@
             </div>
             <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
                 @foreach ($packages as $pack)
+                    @php $trPack = $pack->translate?->firstWhere('lang', App::getLocale()); @endphp
                     <a href="{{ url('tour-packages/' . $pack->slug) }}" data-vue="Reveal" class="group card card-hover flex flex-col overflow-hidden">
                         <div class="relative h-52 overflow-hidden">
                             <img src="{{ $pack->default_img ? asset('storage/packages/' . $pack->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                                alt="{{ $pack->name }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                                alt="{{ $trPack?->name ?: $pack->name }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         </div>
                         <div class="flex flex-1 flex-col p-6">
-                            <h3 class="font-display text-lg font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $pack->name }}</h3>
+                            <h3 class="font-display text-lg font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $trPack?->name ?: $pack->name }}</h3>
                             <div class="mt-4 flex items-center justify-between border-t border-ink-50 pt-4">
                                 <span class="text-lg font-bold text-brand-600">
                                     @if ($pack->disc > 0)

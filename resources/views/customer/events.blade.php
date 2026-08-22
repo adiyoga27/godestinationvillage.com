@@ -13,11 +13,17 @@
     <div class="container-gd">
         <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
             @forelse ($packages as $pack)
+                @php
+                    $tr = $pack->translate?->firstWhere('lang', App::getLocale());
+                    $name = $tr?->name ?: $pack->name;
+                    $desc = $tr?->description ?: $pack->description;
+                    $location = $tr?->location ?: $pack->location;
+                @endphp
                 <a href="{{ url('events/' . $pack->slug) }}" data-vue="Reveal"
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-56 overflow-hidden">
                         <img src="{{ $pack->default_img ? asset('storage/events/' . $pack->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $pack->name }} — {{ __('village event in Bali') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $name }} — {{ __('village event in Bali') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         @if ($pack->date_event)
                             <div class="absolute left-4 top-4 flex flex-col items-center rounded-2xl bg-white/95 px-3.5 py-2 text-center shadow-lg backdrop-blur">
                                 <span class="text-lg font-extrabold leading-none text-brand-600">{{ \Carbon\Carbon::parse($pack->date_event)->format('d') }}</span>
@@ -28,11 +34,11 @@
                     <div class="flex flex-1 flex-col p-6">
                         <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ink-400">
                             @if ($pack->location ?? null)
-                                <span class="flex items-center gap-1"><svg class="h-3.5 w-3.5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>{{ $pack->location }}</span>
+                                <span class="flex items-center gap-1"><svg class="h-3.5 w-3.5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>{{ $location }}</span>
                             @endif
                         </div>
-                        <h2 class="mt-2 font-display text-xl font-semibold leading-snug text-ink-950 transition group-hover:text-brand-600">{{ $pack->name }}</h2>
-                        <p class="mt-2 line-clamp-2 flex-1 text-sm text-ink-500">{{ strip_tags($pack->description ?? '') }}</p>
+                        <h2 class="mt-2 font-display text-xl font-semibold leading-snug text-ink-950 transition group-hover:text-brand-600">{{ $name }}</h2>
+                        <p class="mt-2 line-clamp-2 flex-1 text-sm text-ink-500">{{ strip_tags($desc ?? '') }}</p>
                         <div class="mt-5 flex items-center justify-between border-t border-ink-50 pt-4">
                             <span class="text-lg font-bold text-brand-600">
                                 @if ($pack->is_free)

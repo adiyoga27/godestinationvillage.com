@@ -164,14 +164,14 @@ class PageController extends Controller
                 return abort(404);
             }
             // dd($result->id);
-            $data['packages'] = Package::with(['category', 'user', 'village'])
+            $data['packages'] = Package::with(['category', 'user', 'village', 'translate'])
                                             ->where('village_id', $result->id)
                                             ->where('packages.is_active', '1')
                                             ->paginate(8);
                                             
     // dd($data);
     
-            $data['recent'] = Package::select('packages.id','packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'default_img', 'packages.slug')
+            $data['recent'] = Package::with('translate')->select('packages.id','packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'default_img', 'packages.slug')
                     ->join('users', 'users.id', 'user_id')
                     ->join('village_details', 'users.id', 'village_details.user_id')
                     ->join('categories', 'categories.id', 'category_id')
@@ -206,7 +206,7 @@ class PageController extends Controller
     }
     public function tourpackages()
     {
-        $data['packages'] = Package::select('packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'price', 'packages.desc', 'packages.id', 'default_img')->join('users', 'users.id', 'user_id')->join('village_details', 'users.id', 'village_details.user_id')->join('categories', 'categories.id', 'category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->paginate(10);
+        $data['packages'] = Package::select('packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'price', 'packages.desc', 'packages.id', 'default_img')->with('translate')->join('users', 'users.id', 'user_id')->join('village_details', 'users.id', 'village_details.user_id')->join('categories', 'categories.id', 'category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->paginate(10);
         $data['seo'] = Seo::make()
             ->title('Tour Packages & Experiences')
             ->description('Browse affordable bali village adventure packages with GODEVI — immersive tours, cultural experiences and socially responsible travel in Bali villages.')
@@ -250,6 +250,7 @@ class PageController extends Controller
     public function categorypackage(Request $request, $id)
     {
         $data['packages'] = Package::select('packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'price', 'packages.desc', 'packages.id', 'default_img', 'packages.slug')
+            ->with('translate')
             ->leftjoin('users', 'users.id', '=', 'packages.user_id')
             ->leftjoin('village_details', 'users.id','=', 'village_details.user_id')
             ->join('categories', 'categories.id', 'category_id')
@@ -276,7 +277,7 @@ class PageController extends Controller
         if (!$data['packages']) {
             return abort(404);
         }
-        $data['recent'] = Package::select('packages.id', 'packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'default_img','packages.slug')
+        $data['recent'] = Package::with('translate')->select('packages.id', 'packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'default_img','packages.slug')
                                     ->join('users', 'users.id', 'user_id')
                                     ->join('village_details', 'users.id', 'village_details.user_id')
                                     ->join('categories', 'categories.id', 'category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->orderBy('packages.id', 'desc')->limit(5)->get();

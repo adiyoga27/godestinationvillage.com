@@ -27,17 +27,19 @@ const toggleMobileMenu = (force) => {
     const iconClose = document.getElementById('iconClose');
 
     if (open) {
+        mobileMenu.classList.remove('pointer-events-none');
         mobileMenu.setAttribute('aria-hidden', 'false');
         mobileMenuBtn?.setAttribute('aria-expanded', 'true');
-        panel.classList.remove('-translate-x-full');
+        panel.classList.remove('translate-x-full');
         overlay.classList.remove('opacity-0');
         iconOpen?.classList.add('hidden');
         iconClose?.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     } else {
+        mobileMenu.classList.add('pointer-events-none');
         mobileMenu.setAttribute('aria-hidden', 'true');
         mobileMenuBtn?.setAttribute('aria-expanded', 'false');
-        panel.classList.add('-translate-x-full');
+        panel.classList.add('translate-x-full');
         overlay.classList.add('opacity-0');
         iconOpen?.classList.remove('hidden');
         iconClose?.classList.add('hidden');

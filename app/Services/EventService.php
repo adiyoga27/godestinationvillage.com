@@ -26,7 +26,7 @@ class EventService
 
     public static function active()
     {
-        return Event::where('is_active', 1)->paginate(5);
+        return Event::with('translate')->where('is_active', 1)->paginate(5);
     }
     public static function recent()
     {

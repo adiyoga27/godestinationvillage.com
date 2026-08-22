@@ -7,12 +7,35 @@
     }
 </style>
 
+@php
+    $heroSlides = [
+        ['img' => 'slide-1.jpg', 'title' => 'Authentic Village Experience', 'title_id' => 'Pengalaman Desa Autentik',
+         'subtitle' => 'Step into living Balinese traditions, authentic daily life and unforgettable village experiences.',
+         'subtitle_id' => 'Masuki tradisi Bali yang hidup, keseharian autentik, dan pengalaman desa yang tak terlupakan.'],
+        ['img' => 'slide-2.jpg', 'title' => 'Local Economic Improvement', 'title_id' => 'Peningkatan Ekonomi Lokal',
+         'subtitle' => 'Every journey directly supports local livelihoods and grows village economies.',
+         'subtitle_id' => 'Setiap perjalanan secara langsung mendukung mata pencaharian warga dan menggerakkan ekonomi desa.'],
+        ['img' => 'slide-3.jpg', 'title' => 'Socially Responsible Tourism', 'title_id' => 'Wisata yang Bertanggung Jawab Secara Sosial',
+         'subtitle' => "Travel that gives back — empowering communities and protecting Bali's cultural heritage.",
+         'subtitle_id' => 'Berkelana sambil memberi dampak — memberdayakan masyarakat dan menjaga warisan budaya Bali.'],
+        ['img' => 'slide-4.jpg', 'title' => 'Worry Free Travel Service', 'title_id' => 'Layanan Perjalanan Tanpa Khawatir',
+         'subtitle' => 'From booking to arrival, enjoy reliable, hassle-free travel arranged by our local team.',
+         'subtitle_id' => 'Dari pemesanan hingga tiba di desa, nikmati layanan perjalanan yang mudah dan terpercaya dari tim lokal kami.'],
+    ];
+    $heroTitles = app()->getLocale() === 'id'
+        ? array_column($heroSlides, 'title_id')
+        : array_column($heroSlides, 'title');
+    $heroSubtitles = app()->getLocale() === 'id'
+        ? array_column($heroSlides, 'subtitle_id')
+        : array_column($heroSlides, 'subtitle');
+@endphp
+
 {{-- ============ HERO ============ --}}
 <section class="relative flex min-h-[88vh] items-center overflow-hidden bg-ink-950" aria-label="GODEVI intro">
     <div id="heroSlides" class="absolute inset-0">
-        @foreach (['slider1.png', 'slider2.png', 'slider3.png'] as $i => $slide)
+        @foreach ($heroSlides as $i => $slide)
             <div data-hero-slide data-index="{{ $i }}" class="hero-fade absolute inset-0 {{ $i === 0 ? 'opacity-100' : 'opacity-0' }}">
-                <img src="{{ asset('assets/customer/img/etc/slider/' . $slide) }}"
+                <img src="{{ asset('storage/sliders/' . $slide['img']) }}"
                     alt="GODEVI authentic Balinese village {{ $i + 1 }}" class="h-full w-full object-cover" fetchpriority="{{ $i === 0 ? 'high' : 'auto' }}" loading="{{ $i === 0 ? 'eager' : 'lazy' }}">
             </div>
         @endforeach
@@ -20,33 +43,43 @@
         <div class="absolute inset-0 bg-gradient-to-t from-ink-950/80 via-transparent to-transparent"></div>
     </div>
 
-    <div class="container-gd relative z-10 py-24">
+    <button type="button" data-hero-prev aria-label="Previous slide"
+        class="absolute bottom-14 left-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-ink-950/30 text-white backdrop-blur transition hover:border-white/60 hover:bg-white/20 lg:bottom-auto lg:left-8 lg:top-1/2 lg:h-12 lg:w-12 lg:-translate-y-1/2">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+    </button>
+    <button type="button" data-hero-next aria-label="Next slide"
+        class="absolute bottom-14 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-ink-950/30 text-white backdrop-blur transition hover:border-white/60 hover:bg-white/20 lg:bottom-auto lg:right-8 lg:top-1/2 lg:h-12 lg:w-12 lg:-translate-y-1/2">
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+    </button>
+    <div class="absolute bottom-24 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2" data-hero-dots>
+        @foreach ($heroSlides as $i => $slide)
+            <button type="button" data-hero-dot data-index="{{ $i }}" aria-label="Go to slide {{ $i + 1 }}"
+                class="h-2 w-2 rounded-full transition-all duration-300 {{ $i === 0 ? 'w-7 bg-white' : 'bg-white/40 hover:bg-white/70' }}"></button>
+        @endforeach
+    </div>
+
+    <div class="container-gd relative z-10 py-16 lg:py-24">
         <div class="max-w-3xl">
             <p data-hero-reveal class="eyebrow !text-white animate-fade-up" style="animation-delay: 0.1s">{{ __('Go Destination Village · Bali') }}</p>
-            <h1 class="font-display text-4xl font-bold leading-[1.15] text-white sm:text-5xl lg:text-6xl animate-fade-up" style="animation-delay: 0.25s">
-                {{ __('Authentic Village') }} <span class="italic text-brand-400">{{ __('Experiences') }}</span> {{ __('in the Heart of Bali') }}
+            <h1 data-hero-title data-titles='{!! json_encode($heroTitles, JSON_HEX_APOS | JSON_HEX_QUOT) !!}'
+                class="font-display text-3xl font-bold leading-[1.15] text-white sm:text-4xl lg:text-6xl animate-fade-up" style="animation-delay: 0.25s">
+                {{ $heroTitles[0] }}
             </h1>
-            <p class="mt-6 max-w-xl text-lg leading-relaxed text-white/80 animate-fade-up" style="animation-delay: 0.4s">
-                {{ __('Discover socially responsible tourism that empowers local communities. Immerse yourself in genuine Balinese culture, homestays and unforgettable experiences.') }}
+            <p data-hero-subtitle data-titles='{!! json_encode($heroSubtitles, JSON_HEX_APOS | JSON_HEX_QUOT) !!}'
+                class="mt-4 max-w-xl text-base leading-relaxed text-white/80 lg:mt-6 lg:text-lg animate-fade-up" style="animation-delay: 0.4s">
+                {{ $heroSubtitles[0] }}
             </p>
-            <div class="mt-9 flex flex-wrap items-center gap-4 animate-fade-up" style="animation-delay: 0.55s">
-                <a href="{{ url('village') }}" class="btn btn-primary !px-8 !py-4 text-base">
+            <div class="mt-6 flex flex-wrap items-center gap-3 lg:mt-9 lg:gap-4 animate-fade-up" style="animation-delay: 0.55s">
+                <a href="{{ url('village') }}" class="btn btn-primary !px-6 !py-3 text-sm lg:!px-8 lg:!py-4 lg:text-base">
                     {{ __('Explore Villages') }}
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                 </a>
-                <a href="{{ url('tour-packages') }}" class="btn btn-white !px-8 !py-4 text-base">{{ __('View Tour Packages') }}</a>
+                <a href="{{ url('tour-packages') }}" class="btn btn-white !px-6 !py-3 text-sm lg:!px-8 lg:!py-4 lg:text-base">{{ __('View Tour Packages') }}</a>
             </div>
         </div>
 
         </div>
 
-    {{-- Scroll cue --}}
-    <a href="#explore" class="absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 text-white/60 transition hover:text-white lg:flex" aria-label="Scroll down">
-        <span class="text-[10px] font-bold uppercase tracking-[0.25em]">Scroll</span>
-        <span class="flex h-9 w-5 items-start justify-center rounded-full border border-white/40 p-1">
-            <span class="h-2 w-1 animate-bounce rounded-full bg-white"></span>
-        </span>
-    </a>
 </section>
 
 {{-- ============ STATS ============ --}}
@@ -152,6 +185,21 @@
     </div>
 </section>
 
+{{-- ============ GODEVI BOOKLET ============ --}}
+<section class="section-pad bg-cream-50">
+    <div class="container-gd">
+        <div class="mx-auto mb-12 max-w-2xl text-center" data-vue="Reveal">
+            <p class="eyebrow justify-center !gap-2">{{ __('Company Profile') }}</p>
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Get to know GODEVI through our booklet') }}</h2>
+            <p class="mt-4 text-ink-500">{{ __('Browse our vision, impact and village tourism programs — read online or download the PDF.') }}</p>
+        </div>
+
+        <x-partials.pdf-viewer src="storage/documents/GODEVI-Booklet.pdf"
+            title="GODEVI Booklet"
+            subtitle="{{ __('Company profile · 21 pages') }}" />
+    </div>
+</section>
+
 {{-- ============ SERVICES ============ --}}
 <section class="section-pad">
     <div class="container-gd">
@@ -228,11 +276,12 @@
 
         <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
             @foreach ($packages->take(3) as $pkg)
+                @php $trPkg = $pkg->translate?->firstWhere('lang', App::getLocale()); @endphp
                 <a href="{{ url('tour-packages/' . $pkg->slug) }}" data-vue="Reveal"
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-56 overflow-hidden">
                         <img src="{{ $pkg->default_img ? asset('storage/packages/' . $pkg->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $pkg->name }} — {{ __('Bali village tour package') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $trPkg?->name ?: $pkg->name }} — {{ __('Bali village tour package') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         <span class="badge absolute left-4 top-4 bg-white/95 text-brand-600 shadow-sm">X</span>
                         <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink-950/60 to-transparent"></div>
                     </div>
@@ -243,7 +292,7 @@
                                 <span class="flex items-center gap-1"><svg class="h-3.5 w-3.5 text-forest-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>{{ $pkg->vil_name }}</span>
                             @endif
                         </div>
-                        <h3 class="mt-3 flex-1 font-display text-xl font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $pkg->name }}</h3>
+                        <h3 class="mt-3 flex-1 font-display text-xl font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $trPkg?->name ?: $pkg->name }}</h3>
                         <div class="mt-5 flex items-center justify-between border-t border-ink-50 pt-4">
                             <span class="text-lg font-bold text-brand-600">Rp {{ number_format($pkg->price, 0, ',', '.') }}</span>
                             <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-500 transition group-hover:text-brand-600">
@@ -358,16 +407,47 @@
 
 @section('js')
 <script>
-    // Hero crossfade
+    // Hero crossfade with manual controls
     (function () {
         const slides = Array.from(document.querySelectorAll('[data-hero-slide]'));
+        const dots = Array.from(document.querySelectorAll('[data-hero-dot]'));
+        const prevBtn = document.querySelector('[data-hero-prev]');
+        const nextBtn = document.querySelector('[data-hero-next]');
         if (slides.length < 2) return;
+
         let current = 0;
-        setInterval(() => {
-            slides[current].classList.add('opacity-0');
-            current = (current + 1) % slides.length;
-            slides[current].classList.remove('opacity-0');
-        }, 6000);
+        let timer = null;
+        const titleEl = document.querySelector('[data-hero-title]');
+        const subtitleEl = document.querySelector('[data-hero-subtitle]');
+        let titles = [];
+        let subtitles = [];
+        try {
+            titles = JSON.parse(titleEl?.dataset.titles || '[]');
+            subtitles = JSON.parse(subtitleEl?.dataset.titles || '[]');
+        } catch (e) { titles = []; subtitles = []; }
+
+        const go = (i) => {
+            current = (i + slides.length) % slides.length;
+            slides.forEach((s, idx) => s.classList.toggle('opacity-0', idx !== current));
+            dots.forEach((d, idx) => {
+                const active = idx === current;
+                d.classList.toggle('bg-white', active);
+                d.classList.toggle('w-7', active);
+                d.classList.toggle('bg-white/40', !active);
+            });
+            if (titleEl && titles[current]) titleEl.textContent = titles[current];
+            if (subtitleEl && subtitles[current]) subtitleEl.textContent = subtitles[current];
+        };
+        const restart = () => {
+            if (timer) clearInterval(timer);
+            timer = setInterval(() => go(current + 1), 6000);
+        };
+
+        go(0);
+        restart();
+        nextBtn?.addEventListener('click', () => { go(current + 1); restart(); });
+        prevBtn?.addEventListener('click', () => { go(current - 1); restart(); });
+        dots.forEach((d, i) => d.addEventListener('click', () => { go(i); restart(); }));
     })();
 </script>
 @endsection

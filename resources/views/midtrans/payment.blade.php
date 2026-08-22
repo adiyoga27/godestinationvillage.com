@@ -12,7 +12,6 @@
     <meta property="og:description" content="{{ $content ?? 'Automatic Approve Payment' }}" />
     <meta property="og:image" itemprop="image" content="{{ $image ?? url('assets/customer/frontdata/images/bird.png') }}">
     <meta property="og:type" content="website" />
-    <meta property="og:updated_time" content="1440432930" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 

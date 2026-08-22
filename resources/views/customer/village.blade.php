@@ -39,7 +39,7 @@
                             </p>
                         @endif
                         @if ($vd->desc ?? null)
-                            <p class="mt-3 flex-1 line-clamp-2 text-sm text-ink-500">{{ $vd->desc }}</p>
+                            <p class="mt-3 flex-1 line-clamp-2 text-sm text-ink-500">{!! \Illuminate\Support\Str::words(strip_tags($vd->desc), 22, '...') !!}</p>
                         @endif
                         <span class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-brand-600 transition-all group-hover:gap-3">
                             {{ __('Explore Village') }}

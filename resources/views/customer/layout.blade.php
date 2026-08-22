@@ -206,9 +206,9 @@
     </div>
 
     <!-- Mobile menu -->
-    <div id="mobileMenu" class="fixed inset-0 z-[70] lg:hidden" aria-hidden="true">
+    <div id="mobileMenu" class="pointer-events-none fixed inset-0 z-[70] lg:hidden" aria-hidden="true">
         <div class="absolute inset-0 bg-ink-950/50 opacity-0 transition-opacity duration-300" data-mobile-close></div>
-        <div class="absolute right-0 top-0 flex h-full w-[85%] max-w-sm -translate-x-full flex-col bg-white shadow-2xl transition-transform duration-300">
+        <div class="absolute right-0 top-0 flex h-full w-[85%] max-w-sm translate-x-full flex-col bg-white shadow-2xl transition-transform duration-300">
             <div class="flex items-center justify-between border-b border-ink-100 p-5">
                 <img src="{{ url('assets/customer/img/logo.png') }}" alt="GODEVI" class="h-10 w-auto">
                 <button type="button" data-mobile-close aria-label="Close menu" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-600">

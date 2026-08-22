@@ -28,18 +28,23 @@
             @endif
             <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
                 @forelse ($packages as $pack)
+                    @php
+                        $tr = $pack->translate?->firstWhere('lang', App::getLocale());
+                        $name = $tr?->name ?: $pack->name;
+                        $desc = $tr?->desc ?: $pack->desc;
+                    @endphp
                     <a href="{{ url('tour-packages/' . $pack->slug) }}" data-vue="Reveal" class="group card card-hover flex flex-col overflow-hidden">
                         <div class="relative h-52 overflow-hidden">
                             <img src="{{ $pack->default_img ? asset('storage/packages/' . $pack->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                                alt="{{ $pack->name }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                                alt="{{ $name }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         </div>
                         <div class="flex flex-1 flex-col p-6">
                             <div class="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide text-ink-400">
                                 <span class="text-brand-600">{{ $pack->cat_name }}</span>
                                 <span class="flex items-center gap-1"><svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>{{ $pack->vil_name }}</span>
                             </div>
-                            <h2 class="mt-2 font-display text-lg font-semibold leading-snug text-ink-950 transition group-hover:text-brand-600">{{ $pack->name }}</h2>
-                            <p class="mt-2 line-clamp-2 flex-1 text-sm text-ink-500">{{ strip_tags($pack->desc) }}</p>
+                            <h2 class="mt-2 font-display text-lg font-semibold leading-snug text-ink-950 transition group-hover:text-brand-600">{{ $name }}</h2>
+                            <p class="mt-2 line-clamp-2 flex-1 text-sm text-ink-500">{{ strip_tags($desc) }}</p>
                             <div class="mt-5 flex items-center justify-between border-t border-ink-50 pt-4">
                                 <span class="text-lg font-bold text-brand-600">Rp {{ number_format($pack->price, 0, ',', '.') }}</span>
                                 <span class="text-xs font-bold uppercase tracking-wide text-brand-600 transition group-hover:translate-x-1">{{ __('View') }} →</span>
