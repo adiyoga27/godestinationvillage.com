@@ -164,6 +164,7 @@ class PageController extends Controller
             if (!$data['village']) {
                 return abort(404);
             }
+            $data['instagram'] = InstagramServices::randomPost();
             // dd($result->id);
             $data['packages'] = Package::with(['category', 'user', 'village', 'translate'])
                                             ->where('village_id', $result->id)
