@@ -218,6 +218,7 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth']], function (
     Route::resource('surat', CertificationController::class);
 
     Route::resource('instagram', InstagramController::class);
+    Route::post('instagram/sync', [InstagramController::class, 'sync'])->name('instagram.sync');
     Route::resource('slider', SliderController::class);
     Route::get('booklet', [BookletController::class, 'index'])->name('booklet.index');
     Route::post('booklet', [BookletController::class, 'store'])->name('booklet.store');

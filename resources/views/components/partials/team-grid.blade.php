@@ -12,7 +12,7 @@
                         class="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105" loading="lazy">
                 @else
                     <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-50 to-cream-100">
-                        <span class="font-display text-5xl font-bold text-brand-600">{{ Str::upper(Str::substr($m->name, 0, 1)) }}</span>
+                        <span class="font-display text-5xl font-bold text-brand-600">{{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($m->name, 0, 1)) }}</span>
                     </div>
                 @endif
             </div>

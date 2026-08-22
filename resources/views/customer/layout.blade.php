@@ -153,7 +153,7 @@
                                         <svg class="m-auto h-5 w-5 text-ink-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2.5c-4.14 0-7.5 2.16-7.5 4.82V21h15v-1.68c0-2.66-3.36-4.82-7.5-4.82z"/></svg>
                                     @endif
                                 </span>
-                                <span class="hidden md:inline">{{ Str::limit(Auth::user()->name, 12) }}</span>
+                                <span class="hidden md:inline">{{ \Illuminate\Support\Str::limit(Auth::user()->name, 12) }}</span>
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
                             </button>
 

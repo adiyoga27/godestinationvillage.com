@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Services\InstagramServices;
+use App\Services\InstagramSyncService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Html\Builder;
@@ -100,5 +101,16 @@ class InstagramController extends Controller
             return redirect(route('instagram.index'))->with('status', 'Successfully deleted');
         else
             return redirect(route('instagram.index'))->with('error','Failed to delete');
+    }
+
+    public function sync(InstagramSyncService $service)
+    {
+        $result = $service->sync();
+
+        if ($result['status'] === 'ok') {
+            return redirect(route('instagram.index'))->with('status', $result['message']);
+        }
+
+        return redirect(route('instagram.index'))->with('error', $result['message']);
     }
 }
