@@ -31,8 +31,10 @@ class Slider extends Model
 
     public $fillable = [
 		'id',
-        'name',
+        'title',
+        'title_id',
         'desc',
+        'desc_id',
         'img'
     ];
 
@@ -40,8 +42,10 @@ class Slider extends Model
     {
         return LogOptions::defaults()
         ->logOnly(['id',
-        'name',
+        'title',
+        'title_id',
         'desc',
+        'desc_id',
         'img',]);
         // Chain fluent methods for configuration options
     }

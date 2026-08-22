@@ -17,6 +17,8 @@ use App\Http\Controllers\Backend\FoundingController;
 use App\Http\Controllers\Backend\HomeController;
 use App\Http\Controllers\Backend\HomeStayController;
 use App\Http\Controllers\Backend\InstagramController;
+use App\Http\Controllers\Backend\BookletController;
+use App\Http\Controllers\Backend\SliderController;
 use App\Http\Controllers\Backend\MembersController;
 use App\Http\Controllers\Backend\OrderEventsController;
 use App\Http\Controllers\Backend\OrderHomeStayController;
@@ -216,6 +218,9 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth']], function (
     Route::resource('surat', CertificationController::class);
 
     Route::resource('instagram', InstagramController::class);
+    Route::resource('slider', SliderController::class);
+    Route::get('booklet', [BookletController::class, 'index'])->name('booklet.index');
+    Route::post('booklet', [BookletController::class, 'store'])->name('booklet.store');
     Route::resource('review', ReviewController::class);
 
     Route::resource('category', CategoriesController::class);

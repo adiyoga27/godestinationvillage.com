@@ -144,6 +144,18 @@
             </a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="{{ url('administrator/slider') }}">
+              <span class="menu-title">Slider</span>
+              <i class="mdi mdi-image-multiple menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url('administrator/booklet') }}">
+              <span class="menu-title">Booklet</span>
+              <i class="mdi mdi-file-pdf-box menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="{{ url('administrator/discount-member') }}">
               <span class="menu-title">Diskon Member</span>
               <i class="mdi mdi-percent menu-icon"></i>

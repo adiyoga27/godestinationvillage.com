@@ -71,7 +71,6 @@
                 </div>
             </div>
         </div>
-    </div>
     @if (!empty($instagram))
         <div class="row">
             <div class="col-md-6">
@@ -85,4 +84,5 @@
         </div>
         <br /><br />
     @endif
+@endif
 @endsection

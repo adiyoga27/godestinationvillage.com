@@ -48,6 +48,7 @@ class PageController extends Controller
         $data['users'] = Storage::files('reviews');
         $data['reviews'] = Review::with('users')->where('is_active', 1)->get();
         $data['tag'] = Tag::all();
+        $data['sliders'] = \App\Models\Slider::orderBy('id')->get();
         $data['seo'] = Seo::make()
             ->title('Authentic Village Experiences in Bali')
             ->description('GODEVI (Go Destination Village) connects travelers with authentic Balinese village experiences — village tours, homestays, events and socially responsible tourism packages in Bali, Indonesia.')

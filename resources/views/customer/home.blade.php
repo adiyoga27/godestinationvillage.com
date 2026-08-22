@@ -8,26 +8,34 @@
 </style>
 
 @php
-    $heroSlides = [
-        ['img' => 'slide-1.jpg', 'title' => 'Authentic Village Experience', 'title_id' => 'Pengalaman Desa Autentik',
-         'subtitle' => 'Step into living Balinese traditions, authentic daily life and unforgettable village experiences.',
-         'subtitle_id' => 'Masuki tradisi Bali yang hidup, keseharian autentik, dan pengalaman desa yang tak terlupakan.'],
-        ['img' => 'slide-2.jpg', 'title' => 'Local Economic Improvement', 'title_id' => 'Peningkatan Ekonomi Lokal',
-         'subtitle' => 'Every journey directly supports local livelihoods and grows village economies.',
-         'subtitle_id' => 'Setiap perjalanan secara langsung mendukung mata pencaharian warga dan menggerakkan ekonomi desa.'],
-        ['img' => 'slide-3.jpg', 'title' => 'Socially Responsible Tourism', 'title_id' => 'Wisata yang Bertanggung Jawab Secara Sosial',
-         'subtitle' => "Travel that gives back — empowering communities and protecting Bali's cultural heritage.",
-         'subtitle_id' => 'Berkelana sambil memberi dampak — memberdayakan masyarakat dan menjaga warisan budaya Bali.'],
-        ['img' => 'slide-4.jpg', 'title' => 'Worry Free Travel Service', 'title_id' => 'Layanan Perjalanan Tanpa Khawatir',
-         'subtitle' => 'From booking to arrival, enjoy reliable, hassle-free travel arranged by our local team.',
-         'subtitle_id' => 'Dari pemesanan hingga tiba di desa, nikmati layanan perjalanan yang mudah dan terpercaya dari tim lokal kami.'],
-    ];
-    $heroTitles = app()->getLocale() === 'id'
-        ? array_column($heroSlides, 'title_id')
-        : array_column($heroSlides, 'title');
-    $heroSubtitles = app()->getLocale() === 'id'
-        ? array_column($heroSlides, 'subtitle_id')
-        : array_column($heroSlides, 'subtitle');
+    $isId = app()->getLocale() === 'id';
+    $dbSlides = $sliders ?? collect();
+    if ($dbSlides->count()) {
+        $heroSlides = $dbSlides->map(fn ($s) => [
+            'img' => $s->img,
+            'title' => $s->title,
+            'title_id' => $s->title_id ?: $s->title,
+            'subtitle' => $s->desc ?: '',
+            'subtitle_id' => $s->desc_id ?: $s->desc,
+        ])->values()->all();
+    } else {
+        $heroSlides = [
+            ['img' => 'slide-1.jpg', 'title' => 'Authentic Village Experience', 'title_id' => 'Pengalaman Desa Autentik',
+             'subtitle' => 'Step into living Balinese traditions, authentic daily life and unforgettable village experiences.',
+             'subtitle_id' => 'Masuki tradisi Bali yang hidup, keseharian autentik, dan pengalaman desa yang tak terlupakan.'],
+            ['img' => 'slide-2.jpg', 'title' => 'Local Economic Improvement', 'title_id' => 'Peningkatan Ekonomi Lokal',
+             'subtitle' => 'Every journey directly supports local livelihoods and grows village economies.',
+             'subtitle_id' => 'Setiap perjalanan secara langsung mendukung mata pencaharian warga dan menggerakkan ekonomi desa.'],
+            ['img' => 'slide-3.jpg', 'title' => 'Socially Responsible Tourism', 'title_id' => 'Wisata yang Bertanggung Jawab Secara Sosial',
+             'subtitle' => "Travel that gives back — empowering communities and protecting Bali's cultural heritage.",
+             'subtitle_id' => 'Berkelana sambil memberi dampak — memberdayakan masyarakat dan menjaga warisan budaya Bali.'],
+            ['img' => 'slide-4.jpg', 'title' => 'Worry Free Travel Service', 'title_id' => 'Layanan Perjalanan Tanpa Khawatir',
+             'subtitle' => 'From booking to arrival, enjoy reliable, hassle-free travel arranged by our local team.',
+             'subtitle_id' => 'Dari pemesanan hingga tiba di desa, nikmati layanan perjalanan yang mudah dan terpercaya dari tim lokal kami.'],
+        ];
+    }
+    $heroTitles = $isId ? array_column($heroSlides, 'title_id') : array_column($heroSlides, 'title');
+    $heroSubtitles = $isId ? array_column($heroSlides, 'subtitle_id') : array_column($heroSlides, 'subtitle');
 @endphp
 
 {{-- ============ HERO ============ --}}
