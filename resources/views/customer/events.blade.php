@@ -3,7 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
-    title="{{ __('Village Events & Festivals') }}"
+    :title="__('Village Events & Festivals')"
     subtitle="{{ __('Join authentic village ceremonies, workshops and community events across Bali.') }}"
     image="assets/customer/img/page-title-area/header-event.png"
     :crumbs="[__('Home') => '/', __('Events') => '']"

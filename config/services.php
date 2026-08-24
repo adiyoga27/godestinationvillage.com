@@ -53,4 +53,13 @@ return [
         'redirect' => env('TWITTER_URL'),
     ],
 
+    'recaptcha' => [
+        'site_key' => env('RECAPTCHA_SITE_KEY'),
+        'secret_key' => env('RECAPTCHA_SECRET_KEY'),
+        'api_key' => env('RECAPTCHA_API_KEY'),
+        'project_id' => env('RECAPTCHA_PROJECT_ID'),
+        'min_score' => (float) env('RECAPTCHA_MIN_SCORE', 0.5),
+        'type' => env('RECAPTCHA_TYPE', 'score'),
+    ],
+
 ];

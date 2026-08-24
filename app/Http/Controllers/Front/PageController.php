@@ -11,6 +11,8 @@ use App\Models\Category;
 use App\Models\BankAccount;
 use App\Helpers\CustomImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use App\Models\BoardExpert;
 use App\Models\Certification;
 use App\Models\Event;
@@ -208,7 +210,7 @@ class PageController extends Controller
     }
     public function tourpackages()
     {
-        $data['packages'] = Package::select('packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'price', 'packages.desc', 'packages.id', 'default_img')->with('translate')->join('users', 'users.id', 'user_id')->join('village_details', 'users.id', 'village_details.user_id')->join('categories', 'categories.id', 'category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->paginate(10);
+        $data['packages'] = Package::select('packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'price', 'packages.desc', 'packages.id', 'default_img', 'packages.slug')->with('translate')->join('users', 'users.id', 'user_id')->join('village_details', 'users.id', 'village_details.user_id')->join('categories', 'categories.id', 'category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->paginate(10);
         $data['seo'] = Seo::make()
             ->title('Tour Packages & Experiences')
             ->description('Browse affordable bali village adventure packages with GODEVI — immersive tours, cultural experiences and socially responsible travel in Bali villages.')
@@ -524,6 +526,8 @@ $data['recent'] = HomeStayServices::recent();
     }
     public function contact()
     {
+        session(['contact_form_loaded_at' => time()]);
+
         $data['seo'] = Seo::make()
             ->title('Contact Us')
             ->description('Get in touch with GODEVI — Go Destination Village. Reach us by phone, email or visit us in Denpasar, Bali for village tourism and homestay inquiries.')
@@ -535,6 +539,145 @@ $data['recent'] = HomeStayServices::recent();
             ->toArray();
 
         return view('customer/contact', $data);
+    }
+
+    public function contactSend(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string|max:5000',
+            'g-recaptcha-response' => 'required|string',
+        ]);
+
+        if (!empty($request->website)) {
+            return redirect()->back()->with('status', 'Pesan Anda telah terkirim. Terima kasih!');
+        }
+
+        $recaptcha = $this->verifyRecaptcha($request->input('g-recaptcha-response'), 'CONTACT');
+        if ($recaptcha !== true) {
+            return redirect()->back()->withErrors(['recaptcha' => $recaptcha])->withInput();
+        }
+
+        $to = env('APP_EMAIL', 'hello@godestinationvillage.com');
+
+        Mail::raw(
+            "Nama: {$validated['name']}\nEmail: {$validated['email']}\n\n{$validated['message']}",
+            function ($message) use ($validated, $to) {
+                $message->to($to)
+                    ->replyTo($validated['email'], $validated['name'])
+                    ->subject('Kontak Website: ' . $validated['subject']);
+            }
+        );
+
+        return redirect()->back()->with('status', 'Pesan Anda telah terkirim. Tim GODEVI akan segera menghubungi Anda.');
+    }
+
+    private function verifyRecaptcha(string $token, string $action): bool|string
+    {
+        $apiKey = config('services.recaptcha.api_key');
+        $projectId = config('services.recaptcha.project_id');
+        $secretKey = config('services.recaptcha.secret_key');
+
+        if ($apiKey && $projectId) {
+            $result = $this->verifyRecaptchaEnterprise($token, $action, $apiKey, $projectId);
+            if ($result === true) {
+                return true;
+            }
+            if (!$secretKey) {
+                return $result;
+            }
+            \Illuminate\Support\Facades\Log::warning('reCAPTCHA Enterprise gagal, fallback ke siteverify', ['reason' => $result]);
+            return $this->verifyRecaptchaSiteverify($token, $action, $secretKey);
+        }
+
+        if (!$secretKey) {
+            return 'reCAPTCHA belum dikonfigurasi. Silakan hubungi administrator.';
+        }
+
+        return $this->verifyRecaptchaSiteverify($token, $action, $secretKey);
+    }
+
+    private function verifyRecaptchaEnterprise(string $token, string $action, string $apiKey, string $projectId): bool|string
+    {
+        try {
+            $response = Http::asJson()->post(
+                "https://recaptchaenterprise.googleapis.com/v1/projects/{$projectId}/assessments?key={$apiKey}",
+                [
+                    'event' => [
+                        'token' => $token,
+                        'expectedAction' => $action,
+                        'siteKey' => config('services.recaptcha.site_key'),
+                    ],
+                ]
+            );
+
+            if ($response->failed()) {
+                \Illuminate\Support\Facades\Log::warning('reCAPTCHA Enterprise request failed', ['status' => $response->status(), 'body' => $response->body()]);
+                return 'Verifikasi keamanan gagal. Silakan coba lagi.';
+            }
+
+            $data = $response->json();
+            $props = $data['tokenProperties'] ?? [];
+            $risk = $data['riskAnalysis'] ?? [];
+
+            if (($props['valid'] ?? false) !== true) {
+                \Illuminate\Support\Facades\Log::warning('reCAPTCHA Enterprise token invalid', ['reason' => $props['invalidReason'] ?? 'unknown']);
+                return 'Verifikasi keamanan gagal. Silakan muat ulang halaman dan coba lagi.';
+            }
+
+            if (($props['action'] ?? null) !== $action) {
+                return 'Verifikasi keamanan gagal. Silakan coba lagi.';
+            }
+
+            if (($risk['score'] ?? 0) < config('services.recaptcha.min_score', 0.5)) {
+                \Illuminate\Support\Facades\Log::warning('reCAPTCHA Enterprise low score', ['score' => $risk['score'] ?? null]);
+                return 'Verifikasi keamanan gagal. Silakan coba lagi.';
+            }
+
+            return true;
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('reCAPTCHA Enterprise exception', ['message' => $e->getMessage()]);
+            return 'Verifikasi keamanan gagal. Silakan coba lagi.';
+        }
+    }
+
+    private function verifyRecaptchaSiteverify(string $token, string $action, string $secretKey): bool|string
+    {
+        try {
+            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => $secretKey,
+                'response' => $token,
+                'remoteip' => request()->ip(),
+            ]);
+
+            if ($response->failed()) {
+                \Illuminate\Support\Facades\Log::warning('reCAPTCHA siteverify request failed', ['status' => $response->status()]);
+                return 'Verifikasi keamanan gagal. Silakan coba lagi.';
+            }
+
+            $data = $response->json();
+
+            if (($data['success'] ?? false) !== true) {
+                \Illuminate\Support\Facades\Log::warning('reCAPTCHA siteverify invalid', ['error_codes' => $data['error-codes'] ?? []]);
+                return 'Verifikasi keamanan gagal. Silakan muat ulang halaman dan coba lagi.';
+            }
+
+            if (isset($data['action']) && $data['action'] !== $action) {
+                return 'Verifikasi keamanan gagal. Silakan coba lagi.';
+            }
+
+            if (isset($data['score']) && $data['score'] < config('services.recaptcha.min_score', 0.5)) {
+                \Illuminate\Support\Facades\Log::warning('reCAPTCHA siteverify low score', ['score' => $data['score']]);
+                return 'Verifikasi keamanan gagal. Silakan coba lagi.';
+            }
+
+            return true;
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('reCAPTCHA siteverify exception', ['message' => $e->getMessage()]);
+            return 'Verifikasi keamanan gagal. Silakan coba lagi.';
+        }
     }
     public function payment($id)
     {

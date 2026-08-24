@@ -181,6 +181,12 @@
               <i class="mdi mdi-percent menu-icon"></i>
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url('administrator/subscriber') }}">
+              <span class="menu-title">Subscriber</span>
+              <i class="mdi mdi-email-newsletter menu-icon"></i>
+            </a>
+          </li>
           @endif
 
           <li class="nav-item">

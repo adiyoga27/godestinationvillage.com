@@ -3,7 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
-    title="{{ __('News & Insights') }}"
+    :title="__('News & Insights')"
     subtitle="{{ __('Stories, updates and insights about sustainable village tourism and community empowerment in Bali.') }}"
     image="assets/customer/img/page-title-area/blog-style3.jpg"
     :crumbs="[__('Home') => '/', __('News') => '']"

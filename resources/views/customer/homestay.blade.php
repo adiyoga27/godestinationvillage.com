@@ -3,7 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
-    title="{{ __('Bali Homestay & Village Stay') }}"
+    :title="__('Bali Homestay & Village Stay')"
     subtitle="{{ __('Wake up to village life — stay with local families and experience genuine Balinese hospitality.') }}"
     image="assets/customer/frontdata/images/bg_1.jpg"
     :crumbs="[__('Home') => '/', __('Homestay') => '']"

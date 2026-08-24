@@ -21,10 +21,9 @@ const next = () => {
         <div class="relative aspect-[16/10] w-full overflow-hidden">
             <transition name="fade">
                 <img
-                    v-for="(img, i) in images"
-                    v-show="i === active"
-                    :key="i"
-                    :src="img"
+                    :key="active"
+                    v-if="images.length"
+                    :src="images[active]"
                     :alt="alt"
                     class="absolute inset-0 h-full w-full object-cover"
                     loading="lazy"

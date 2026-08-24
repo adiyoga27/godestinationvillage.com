@@ -52,25 +52,53 @@
                 <div class="card p-8 sm:p-10">
                     <h3 class="font-display text-xl font-bold text-ink-950">{{ __('Send us a message') }}</h3>
                     <p class="mt-1 text-sm text-ink-500">{{ __('We usually reply within 24 hours.') }}</p>
-                    <form action="mailto:hello@godestinationvillage.com" method="GET" class="mt-7 space-y-5">
+
+                    @if (session('status'))
+                        <div class="mt-5 rounded-xl bg-forest-50 px-5 py-4 text-sm font-semibold text-forest-700">{{ session('status') }}</div>
+                    @endif
+                    @if ($errors->any())
+                        <div class="mt-5 rounded-xl bg-red-50 px-5 py-4 text-sm text-red-700">
+                            <ul class="list-disc space-y-1 pl-4">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form id="contactForm" action="{{ route('contact.send') }}" method="POST" class="mt-7 space-y-5">
+                        @csrf
                         <div class="grid gap-5 sm:grid-cols-2">
                             <label class="block">
                                 <span class="label-gd">{{ __('Full name') }}</span>
-                                <input type="text" name="subject" placeholder="{{ __('Your name') }}" class="input-gd" required>
+                                <input type="text" name="name" value="{{ old('name') }}" placeholder="{{ __('Your name') }}" class="input-gd" required>
                             </label>
                             <label class="block">
                                 <span class="label-gd">{{ __('Email address') }}</span>
-                                <input type="email" name="body" placeholder="you@example.com" class="input-gd" required>
+                                <input type="email" name="email" value="{{ old('email') }}" placeholder="you@example.com" class="input-gd" required>
                             </label>
                         </div>
                         <label class="block">
                             <span class="label-gd">{{ __('Subject') }}</span>
-                            <input type="text" name="subject" placeholder="{{ __('How can we help?') }}" class="input-gd" required>
+                            <input type="text" name="subject" value="{{ old('subject') }}" placeholder="{{ __('How can we help?') }}" class="input-gd" required>
                         </label>
                         <label class="block">
                             <span class="label-gd">{{ __('Message') }}</span>
-                            <textarea name="body" rows="5" placeholder="{{ __('Tell us about your trip...') }}" class="input-gd resize-none" required></textarea>
+                            <textarea name="message" rows="5" placeholder="{{ __('Tell us about your trip...') }}" class="input-gd resize-none" required>{{ old('message') }}</textarea>
                         </label>
+
+                        <input type="text" name="website" value="" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+                        <input type="hidden" name="g-recaptcha-response" id="recaptchaToken">
+
+                        @if (config('services.recaptcha.type') === 'checkbox')
+                            <div id="recaptchaWidget" class="min-h-[78px]"></div>
+                        @endif
+
+                        <p class="flex items-center gap-2 text-xs text-ink-400">
+                            <svg class="h-4 w-4 text-forest-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7v3H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2v-6a2 2 0 00-2-2h-1V9a7 7 0 00-7-7zm-5 7a5 5 0 0110 0v3H7V9zm-3 6h16v6H4v-6zm7 1.5V19h2v-2.5a1.5 1.5 0 10-2 0z"/></svg>
+                            {{ __('Protected by reCAPTCHA Enterprise') }}
+                        </p>
+
                         <button type="submit" class="btn btn-primary">{{ __('Send Message') }}</button>
                     </form>
                     <p class="mt-6 text-xs text-ink-400">{{ __('Prefer email? Reach us directly at') }} <a href="mailto:hello@godestinationvillage.com" class="font-semibold text-brand-600 hover:underline">hello@godestinationvillage.com</a>.</p>
@@ -79,4 +107,69 @@
         </div>
     </div>
 </section>
+@endsection
+
+@section('js')
+@if (config('services.recaptcha.site_key'))
+@if (config('services.recaptcha.type') === 'checkbox')
+<script src="https://www.google.com/recaptcha/enterprise.js?render=explicit"></script>
+<script>
+    (function () {
+        var form = document.getElementById('contactForm');
+        var widget = document.getElementById('recaptchaWidget');
+        var tokenInput = document.getElementById('recaptchaToken');
+        if (!form || !widget) return;
+
+        grecaptcha.enterprise.ready(function () {
+            grecaptcha.enterprise.render(widget, {
+                sitekey: '{{ config('services.recaptcha.site_key') }}',
+                callback: function (token) {
+                    tokenInput.value = token;
+                },
+                'error-callback': function () {
+                    tokenInput.value = '';
+                },
+                'expired-callback': function () {
+                    tokenInput.value = '';
+                },
+            });
+        });
+
+        form.addEventListener('submit', function (e) {
+            if (!tokenInput.value) {
+                e.preventDefault();
+                alert('{{ __('Please complete the reCAPTCHA checkbox first.') }}');
+            }
+        });
+    })();
+</script>
+@else
+<script src="https://www.google.com/recaptcha/enterprise.js?render={{ config('services.recaptcha.site_key') }}"></script>
+<script>
+    (function () {
+        var form = document.getElementById('contactForm');
+        if (!form) return;
+        var tokenInput = document.getElementById('recaptchaToken');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var btn = form.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = '{{ __('Verifying...') }}';
+
+            grecaptcha.enterprise.ready(function () {
+                grecaptcha.enterprise.execute('{{ config('services.recaptcha.site_key') }}', { action: 'CONTACT' }).then(function (token) {
+                    tokenInput.value = token;
+                    form.submit();
+                }).catch(function () {
+                    btn.disabled = false;
+                    btn.textContent = '{{ __('Send Message') }}';
+                    alert('{{ __('Security verification failed. Please try again.') }}');
+                });
+            });
+        });
+    })();
+</script>
+@endif
+@endif
 @endsection

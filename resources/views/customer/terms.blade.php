@@ -3,7 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
-    title="{{ __('Terms & Conditions') }}"
+    :title="__('Terms & Conditions')"
     subtitle="{{ __('Please read these terms of use carefully before using GODEVI services.') }}"
     image="assets/customer/img/page-title-area/terms.jpg"
     :crumbs="[__('Home') => '/', __('Terms & Conditions') => '']"

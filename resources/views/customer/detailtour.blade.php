@@ -41,11 +41,12 @@
             {{-- Main --}}
             <div class="space-y-10">
                 <div data-vue="Reveal">
-                    <span data-vue="GallerySlider" data-props='{{ json_encode(["images" => $gallery, "alt" => $name]) }}' class="block" style="display:block"></span>
                     @if (count($gallery) < 2)
                         <div class="overflow-hidden rounded-3xl border border-ink-100 shadow-[0_25px_50px_-12px_rgb(26_26_38/0.25)]">
                             <img src="{{ $hero }}" alt="{{ $name }}" class="aspect-[16/9] w-full object-cover">
                         </div>
+                    @else
+                        <span data-vue="GallerySlider" data-props='{{ json_encode(["images" => $gallery, "alt" => $name]) }}' class="block" style="display:block"></span>
                     @endif
                 </div>
 

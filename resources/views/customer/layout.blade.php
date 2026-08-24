@@ -277,11 +277,18 @@
                     <h2 class="font-display text-2xl font-semibold text-white sm:text-3xl">{{ __('Discover authentic village experiences in Bali') }}</h2>
                     <p class="mt-2 text-sm text-ink-400">{{ __('Subscribe for village stories, new experiences and travel inspiration.') }}</p>
                 </div>
-                <form class="flex w-full max-w-md items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1.5 backdrop-blur" action="{{ url('news') }}" method="GET">
-                    <input type="email" name="email" placeholder="{{ __('Your email address') }}" aria-label="{{ __('Email address') }}" disabled
-                        class="w-full bg-transparent px-4 py-2.5 text-sm text-white placeholder-ink-400 focus:outline-none disabled:opacity-50">
-                    <button type="submit" disabled class="btn btn-primary shrink-0 !px-5 !py-2.5 text-sm disabled:opacity-50">{{ __('Subscribe') }}</button>
+                <form class="flex w-full max-w-md items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1.5 backdrop-blur" action="{{ route('subscribe.store') }}" method="POST">
+                    @csrf
+                    <input type="email" name="email" placeholder="{{ __('Your email address') }}" aria-label="{{ __('Email address') }}" required
+                        class="w-full bg-transparent px-4 py-2.5 text-sm text-white placeholder-ink-400 focus:outline-none">
+                    <button type="submit" class="btn btn-primary shrink-0 !px-5 !py-2.5 text-sm">{{ __('Subscribe') }}</button>
                 </form>
+                @if (session('status'))
+                    <p class="mt-3 max-w-md rounded-xl bg-white/10 px-4 py-2 text-sm text-white">{{ session('status') }}</p>
+                @endif
+                @error('email')
+                    <p class="mt-3 max-w-md rounded-xl bg-red-500/20 px-4 py-2 text-sm text-red-200">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- Columns -->

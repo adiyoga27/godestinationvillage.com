@@ -29,6 +29,7 @@ use App\Http\Controllers\Backend\PortofolioController;
 use App\Http\Controllers\Backend\ProfileController;
 use App\Http\Controllers\Backend\ReportVillageController;
 use App\Http\Controllers\Backend\ReviewController;
+use App\Http\Controllers\Backend\SubscriberController;
 use App\Http\Controllers\Backend\VillagesController;
 use App\Http\Controllers\Backend\VillageDatatableController;
 
@@ -38,6 +39,7 @@ use App\Http\Controllers\Front\PageController;
 use App\Http\Controllers\Front\ReservationEventController;
 use App\Http\Controllers\Front\ReservationHomeStayController;
 use App\Http\Controllers\Front\SearchController;
+use App\Http\Controllers\Front\SubscriberController as FrontSubscriberController;
 use App\Http\Controllers\Front\SitemapController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\PaymentController;
@@ -86,6 +88,11 @@ Route::prefix('pay')->group(function () {
 Route::get('/services', [PageController::class, 'services']);
 Route::get('/faq', [PageController::class, 'faq']);
 Route::get('/contact', [PageController::class, 'contact']);
+Route::post('/contact/send', [PageController::class, 'contactSend'])->name('contact.send');
+
+Route::post('/subscribe', [FrontSubscriberController::class, 'store'])->name('subscribe.store');
+Route::get('/unsubscribe/{token}', [FrontSubscriberController::class, 'unsubscribe'])->name('unsubscribe.show');
+Route::post('/unsubscribe/{token}', [FrontSubscriberController::class, 'unsubscribeConfirm'])->name('unsubscribe.confirm');
 
 Auth::routes();
 Route::prefix('auth')->group(function () {
@@ -223,6 +230,8 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth']], function (
     Route::get('booklet', [BookletController::class, 'index'])->name('booklet.index');
     Route::post('booklet', [BookletController::class, 'store'])->name('booklet.store');
     Route::resource('review', ReviewController::class);
+     Route::resource('subscriber', SubscriberController::class, ['only' => ['index', 'destroy']]);
+     Route::get('subscriber/export', [SubscriberController::class, 'export'])->name('subscriber.export');
 
     Route::resource('category', CategoriesController::class);
     Route::resource('category-event', CategoryEventsController::class);
