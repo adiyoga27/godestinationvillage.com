@@ -3,7 +3,7 @@
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">Judul News (*)</label>
           <div class="col-sm-9">
-            {!! Form::text('post_title', null, ['class'=>'form-control', ]) !!}
+            {!! Form::text('post_title', null, ['class'=>'form-control', 'required' => true]) !!}
           {!! $errors->first('post_title', '<p class="text-danger">:message</p>') !!}
           </div>
         </div>
@@ -11,7 +11,7 @@
         <div class="form-group row">
           <label class="col-sm-3 col-form-label">Isi News (*)</label>
           <div class="col-sm-9">
-            {!! Form::textarea('post_content', null, ['class'=>'form-control', ]) !!}
+            {!! Form::textarea('post_content', null, ['class'=>'form-control', 'required' => true]) !!}
         	{!! $errors->first('post_content', '<p class="text-danger">:message</p>') !!}
           </div>
         </div>

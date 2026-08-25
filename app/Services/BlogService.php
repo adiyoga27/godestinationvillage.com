@@ -34,12 +34,14 @@ class BlogService
         try {
             DB::beginTransaction();
             $payload['slug'] = Str::slug( $payload['post_title']);
+            $payload['updated_by'] = Auth::user()->id;
 
             if (!empty($payload['post_thumbnail'])){
                 $upload = CustomImage::storeImage($payload['post_thumbnail'], 'blogs');
                 $payload['post_thumbnail'] = $upload['name'];
-                $payload['updated_by'] = Auth::user()->id;
     
+            } else {
+                $payload['post_thumbnail'] = null;
             }
     
            

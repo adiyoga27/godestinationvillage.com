@@ -38,8 +38,6 @@ class CustomImage
         $img = 'img-' . time() . uniqid() . '.' . strtolower($file->getClientOriginalExtension());
         $imagePath = $file->storeAs($path, $img, 'public');
 
-        Storage::disk('local')->put($img, $imagePath);
-
         return [
             'name' => $img,
             'imagePath' => $imagePath,
@@ -51,15 +49,15 @@ class CustomImage
         self::validateUpload($file, self::ALLOWED_IMAGE_EXTENSIONS);
 
         $img = 'img-' . time() . uniqid() . '.jpg';
-        $imagePath = "public/".$file->storeAs($path, $img, 'public');
+        $imagePath = $file->storeAs($path, $img, 'public');
 
-        $image = Image::make(Storage::get($imagePath))->encode('jpg', 50);
+        $image = Image::make(Storage::disk('public')->get($imagePath))->encode('jpg', 50);
 
         $image->resize(500, null, function ($constraint) {
 		    $constraint->aspectRatio();
 		});
 
-        Storage::put($imagePath, (string) $image->encode());
+        Storage::disk('public')->put($imagePath, (string) $image->encode());
 
         return [
             'name' => $img,
@@ -74,12 +72,12 @@ class CustomImage
         $img = 'img-' . time() . uniqid() . '.jpg';
         $imagePath = $file->storeAs($path, $img, 'public');
 
-        $image = Image::make(Storage::get($imagePath))->encode('jpg', 50);
+        $image = Image::make(Storage::disk('public')->get($imagePath))->encode('jpg', 50);
         $image->resize(300, null, function ($constraint) {
             $constraint->aspectRatio();
         });
 
-        Storage::put($imagePath, (string) $image->encode());
+        Storage::disk('public')->put($imagePath, (string) $image->encode());
 
         return [
             'name' => $img,

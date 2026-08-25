@@ -58,6 +58,9 @@ class BlogController extends Controller
                     return "<label class='badge badge-gradient-danger'>Tidak Aktif</label>";
                 else
                     return "<label class='badge badge-gradient-success'>Aktif</label>";
+            })
+            ->editColumn('created_at', function($post){
+                return $post->created_at ? date('Y-m-d H:i', strtotime($post->created_at)) : '-';
             })->rawColumns(['action', 'isPublished'])->toJson();
         }
         $html = $htmlBuilder
@@ -65,9 +68,11 @@ class BlogController extends Controller
               ->addColumn(['data' => 'rownum', 'name'=>'rownum', 'title'=>'No','searchable'=>false])
               ->addColumn(['data' => 'post_title', 'name' => 'post_title', 'title' => 'Judul' ])
               ->addColumn(['data' => 'post_content', 'name' => 'post_content', 'title' => 'Isi' ])
-              ->addColumn(['data' => 'isPublished', 'name' => 'post_isPublished', 'title' => 'Status' ])
+              ->addColumn(['data' => 'isPublished', 'name' => 'isPublished', 'title' => 'Status' ])
+              ->addColumn(['data' => 'created_at', 'name' => 'created_at', 'title' => 'Dibuat' ])
               ->parameters([
                 'scrollX' => true,
+                'order' => [5, 'desc'],
               ]);
         return view('backend.blog.index')->with(compact('html'));
     }
@@ -78,10 +83,10 @@ class BlogController extends Controller
     public function store(BlogPostCreateRequest $request)
     {
         $result = BlogService::create($request->except('_token'));
-        if ($result) 
+        if ($result && !($result instanceof \Throwable))
             return redirect(route('news.index'))->with('status', 'Successfully created');
         else
-            return redirect(route('news.create'))->with('error', 'Failed to create');
+            return redirect(route('news.create'))->with('error', $result instanceof \Throwable ? 'Gagal menyimpan: ' . $result->getMessage() : 'Failed to create');
     }
     public function edit($id)
     {
@@ -93,10 +98,10 @@ class BlogController extends Controller
     public function update($id, BlogPostUpdateRequest $request)
     {
         $result = BlogService::update($id, $request->except('_token'));
-        if ($result) 
+        if ($result && !($result instanceof \Throwable))
             return redirect(route('news.index'))->with('status', 'Successfully updated');
         else
-            return back()->with('error','Failed to update');
+            return back()->with('error', $result instanceof \Throwable ? 'Gagal memperbarui: ' . $result->getMessage() : 'Failed to update');
     }
     public function destroy($id)
     {  

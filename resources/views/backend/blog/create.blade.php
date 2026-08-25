@@ -37,6 +37,9 @@
     tinymce.init({
       selector: "textarea",
       height: 400,
+      setup: function (editor) {
+        editor.on('change', function () { editor.save(); });
+      },
       plugins: [
         "advlist autolink link image lists charmap print preview hr anchor pagebreak",
         "searchreplace wordcount visualblocks visualchars insertdatetime media nonbreaking",
