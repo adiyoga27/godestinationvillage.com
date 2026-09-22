@@ -30,6 +30,7 @@ use App\Http\Controllers\Backend\ProfileController;
 use App\Http\Controllers\Backend\ReportVillageController;
 use App\Http\Controllers\Backend\ReviewController;
 use App\Http\Controllers\Backend\SubscriberController;
+use App\Http\Controllers\Backend\SystemLogController;
 use App\Http\Controllers\Backend\VillagesController;
 use App\Http\Controllers\Backend\VillageDatatableController;
 
@@ -94,7 +95,9 @@ Route::post('/subscribe', [FrontSubscriberController::class, 'store'])->name('su
 Route::get('/unsubscribe/{token}', [FrontSubscriberController::class, 'unsubscribe'])->name('unsubscribe.show');
 Route::post('/unsubscribe/{token}', [FrontSubscriberController::class, 'unsubscribeConfirm'])->name('unsubscribe.confirm');
 
-Auth::routes();
+Route::group(['middleware' => ['log.activity']], function () {
+    Auth::routes();
+});
 Route::prefix('auth')->group(function () {
     Route::get('/{provider}', [AuthController::class, 'redirectToProvider']);
     Route::get('/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
@@ -176,12 +179,12 @@ Route::get('/news', [PageController::class,'blog']);
 Route::get('/news/{slug}', [PageController::class,'detailpost']);
 Route::get('/news-mobile', [PageController::class,'blog_mobile']);
 Route::get('/news-mobile/{id}', [PageController::class,'detailpost_mobile']);
-Route::post('/news/comment/{slug}', [PageController::class, 'postComment'])->middleware('auth');
+Route::post('/news/comment/{slug}', [PageController::class, 'postComment'])->middleware(['auth', 'log.activity']);
 Route::get('/search', [SearchController::class,'searchHome']);
 Route::get('/pay/{id}', [PaymentController::class, 'vtweb']);
 Route::post('/vt-notif', [PaymentController::class, 'notification']);
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', 'log.activity']], function () {
     Route::prefix('bookingEvents')->group(function () {
         Route::get('/{id}', [PageController::class, 'bookingEvents']);
         Route::post('/sendEvent',[OrderEventsController::class, 'sendEvent']);
@@ -217,8 +220,10 @@ Route::get('qrcode-with-image', function () {
 
 
 //Route Untuk Administrator
-Route::group(['prefix' => 'administrator', 'middleware' => ['auth']], function () {
+Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activity']], function () {
      Route::resource('bank-account', BankAccountsController::class, ['names' => 'bank_account']);
+     Route::get('system-log', [SystemLogController::class, 'index'])->name('system-log.index');
+     Route::delete('system-log/prune', [SystemLogController::class, 'prune'])->name('system-log.prune');
      Route::resource('news', BlogController::class);
     Route::post('news/upload-image', [BlogController::class, 'uploadImage'])->name('news.upload_image');
     Route::post('tinymce/upload-image', [BlogController::class, 'uploadImage'])->name('tinymce.upload_image');

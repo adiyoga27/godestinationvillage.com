@@ -11,6 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->alias([
+            'log.activity' => \App\Http\Middleware\LogUserActivity::class,
+        ]);
+
         $middleware->validateCsrfTokens(except: [
             'administrator/tinymce/upload-image',
         ]);

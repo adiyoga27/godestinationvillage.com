@@ -187,6 +187,12 @@
               <i class="mdi mdi-email-newsletter menu-icon"></i>
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('system-log.index') }}">
+              <span class="menu-title">Log Sistem</span>
+              <i class="mdi mdi-history menu-icon"></i>
+            </a>
+          </li>
           @endif
 
           <li class="nav-item">
