@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="events"
     :title="__('Village Events & Festivals')"
     subtitle="{{ __('Join authentic village ceremonies, workshops and community events across Bali.') }}"
     image="assets/customer/img/page-title-area/header-event.png"

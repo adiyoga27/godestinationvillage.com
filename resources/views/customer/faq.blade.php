@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="faq"
     title="{{ __('Frequently Asked Questions') }}"
     subtitle="{{ __('Everything you need to know about GODEVI, booking, payment and cancellations.') }}"
     image="assets/customer/img/page-title-area/faq.jpg"

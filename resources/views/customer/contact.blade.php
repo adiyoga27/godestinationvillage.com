@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="contact"
     title="{{ __('Contact Us') }}"
     subtitle="{{ __('Planning a village escape or a homestay stay? Our team is here to help — reach out any time.') }}"
     image="assets/customer/img/page-title-area/explorer.jpg"

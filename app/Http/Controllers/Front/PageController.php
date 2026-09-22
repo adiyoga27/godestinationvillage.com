@@ -53,6 +53,10 @@ class PageController extends Controller
         $data['sliders'] = \App\Models\Slider::orderBy('id')->get();
         $data['events'] = Event::where('is_active', 1)->latest('id')->limit(3)->get();
         $data['homestays'] = Homestay::where('is_active', 1)->latest('id')->limit(3)->get();
+        // Total realtime untuk statistik homepage (tanpa limit).
+        $data['stat_villages'] = User::where('role_id', '2')->where('is_active', '1')->count();
+        $data['stat_packages'] = Package::where('is_active', '1')->count();
+        $data['stat_partners'] = User::where('role_id', '2')->count();
         $data['seo'] = Seo::make()
             ->title('Authentic Village Experiences in Bali')
             ->description('GODEVI (Go Destination Village) connects travelers with authentic Balinese village experiences — village tours, homestays, events and socially responsible tourism packages in Bali, Indonesia.')

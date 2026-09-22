@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="unsubscribe"
     title="{{ __('Unsubscribe Newsletter') }}"
     subtitle="{{ __('Manage your newsletter subscription on GODEVI.') }}"
     image="assets/customer/img/page-title-area/news.jpg"

@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="ourpartner"
     title="{{ __('Our Partners') }}"
     subtitle="{{ __('The partners and collaborators supporting GODEVI in building sustainable village tourism communities across Bali.') }}"
     image="assets/customer/img/page-title-area/partner.jpg"

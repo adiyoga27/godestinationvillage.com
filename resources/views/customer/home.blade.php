@@ -102,9 +102,9 @@
         <div class="grid grid-cols-2 gap-6 rounded-3xl border border-ink-100 bg-white p-8 shadow-[0_25px_60px_-20px_rgb(26_26_38/0.25)] md:grid-cols-4">
             @php
                 $stats = [
-                    ['value' => count($village), 'suffix' => '+', 'label' => 'Village Destinations'],
-                    ['value' => count($packages), 'suffix' => '+', 'label' => 'Curated Experiences'],
-                    ['value' => 12, 'suffix' => '', 'label' => 'Villages Partnership'],
+                    ['value' => $stat_villages ?? count($village), 'suffix' => '+', 'label' => 'Village Destinations'],
+                    ['value' => $stat_packages ?? count($packages), 'suffix' => '+', 'label' => 'Curated Experiences'],
+                    ['value' => $stat_partners ?? 12, 'suffix' => '+', 'label' => 'Villages Partnership'],
                     ['value' => 100, 'suffix' => '%', 'label' => 'Social Responsibility'],
                 ];
             @endphp

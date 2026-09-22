@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="tour-packages"
     title="{{ __('Bali Tour Packages') }}"
     subtitle="{{ __('Curated village experiences, cultural immersion and unforgettable adventures designed with local communities.') }}"
     image="assets/customer/img/page-title-area/bestoffer.jpg"

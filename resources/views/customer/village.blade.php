@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="village"
     title="{{ __('Explore Villages in Bali') }}"
     subtitle="{{ __('Discover authentic Balinese villages, culture and community-driven tourism experiences curated by GODEVI.') }}"
     image="assets/customer/img/page-title-area/explorer.jpg"

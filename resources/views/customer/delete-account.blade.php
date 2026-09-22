@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="delete-account"
     title="{{ __('Delete Account') }}"
     subtitle="{{ __('Learn how to request the deletion of your GODEVI account.') }}"
     image="assets/customer/img/page-title-area/privacy.jpg"

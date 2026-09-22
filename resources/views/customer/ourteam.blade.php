@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="ourteam"
     title="{{ __('Our Team') }}"
     subtitle="{{ __('Meet the passionate people behind GODEVI — dedicated to uplifting communities through responsible tourism.') }}"
     image="assets/customer/img/page-title-area/our-team-timenile.jpg"

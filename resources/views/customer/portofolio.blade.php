@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="portofolio"
     title="{{ __('Our Portfolio') }}"
     subtitle="{{ __('Village tourism projects, community empowerment programs and sustainable tourism initiatives across Bali.') }}"
     image="assets/customer/img/page-title-area/founding-timenile.jpg"

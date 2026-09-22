@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="search"
     title="{{ __('Search Results') }}"
     subtitle="{{ $keyword ? __('Packages matching :keyword', ['keyword' => $keyword]) : __('Enter a keyword to find the perfect village experience.') }}"
     image="assets/customer/img/page-title-area/explorer.jpg"

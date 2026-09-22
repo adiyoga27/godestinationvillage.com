@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="founding"
     title="{{ __('The Founding') }}"
     subtitle="{{ __('The story of GODEVI — a socially pro-active business built to uplift village communities in Bali.') }}"
     image="assets/customer/img/page-title-area/founding-timenile.jpg"

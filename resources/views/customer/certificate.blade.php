@@ -7,6 +7,7 @@
 @endphp
 
 <x-partials.page-hero
+    page="certificate"
     title="{{ __('Certificate Details') }}"
     subtitle="{{ __('View and download your official GODEVI certificate.') }}"
     image="assets/customer/img/page-title-area/surat-sertif-header.png"

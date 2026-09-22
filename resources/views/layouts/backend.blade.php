@@ -247,6 +247,7 @@
                       <div class="collapse" id="ui-kelola-website">
                           <ul class="nav flex-column sub-menu">
                               <li class="nav-item"> <a class="nav-link" href="{{ route('site-settings.index') }}">Pengaturan Website</a></li>
+                              <li class="nav-item"> <a class="nav-link" href="{{ route('page-heroes.index') }}">Hero Halaman</a></li>
                               <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/slider') }}">Slider</a></li>
                               <li class="nav-item"> <a class="nav-link" href="{{ route('homepage-sections.index') }}">Homepage Sections</a></li>
                               <li class="nav-item"> <a class="nav-link" href="{{ route('homepage-services.index') }}">Our Services</a></li>

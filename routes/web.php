@@ -17,6 +17,7 @@ use App\Http\Controllers\Backend\FoundingController;
 use App\Http\Controllers\Backend\HomeController;
 use App\Http\Controllers\Backend\HomepageSectionController;
 use App\Http\Controllers\Backend\HomepageServiceController;
+use App\Http\Controllers\Backend\PageHeroController;
 use App\Http\Controllers\Backend\SiteSettingController;
 use App\Http\Controllers\Backend\HomeStayController;
 use App\Http\Controllers\Backend\InstagramController;
@@ -241,6 +242,7 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
     Route::post('homepage-sections/{id}/toggle', [HomepageSectionController::class, 'toggle'])->name('homepage-sections.toggle');
     Route::resource('homepage-services', HomepageServiceController::class);
     Route::post('homepage-services/{id}/toggle', [HomepageServiceController::class, 'toggle'])->name('homepage-services.toggle');
+    Route::resource('page-heroes', PageHeroController::class, ['only' => ['index', 'edit', 'update']]);
     Route::get('booklet', [BookletController::class, 'index'])->name('booklet.index');
     Route::post('booklet', [BookletController::class, 'store'])->name('booklet.store');
     Route::resource('review', ReviewController::class);

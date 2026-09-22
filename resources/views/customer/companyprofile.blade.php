@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="company-profile"
     title="{{ __('Company Profile') }}"
     subtitle="{{ __('GODEVI (PT Banua Wisata Lestari) — dedicated to socially responsible and sustainable village tourism in Bali.') }}"
     image="assets/customer/img/page-title-area/explorer.jpg"

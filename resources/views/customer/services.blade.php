@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="services"
     title="{{ __('Our Services') }}"
     subtitle="{{ __('From tourism planning to destination branding — we help villages thrive through responsible tourism.') }}"
     image="assets/customer/img/page-title-area/services.jpg"

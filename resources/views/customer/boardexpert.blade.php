@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="boardexpert"
     title="{{ __('Board of Experts') }}"
     subtitle="{{ __('The advisors guiding GODEVI in sustainable tourism, community development and destination management.') }}"
     image="assets/customer/img/page-title-area/team.jpg"

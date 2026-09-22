@@ -3,10 +3,19 @@
     'subtitle' => '',
     'image' => 'assets/customer/frontdata/images/bg_2.jpg',
     'crumbs' => [],
+    // Kunci halaman di tabel page_heroes (cth: "homestay"). Bila diisi,
+    // judul/sub-judul/gambar diambil dari admin (fallback ke props di atas).
+    'page' => null,
 ])
 
+@php
+    $title = \App\Helpers\PageHero::text($page, 'title', $title);
+    $subtitle = \App\Helpers\PageHero::text($page, 'subtitle', $subtitle);
+    $image = \App\Helpers\PageHero::image($page, $image);
+@endphp
+
 <section class="relative overflow-hidden bg-ink-950">
-    <img src="{{ asset($image) }}" alt="" aria-hidden="true"
+    <img src="{{ $image }}" alt="" aria-hidden="true"
         class="absolute inset-0 h-full w-full object-cover opacity-40" loading="eager">
     <div class="absolute inset-0 bg-gradient-to-b from-ink-950/70 to-ink-950/90"></div>
     <div class="container-gd relative z-10 py-20 text-center sm:py-24">

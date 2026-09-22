@@ -3,6 +3,7 @@
 @section('content')
 
 <x-partials.page-hero
+    page="account"
     title="{{ __('My Account') }}"
     subtitle="{{ __('Update your profile details and keep your information up to date.') }}"
     image="assets/customer/img/page-title-area/account.jpg"
