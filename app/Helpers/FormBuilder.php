@@ -130,6 +130,16 @@ class FormBuilder
         return '<input type="radio" name="' . e($name) . '" value="' . e($value) . '"' . self::attributes($options) . '>';
     }
 
+    public static function checkbox(string $name, $value = 1, $checked = null, array $options = []): string
+    {
+        $modelValue = self::$model ? data_get(self::$model, $name) : null;
+        $isChecked = $checked ?? (bool) old($name, $modelValue);
+        if ($isChecked) {
+            $options['checked'] = 'checked';
+        }
+        return '<input type="checkbox" name="' . e($name) . '" value="' . e($value) . '"' . self::attributes($options) . '>';
+    }
+
     public static function textarea(string $name, $value = null, array $options = []): string
     {
         $value = $value ?? old($name, self::$model ? data_get(self::$model, $name) : null);

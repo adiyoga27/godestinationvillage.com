@@ -17,7 +17,8 @@
         if ($this.attr('href').indexOf("index.html") !== -1) {
           $(this).parents('.nav-item').last().addClass('active');
           if ($(this).parents('.sub-menu').length) {
-            $(this).closest('.collapse').addClass('show');
+            // Buka juga submenu induk (mendukung submenu bertingkat)
+            $(this).parents('.collapse').addClass('show');
             $(this).addClass('active');
           }
         }
@@ -26,17 +27,19 @@
         if ($this.attr('href').indexOf(current) !== -1) {
           $(this).parents('.nav-item').last().addClass('active');
           if ($(this).parents('.sub-menu').length) {
-            $(this).closest('.collapse').addClass('show');
+            // Buka juga submenu induk (mendukung submenu bertingkat)
+            $(this).parents('.collapse').addClass('show');
             $(this).addClass('active');
           }
         }
       }
     })
 
-    //Close other submenu in sidebar on opening any
+    //Close other submenu in sidebar on opening any,
+    // kecuali submenu induk dari yang sedang dibuka (mendukung submenu bertingkat)
 
-    sidebar.on('show.bs.collapse', '.collapse', function() {
-      sidebar.find('.collapse.show').collapse('hide');
+    sidebar.on('show.bs.collapse', '.collapse', function(e) {
+      sidebar.find('.collapse.show').not($(e.target).parents('.collapse')).collapse('hide');
     });
 
 

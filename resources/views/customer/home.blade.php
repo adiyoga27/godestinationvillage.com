@@ -68,7 +68,10 @@
 
     <div class="container-gd relative z-10 py-16 lg:py-24">
         <div class="max-w-3xl">
-            <p data-hero-reveal class="eyebrow !text-white animate-fade-up" style="animation-delay: 0.1s">{{ __('Go Destination Village · Bali') }}</p>
+            @php $heroEyebrow = \App\Helpers\Homepage::text('hero', 'eyebrow', ''); @endphp
+            @if ($heroEyebrow)
+            <p data-hero-reveal class="eyebrow !text-white animate-fade-up" style="animation-delay: 0.1s">{{ $heroEyebrow }}</p>
+            @endif
             <h1 data-hero-title data-titles='{!! json_encode($heroTitles, JSON_HEX_APOS | JSON_HEX_QUOT) !!}'
                 class="font-display text-3xl font-bold leading-[1.15] text-white sm:text-4xl lg:text-6xl animate-fade-up" style="animation-delay: 0.25s">
                 {{ $heroTitles[0] }}
@@ -78,11 +81,13 @@
                 {{ $heroSubtitles[0] }}
             </p>
             <div class="mt-6 flex flex-wrap items-center gap-3 lg:mt-9 lg:gap-4 animate-fade-up" style="animation-delay: 0.55s">
-                <a href="{{ url('village') }}" class="btn btn-primary !px-6 !py-3 text-sm lg:!px-8 lg:!py-4 lg:text-base">
-                    {{ __('Explore Villages') }}
+                @php $heroBtn = \App\Helpers\Homepage::button('hero', 1, __('Explore Villages'), url('village')); @endphp
+                <a href="{{ $heroBtn['url'] }}" class="btn btn-primary !px-6 !py-3 text-sm lg:!px-8 lg:!py-4 lg:text-base">
+                    {{ $heroBtn['label'] }}
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                 </a>
-                <a href="{{ url('tour-packages') }}" class="btn btn-white !px-6 !py-3 text-sm lg:!px-8 lg:!py-4 lg:text-base">{{ __('View Tour Packages') }}</a>
+                @php $heroBtn2 = \App\Helpers\Homepage::button('hero', 2, __('View Tour Packages'), url('tour-packages')); @endphp
+                <a href="{{ $heroBtn2['url'] }}" class="btn btn-white !px-6 !py-3 text-sm lg:!px-8 lg:!py-4 lg:text-base">{{ $heroBtn2['label'] }}</a>
             </div>
         </div>
 
@@ -91,6 +96,7 @@
 </section>
 
 {{-- ============ STATS ============ --}}
+@if (\App\Helpers\Homepage::visible('stats'))
 <section class="relative z-20 -mt-14">
     <div class="container-gd">
         <div class="grid grid-cols-2 gap-6 rounded-3xl border border-ink-100 bg-white p-8 shadow-[0_25px_60px_-20px_rgb(26_26_38/0.25)] md:grid-cols-4">
@@ -113,18 +119,21 @@
         </div>
     </div>
 </section>
+@endif
 
 {{-- ============ EXPLORE VILLAGE ============ --}}
+@if (\App\Helpers\Homepage::visible('explore_village'))
 <section id="explore" class="section-pad">
     <div class="container-gd">
         <div class="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <div data-vue="Reveal" class="max-w-2xl">
-                <p class="eyebrow">{{ __('Explore Village') }}</p>
-                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Beautiful Balinese villages, authentic stories') }}</h2>
-                <p class="mt-4 text-ink-500">{{ __('Every village has a story. Step into living traditions and meet the communities whose daily lives inspire our tourism experiences.') }}</p>
+                <p class="eyebrow">{{ \App\Helpers\Homepage::text('explore_village', 'eyebrow', __('Explore Village')) }}</p>
+                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('explore_village', 'title', __('Beautiful Balinese villages, authentic stories')) }}</h2>
+                <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('explore_village', 'subtitle', __('Every village has a story. Step into living traditions and meet the communities whose daily lives inspire our tourism experiences.')) }}</p>
             </div>
-            <a href="{{ url('village') }}" class="btn btn-secondary shrink-0">
-                {{ __('View All Villages') }}
+            @php $exploreBtn = \App\Helpers\Homepage::button('explore_village', 1, __('View All Villages'), url('village')); @endphp
+            <a href="{{ $exploreBtn['url'] }}" class="btn btn-secondary shrink-0">
+                {{ $exploreBtn['label'] }}
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
             </a>
         </div>
@@ -149,13 +158,15 @@
         </div>
     </div>
 </section>
+@endif
 
 {{-- ============ ABOUT / WHY GODEVI ============ --}}
+@if (\App\Helpers\Homepage::visible('about'))
 <section class="section-pad bg-cream-50">
     <div class="container-gd grid items-center gap-14 lg:grid-cols-2">
         <div class="relative" data-vue="Reveal">
             <div class="overflow-hidden rounded-3xl shadow-2xl">
-                <img src="{{ asset('assets/customer/frontdata/images/about.jpg') }}" alt="GODEVI village tourism community in Bali"
+                <img src="{{ \App\Helpers\Homepage::image('about', 'assets/customer/frontdata/images/about.jpg') }}" alt="GODEVI village tourism community in Bali"
                     class="h-[480px] w-full object-cover" loading="lazy">
             </div>
             <div class="absolute -bottom-8 -right-4 hidden w-52 rounded-3xl bg-brand-600 p-6 text-center text-white shadow-xl sm:block animate-float">
@@ -165,10 +176,10 @@
         </div>
 
         <div data-vue="Reveal" data-props='{"delay":120}'>
-            <p class="eyebrow">{{ __('Why GODEVI') }}</p>
-            <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Tourism that gives back to Bali\'s villages') }}</h2>
+            <p class="eyebrow">{{ \App\Helpers\Homepage::text('about', 'eyebrow', __('Why GODEVI')) }}</p>
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('about', 'title', __('Tourism that gives back to Bali\'s villages')) }}</h2>
             <p class="mt-5 leading-relaxed text-ink-500">
-                {{ __('GODEVI (Go Destination Village) is a socially pro-active business dedicated to uplifting local communities in developing villages through tourism. We create a fair-trade marketplace by empowering village communities — ensuring travel benefits the people who call these places home.') }}
+                {{ \App\Helpers\Homepage::text('about', 'subtitle', __('GODEVI (Go Destination Village) is a socially pro-active business dedicated to uplifting local communities in developing villages through tourism. We create a fair-trade marketplace by empowering village communities — ensuring travel benefits the people who call these places home.')) }}
             </p>
             <div class="mt-8 grid gap-4 sm:grid-cols-2">
                 @php
@@ -192,14 +203,16 @@
         </div>
     </div>
 </section>
+@endif
 
 {{-- ============ GODEVI BOOKLET ============ --}}
+@if (\App\Helpers\Homepage::visible('booklet'))
 <section class="section-pad bg-cream-50">
     <div class="container-gd">
         <div class="mx-auto mb-12 max-w-2xl text-center" data-vue="Reveal">
-            <p class="eyebrow justify-center !gap-2">{{ __('Company Profile') }}</p>
-            <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Get to know GODEVI through our booklet') }}</h2>
-            <p class="mt-4 text-ink-500">{{ __('Browse our vision, impact and village tourism programs — read online or download the PDF.') }}</p>
+            <p class="eyebrow justify-center !gap-2">{{ \App\Helpers\Homepage::text('booklet', 'eyebrow', __('Company Profile')) }}</p>
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('booklet', 'title', __('Get to know GODEVI through our booklet')) }}</h2>
+            <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('booklet', 'subtitle', __('Browse our vision, impact and village tourism programs — read online or download the PDF.')) }}</p>
         </div>
 
         <x-partials.pdf-viewer src="storage/documents/GODEVI-Booklet.pdf"
@@ -207,36 +220,29 @@
             subtitle="{{ __('Company profile · 21 pages') }}" />
     </div>
 </section>
+@endif
 
 {{-- ============ SERVICES ============ --}}
+@if (\App\Helpers\Homepage::visible('services'))
 <section class="section-pad">
     <div class="container-gd">
         <div class="mx-auto mb-14 max-w-2xl text-center" data-vue="Reveal">
-            <p class="eyebrow justify-center !gap-2">{{ __('Our Services') }}</p>
-            <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Beyond travel — we build thriving villages') }}</h2>
+            <p class="eyebrow justify-center !gap-2">{{ \App\Helpers\Homepage::text('services', 'eyebrow', __('Our Services')) }}</p>
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('services', 'title', __('Beyond travel — we build thriving villages')) }}</h2>
+            @if (\App\Helpers\Homepage::text('services', 'subtitle'))
+                <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('services', 'subtitle') }}</p>
+            @endif
         </div>
 
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            @php
-                $services = [
-                    ['img' => 'internship.png', 'title' => 'Internship Program'],
-                    ['img' => 'perencanaan.png', 'title' => 'Tourism Planning & Strategy'],
-                    ['img' => 'portofolio.png', 'title' => 'Portfolio'],
-                    ['img' => 'kajian.png', 'title' => 'Project Management'],
-                    ['img' => 'sdm.png', 'title' => 'Human Resources Development'],
-                    ['img' => 'branding.png', 'title' => 'Destination Branding & Digital Marketing'],
-                    ['img' => 'tren.png', 'title' => 'Consumer Trend & Tourism Insight'],
-                    ['img' => 'research.jpg', 'title' => 'Research Analytics & Scientific Consulting'],
-                ];
-            @endphp
-            @foreach ($services as $i => $s)
+            @foreach (\App\Helpers\Homepage::services() as $i => $s)
                 <a data-vue="Reveal" data-props="{{ json_encode(['delay' => ($i % 4) * 80]) }}"
-                    href="{{ url('services') }}"
+                    href="{{ \App\Helpers\Homepage::url($s->url) ?: url('services') }}"
                     class="group card card-hover p-6 text-center">
                     <div class="mx-auto flex h-40 w-40 items-center justify-center">
-                        <img src="{{ asset('assets/customer/img/etc/' . $s['img']) }}" alt="{{ $s['title'] }}" class="h-full w-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-2 group-hover:scale-105" loading="lazy">
+                        <img src="{{ \App\Helpers\Homepage::serviceImage($s->image) }}" alt="{{ $isId ? ($s->title_id ?: $s->title) : $s->title }}" class="h-full w-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-2 group-hover:scale-105" loading="lazy">
                     </div>
-                    <h3 class="mt-5 font-bold leading-snug">{{ __($s['title']) }}</h3>
+                    <h3 class="mt-5 font-bold leading-snug">{{ $isId ? ($s->title_id ?: $s->title) : $s->title }}</h3>
                     <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 opacity-0 transition-opacity group-hover:opacity-100">
                         {{ __('Learn more') }}
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
@@ -246,40 +252,46 @@
         </div>
     </div>
 </section>
+@endif
 
 {{-- ============ VIRTUAL REALITY ============ --}}
+@if (\App\Helpers\Homepage::visible('virtual_reality'))
 <section class="relative overflow-hidden bg-ink-950 section-pad">
     <div class="pointer-events-none absolute -left-24 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-forest-600/20 blur-3xl"></div>
     <div class="container-gd relative grid items-center gap-12 lg:grid-cols-2">
         <div data-vue="Reveal">
-            <p class="eyebrow !text-brand-400">{{ __('Virtual Reality') }}</p>
-            <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ __('Witness the wonders of Balinese villages — before you arrive') }}</h2>
-            <p class="mt-5 leading-relaxed text-white/70">{{ __('Step into an immersive virtual reality experience that transports you to the fascinating world of Bali\'s villages. Preview the culture, landscapes and activities that await you.') }}</p>
-            <a href="https://www.vrfmipa.com/meler" target="_blank" rel="noopener" class="btn btn-primary mt-8 !px-8 !py-4">
+            <p class="eyebrow !text-brand-400">{{ \App\Helpers\Homepage::text('virtual_reality', 'eyebrow', __('Virtual Reality')) }}</p>
+            <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ \App\Helpers\Homepage::text('virtual_reality', 'title', __('Witness the wonders of Balinese villages — before you arrive')) }}</h2>
+            <p class="mt-5 leading-relaxed text-white/70">{{ \App\Helpers\Homepage::text('virtual_reality', 'subtitle', __('Step into an immersive virtual reality experience that transports you to the fascinating world of Bali\'s villages. Preview the culture, landscapes and activities that await you.')) }}</p>
+            @php $vrBtn = \App\Helpers\Homepage::button('virtual_reality', 1, __('Go Virtual'), 'https://www.vrfmipa.com/meler'); @endphp
+            <a href="{{ $vrBtn['url'] }}" target="_blank" rel="noopener" class="btn btn-primary mt-8 !px-8 !py-4">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
-                {{ __('Go Virtual') }}
+                {{ $vrBtn['label'] }}
             </a>
         </div>
         <div data-vue="Reveal" data-props='{"delay":150}' class="overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
             <video controls preload="metadata" playsinline class="aspect-video w-full object-cover"
-                poster="{{ asset('assets/customer/frontdata/images/bg_4.jpg') }}">
+                poster="{{ \App\Helpers\Homepage::image('virtual_reality', 'assets/customer/frontdata/images/bg_4.jpg') }}">
                 <source src="{{ asset('storage/videos/vr-godevi.mp4') }}" type="video/mp4">
                 {{ __('Your browser does not support the video tag.') }}
             </video>
         </div>
     </div>
 </section>
+@endif
 
 {{-- ============ FEATURED TOUR PACKAGES ============ --}}
+@if (\App\Helpers\Homepage::visible('tour_packages'))
 <section id="tours" class="section-pad bg-cream-50">
     <div class="container-gd">
         <div class="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end" data-vue="Reveal">
             <div class="max-w-2xl">
-                <p class="eyebrow">{{ __('Tour Packages') }}</p>
-                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Featured experiences you\'ll love') }}</h2>
-                <p class="mt-4 text-ink-500">{{ __('Handpicked village tours and activities curated for authentic cultural immersion.') }}</p>
+                <p class="eyebrow">{{ \App\Helpers\Homepage::text('tour_packages', 'eyebrow', __('Tour Packages')) }}</p>
+                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('tour_packages', 'title', __('Featured experiences you\'ll love')) }}</h2>
+                <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('tour_packages', 'subtitle', __('Handpicked village tours and activities curated for authentic cultural immersion.')) }}</p>
             </div>
-            <a href="{{ url('tour-packages') }}" class="btn btn-secondary shrink-0">{{ __('See All Packages') }}</a>
+            @php $pkgBtn = \App\Helpers\Homepage::button('tour_packages', 1, __('See All Packages'), url('tour-packages')); @endphp
+            <a href="{{ $pkgBtn['url'] }}" class="btn btn-secondary shrink-0">{{ $pkgBtn['label'] }}</a>
         </div>
 
         <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
@@ -314,16 +326,112 @@
         </div>
     </div>
 </section>
+@endif
 
-{{-- ============ LATEST NEWS ============ --}}
+{{-- ============ EVENTS ============ --}}
+@if (\App\Helpers\Homepage::visible('events') && isset($events) && count($events))
 <section class="section-pad">
     <div class="container-gd">
         <div class="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end" data-vue="Reveal">
             <div class="max-w-2xl">
-                <p class="eyebrow">{{ __('News & Insights') }}</p>
-                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ __('Stories from the villages') }}</h2>
+                <p class="eyebrow">{{ \App\Helpers\Homepage::text('events', 'eyebrow', __('Events')) }}</p>
+                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('events', 'title', __('Upcoming village events')) }}</h2>
+                @if (\App\Helpers\Homepage::text('events', 'subtitle'))
+                    <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('events', 'subtitle') }}</p>
+                @endif
             </div>
-            <a href="{{ url('news') }}" class="btn btn-secondary shrink-0">{{ __('All Articles') }}</a>
+            @php $evBtn = \App\Helpers\Homepage::button('events', 1, __('See All Events'), url('events')); @endphp
+            <a href="{{ $evBtn['url'] }}" class="btn btn-secondary shrink-0">{{ $evBtn['label'] }}</a>
+        </div>
+
+        <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+            @foreach ($events->take(3) as $ev)
+                <a href="{{ url('events/' . $ev->slug) }}" data-vue="Reveal"
+                    class="group card card-hover flex flex-col overflow-hidden">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="{{ $ev->default_img ? asset('storage/events/' . $ev->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
+                            alt="{{ $ev->name }} — {{ __('Bali village event') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                        <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink-950/60 to-transparent"></div>
+                    </div>
+                    <div class="flex flex-1 flex-col p-6">
+                        <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ink-400">
+                            <span class="rounded-full bg-cream-50 px-2.5 py-1">{{ $ev->date_event ? \Carbon\Carbon::parse($ev->date_event)->format('M d, Y') : __('Event') }}</span>
+                        </div>
+                        <h3 class="mt-3 flex-1 font-display text-xl font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $ev->name }}</h3>
+                        <div class="mt-5 flex items-center justify-between border-t border-ink-50 pt-4">
+                            <span class="text-lg font-bold text-brand-600">Rp {{ number_format($ev->price, 0, ',', '.') }}</span>
+                            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-500 transition group-hover:text-brand-600">
+                                {{ __('Book Now') }}
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+{{-- ============ HOME STAY ============ --}}
+@if (\App\Helpers\Homepage::visible('homestay') && isset($homestays) && count($homestays))
+<section class="section-pad bg-cream-50">
+    <div class="container-gd">
+        <div class="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end" data-vue="Reveal">
+            <div class="max-w-2xl">
+                <p class="eyebrow">{{ \App\Helpers\Homepage::text('homestay', 'eyebrow', __('Home Stay')) }}</p>
+                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('homestay', 'title', __('Stay with local families')) }}</h2>
+                @if (\App\Helpers\Homepage::text('homestay', 'subtitle'))
+                    <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('homestay', 'subtitle') }}</p>
+                @endif
+            </div>
+            @php $hsBtn = \App\Helpers\Homepage::button('homestay', 1, __('See All Home Stays'), url('homestay')); @endphp
+            <a href="{{ $hsBtn['url'] }}" class="btn btn-secondary shrink-0">{{ $hsBtn['label'] }}</a>
+        </div>
+
+        <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+            @foreach ($homestays->take(3) as $hs)
+                <a href="{{ url('homestay/' . $hs->id) }}" data-vue="Reveal"
+                    class="group card card-hover flex flex-col overflow-hidden">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="{{ $hs->default_img ? asset('storage/homestay/' . $hs->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
+                            alt="{{ $hs->name }} — {{ __('Bali village homestay') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                        <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink-950/60 to-transparent"></div>
+                    </div>
+                    <div class="flex flex-1 flex-col p-6">
+                        <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ink-400">
+                            <span class="rounded-full bg-cream-50 px-2.5 py-1">{{ $hs->location ? \Illuminate\Support\Str::limit($hs->location, 30) : __('Home Stay') }}</span>
+                        </div>
+                        <h3 class="mt-3 flex-1 font-display text-xl font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $hs->name }}</h3>
+                        <div class="mt-5 flex items-center justify-between border-t border-ink-50 pt-4">
+                            <span class="text-lg font-bold text-brand-600">Rp {{ number_format($hs->price, 0, ',', '.') }}</span>
+                            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-500 transition group-hover:text-brand-600">
+                                {{ __('Book Now') }}
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+{{-- ============ LATEST NEWS ============ --}}
+@if (\App\Helpers\Homepage::visible('news'))
+<section class="section-pad">
+    <div class="container-gd">
+        <div class="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end" data-vue="Reveal">
+            <div class="max-w-2xl">
+                <p class="eyebrow">{{ \App\Helpers\Homepage::text('news', 'eyebrow', __('News & Insights')) }}</p>
+                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('news', 'title', __('Stories from the villages')) }}</h2>
+                @if (\App\Helpers\Homepage::text('news', 'subtitle'))
+                    <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('news', 'subtitle') }}</p>
+                @endif
+            </div>
+            @php $newsBtn = \App\Helpers\Homepage::button('news', 1, __('All Articles'), url('news')); @endphp
+            <a href="{{ $newsBtn['url'] }}" class="btn btn-secondary shrink-0">{{ $newsBtn['label'] }}</a>
         </div>
 
         <div class="grid gap-7 md:grid-cols-3">
@@ -362,14 +470,15 @@
         </div>
     </div>
 </section>
+@endif
 
 {{-- ============ TESTIMONIALS ============ --}}
-@if (count($reviews))
+@if (\App\Helpers\Homepage::visible('testimonials') && count($reviews))
     <section class="section-pad bg-ink-950">
         <div class="container-gd">
             <div class="mx-auto mb-14 max-w-2xl text-center" data-vue="Reveal">
-                <p class="eyebrow justify-center !gap-2 !text-brand-400">{{ __('Testimonials') }}</p>
-                <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ __('What our travelers say') }}</h2>
+                <p class="eyebrow justify-center !gap-2 !text-brand-400">{{ \App\Helpers\Homepage::text('testimonials', 'eyebrow', __('Testimonials')) }}</p>
+                <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ \App\Helpers\Homepage::text('testimonials', 'title', __('What our travelers say')) }}</h2>
             </div>
             <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @foreach ($reviews->take(3) as $r)
@@ -397,20 +506,24 @@
 @endif
 
 {{-- ============ FINAL CTA ============ --}}
+@if (\App\Helpers\Homepage::visible('cta'))
 <section class="section-pad">
     <div class="container-gd">
         <div data-vue="Reveal" class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-brand-600 to-brand-800 px-6 py-16 text-center sm:px-16">
             <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-2xl"></div>
             <div class="pointer-events-none absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-white/10 blur-2xl"></div>
-            <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ __('Ready for an authentic village experience?') }}</h2>
-            <p class="mx-auto mt-4 max-w-xl text-white/80">{{ __('Book your tour, homestay or event today and support the communities that make Bali extraordinary.') }}</p>
+            <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ \App\Helpers\Homepage::text('cta', 'title', __('Ready for an authentic village experience?')) }}</h2>
+            <p class="mx-auto mt-4 max-w-xl text-white/80">{{ \App\Helpers\Homepage::text('cta', 'subtitle', __('Book your tour, homestay or event today and support the communities that make Bali extraordinary.')) }}</p>
             <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
-                <a href="{{ url('tour-packages') }}" class="btn btn-white !px-8 !py-4">{{ __('Browse Experiences') }}</a>
-                <a href="{{ url('contact') }}" class="btn border border-white/40 text-white hover:bg-white/10 !px-8 !py-4">{{ __('Contact Us') }}</a>
+                @php $ctaBtn = \App\Helpers\Homepage::button('cta', 1, __('Browse Experiences'), url('tour-packages')); @endphp
+                <a href="{{ $ctaBtn['url'] }}" class="btn btn-white !px-8 !py-4">{{ $ctaBtn['label'] }}</a>
+                @php $ctaBtn2 = \App\Helpers\Homepage::button('cta', 2, __('Contact Us'), url('contact')); @endphp
+                <a href="{{ $ctaBtn2['url'] }}" class="btn border border-white/40 text-white hover:bg-white/10 !px-8 !py-4">{{ $ctaBtn2['label'] }}</a>
             </div>
         </div>
     </div>
 </section>
+@endif
 @endsection
 
 @section('js')

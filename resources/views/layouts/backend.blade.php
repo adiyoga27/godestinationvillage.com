@@ -130,70 +130,18 @@
               <i class="mdi mdi-home menu-icon"></i>
             </a>
           </li>
-          @if(Auth::user()->role_id == 1)
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/bank-account') }}">
-              <span class="menu-title">Akun Bank</span>
-              <i class="mdi mdi mdi-account-card-details menu-icon"></i>
+            <a class="nav-link" href="{{ url('administrator/news') }}">
+              <span class="menu-title">News</span>
+              <i class="mdi mdi-newspaper menu-icon"></i>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/instagram') }}">
-              <span class="menu-title">Instagram</span>
-              <i class="mdi mdi mdi-instagram menu-icon"></i>
+            <a class="nav-link" href="{{ url('administrator/surat') }}">
+              <span class="menu-title">Surat</span>
+              <i class="mdi mdi-file-document menu-icon"></i>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/slider') }}">
-              <span class="menu-title">Slider</span>
-              <i class="mdi mdi-image-multiple menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/booklet') }}">
-              <span class="menu-title">Booklet</span>
-              <i class="mdi mdi-file-pdf-box menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/discount-member') }}">
-              <span class="menu-title">Diskon Member</span>
-              <i class="mdi mdi-percent menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-              <span class="menu-title">User</span>
-              <i class="menu-arrow"></i>
-              <i class="mdi mdi-account-box menu-icon"></i>
-            </a>
-            <div class="collapse" id="ui-basic">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/user-admin') }}">Admin</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/user-village') }}">Desa Wisata</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/user-member') }}">Member</a></li>
-                </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/review') }}">
-              <span class="menu-title">Review</span>
-              <i class="mdi mdi-percent menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/subscriber') }}">
-              <span class="menu-title">Subscriber</span>
-              <i class="mdi mdi-email-newsletter menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('system-log.index') }}">
-              <span class="menu-title">Log Sistem</span>
-              <i class="mdi mdi-history menu-icon"></i>
-            </a>
-          </li>
-          @endif
 
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#ui-wisata" aria-expanded="false" aria-controls="ui-wisata">
@@ -264,50 +212,60 @@
 
 
 
-          {{-- <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/category') }}">
-              <span class="menu-title">Kategori Paket Wisata</span>
-              <i class="mdi mdi-tag menu-icon"></i>
-            </a>
-          </li> --}}
-
-          {{-- <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/package') }}">
-              <span class="menu-title">Paket Wisata</span>
-              <i class="mdi mdi-animation menu-icon"></i>
-            </a>
-          </li> --}}
+          {{-- ====== PENGGUNA (khusus super admin) ====== --}}
+          @if(Auth::user()->role_id == 1)
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/news') }}">
-              <span class="menu-title">News</span>
-              <i class="mdi mdi-chart-areaspline menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url('administrator/surat') }}">
-              <span class="menu-title">Surat</span>
-              <i class="mdi mdi-chart-bar menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-master" aria-expanded="false" aria-controls="ui-master">
-              <span class="menu-title">Data Master</span>
+            <a class="nav-link" data-toggle="collapse" href="#ui-pengguna" aria-expanded="false" aria-controls="ui-pengguna">
+              <span class="menu-title">Pengguna</span>
               <i class="menu-arrow"></i>
-              <i class="mdi mdi-home-modern menu-icon"></i>
+              <i class="mdi mdi-account-multiple menu-icon"></i>
             </a>
-            <div class="collapse" id="ui-master">
+            <div class="collapse" id="ui-pengguna">
                 <ul class="nav flex-column sub-menu">
-                  @if(Auth::user()->role_id == 1)
-                    <li class="nav-item"> <a class="nav-link" href="{{ route('founding.index') }}">The Founding </a></li>
-                    <li class="nav-item">  <a class="nav-link" href="{{ route('ourteam.index') }}">Our Team</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{{ route('boardexpert.index') }}">Board Expert</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{{ route('portofolio.index') }}">Portofolio</a></li>
-                  @endif
-              
-
+                    <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/user-admin') }}">Admin</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/user-village') }}">Desa Wisata</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/user-member') }}">Member</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/review') }}">Review</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/subscriber') }}">Subscriber</a></li>
                 </ul>
             </div>
           </li>
+          {{-- ====== PENGATURAN (khusus super admin) ====== --}}
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#ui-pengaturan" aria-expanded="false" aria-controls="ui-pengaturan">
+              <span class="menu-title">Pengaturan</span>
+              <i class="menu-arrow"></i>
+              <i class="mdi mdi-settings menu-icon"></i>
+            </a>
+            <div class="collapse" id="ui-pengaturan">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                      <a class="nav-link" data-toggle="collapse" href="#ui-kelola-website" aria-expanded="false" aria-controls="ui-kelola-website">
+                        <span class="menu-title">Kelola Website</span>
+                        <i class="menu-arrow"></i>
+                      </a>
+                      <div class="collapse" id="ui-kelola-website">
+                          <ul class="nav flex-column sub-menu">
+                              <li class="nav-item"> <a class="nav-link" href="{{ route('site-settings.index') }}">Pengaturan Website</a></li>
+                              <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/slider') }}">Slider</a></li>
+                              <li class="nav-item"> <a class="nav-link" href="{{ route('homepage-sections.index') }}">Homepage Sections</a></li>
+                              <li class="nav-item"> <a class="nav-link" href="{{ route('homepage-services.index') }}">Our Services</a></li>
+                              <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/booklet') }}">Booklet</a></li>
+                              <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/instagram') }}">Instagram</a></li>
+                          </ul>
+                      </div>
+                    </li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/bank-account') }}">Akun Bank</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ url('administrator/discount-member') }}">Diskon Member</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('founding.index') }}">The Founding</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('ourteam.index') }}">Our Team</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('boardexpert.index') }}">Board Expert</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('portofolio.index') }}">Portofolio</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('system-log.index') }}">Log Sistem</a></li>
+                </ul>
+            </div>
+          </li>
+          @endif
 
         </ul>
       </nav>
@@ -364,7 +322,7 @@
   <!-- End plugin js for this page-->
   <!-- inject:js -->
   <script src="{{ url('assets/customer/dist/js/off-canvas.js') }}"></script>
-  <script src="{{ url('assets/customer/dist/js/misc.js') }}"></script>
+  <script src="{{ url('assets/customer/dist/js/misc.js') }}?v={{ @filemtime(public_path('assets/customer/dist/js/misc.js')) }}"></script>
   <!-- endinject -->
   <!-- Custom js for this page-->
   <script src="{{ url('assets/customer/dist/js/dashboard.js') }}"></script>
