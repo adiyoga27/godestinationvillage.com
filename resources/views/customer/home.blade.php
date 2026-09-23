@@ -120,16 +120,20 @@
         <div class="grid grid-cols-2 gap-6 rounded-3xl border border-ink-100 bg-white p-8 shadow-[0_25px_60px_-20px_rgb(26_26_38/0.25)] md:grid-cols-4">
             @php
                 $stats = [
-                    ['value' => $stat_villages ?? count($village), 'suffix' => '+', 'label' => 'Village Destinations'],
-                    ['value' => $stat_packages ?? count($packages), 'suffix' => '+', 'label' => 'Curated Experiences'],
-                    ['value' => $stat_partners ?? 12, 'suffix' => '+', 'label' => 'Villages Partnership'],
-                    ['value' => 100, 'suffix' => '%', 'label' => 'Social Responsibility'],
+                    ['value' => 50, 'suffix' => '+', 'label' => __('Assisted Villages & Destinations')],
+                    ['value' => 2018, 'suffix' => '', 'label' => __('Established Since')],
+                    ['value' => 4, 'suffix' => '', 'label' => __('Integrated Service Pillars')],
+                    ['value' => null, 'suffix' => '', 'label' => __('Working Area'), 'text' => __('Bali & Eastern Indonesia')],
                 ];
             @endphp
             @foreach ($stats as $s)
-                <div class="text-center">
-                    <div class="font-display text-4xl font-bold text-brand-600">
-                        <span data-vue="CountUp" data-props="{{ json_encode(['value' => $s['value'], 'suffix' => $s['suffix'], 'duration' => 1600]) }}" class="inline-block">0{{ $s['suffix'] }}</span>
+                <div class="flex flex-col text-center">
+                    <div class="font-display flex h-[52px] items-end justify-center font-bold text-brand-600 md:h-[60px]">
+                        @if (!empty($s['text']))
+                            <span class="text-lg leading-[1.15] md:text-xl">{{ $s['text'] }}</span>
+                        @else
+                            <span data-vue="CountUp" data-props="{{ json_encode(['value' => $s['value'], 'suffix' => $s['suffix'], 'duration' => 1600]) }}" class="inline-block text-4xl leading-none">0{{ $s['suffix'] }}</span>
+                        @endif
                     </div>
                     <p class="mt-2 text-sm font-semibold text-ink-500">{{ $s['label'] }}</p>
                 </div>
