@@ -43,7 +43,7 @@
 
 <body class="bg-white antialiased">
     <div id="pay-loader" class="pay-loader">
-        <img src="{{ url('assets/customer/img/logo.png') }}" alt="GODEVI" class="h-14 w-auto">
+        <img src="{{ url('assets/godevi-black.png') }}" alt="GODEVI" class="h-14 w-auto">
         <div class="flex items-center gap-2 text-sm font-semibold text-ink-500">
             <svg class="h-5 w-5 animate-spin text-brand-600" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

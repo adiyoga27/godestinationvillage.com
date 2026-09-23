@@ -11,31 +11,45 @@
     $isId = app()->getLocale() === 'id';
     $dbSlides = $sliders ?? collect();
     if ($dbSlides->count()) {
-        $heroSlides = $dbSlides->map(fn ($s) => [
-            'img' => $s->img,
-            'title' => $s->title,
-            'title_id' => $s->title_id ?: $s->title,
-            'subtitle' => $s->desc ?: '',
-            'subtitle_id' => $s->desc_id ?: $s->desc,
-        ])->values()->all();
+        $heroSlides = $dbSlides->map(function ($s) use ($isId) {
+            // Satu tombol dinamis per-slide. Kosong = tombol disembunyikan.
+            $b1Label = $isId ? ($s->button_label_id ?: $s->button_label) : $s->button_label;
+            return [
+                'img' => $s->img,
+                'title' => $s->title,
+                'title_id' => $s->title_id ?: $s->title,
+                'subtitle' => $s->desc ?: '',
+                'subtitle_id' => $s->desc_id ?: $s->desc,
+                'btn1_label' => $b1Label ?: null,
+                'btn1_url' => \App\Helpers\Homepage::url($s->button_url),
+                'btn1_color' => $s->button_color ?: null,
+            ];
+        })->values()->all();
     } else {
         $heroSlides = [
             ['img' => 'slide-1.jpg', 'title' => 'Authentic Village Experience', 'title_id' => 'Pengalaman Desa Autentik',
              'subtitle' => 'Step into living Balinese traditions, authentic daily life and unforgettable village experiences.',
-             'subtitle_id' => 'Masuki tradisi Bali yang hidup, keseharian autentik, dan pengalaman desa yang tak terlupakan.'],
+             'subtitle_id' => 'Masuki tradisi Bali yang hidup, keseharian autentik, dan pengalaman desa yang tak terlupakan.',
+             'btn1_label' => null, 'btn1_url' => null, 'btn1_color' => null],
             ['img' => 'slide-2.jpg', 'title' => 'Local Economic Improvement', 'title_id' => 'Peningkatan Ekonomi Lokal',
              'subtitle' => 'Every journey directly supports local livelihoods and grows village economies.',
-             'subtitle_id' => 'Setiap perjalanan secara langsung mendukung mata pencaharian warga dan menggerakkan ekonomi desa.'],
+             'subtitle_id' => 'Setiap perjalanan secara langsung mendukung mata pencaharian warga dan menggerakkan ekonomi desa.',
+             'btn1_label' => null, 'btn1_url' => null, 'btn1_color' => null],
             ['img' => 'slide-3.jpg', 'title' => 'Socially Responsible Tourism', 'title_id' => 'Wisata yang Bertanggung Jawab Secara Sosial',
              'subtitle' => "Travel that gives back — empowering communities and protecting Bali's cultural heritage.",
-             'subtitle_id' => 'Berkelana sambil memberi dampak — memberdayakan masyarakat dan menjaga warisan budaya Bali.'],
+             'subtitle_id' => 'Berkelana sambil memberi dampak — memberdayakan masyarakat dan menjaga warisan budaya Bali.',
+             'btn1_label' => null, 'btn1_url' => null, 'btn1_color' => null],
             ['img' => 'slide-4.jpg', 'title' => 'Worry Free Travel Service', 'title_id' => 'Layanan Perjalanan Tanpa Khawatir',
              'subtitle' => 'From booking to arrival, enjoy reliable, hassle-free travel arranged by our local team.',
-             'subtitle_id' => 'Dari pemesanan hingga tiba di desa, nikmati layanan perjalanan yang mudah dan terpercaya dari tim lokal kami.'],
+             'subtitle_id' => 'Dari pemesanan hingga tiba di desa, nikmati layanan perjalanan yang mudah dan terpercaya dari tim lokal kami.',
+             'btn1_label' => null, 'btn1_url' => null, 'btn1_color' => null],
         ];
     }
     $heroTitles = $isId ? array_column($heroSlides, 'title_id') : array_column($heroSlides, 'title');
     $heroSubtitles = $isId ? array_column($heroSlides, 'subtitle_id') : array_column($heroSlides, 'subtitle');
+    $heroBtn1Labels = array_column($heroSlides, 'btn1_label');
+    $heroBtn1Urls = array_column($heroSlides, 'btn1_url');
+    $heroBtn1Colors = array_column($heroSlides, 'btn1_color');
 @endphp
 
 {{-- ============ HERO ============ --}}
@@ -80,14 +94,18 @@
                 class="mt-4 max-w-xl text-base leading-relaxed text-white/80 lg:mt-6 lg:text-lg animate-fade-up" style="animation-delay: 0.4s">
                 {{ $heroSubtitles[0] }}
             </p>
-            <div class="mt-6 flex flex-wrap items-center gap-3 lg:mt-9 lg:gap-4 animate-fade-up" style="animation-delay: 0.55s">
-                @php $heroBtn = \App\Helpers\Homepage::button('hero', 1, __('Explore Villages'), url('village')); @endphp
-                <a href="{{ $heroBtn['url'] }}" class="btn btn-primary !px-6 !py-3 text-sm lg:!px-8 lg:!py-4 lg:text-base">
-                    {{ $heroBtn['label'] }}
+            <div class="mt-6 flex flex-wrap items-center gap-3 lg:mt-9 lg:gap-4 animate-fade-up" style="animation-delay: 0.55s" data-hero-buttons
+                data-hero-btn1-labels='{!! json_encode($heroBtn1Labels, JSON_HEX_APOS | JSON_HEX_QUOT) !!}'
+                data-hero-btn1-urls='{!! json_encode($heroBtn1Urls, JSON_HEX_APOS | JSON_HEX_QUOT) !!}'
+                data-hero-btn1-colors='{!! json_encode($heroBtn1Colors, JSON_HEX_APOS | JSON_HEX_QUOT) !!}'>
+                @php
+                    $firstBtn1Style = $heroSlides[0]['btn1_color'] ? 'background-color:'.$heroSlides[0]['btn1_color'].';border-color:'.$heroSlides[0]['btn1_color'].';color:#fff;' : '';
+                    $firstHidden = empty($heroSlides[0]['btn1_label']) ? 'display:none;' : '';
+                @endphp
+                <a data-hero-btn1 href="{{ $heroSlides[0]['btn1_url'] ?? '#' }}" class="btn btn-primary !px-6 !py-3 text-sm lg:!px-8 lg:!py-4 lg:text-base" style="{{ $firstBtn1Style }}{{ $firstHidden }}">
+                    <span data-hero-btn1-label>{{ $heroSlides[0]['btn1_label'] ?? '' }}</span>
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                 </a>
-                @php $heroBtn2 = \App\Helpers\Homepage::button('hero', 2, __('View Tour Packages'), url('tour-packages')); @endphp
-                <a href="{{ $heroBtn2['url'] }}" class="btn btn-white !px-6 !py-3 text-sm lg:!px-8 lg:!py-4 lg:text-base">{{ $heroBtn2['label'] }}</a>
             </div>
         </div>
 
@@ -212,12 +230,16 @@
         <div class="mx-auto mb-12 max-w-2xl text-center" data-vue="Reveal">
             <p class="eyebrow justify-center !gap-2">{{ \App\Helpers\Homepage::text('booklet', 'eyebrow', __('Company Profile')) }}</p>
             <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('booklet', 'title', __('Get to know GODEVI through our booklet')) }}</h2>
-            <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('booklet', 'subtitle', __('Browse our vision, impact and village tourism programs — read online or download the PDF.')) }}</p>
+            <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('booklet', 'subtitle', __('Browse our vision, impact and village tourism programs — download the PDF.')) }}</p>
         </div>
 
-        <x-partials.pdf-viewer src="storage/documents/GODEVI-Booklet.pdf"
-            title="GODEVI Booklet"
-            subtitle="{{ __('Company profile · 21 pages') }}" />
+        <div data-vue="Reveal" class="mx-auto max-w-xl text-center">
+            <a href="{{ asset('storage/documents/GODEVI-Booklet.pdf') }}" download
+                class="btn btn-primary !px-8 !py-4">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                {{ __('Download PDF') }}
+            </a>
+        </div>
     </div>
 </section>
 @endif
@@ -528,24 +550,52 @@
 
 @section('js')
 <script>
-    // Hero crossfade with manual controls
+    // Hero crossfade with manual controls + dynamic per-slide buttons
     (function () {
         const slides = Array.from(document.querySelectorAll('[data-hero-slide]'));
         const dots = Array.from(document.querySelectorAll('[data-hero-dot]'));
         const prevBtn = document.querySelector('[data-hero-prev]');
         const nextBtn = document.querySelector('[data-hero-next]');
-        if (slides.length < 2) return;
+        if (!slides.length) return;
 
         let current = 0;
         let timer = null;
         const titleEl = document.querySelector('[data-hero-title]');
         const subtitleEl = document.querySelector('[data-hero-subtitle]');
+        const btn1 = document.querySelector('[data-hero-btn1]');
+        const btn1Label = document.querySelector('[data-hero-btn1-label]');
+        const btnWrap = document.querySelector('[data-hero-buttons]');
         let titles = [];
         let subtitles = [];
+        let b1Labels = [], b1Urls = [], b1Colors = [];
         try {
             titles = JSON.parse(titleEl?.dataset.titles || '[]');
             subtitles = JSON.parse(subtitleEl?.dataset.titles || '[]');
+            b1Labels = JSON.parse(btnWrap?.dataset.heroBtn1Labels || '[]');
+            b1Urls = JSON.parse(btnWrap?.dataset.heroBtn1Urls || '[]');
+            b1Colors = JSON.parse(btnWrap?.dataset.heroBtn1Colors || '[]');
         } catch (e) { titles = []; subtitles = []; }
+
+        const contrastText = (hex) => {
+            try {
+                const c = hex.replace('#', '');
+                const r = parseInt(c.substr(0, 2), 16), g = parseInt(c.substr(2, 2), 16), b = parseInt(c.substr(4, 2), 16);
+                const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                return lum > 0.6 ? '#1a1a26' : '#ffffff';
+            } catch (e) { return '#ffffff'; }
+        };
+        const applyColor = (btn, color) => {
+            if (!btn) return;
+            if (color) {
+                btn.style.backgroundColor = color;
+                btn.style.borderColor = color;
+                btn.style.color = contrastText(color);
+            } else {
+                btn.style.backgroundColor = '';
+                btn.style.borderColor = '';
+                btn.style.color = '';
+            }
+        };
 
         const go = (i) => {
             current = (i + slides.length) % slides.length;
@@ -558,9 +608,16 @@
             });
             if (titleEl && titles[current]) titleEl.textContent = titles[current];
             if (subtitleEl && subtitles[current]) subtitleEl.textContent = subtitles[current];
+            if (btn1) {
+                if (b1Labels[current]) { btn1.style.display = ''; if (btn1Label) btn1Label.textContent = b1Labels[current]; }
+                else { btn1.style.display = 'none'; }
+                if (b1Urls[current]) btn1.href = b1Urls[current];
+                applyColor(btn1, b1Colors[current] || null);
+            }
         };
         const restart = () => {
             if (timer) clearInterval(timer);
+            if (slides.length < 2) return;
             timer = setInterval(() => go(current + 1), 6000);
         };
 

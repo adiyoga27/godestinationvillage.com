@@ -12,7 +12,7 @@
                 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;">
                     <tr>
                         <td style="background-color:#14141f;padding:32px 40px;text-align:center;">
-                            <img src="{{ url('assets/customer/img/logo-white.png') }}" alt="GODEVI" width="140" style="border:0;">
+                            <img src="{{ url('assets/godevi-white.png') }}" alt="GODEVI" width="140" style="border:0;">
                         </td>
                     </tr>
                     <tr>

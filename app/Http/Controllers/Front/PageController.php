@@ -61,7 +61,7 @@ class PageController extends Controller
             ->title('Authentic Village Experiences in Bali')
             ->description('GODEVI (Go Destination Village) connects travelers with authentic Balinese village experiences — village tours, homestays, events and socially responsible tourism packages in Bali, Indonesia.')
             ->keywords(['village tourism bali', 'homestay bali', 'desa wisata bali', 'godevi', 'bali village tour'])
-            ->image('assets/customer/img/logo.png')
+            ->image('assets/godevi-black.png')
             ->canonical('/')
             ->organizationSchema()
             ->websiteSchema()

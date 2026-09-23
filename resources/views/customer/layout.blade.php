@@ -108,7 +108,7 @@
             <div class="flex h-20 items-center justify-between gap-6">
                 <!-- Logo -->
                 <a href="{{ url('/') }}" class="shrink-0" aria-label="GODEVI Home">
-                    <img src="{{ url('assets/customer/img/logo.png') }}" alt="GODEVI - Go Destination Village" class="h-12 w-auto" width="200" height="48">
+                    <img src="{{ url('assets/godevi-black.png') }}" alt="GODEVI - Go Destination Village" class="h-12 w-auto" width="200" height="48">
                 </a>
 
                 <!-- Desktop Nav -->
@@ -210,7 +210,7 @@
         <div class="absolute inset-0 bg-ink-950/50 opacity-0 transition-opacity duration-300" data-mobile-close></div>
         <div class="absolute right-0 top-0 flex h-full w-[85%] max-w-sm translate-x-full flex-col bg-white shadow-2xl transition-transform duration-300">
             <div class="flex items-center justify-between border-b border-ink-100 p-5">
-                <img src="{{ url('assets/customer/img/logo.png') }}" alt="GODEVI" class="h-10 w-auto">
+                <img src="{{ url('assets/godevi-black.png') }}" alt="GODEVI" class="h-10 w-auto">
                 <button type="button" data-mobile-close aria-label="Close menu" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-600">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
@@ -294,7 +294,7 @@
             <!-- Columns -->
             <div class="grid grid-cols-2 gap-10 py-14 md:grid-cols-4 lg:grid-cols-5">
                 <div class="col-span-2 lg:col-span-2">
-                    <img src="{{ url('assets/customer/img/logo-white.png') }}" alt="GODEVI" class="h-12 w-auto">
+                    <img src="{{ url('assets/godevi-white.png') }}" alt="GODEVI" class="h-12 w-auto">
                     <div class="mt-5 max-w-sm" data-footer-about>
                         <p class="text-sm leading-relaxed text-ink-400">
                             <span data-footer-about-short>{{ __('GODEVI is a company under of PT Banua Wisata Lestari. GODEVI stands for Go Destination Village. ') }}</span>

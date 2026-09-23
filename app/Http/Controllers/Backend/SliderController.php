@@ -74,14 +74,49 @@ class SliderController extends Controller
         return view('backend.slider.create');
     }
 
+    protected function normalizeButtons(Request $request): void
+    {
+        foreach (['button_color', 'button2_color', 'button_url', 'button2_url', 'button_label', 'button_label_id', 'button2_label', 'button2_label_id'] as $field) {
+            if ($request->has($field) && trim((string) $request->input($field)) === '') {
+                $request->merge([$field => null]);
+            }
+        }
+        // Normalisasi warna: terima tanpa # atau 3-digit, simpan sebagai #RRGGBB.
+        foreach (['button_color', 'button2_color'] as $field) {
+            $color = $request->input($field);
+            if (is_string($color) && $color !== null) {
+                $color = trim($color);
+                if ($color !== '') {
+                    if (! str_starts_with($color, '#')) {
+                        $color = '#'.$color;
+                    }
+                    if (preg_match('/^#([0-9A-Fa-f]{3})$/', $color, $m)) {
+                        $c = $m[1];
+                        $color = '#'.$c[0].$c[0].$c[1].$c[1].$c[2].$c[2];
+                    }
+                    $request->merge([$field => strtoupper($color)]);
+                }
+            }
+        }
+    }
+
     public function store(Request $request)
     {
+        $this->normalizeButtons($request);
         $validated = $request->validate([
             'title' => 'required|max:50',
             'desc' => 'nullable',
             'title_id' => 'nullable|max:50',
             'desc_id' => 'nullable',
             'img' => 'required|image|max:10240',
+            'button_label' => 'nullable|max:191',
+            'button_label_id' => 'nullable|max:191',
+            'button_url' => 'nullable|max:500',
+            'button_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+            'button2_label' => 'nullable|max:191',
+            'button2_label_id' => 'nullable|max:191',
+            'button2_url' => 'nullable|max:500',
+            'button2_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         ]);
 
         $upload = CustomImage::storeFile($request->file('img'), 'sliders');
@@ -103,12 +138,21 @@ class SliderController extends Controller
     {
         $slider = Slider::findOrFail($id);
 
+        $this->normalizeButtons($request);
         $validated = $request->validate([
             'title' => 'required|max:50',
             'desc' => 'nullable',
             'title_id' => 'nullable|max:50',
             'desc_id' => 'nullable',
             'img' => 'nullable|image|max:10240',
+            'button_label' => 'nullable|max:191',
+            'button_label_id' => 'nullable|max:191',
+            'button_url' => 'nullable|max:500',
+            'button_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+            'button2_label' => 'nullable|max:191',
+            'button2_label_id' => 'nullable|max:191',
+            'button2_url' => 'nullable|max:500',
+            'button2_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         ]);
 
         if ($request->hasFile('img')) {

@@ -23,7 +23,7 @@
             {{-- Form side --}}
             <div class="p-8 sm:p-10">
                 <div class="mb-8 flex items-center gap-3 sm:hidden">
-                    <img src="{{ asset('assets/customer/img/logo.png') }}" alt="GODEVI" class="h-10 w-auto">
+                    <img src="{{ asset('assets/godevi-black.png') }}" alt="GODEVI" class="h-10 w-auto">
                 </div>
                 <h1 class="font-display text-2xl font-bold text-ink-950">{{ __('Welcome back') }}</h1>
                 <p class="mt-1 text-sm text-ink-500">{{ __('Login to continue to your account.') }}</p>

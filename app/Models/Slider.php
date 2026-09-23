@@ -35,7 +35,15 @@ class Slider extends Model
         'title_id',
         'desc',
         'desc_id',
-        'img'
+        'img',
+        'button_label',
+        'button_label_id',
+        'button_url',
+        'button_color',
+        'button2_label',
+        'button2_label_id',
+        'button2_url',
+        'button2_color',
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -46,7 +54,15 @@ class Slider extends Model
         'title_id',
         'desc',
         'desc_id',
-        'img',]);
+        'img',
+        'button_label',
+        'button_label_id',
+        'button_url',
+        'button_color',
+        'button2_label',
+        'button2_label_id',
+        'button2_url',
+        'button2_color',]);
         // Chain fluent methods for configuration options
     }
 

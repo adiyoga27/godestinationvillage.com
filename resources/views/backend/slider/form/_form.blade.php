@@ -50,11 +50,67 @@
         </div>
       </div>
 
+      <hr>
+      <div class="alert alert-info">Tombol untuk slide ini (1 tombol). Kosongkan nama tombol jika tidak ingin menampilkan tombol di slide ini. Warna custom format hex (cth: #EA580C) — kosongkan untuk memakai gaya default.</div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Tombol — Nama (EN)</label>
+        <div class="col-sm-9">
+          {!! Form::text('button_label', null, ['class'=>'form-control', 'maxlength'=>'191', 'placeholder'=>'cth: Explore Villages']) !!}
+          {!! $errors->first('button_label', '<p class="text-danger">:message</p>') !!}
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Tombol — Nama (ID)</label>
+        <div class="col-sm-9">
+          {!! Form::text('button_label_id', null, ['class'=>'form-control', 'maxlength'=>'191', 'placeholder'=>'cth: Jelajahi Desa']) !!}
+          {!! $errors->first('button_label_id', '<p class="text-danger">:message</p>') !!}
+          <small class="form-text text-muted">Kosongkan jika sama dengan English.</small>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Tombol — Link Tujuan</label>
+        <div class="col-sm-9">
+          {!! Form::text('button_url', null, ['class'=>'form-control', 'maxlength'=>'500', 'placeholder'=>'cth: village / tour-packages / https://...']) !!}
+          {!! $errors->first('button_url', '<p class="text-danger">:message</p>') !!}
+          <small class="form-text text-muted">Bisa path internal (tanpa slash depan) atau URL penuh https://...</small>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Tombol — Warna</label>
+        <div class="col-sm-9">
+          <div class="d-flex align-items-center" style="gap:10px;">
+            <input type="color" id="button_color_picker" value="{{ old('button_color', isset($slider) && $slider->button_color ? $slider->button_color : '#EA580C') }}" style="width:48px;height:38px;padding:2px;border:1px solid #ddd;border-radius:6px;">
+            {!! Form::text('button_color', null, ['class'=>'form-control', 'id'=>'button_color', 'maxlength'=>'20', 'placeholder'=>'#EA580C (kosongkan = gaya default)', 'style'=>'max-width:280px;']) !!}
+            <button type="button" class="btn btn-sm btn-light" id="button_color_clear">Default</button>
+          </div>
+          {!! $errors->first('button_color', '<p class="text-danger">:message</p>') !!}
+        </div>
+      </div>
+
       <div class="form-group row">
         <label class="col-sm-3 col-form-label"></label>
         <div class="col-sm-9">
           <button type="submit" class="btn btn-lg btn-gradient-danger mb-2">Save</button>
         </div>
       </div>
+
+<script>
+(function () {
+    function bindColor(textId, pickerId, clearId) {
+        var text = document.getElementById(textId);
+        var picker = document.getElementById(pickerId);
+        var clearBtn = document.getElementById(clearId);
+        if (!text || !picker) return;
+        picker.addEventListener('input', function () { text.value = picker.value.toUpperCase(); });
+        text.addEventListener('input', function () {
+            var v = text.value.trim();
+            if (/^#[0-9A-Fa-f]{6}$/.test(v)) picker.value = v;
+        });
+        if (clearBtn) clearBtn.addEventListener('click', function () { text.value = ''; });
+    }
+    bindColor('button_color', 'button_color_picker', 'button_color_clear');
+})();
+</script>
   </div>
 </div>

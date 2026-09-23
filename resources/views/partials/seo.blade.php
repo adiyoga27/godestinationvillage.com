@@ -1,7 +1,7 @@
 @php
     $seo = $seo ?? \App\Support\Seo::make()->toArray();
     $schema = $seo['schema'] ?? [];
-    $logo = url('assets/customer/img/logo.png');
+    $logo = url('assets/godevi-black.png');
     $image = $seo['image'] ?? $logo;
     $siteName = 'GODEVI - Authentic Village Experiences';
 @endphp

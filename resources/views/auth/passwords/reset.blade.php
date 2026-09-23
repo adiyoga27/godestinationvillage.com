@@ -9,7 +9,7 @@
 
     <div class="container-gd relative z-10 flex items-center justify-center py-20">
         <div class="w-full max-w-md rounded-[2rem] bg-white p-8 shadow-2xl sm:p-10">
-            <img src="{{ asset('assets/customer/img/logo.png') }}" alt="GODEVI" class="mx-auto h-12 w-auto">
+            <img src="{{ asset('assets/godevi-black.png') }}" alt="GODEVI" class="mx-auto h-12 w-auto">
             <h1 class="mt-6 text-center font-display text-2xl font-bold text-ink-950">Reset Password</h1>
             <p class="mt-1 text-center text-sm text-ink-500">Choose a new password for your account.</p>
 

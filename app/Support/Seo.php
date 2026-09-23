@@ -113,7 +113,7 @@ class Seo
             'legalName' => 'PT Banua Wisata Lestari',
             'alternateName' => 'Go Destination Village',
             'url' => URL::to('/'),
-            'logo' => URL::to('assets/customer/img/logo.png'),
+            'logo' => URL::to('assets/godevi-black.png'),
             'contactPoint' => [
                 '@type' => 'ContactPoint',
                 'telephone' => '+62-819-9767-4778',
