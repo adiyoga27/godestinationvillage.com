@@ -55,7 +55,8 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text bg-danger text-white">IDR</span>
                     </div>
-                    {!! Form::number('price', null, ['class' => 'form-control', 'required' => 'required']) !!}
+                    {!! Form::number('price', null, ['class' => 'form-control', 'required' => 'required', 'min' => 0, 'step' => 500]) !!}
+                    <small class="form-text text-muted">Rupiah penuh, contoh: 180000 (bukan 180). Isi 0 untuk gratis.</small>
                 </div>
                 {!! $errors->first('price', '<p class="text-danger">:message</p>') !!}
             </div>

@@ -118,6 +118,7 @@
                             ['url' => '/', 'label' => 'Home', 'key' => 'Home'],
                             ['url' => 'services', 'label' => 'Our Services', 'key' => 'Our Services'],
                             ['url' => 'village', 'label' => 'Explore Village', 'key' => 'Explore Village'],
+                            ['url' => 'tour-packages', 'label' => 'Tour Packages', 'key' => 'Tour Packages'],
                             ['url' => 'events', 'label' => 'Events', 'key' => 'Events'],
                             ['url' => 'homestay', 'label' => 'Home Stay', 'key' => 'Home Stay'],
                             ['url' => 'news', 'label' => 'News', 'key' => 'News'],
@@ -226,12 +227,6 @@
                             </a>
                         </li>
                     @endforeach
-                    <li>
-                        <a href="{{ url('tour-packages') }}" class="flex items-center justify-between rounded-xl px-4 py-3 font-semibold text-ink-800 transition hover:bg-cream-50 hover:text-brand-600">
-                            {{ __('Tour Packages') }}
-                            <svg class="h-4 w-4 text-ink-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-                        </a>
-                    </li>
                 </ul>
             </nav>
             <div class="space-y-3 border-t border-ink-100 p-5">

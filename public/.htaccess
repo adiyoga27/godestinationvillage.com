@@ -5,6 +5,15 @@
 
     RewriteEngine On
 
+    # --- MIGRASI DOMAIN godestinationvillage.com -> www.godevi.org (NONAKTIF) ---
+    # AKTIFKAN (hapus tanda #) HANYA setelah DNS www.godevi.org menunjuk ke server ini.
+    # Aturan per-path: /village/x -> /village/x (query ikut terbawa), BUKAN blanket ke homepage.
+    # RewriteCond %{HTTP_HOST} ^(www\.)?godestinationvillage\.com$ [NC]
+    # RewriteRule ^(.*)$ https://www.godevi.org/$1 [R=301,L]
+    # RewriteCond %{HTTP_HOST} ^godevi\.org$ [NC]
+    # RewriteRule ^(.*)$ https://www.godevi.org/$1 [R=301,L]
+    # ---------------------------------------------------------------------------
+
     # --- PROTEKSI TAMBAHAN ---
     # Blokir akses ke file .env, .git, .log, dll
     RewriteRule ^(\.env|\.git|\.config|composer\.(json|lock)|package\.json)$ - [F,L]

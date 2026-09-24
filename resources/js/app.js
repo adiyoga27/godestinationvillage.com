@@ -113,7 +113,10 @@ if (bookNowLink) {
 // element's content — wiping the SSR markup. We only toggle a class instead.
 const revealEls = document.querySelectorAll('[data-vue="Reveal"]');
 revealEls.forEach((el) => {
-    const delay = el.dataset.props ? (JSON.parse(el.dataset.props).delay || 0) : 0;
+    let delay = 0;
+    try {
+        delay = el.dataset.props ? (JSON.parse(el.dataset.props).delay || 0) : 0;
+    } catch (e) { delay = 0; }
     el.style.setProperty('--reveal-delay', `${delay}ms`);
     const io = new IntersectionObserver(
         (entries) => {
@@ -139,11 +142,21 @@ document.querySelectorAll('[data-vue]').forEach((el) => {
     const name = el.dataset.vue;
     if (!components[name]) return;
 
-    const props = el.dataset.props ? JSON.parse(el.dataset.props) : {};
+    let props = {};
+    try {
+        props = el.dataset.props ? JSON.parse(el.dataset.props) : {};
+    } catch (e) {
+        console.warn('[godevi] invalid data-props JSON, using defaults', e);
+        props = {};
+    }
     const Cmp = components[name];
 
-    const app = createApp({
-        render: () => h(Cmp, props),
-    });
-    app.mount(el);
+    try {
+        const app = createApp({
+            render: () => h(Cmp, props),
+        });
+        app.mount(el);
+    } catch (e) {
+        console.warn('[godevi] failed to mount ' + name, e);
+    }
 });

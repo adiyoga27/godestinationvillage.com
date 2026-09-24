@@ -48,7 +48,7 @@ class PageController extends Controller
         $data['recent_blog'] = Blog::with('user')->where('isPublished', '1')->latest('id')->limit(5)->get();
         $data['category'] = Category::All();
         $data['users'] = Storage::files('reviews');
-        $data['reviews'] = Review::with('users')->where('is_active', 1)->get();
+        $data['reviews'] = Review::with('users')->where('is_active', 1)->orderBy('id')->get();
         $data['tag'] = Tag::all();
         $data['sliders'] = \App\Models\Slider::orderBy('id')->get();
         $data['events'] = Event::where('is_active', 1)->latest('id')->limit(3)->get();

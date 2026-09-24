@@ -79,10 +79,11 @@ Route::get('/redirects', function(){
 });
 
 Route::get('locale/{locale}', function ($locale) {
+    $locale = in_array($locale, ['id', 'en']) ? $locale : config('app.locale', 'id');
     Session::put('locale', $locale);
     App::setLocale($locale);
     return redirect()->back();
-});
+})->where(['locale' => 'id|en']);
 
 Route::prefix('pay')->group(function () {
     Route::get('finish', function (){return view('payment.finish');});

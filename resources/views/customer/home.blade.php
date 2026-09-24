@@ -182,7 +182,7 @@
                         @if (!empty($s['text']))
                             <span class="text-lg leading-[1.15] md:text-xl">{{ $s['text'] }}</span>
                         @else
-                            <span data-vue="CountUp" data-props="{{ json_encode(['value' => $s['value'], 'suffix' => $s['suffix'], 'duration' => 1600]) }}" class="inline-block text-4xl leading-none">0{{ $s['suffix'] }}</span>
+                            <span data-vue="CountUp" data-props='{{ json_encode(['value' => $s['value'], 'suffix' => $s['suffix'], 'duration' => 1600]) }}' class="inline-block text-4xl leading-none">{{ $s['value'] }}{{ $s['suffix'] }}</span>
                         @endif
                     </div>
                     <p class="mt-2 text-sm font-semibold text-ink-500">{{ $s['label'] }}</p>
@@ -312,7 +312,7 @@
 
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             @foreach (\App\Helpers\Homepage::services() as $i => $s)
-                <a data-vue="Reveal" data-props="{{ json_encode(['delay' => ($i % 4) * 80]) }}"
+                <a data-vue="Reveal" data-props='{{ json_encode(['delay' => ($i % 4) * 80]) }}'
                     href="{{ \App\Helpers\Homepage::url($s->url) ?: url('services') }}"
                     class="group card card-hover p-6 text-center">
                     <div class="mx-auto flex h-40 w-40 items-center justify-center">
