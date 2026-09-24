@@ -939,6 +939,20 @@ $data['recent'] = HomeStayServices::recent();
 
         return view('customer/companyprofile', $data);
     }
+    public function aboutGodevi()
+    {
+        $data['seo'] = Seo::make()
+            ->title('Tentang GODEVI — Go Destination Village')
+            ->description('GODEVI adalah unit bisnis PT Banua Wisata Lestari yang bergerak di bidang riset dan konsultansi pengembangan desa serta destinasi pariwisata. Sejak 2018 mendampingi 50+ desa wisata di Bali dan Indonesia Timur.')
+            ->keywords(['tentang godevi', 'go destination village', 'PT Banua Wisata Lestari', 'desa wisata bali', 'pariwisata regeneratif'])
+            ->canonical('/tentang-godevi')
+            ->organizationSchema()
+            ->websiteSchema()
+            ->breadcrumbSchema(['Home' => '/', 'Tentang GODEVI' => '/tentang-godevi'])
+            ->toArray();
+
+        return view('customer/about-godevi', $data);
+    }
 
     
     public function postComment(Request $request, $slug)

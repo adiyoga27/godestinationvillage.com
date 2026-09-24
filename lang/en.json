@@ -460,5 +460,9 @@
     "reCAPTCHA belum dikonfigurasi. Silakan hubungi administrator.": "reCAPTCHA is not configured. Please contact the administrator.",
     "Verifikasi keamanan gagal. Silakan coba lagi.": "Security verification failed. Please try again.",
     "Verifikasi keamanan gagal. Silakan muat ulang halaman dan coba lagi.": "Security verification failed. Please reload the page and try again.",
-    "Please complete the reCAPTCHA checkbox first.": "Please complete the reCAPTCHA checkbox first."
+    "Please complete the reCAPTCHA checkbox first.": "Please complete the reCAPTCHA checkbox first.",
+    "GODEVI adalah unit bisnis PT Banua Wisata Lestari yang bergerak di bidang riset dan konsultansi pengembangan desa serta destinasi pariwisata. Sejak 2018, telah mendampingi 50+ desa wisata di Bali dan Indonesia Timur.": "GODEVI is a business unit of PT Banua Wisata Lestari focused on research and consultancy for village and tourism destination development. Since 2018, it has assisted 50+ tourism villages across Bali and Eastern Indonesia.",
+    "Selengkapnya": "Learn More",
+    "Real stories from travelers who explored villages with GODEVI.": "Real stories from travelers who explored villages with GODEVI.",
+    "reviews": "reviews"
 }

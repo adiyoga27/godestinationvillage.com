@@ -297,14 +297,13 @@
                     <img src="{{ url('assets/godevi-white.png') }}" alt="GODEVI" class="h-12 w-auto">
                     <div class="mt-5 max-w-sm" data-footer-about>
                         <p class="text-sm leading-relaxed text-ink-400">
-                            <span data-footer-about-short>{{ __('GODEVI is a company under of PT Banua Wisata Lestari. GODEVI stands for Go Destination Village. ') }}</span>
-                            <span class="hidden" data-footer-about-full>{{ __('The GODEVI logo is inspired by Bali Starling birds. Bali Starling is represented as one of the rare and unique natural potentials. The colors that appear in the GODEVI logo are cheerful colors that represent tourist activities full of joyful experiences. GODEVI believes that the village as a gathering place for all potentials, each has a different uniqueness and deserves to be introduced to the world community. Like this Bali Starling, GODEVI hopes to be able to become a distinctive brand without losing the identity of the island of Bali. In addition, the starling star is green, which means that GODEVI as a digital-based business is expected to be able to use its mind to see all the opportunities and phenomena that occur while being oriented to environmental sustainability and always prioritizing spirit (SEE) Sustainability, Empowerment and Entrepreneurship. ') }}</span>
+                            {{ __('GODEVI adalah unit bisnis PT Banua Wisata Lestari yang bergerak di bidang riset dan konsultansi pengembangan desa serta destinasi pariwisata. Sejak 2018, telah mendampingi 50+ desa wisata di Bali dan Indonesia Timur.') }}
                         </p>
-                        <button type="button" data-footer-about-toggle
-                            class="mt-2 inline-flex items-center gap-1 text-sm font-bold text-brand-400 transition hover:text-brand-300">
-                            <span data-footer-about-label>{{ __('Read More') }}</span>
-                            <svg data-footer-about-icon class="h-4 w-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
-                        </button>
+                        <a href="{{ route('about.godevi') }}"
+                            class="mt-2 inline-flex items-center gap-1 text-sm font-bold text-brand-400 transition hover:gap-2 hover:text-brand-300">
+                            {{ __('Selengkapnya') }}
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                        </a>
                     </div>
                     <div class="mt-6 flex items-center gap-3">
                         <a href="{{ \App\Helpers\Site::get('facebook', 'https://www.facebook.com/godestinationvillage/') }}" target="_blank" rel="noopener" aria-label="Facebook" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-ink-200 transition hover:border-brand-600 hover:bg-brand-600 hover:text-white">
@@ -391,25 +390,6 @@
                 langMenu.classList.add('invisible', 'opacity-0', 'scale-95');
                 langToggle.setAttribute('aria-expanded', 'false');
             });
-        }
-    </script>
-
-    <script>
-        // Footer "Read More" toggle
-        const footerAbout = document.querySelector('[data-footer-about]');
-        if (footerAbout) {
-            const aboutFull = footerAbout.querySelector('[data-footer-about-full]');
-            const aboutLabel = footerAbout.querySelector('[data-footer-about-label]');
-            const aboutIcon = footerAbout.querySelector('[data-footer-about-icon]');
-            const aboutBtn = footerAbout.querySelector('[data-footer-about-toggle]');
-            if (aboutBtn && aboutFull) {
-                aboutBtn.addEventListener('click', () => {
-                    const open = !aboutFull.classList.contains('hidden');
-                    aboutFull.classList.toggle('hidden', open);
-                    aboutLabel.textContent = open ? '{{ __("Read More") }}' : '{{ __("Read Less") }}';
-                    aboutIcon.classList.toggle('rotate-180', !open);
-                });
-            }
         }
     </script>
 

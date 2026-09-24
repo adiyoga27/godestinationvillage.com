@@ -116,6 +116,8 @@ Route::get('/administrator/login',  [LoginController::class, 'showLoginForm']);
 Route::get('/user/login', [PageController::class, 'login']);
 //Customer Page
 Route::get('/company-profile', [PageController::class, 'companyprofile']);
+Route::get('/tentang-godevi', [PageController::class, 'aboutGodevi'])->name('about.godevi');
+Route::get('/about-godevi', [PageController::class, 'aboutGodevi']);
 
 Route::prefix('village')->group(function () {
     Route::get('/',[PageController::class, 'village']);

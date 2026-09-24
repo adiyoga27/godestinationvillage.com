@@ -113,9 +113,59 @@
 
 </section>
 
+{{-- ============ TESTIMONIALS ============ --}}
+@if (\App\Helpers\Homepage::visible('testimonials') && count($reviews))
+    <section class="section-pad relative overflow-hidden bg-cream-50">
+        <div class="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-brand-100/60 blur-3xl"></div>
+        <div class="pointer-events-none absolute -bottom-28 -right-20 h-80 w-80 rounded-full bg-forest-100/70 blur-3xl"></div>
+        <div class="container-gd relative">
+            <div class="mx-auto mb-12 max-w-2xl text-center" data-vue="Reveal">
+                <p class="eyebrow justify-center !gap-2">{{ \App\Helpers\Homepage::text('testimonials', 'eyebrow', __('Testimonials')) }}</p>
+                <h2 class="font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ \App\Helpers\Homepage::text('testimonials', 'title', __('What our travelers say')) }}</h2>
+                <p class="mt-4 text-ink-500">{{ __('Real stories from travelers who explored villages with GODEVI.') }}</p>
+                @php $avgRating = round($reviews->avg('rating') ?: 5, 1); @endphp
+                <div class="mt-5 inline-flex items-center gap-2 rounded-full border border-ink-100 bg-white px-4 py-2 text-sm font-semibold text-ink-700 shadow-sm">
+                    <span class="flex items-center gap-0.5 text-amber-400">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.48 3.5a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>
+                        @endfor
+                    </span>
+                    {{ number_format($avgRating, 1) }}/5 · {{ $reviews->count() }} {{ __('reviews') }}
+                </div>
+            </div>
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                @foreach ($reviews->take(3) as $r)
+                    <figure data-vue="Reveal" class="card card-hover flex flex-col p-7" itemscope itemtype="https://schema.org/Review">
+                        <div class="flex items-center justify-between">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z" /></svg>
+                            </span>
+                            <span class="flex items-center gap-1 text-amber-400">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <svg class="h-4 w-4 {{ $i <= $r->rating ? '' : 'opacity-25' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M11.48 3.5a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>
+                                @endfor
+                            </span>
+                        </div>
+                        <blockquote class="mt-5 flex-1 leading-relaxed text-ink-700" itemprop="reviewBody">"{{ $r->comment }}"</blockquote>
+                        <figcaption class="mt-6 flex items-center gap-3 border-t border-ink-100 pt-5">
+                            <span class="flex h-12 w-12 overflow-hidden rounded-full bg-cream-100 ring-2 ring-cream-200">
+                                <img src="{{ asset('storage/reviews/' . $r->avatar) }}" alt="{{ $r->name }}" class="h-full w-full object-cover" loading="lazy" itemprop="image">
+                            </span>
+                            <span>
+                                <span class="block font-bold text-ink-950" itemprop="author">{{ $r->name }}</span>
+                                <span class="block text-sm text-ink-500">{{ $r->job }}</span>
+                            </span>
+                        </figcaption>
+                    </figure>
+                @endforeach
+            </div>
+        </div>
+    </section>
+@endif
+
 {{-- ============ STATS ============ --}}
 @if (\App\Helpers\Homepage::visible('stats'))
-<section class="relative z-20 -mt-14">
+<section class="relative z-20 bg-white py-12">
     <div class="container-gd">
         <div class="grid grid-cols-2 gap-6 rounded-3xl border border-ink-100 bg-white p-8 shadow-[0_25px_60px_-20px_rgb(26_26_38/0.25)] md:grid-cols-4">
             @php
@@ -496,39 +546,6 @@
         </div>
     </div>
 </section>
-@endif
-
-{{-- ============ TESTIMONIALS ============ --}}
-@if (\App\Helpers\Homepage::visible('testimonials') && count($reviews))
-    <section class="section-pad bg-ink-950">
-        <div class="container-gd">
-            <div class="mx-auto mb-14 max-w-2xl text-center" data-vue="Reveal">
-                <p class="eyebrow justify-center !gap-2 !text-brand-400">{{ \App\Helpers\Homepage::text('testimonials', 'eyebrow', __('Testimonials')) }}</p>
-                <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ \App\Helpers\Homepage::text('testimonials', 'title', __('What our travelers say')) }}</h2>
-            </div>
-            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                @foreach ($reviews->take(3) as $r)
-                    <figure data-vue="Reveal" class="flex flex-col rounded-3xl border border-white/10 bg-white/5 p-7 backdrop-blur transition hover:-translate-y-1" itemscope itemtype="https://schema.org/Review">
-                        <div class="flex items-center gap-1 text-amber-400">
-                            @for ($i = 1; $i <= 5; $i++)
-                                <svg class="h-4 w-4 {{ $i <= $r->rating ? '' : 'opacity-25' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M11.48 3.5a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>
-                            @endfor
-                        </div>
-                        <blockquote class="mt-5 flex-1 text-white/80" itemprop="reviewBody" style="font-style: italic">"{{ $r->comment }}"</blockquote>
-                        <figcaption class="mt-6 flex items-center gap-3 border-t border-white/10 pt-5">
-                            <span class="flex h-12 w-12 overflow-hidden rounded-full bg-white/10 ring-2 ring-white/20">
-                                <img src="{{ asset('storage/reviews/' . $r->avatar) }}" alt="{{ $r->name }}" class="h-full w-full object-cover" loading="lazy" itemprop="image">
-                            </span>
-                            <span>
-                                <span class="block font-bold text-white" itemprop="author">{{ $r->name }}</span>
-                                <span class="block text-sm text-white/50">{{ $r->job }}</span>
-                            </span>
-                        </figcaption>
-                    </figure>
-                @endforeach
-            </div>
-        </div>
-    </section>
 @endif
 
 {{-- ============ FINAL CTA ============ --}}
