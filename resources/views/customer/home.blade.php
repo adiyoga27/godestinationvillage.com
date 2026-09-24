@@ -122,7 +122,7 @@
             <div class="mx-auto mb-12 max-w-2xl text-center" data-vue="Reveal">
                 <p class="eyebrow justify-center !gap-2">{{ \App\Helpers\Homepage::text('testimonials', 'eyebrow', __('Testimonials')) }}</p>
                 <h2 class="font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ \App\Helpers\Homepage::text('testimonials', 'title', __('What our travelers say')) }}</h2>
-                <p class="mt-4 text-ink-500">{{ __('Real stories from travelers who explored villages with GODEVI.') }}</p>
+                <p class="mt-4 text-ink-500">{{ __('Trusted by Government and Academic Leaders') }}</p>
                 @php $avgRating = round($reviews->avg('rating') ?: 5, 1); @endphp
                 <div class="mt-5 inline-flex items-center gap-2 rounded-full border border-ink-100 bg-white px-4 py-2 text-sm font-semibold text-ink-700 shadow-sm">
                     <span class="flex items-center gap-0.5 text-amber-400">
@@ -249,7 +249,7 @@
 
         <div data-vue="Reveal" data-props='{"delay":120}'>
             <p class="eyebrow">{{ \App\Helpers\Homepage::text('about', 'eyebrow', __('Why GODEVI')) }}</p>
-            <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('about', 'title', __('Tourism that gives back to Bali\'s villages')) }}</h2>
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('about', 'title', __('Tourism that gives back to villages')) }}</h2>
             <p class="mt-5 leading-relaxed text-ink-500">
                 {{ \App\Helpers\Homepage::text('about', 'subtitle', __('GODEVI (Go Destination Village) is a socially pro-active business dedicated to uplifting local communities in developing villages through tourism. We create a fair-trade marketplace by empowering village communities — ensuring travel benefits the people who call these places home.')) }}
             </p>
