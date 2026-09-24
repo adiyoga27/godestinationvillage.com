@@ -566,7 +566,7 @@ $data['recent'] = HomeStayServices::recent();
             return redirect()->back()->withErrors(['recaptcha' => $recaptcha])->withInput();
         }
 
-        $to = env('APP_EMAIL', 'hello@godestinationvillage.com');
+        $to = env('APP_EMAIL', 'hello@godevi.org');
 
         Mail::raw(
             "Nama: {$validated['name']}\nEmail: {$validated['email']}\n\n{$validated['message']}",

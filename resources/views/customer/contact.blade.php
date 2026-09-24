@@ -19,13 +19,13 @@
                 <p class="mt-4 text-ink-600">{{ __('Whether you have a question about our experiences, homestays or events — drop us a message and the GODEVI team will get back to you.') }}</p>
 
                 <div class="mt-8 space-y-5">
-                    <a href="mailto:{{ \App\Helpers\Site::get('email', 'hello@godestinationvillage.com') }}" class="group flex items-start gap-4">
+                    <a href="mailto:{{ \App\Helpers\Site::get('email', 'hello@godevi.org') }}" class="group flex items-start gap-4">
                         <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                         </span>
                         <span>
                             <span class="block text-xs font-bold uppercase tracking-wider text-ink-400">{{ __('Email') }}</span>
-                            <span class="mt-1 block font-semibold text-ink-900 group-hover:text-brand-600">{{ \App\Helpers\Site::get('email', 'hello@godestinationvillage.com') }}</span>
+                            <span class="mt-1 block font-semibold text-ink-900 group-hover:text-brand-600">{{ \App\Helpers\Site::get('email', 'hello@godevi.org') }}</span>
                         </span>
                     </a>
                     <a href="https://wa.me/{{ \App\Helpers\Site::whatsapp('6281997674778') }}" target="_blank" rel="noopener" class="group flex items-start gap-4">
@@ -102,7 +102,7 @@
 
                         <button type="submit" class="btn btn-primary">{{ __('Send Message') }}</button>
                     </form>
-                    <p class="mt-6 text-xs text-ink-400">{{ __('Prefer email? Reach us directly at') }} <a href="mailto:{{ \App\Helpers\Site::get('email', 'hello@godestinationvillage.com') }}" class="font-semibold text-brand-600 hover:underline">{{ \App\Helpers\Site::get('email', 'hello@godestinationvillage.com') }}</a>.</p>
+                    <p class="mt-6 text-xs text-ink-400">{{ __('Prefer email? Reach us directly at') }} <a href="mailto:{{ \App\Helpers\Site::get('email', 'hello@godevi.org') }}" class="font-semibold text-brand-600 hover:underline">{{ \App\Helpers\Site::get('email', 'hello@godevi.org') }}</a>.</p>
                 </div>
             </div>
         </div>

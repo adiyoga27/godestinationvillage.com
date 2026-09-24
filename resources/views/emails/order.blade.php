@@ -65,7 +65,7 @@
                             @endif
 
                             <p style="margin-top:24px;color:#6b6b7b;font-size:13px;">
-                                Jika Anda memiliki pertanyaan, silakan hubungi kami di <a href="mailto:hello@godestinationvillage.com" style="color:#d81c25;">hello@godestinationvillage.com</a> atau WhatsApp +62 819-9767-4778.
+                                Jika Anda memiliki pertanyaan, silakan hubungi kami di <a href="mailto:hello@godevi.org" style="color:#d81c25;">hello@godevi.org</a> atau WhatsApp +62 819-9767-4778.
                             </p>
                         </td>
                     </tr>

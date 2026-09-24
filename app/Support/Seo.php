@@ -118,7 +118,7 @@ class Seo
                 '@type' => 'ContactPoint',
                 'telephone' => '+62-819-9767-4778',
                 'contactType' => 'customer service',
-                'email' => 'hello@godestinationvillage.com',
+                'email' => 'hello@godevi.org',
                 'areaServed' => 'ID',
             ],
             'sameAs' => [

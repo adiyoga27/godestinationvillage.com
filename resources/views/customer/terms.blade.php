@@ -24,7 +24,7 @@
                 <p>2.1.3 When using the Services, you shall be subject to any additional terms applicable to such Services, including the privacy policy adopted by GODEVI. All such terms are hereby expressly incorporated by reference in these Terms of Use.</p>
 
                 <h2 class="font-display !text-2xl">{{ __('3. Access and Use of the Services') }}</h2>
-                <p>3.1 Ownership of Content — This website, domain names (www.godestinationvillage.com), subdomains, features, content and application services are offered by GODEVI in connection with those owned and operated by GODEVI.</p>
+                <p>3.1 Ownership of Content — This website, domain names (www.godevi.org), subdomains, features, content and application services are offered by GODEVI in connection with those owned and operated by GODEVI.</p>
                 <p>3.2 Provision and Accessibility of Services — GODEVI may offer the Service on its own or on behalf of the Operator. The services you choose are solely for your own use. GODEVI may change, suspend or terminate any Service at any time, and may impose restrictions or limit your access to parts or all Services without notice or liability.</p>
                 <p>3.2.2 GODEVI does not guarantee that the Service will always be available or uninterrupted. You are responsible for making all necessary arrangements to access the Service and for ensuring that all people who access it through an Internet connection are aware of these Terms of Use.</p>
                 <p>3.2.3 If you link to this website, GODEVI may revoke your right to link at any time, at its sole discretion.</p>

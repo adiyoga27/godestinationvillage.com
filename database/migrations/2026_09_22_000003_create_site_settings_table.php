@@ -23,7 +23,7 @@ return new class extends Migration
             ['key' => 'address', 'label' => 'Alamat', 'value' => 'Jl Kroya No 1, Denpasar, Bali', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'phone', 'label' => 'Telepon (format link, cth: +6281234567890)', 'value' => '+6281997674778', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'phone_display', 'label' => 'Telepon (tampilan, cth: +62 812-3456-7890)', 'value' => '+62 819-9767-4778', 'created_at' => now(), 'updated_at' => now()],
-            ['key' => 'email', 'label' => 'Email', 'value' => 'hello@godestinationvillage.com', 'created_at' => now(), 'updated_at' => now()],
+            ['key' => 'email', 'label' => 'Email', 'value' => 'hello@godevi.org', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'facebook', 'label' => 'URL Facebook', 'value' => 'https://www.facebook.com/godestinationvillage/', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'instagram', 'label' => 'URL Instagram', 'value' => 'https://www.instagram.com/godestinationvillage/', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'youtube', 'label' => 'URL YouTube', 'value' => 'https://www.youtube.com/channel/UCule1cMKmK4RKh_n-Rrx81A', 'created_at' => now(), 'updated_at' => now()],

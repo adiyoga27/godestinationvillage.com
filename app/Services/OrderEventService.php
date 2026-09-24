@@ -184,7 +184,7 @@ class OrderEventService
     
     
                 $email = new OrderEventEmail($subject, $order, $message);
-                Mail::to([$order->customer_email, 'hello@godestinationvillage.com'])->send($email);
+                Mail::to([$order->customer_email, 'hello@godevi.org'])->send($email);
                 DB::commit();
 
                 return $proses;
@@ -263,7 +263,7 @@ class OrderEventService
                 $message = "Hi $customer_name <br>We are pleased to inform you that your payment has been verified and your order has been forwarded processed <br><br> Thank you for supporting tourism villages! Be ready to feel the most authentic village experiences.";
                 $subject = 'Godevi - Order Event '. $order->code .' - Success';    
                 $email = new OrderEventEmail($subject, $order, $message);
-                Mail::to([$order->customer_email, 'hello@godestinationvillage.com'])->send($email);
+                Mail::to([$order->customer_email, 'hello@godevi.org'])->send($email);
                 DB::commit();
                 
                 $date = date('d M Y H:i', strtotime($datenow))." wita";

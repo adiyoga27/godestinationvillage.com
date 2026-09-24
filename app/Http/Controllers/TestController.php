@@ -25,7 +25,7 @@ class TestController extends Controller
     {
         $order =  OrderEvent::latest()->first();
         $subject = 'Godevi - Order ' . $order->id . ' - Confirmation';
-        $message = "This is your booking information, please make payment to confirm your reservation as following details(<a href='https://godestinationvillage.com/reservation/'>Details Order</a>) : <br> ";
+        $message = "This is your booking information, please make payment to confirm your reservation as following details(<a href='https://www.godevi.org/reservation/'>Details Order</a>) : <br> ";
 
 
         $email = new OrderEventEmail($subject, $order, $message);
@@ -35,7 +35,7 @@ class TestController extends Controller
     {
         $order =  OrderHomestay::latest()->first();
         $subject = 'Godevi - Order ' . $order->id . ' - Confirmation';
-        $message = "This is your booking information, please make payment to confirm your reservation as following details(<a href='https://godestinationvillage.com/reservation/'>Details Order</a>) : <br> ";
+        $message = "This is your booking information, please make payment to confirm your reservation as following details(<a href='https://www.godevi.org/reservation/'>Details Order</a>) : <br> ";
 
 
         $email = new OrderHomestayEmail($subject, $order, $message);
@@ -45,7 +45,7 @@ class TestController extends Controller
     {
         $order =  Order::latest()->first();
         $subject = 'Godevi - Order ' . $order->id . ' - Confirmation';
-        $message = "This is your booking information, please make payment to confirm your reservation as following details(<a href='https://godestinationvillage.com/reservation/'>Details Order</a>) : <br> ";
+        $message = "This is your booking information, please make payment to confirm your reservation as following details(<a href='https://www.godevi.org/reservation/'>Details Order</a>) : <br> ";
 
 
         $email = new OrderEmail($subject, $order, $message);

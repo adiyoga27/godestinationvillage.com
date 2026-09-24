@@ -179,7 +179,7 @@ class OrderHomestayService
                 $subject = 'Godevi - Order Homestay ' . $order->code . ' - Confirmation';
                 $message = "This is your booking confirmation. Thank you for joining our homestay. <br> Klik this <a href='$link'>link</a> for payment<br>";
                 $email = new OrderHomestayEmail($subject, $order, $message);
-                Mail::to([$order->customer_email, 'hello@godestinationvillage.com'])->send($email);
+                Mail::to([$order->customer_email, 'hello@godevi.org'])->send($email);
                 DB::commit();
 
                 return $proses;

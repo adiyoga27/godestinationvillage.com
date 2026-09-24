@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://godestinationvillage.com/sitemap.xml
+Sitemap: https://www.godevi.org/sitemap.xml
