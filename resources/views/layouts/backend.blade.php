@@ -131,6 +131,32 @@
             </a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="{{ route('team-dashboard.index') }}">
+              <span class="menu-title">Dashboard Tim</span>
+              <i class="mdi mdi-account-group menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('village-submissions.index') }}">
+              <span class="menu-title">Pengajuan Desa</span>
+              <i class="mdi mdi-map-marker-plus menu-icon"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#ui-asesmen" aria-expanded="false" aria-controls="ui-asesmen">
+              <span class="menu-title">Asesmen</span>
+              <i class="menu-arrow"></i>
+              <i class="mdi mdi-clipboard-check menu-icon"></i>
+            </a>
+            <div class="collapse" id="ui-asesmen">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('team-dashboard.index') }}">Dashboard Tim</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('assessments.index') }}">Jalur & Soal</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('assessment-results.index') }}">Hasil Masuk</a></li>
+                </ul>
+            </div>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="{{ url('administrator/news') }}">
               <span class="menu-title">News</span>
               <i class="mdi mdi-newspaper menu-icon"></i>

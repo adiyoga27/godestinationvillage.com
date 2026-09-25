@@ -9,27 +9,27 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class OrderEvent extends Model
 {
-    use SoftDeletes;
     use LogsActivity;
+    use SoftDeletes;
 
-    public $table = "order_events";
+    public $table = 'order_events';
 
     protected $dates = ['deleted_at'];
 
-    public $primaryKey = "id";
+    public $primaryKey = 'id';
 
     public $timestamps = true;
 
     protected static $logFillable = true;
 
-    protected static $ignoreChangedAttributes = ['created_at','updated_at','deleted_at'];
+    protected static $ignoreChangedAttributes = ['created_at', 'updated_at', 'deleted_at'];
 
     protected static $logName = 'order_events';
 
     protected static $logOnlyDirty = true;
 
     public $fillable = [
-		'id',
+        'id',
         'event_id',
         'user_id',
         'bank_account_id',
@@ -52,12 +52,16 @@ class OrderEvent extends Model
         'special_note',
         'event_name',
         'snap_token',
-        'uuid'
+        'uuid',
+        'pic_team_id',
+        'internal_note',
 
     ];
-  protected $casts = [
+
+    protected $casts = [
         'pax' => 'integer',
     ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -73,34 +77,38 @@ class OrderEvent extends Model
         return $this->belongsTo(BankAccount::class);
     }
 
+    public function pic()
+    {
+        return $this->belongsTo(OurTeam::class, 'pic_team_id');
+    }
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-        ->logOnly(['id',
-        'event_id',
-        'user_id',
-        'bank_account_id',
-        'code',
-        'customer_name',
-        'customer_address',
-        'customer_phone',
-        'customer_email',
-        'event_price',
-        'event_discount',
-        'total_payment',
-        'payment_type',
-        'payment_date',
-        'payment_status',
-        'bank_name',
-        'bank_acc_name',
-        'bank_acc_no',
-        'payment_img',
-        'pax',
-        'event_name',
-        'special_note',
-        'uuid'
-    ]);
+            ->logOnly(['id',
+                'event_id',
+                'user_id',
+                'bank_account_id',
+                'code',
+                'customer_name',
+                'customer_address',
+                'customer_phone',
+                'customer_email',
+                'event_price',
+                'event_discount',
+                'total_payment',
+                'payment_type',
+                'payment_date',
+                'payment_status',
+                'bank_name',
+                'bank_acc_name',
+                'bank_acc_no',
+                'payment_img',
+                'pax',
+                'event_name',
+                'special_note',
+                'uuid',
+            ]);
         // Chain fluent methods for configuration options
     }
 }

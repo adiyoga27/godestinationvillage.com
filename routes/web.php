@@ -4,9 +4,13 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Backend\AdminsController;
 use App\Http\Controllers\Backend\AnalyticController;
+use App\Http\Controllers\Backend\AssessmentQuestionController;
+use App\Http\Controllers\Backend\AssessmentResultController;
+use App\Http\Controllers\Backend\AssessmentTrackController;
 use App\Http\Controllers\Backend\BankAccountsController;
 use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\Backend\BoardExpertController;
+use App\Http\Controllers\Backend\BookletController;
 use App\Http\Controllers\Backend\CategoriesController;
 use App\Http\Controllers\Backend\CategoryEventsController;
 use App\Http\Controllers\Backend\CategoryHomeStayController;
@@ -17,45 +21,45 @@ use App\Http\Controllers\Backend\FoundingController;
 use App\Http\Controllers\Backend\HomeController;
 use App\Http\Controllers\Backend\HomepageSectionController;
 use App\Http\Controllers\Backend\HomepageServiceController;
-use App\Http\Controllers\Backend\PageHeroController;
-use App\Http\Controllers\Backend\SiteSettingController;
 use App\Http\Controllers\Backend\HomeStayController;
 use App\Http\Controllers\Backend\InstagramController;
-use App\Http\Controllers\Backend\BookletController;
-use App\Http\Controllers\Backend\SliderController;
 use App\Http\Controllers\Backend\MembersController;
 use App\Http\Controllers\Backend\OrderEventsController;
 use App\Http\Controllers\Backend\OrderHomeStayController;
 use App\Http\Controllers\Backend\OrdersController;
 use App\Http\Controllers\Backend\OurTeamController;
 use App\Http\Controllers\Backend\PackagesController;
+use App\Http\Controllers\Backend\PageHeroController;
 use App\Http\Controllers\Backend\PortofolioController;
 use App\Http\Controllers\Backend\ProfileController;
 use App\Http\Controllers\Backend\ReportVillageController;
 use App\Http\Controllers\Backend\ReviewController;
+use App\Http\Controllers\Backend\SiteSettingController;
+use App\Http\Controllers\Backend\SliderController;
 use App\Http\Controllers\Backend\SubscriberController;
 use App\Http\Controllers\Backend\SystemLogController;
-use App\Http\Controllers\Backend\VillagesController;
+use App\Http\Controllers\Backend\TeamDashboardController;
 use App\Http\Controllers\Backend\VillageDatatableController;
-
+use App\Http\Controllers\Backend\VillagesController;
+use App\Http\Controllers\Backend\VillageSubmissionController as AdminVillageSubmissionController;
+use App\Http\Controllers\Front\AssessmentController;
+use App\Http\Controllers\Front\GuestBookingController;
 use App\Http\Controllers\Front\InvoiceController;
 use App\Http\Controllers\Front\OrderController;
 use App\Http\Controllers\Front\PageController;
 use App\Http\Controllers\Front\ReservationEventController;
 use App\Http\Controllers\Front\ReservationHomeStayController;
 use App\Http\Controllers\Front\SearchController;
-use App\Http\Controllers\Front\SubscriberController as FrontSubscriberController;
 use App\Http\Controllers\Front\SitemapController;
+use App\Http\Controllers\Front\SubscriberController as FrontSubscriberController;
+use App\Http\Controllers\Front\VillageSubmissionController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\TestController;
-
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -73,22 +77,30 @@ use Illuminate\Support\Facades\Session;
 Route::get('/', [PageController::class, 'index']);
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 Route::get('/home', [PageController::class, 'index']);
-Route::get('/redirects', function(){
-	return redirect(Redirect::intended()->getTargetUrl());
-	return back();	
+Route::get('/redirects', function () {
+    return redirect(Redirect::intended()->getTargetUrl());
+
+    return back();
 });
 
 Route::get('locale/{locale}', function ($locale) {
     $locale = in_array($locale, ['id', 'en']) ? $locale : config('app.locale', 'id');
     Session::put('locale', $locale);
     App::setLocale($locale);
+
     return redirect()->back();
 })->where(['locale' => 'id|en']);
 
 Route::prefix('pay')->group(function () {
-    Route::get('finish', function (){return view('payment.finish');});
-    Route::get('unfinish', function (){return view('payment.unfinish');});
-    Route::get('error', function (){return view('payment.error');});
+    Route::get('finish', function () {
+        return view('payment.finish');
+    });
+    Route::get('unfinish', function () {
+        return view('payment.unfinish');
+    });
+    Route::get('error', function () {
+        return view('payment.error');
+    });
 });
 
 Route::get('/services', [PageController::class, 'services']);
@@ -108,108 +120,134 @@ Route::prefix('auth')->group(function () {
     Route::get('/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
 });
 
+Route::get('/invoice/{id}', [InvoiceController::class, 'index']);
+Route::get('/invoice-event/{id}', [InvoiceController::class, 'event']);
+Route::get('/invoice-homestay/{id}', [InvoiceController::class, 'homestay']);
 
-Route::get('/invoice/{id}', [InvoiceController::class , 'index']);
-Route::get('/invoice-event/{id}', [InvoiceController::class , 'event']);
-Route::get('/invoice-homestay/{id}', [InvoiceController::class , 'homestay']);
-
-Route::get('/administrator/login',  [LoginController::class, 'showLoginForm']);
+Route::get('/administrator/login', [LoginController::class, 'showLoginForm']);
 Route::get('/user/login', [PageController::class, 'login']);
-//Customer Page
+// Customer Page
 Route::get('/company-profile', [PageController::class, 'companyprofile']);
 Route::get('/tentang-godevi', [PageController::class, 'aboutGodevi'])->name('about.godevi');
 Route::get('/about-godevi', [PageController::class, 'aboutGodevi']);
 
 Route::prefix('village')->group(function () {
-    Route::get('/',[PageController::class, 'village']);
-    Route::get('/{slug}',[PageController::class, 'detailVillage']);
+    Route::get('/', [PageController::class, 'village']);
+    Route::get('/{slug}', [PageController::class, 'detailVillage']);
 });
 Route::prefix('tour-packages')->group(function () {
-    Route::get('/',[PageController::class, 'tourpackages']);
-    Route::get('/{slug}',[PageController::class, 'detailtour']);
+    Route::get('/', [PageController::class, 'tourpackages']);
+    Route::get('/{slug}', [PageController::class, 'detailtour']);
 });
 Route::prefix('reservation')->group(function () {
-    Route::get('/{email}',[PageController::class, 'reservation']);
-    Route::get('/paid/{email}',[OrderController::class, 'reservationPaid']);
-    Route::get('/cancel/{email}',[OrderController::class, 'reservationCancel']);
+    Route::get('/{email}', [PageController::class, 'reservation']);
+    Route::get('/paid/{email}', [OrderController::class, 'reservationPaid']);
+    Route::get('/cancel/{email}', [OrderController::class, 'reservationCancel']);
 });
 Route::prefix('reservation-events')->group(function () {
-    Route::get('/{email}',[ReservationEventController::class, 'reservation']);
-    Route::get('/paid/{email}',[ReservationEventController::class, 'paid']);
-    Route::get('/cancel/{email}',[ReservationEventController::class, 'cancel']);
+    Route::get('/{email}', [ReservationEventController::class, 'reservation']);
+    Route::get('/paid/{email}', [ReservationEventController::class, 'paid']);
+    Route::get('/cancel/{email}', [ReservationEventController::class, 'cancel']);
 });
 Route::prefix('reservation-homestay')->group(function () {
-    Route::get('/{email}',[ReservationHomeStayController::class, 'reservation']);
-    Route::get('/paid/{email}',[ReservationHomeStayController::class, 'paid']);
-    Route::get('/cancel/{email}',[ReservationHomeStayController::class, 'cancel']);
+    Route::get('/{email}', [ReservationHomeStayController::class, 'reservation']);
+    Route::get('/paid/{email}', [ReservationHomeStayController::class, 'paid']);
+    Route::get('/cancel/{email}', [ReservationHomeStayController::class, 'cancel']);
 });
 
-Route::prefix('midtrans')->group(function(){
+Route::prefix('midtrans')->group(function () {
     Route::post('/callbackPayment', [MidtransController::class, 'callbackPayment']);
 });
 
 Route::prefix('events')->group(function () {
-    Route::get('/', [PageController::class,'eventsGodevi']);
-    Route::get('/{slug}', [PageController::class,'detailEvent']);
+    Route::get('/', [PageController::class, 'eventsGodevi']);
+    Route::get('/{slug}', [PageController::class, 'detailEvent']);
 });
 Route::prefix('homestay')->group(function () {
-    Route::get('/', [PageController::class,'homeStay']);
-    Route::get('/{id}', [PageController::class,'detailHomestay']);
+    Route::get('/', [PageController::class, 'homeStay']);
+    Route::get('/{id}', [PageController::class, 'detailHomestay']);
 });
-Route::get('/category-package/{id}', [PageController::class,'categorypackage']);
+Route::get('/category-package/{id}', [PageController::class, 'categorypackage']);
 
-//check update
+// Alur 1: Pendaftaran Desa Wisata (guest, tanpa login, tanpa payment)
+Route::prefix('daftar-desa')->group(function () {
+    Route::get('/', [VillageSubmissionController::class, 'create'])->name('village-submission.create');
+    Route::post('/', [VillageSubmissionController::class, 'store'])->name('village-submission.store');
+    Route::get('/berhasil/{uuid}', [VillageSubmissionController::class, 'success'])->name('village-submission.success');
+});
+
+// Alur 2-4: Guest booking tanpa login (payment Midtrans Snap via halaman payment/*)
+Route::prefix('guest-booking')->group(function () {
+    Route::get('/package/{slug}', [GuestBookingController::class, 'packageForm'])->name('guest-booking.package.form');
+    Route::post('/package', [GuestBookingController::class, 'packageStore'])->name('guest-booking.package.store');
+    Route::get('/event/{slug}', [GuestBookingController::class, 'eventForm'])->name('guest-booking.event.form');
+    Route::post('/event', [GuestBookingController::class, 'eventStore'])->name('guest-booking.event.store');
+    Route::get('/homestay/{id}', [GuestBookingController::class, 'homestayForm'])->name('guest-booking.homestay.form');
+    Route::post('/homestay', [GuestBookingController::class, 'homestayStore'])->name('guest-booking.homestay.store');
+});
+
+// Asesmen kesiapan 4 jalur (guest, tanpa login, gratis — tanpa payment)
+Route::prefix('asesmen')->group(function () {
+    Route::get('/', [AssessmentController::class, 'index'])->name('assessment.index');
+    Route::get('/hasil/{uuid}', [AssessmentController::class, 'result'])->name('assessment.result');
+    Route::get('/{slug}', [AssessmentController::class, 'intro'])->name('assessment.intro');
+    Route::post('/{slug}/mulai', [AssessmentController::class, 'start'])->name('assessment.start');
+    Route::get('/{slug}/soal', [AssessmentController::class, 'form'])->name('assessment.form');
+    Route::post('/{slug}/kirim', [AssessmentController::class, 'submit'])->name('assessment.submit');
+});
+
+// check update
 Route::prefix('payment')->group(function () {
-    Route::get('/{id}', [PageController::class,'payment']);
-    Route::get('/event/{id}', [PageController::class,'paymentEvent']);
-    Route::get('/event/do_cancel/{id}', [PageController::class,'cancelEvent']);
-    Route::get('/homestay/{id}', [PageController::class,'paymentHomestay']);
-    Route::get('/homestay/do_cancel/{id}', [PageController::class,'cancelHomeStay']);
-    Route::get('/package/{id}', [PageController::class,'payment']);
-    Route::get('/package/do_cancel/{id}', [PageController::class,'cancel']);
+    Route::get('/{id}', [PageController::class, 'payment']);
+    Route::get('/event/{id}', [PageController::class, 'paymentEvent']);
+    Route::get('/event/do_cancel/{id}', [PageController::class, 'cancelEvent']);
+    Route::get('/homestay/{id}', [PageController::class, 'paymentHomestay']);
+    Route::get('/homestay/do_cancel/{id}', [PageController::class, 'cancelHomeStay']);
+    Route::get('/package/{id}', [PageController::class, 'payment']);
+    Route::get('/package/do_cancel/{id}', [PageController::class, 'cancel']);
 });
 
-Route::get('/payment-detail/{id}', [PageController::class,'detailPayment']);
-Route::get('/payment-confirm/{id}', [PageController::class,'confirmPayment']);
-Route::get('/do_cancel/{id}', [PageController::class,'cancel']);
+Route::get('/payment-detail/{id}', [PageController::class, 'detailPayment']);
+Route::get('/payment-confirm/{id}', [PageController::class, 'confirmPayment']);
+Route::get('/do_cancel/{id}', [PageController::class, 'cancel']);
 Route::get('user/register', [PageController::class, 'register']);
-Route::get('/term', [PageController::class,'term']);
+Route::get('/term', [PageController::class, 'term']);
 
-Route::get('/delete-account', [PageController::class,'deleteAccount']);
-Route::get('/our-team', [PageController::class,'ourteam']);
-Route::get('/v-founding', [PageController::class,'founding']);
-Route::get('/v-board', [PageController::class,'boardExpert']);
-Route::get('/v-portofolio', [PageController::class,'portofolio']);
+Route::get('/delete-account', [PageController::class, 'deleteAccount']);
+Route::get('/our-team', [PageController::class, 'ourteam']);
+Route::get('/v-founding', [PageController::class, 'founding']);
+Route::get('/v-board', [PageController::class, 'boardExpert']);
+Route::get('/v-portofolio', [PageController::class, 'portofolio']);
 
-Route::get('/our-partner', [PageController::class,'ourpartner']);
-Route::get('/news', [PageController::class,'blog']);
-Route::get('/news/{slug}', [PageController::class,'detailpost']);
-Route::get('/news-mobile', [PageController::class,'blog_mobile']);
-Route::get('/news-mobile/{id}', [PageController::class,'detailpost_mobile']);
+Route::get('/our-partner', [PageController::class, 'ourpartner']);
+Route::get('/news', [PageController::class, 'blog']);
+Route::get('/news/{slug}', [PageController::class, 'detailpost']);
+Route::get('/news-mobile', [PageController::class, 'blog_mobile']);
+Route::get('/news-mobile/{id}', [PageController::class, 'detailpost_mobile']);
 Route::post('/news/comment/{slug}', [PageController::class, 'postComment'])->middleware(['auth', 'log.activity']);
-Route::get('/search', [SearchController::class,'searchHome']);
+Route::get('/search', [SearchController::class, 'searchHome']);
 Route::get('/pay/{id}', [PaymentController::class, 'vtweb']);
 Route::post('/vt-notif', [PaymentController::class, 'notification']);
 
 Route::group(['middleware' => ['auth', 'log.activity']], function () {
     Route::prefix('bookingEvents')->group(function () {
         Route::get('/{id}', [PageController::class, 'bookingEvents']);
-        Route::post('/sendEvent',[OrderEventsController::class, 'sendEvent']);
-        Route::post('/sendEventFree',[OrderEventsController::class, 'sendEventFree']);
+        Route::post('/sendEvent', [OrderEventsController::class, 'sendEvent']);
+        Route::post('/sendEventFree', [OrderEventsController::class, 'sendEventFree']);
 
     });
     Route::prefix('bookingHomeStay')->group(function () {
         Route::get('/{id}', [PageController::class, 'bookingHomeStay']);
-        Route::post('/sendHomeStay',[OrderHomeStayController::class, 'sendHomeStay']);
+        Route::post('/sendHomeStay', [OrderHomeStayController::class, 'sendHomeStay']);
     });
     Route::prefix('account')->group(function () {
-        Route::get('/',[PageController::class, 'account']);
-        Route::post('/{id}',[PageController::class, 'accountUpdate']);
+        Route::get('/', [PageController::class, 'account']);
+        Route::post('/{id}', [PageController::class, 'accountUpdate']);
     });
     Route::prefix('booking')->group(function () {
         Route::get('/{id}', [PageController::class, 'booking']);
-        Route::post('/send',[OrderController::class, 'send']);
-        Route::post('/sendEvent',[OrderController::class, 'sendEvent']);
+        Route::post('/send', [OrderController::class, 'send']);
+        Route::post('/sendEvent', [OrderController::class, 'sendEvent']);
 
     });
 });
@@ -217,21 +255,20 @@ Route::group(['middleware' => ['auth', 'log.activity']], function () {
 Route::get('/surat/{id}', [PageController::class, 'certification']);
 
 Route::get('qrcode-with-image', function () {
-    $image = \QrCode::format('png')
-                    ->merge('assets/customer/img/qr.png', 0.5, true)
-                    ->size(500)->errorCorrection('H')
-                    ->generate('http://localhost:8000/surat/056GODEVIB2XII');
- return response($image)->header('Content-type','image/png');
+    $image = QrCode::format('png')
+        ->merge('assets/customer/img/qr.png', 0.5, true)
+        ->size(500)->errorCorrection('H')
+        ->generate('http://localhost:8000/surat/056GODEVIB2XII');
+
+    return response($image)->header('Content-type', 'image/png');
 });
 
-
-
-//Route Untuk Administrator
+// Route Untuk Administrator
 Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activity']], function () {
-     Route::resource('bank-account', BankAccountsController::class, ['names' => 'bank_account']);
-     Route::get('system-log', [SystemLogController::class, 'index'])->name('system-log.index');
-     Route::delete('system-log/prune', [SystemLogController::class, 'prune'])->name('system-log.prune');
-     Route::resource('news', BlogController::class);
+    Route::resource('bank-account', BankAccountsController::class, ['names' => 'bank_account']);
+    Route::get('system-log', [SystemLogController::class, 'index'])->name('system-log.index');
+    Route::delete('system-log/prune', [SystemLogController::class, 'prune'])->name('system-log.prune');
+    Route::resource('news', BlogController::class);
     Route::post('news/upload-image', [BlogController::class, 'uploadImage'])->name('news.upload_image');
     Route::post('tinymce/upload-image', [BlogController::class, 'uploadImage'])->name('tinymce.upload_image');
     Route::resource('surat', CertificationController::class);
@@ -249,8 +286,8 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
     Route::get('booklet', [BookletController::class, 'index'])->name('booklet.index');
     Route::post('booklet', [BookletController::class, 'store'])->name('booklet.store');
     Route::resource('review', ReviewController::class);
-     Route::resource('subscriber', SubscriberController::class, ['only' => ['index', 'destroy']]);
-     Route::get('subscriber/export', [SubscriberController::class, 'export'])->name('subscriber.export');
+    Route::resource('subscriber', SubscriberController::class, ['only' => ['index', 'destroy']]);
+    Route::get('subscriber/export', [SubscriberController::class, 'export'])->name('subscriber.export');
 
     Route::resource('category', CategoriesController::class);
     Route::resource('category-event', CategoryEventsController::class);
@@ -260,14 +297,14 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
     //     'as' => 'orders.change_status',
     //     'uses' => 'OrdersController@change_status'
     // ]);
-    Route::get('orders/{id}/change-status/{status}',  [OrdersController::class, 'change_status'])->name('orders.change_status');
+    Route::get('orders/{id}/change-status/{status}', [OrdersController::class, 'change_status'])->name('orders.change_status');
 
     Route::resource('order-event', OrderEventsController::class, ['names' => 'order-event']);
     // Route::get('order-event/{id}/change-status/{status}', [
     //     'as' => 'order-event.change_status',
     //     'uses' => 'OrderEventsController@change_status'
     // ]);
-    Route::get('order-event/{id}/change-status/{status}',  [OrderEventsController::class, 'change_status'])->name('order-event.change_status');
+    Route::get('order-event/{id}/change-status/{status}', [OrderEventsController::class, 'change_status'])->name('order-event.change_status');
 
     Route::resource('order-homestay', OrderHomeStayController::class, ['names' => 'order-homestay']);
     // Route::get('order-homestay/{id}/change-status/{status}', [
@@ -275,9 +312,26 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
     //     'uses' => 'OrderHomeStayController@change_status'
     // ]);
     Route::get('order-homestay/{id}/change-status/{status}', [OrderHomeStayController::class, 'change_status'])->name('order-homestay.change_status');
-  
+
     Route::resource('category-events', CategoryEventsController::class);
     Route::resource('events', EventsController::class);
+    // Dashboard Tim: inbox terpadu 4 alur + penugasan PIC + catatan internal
+    Route::get('team-dashboard', [TeamDashboardController::class, 'index'])->name('team-dashboard.index');
+    Route::post('team-dashboard/assign', [TeamDashboardController::class, 'assign'])->name('team-dashboard.assign');
+    // Alur 1: verifikasi pendaftaran desa wisata oleh tim
+    Route::resource('village-submissions', AdminVillageSubmissionController::class, ['only' => ['index', 'show', 'update', 'destroy']]);
+    // Asesmen: kelola jalur + bank pertanyaan oleh tim
+    Route::resource('assessments', AssessmentTrackController::class, ['except' => ['show']]);
+    Route::prefix('assessments/{track}')->name('assessments.questions.')->group(function () {
+        Route::get('/questions', [AssessmentQuestionController::class, 'index'])->name('index');
+        Route::get('/questions/create', [AssessmentQuestionController::class, 'create'])->name('create');
+        Route::post('/questions', [AssessmentQuestionController::class, 'store'])->name('store');
+        Route::get('/questions/{id}/edit', [AssessmentQuestionController::class, 'edit'])->name('edit');
+        Route::put('/questions/{id}', [AssessmentQuestionController::class, 'update'])->name('update');
+        Route::delete('/questions/{id}', [AssessmentQuestionController::class, 'destroy'])->name('destroy');
+    });
+    // Asesmen: inbox hasil + tindak lanjut tim
+    Route::resource('assessment-results', AssessmentResultController::class, ['only' => ['index', 'show', 'update', 'destroy']]);
     Route::resource('founding', FoundingController::class);
     Route::resource('ourteam', OurTeamController::class);
     Route::resource('boardexpert', BoardExpertController::class);
@@ -286,14 +340,8 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
     Route::resource('category-homestay', CategoryHomeStayController::class);
     Route::resource('package', PackagesController::class);
     Route::prefix('package')->group(function () {
-        Route::get('/{id}/orders', [
-            'as' => 'package.orders',
-            'uses' => 'PackagesController@get_orders'
-        ]);
-        Route::post('/delete-image', [
-            'as' => 'package.delete_image',
-            'uses' => 'PackagesController@delete_image'
-        ]);
+        Route::get('/{id}/orders', [PackagesController::class, 'get_orders'])->name('package.orders');
+        Route::post('/delete-image', [PackagesController::class, 'delete_image'])->name('package.delete_image');
     });
     Route::resource('user-admin', AdminsController::class, ['names' => 'user_admin']);
     Route::resource('user-member', MembersController::class, ['names' => 'user_member']);
@@ -304,10 +352,7 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
     Route::prefix('report')->group(function () {
         Route::get('/villages', [ReportVillageController::class, 'index'])->name('report.village');
         Route::get('/villages/order', [ReportVillageController::class, 'get_order'])->name('report_village.get_order');
-        Route::get('/villages/order/export', [
-            'as'   => 'report_village.export_xls',
-            'uses' => 'ReportVillageController@export_xls'
-        ]);
+        Route::get('/villages/order/export', [ReportVillageController::class, 'export_xls'])->name('report_village.export_xls');
         Route::get('/villages/packages', [ReportVillageController::class, 'get_package'])->name('report_village.get_package');
         Route::get('/events', [ReportVillageController::class, 'index'])->name('report.events');
     });

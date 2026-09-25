@@ -321,6 +321,7 @@
                         <li><a href="{{ url('events') }}" class="transition hover:text-white">{{ __('Events') }}</a></li>
                         <li><a href="{{ url('homestay') }}" class="transition hover:text-white">{{ __('Homestays') }}</a></li>
                         <li><a href="{{ url('services') }}" class="transition hover:text-white">{{ __('Our Services') }}</a></li>
+                        <li><a href="{{ url('asesmen') }}" class="transition hover:text-white">{{ __('Asesmen Kesiapan') }}</a></li>
                     </ul>
                 </div>
 
