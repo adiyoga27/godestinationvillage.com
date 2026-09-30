@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\HomepageAboutFeature;
 use App\Models\HomepageSection;
 use App\Models\HomepageService;
 use Illuminate\Support\Facades\Cache;
@@ -20,6 +21,8 @@ class Homepage
     public const SECTIONS_CACHE_KEY = 'homepage.sections';
 
     public const SERVICES_CACHE_KEY = 'homepage.services';
+
+    public const ABOUT_FEATURES_CACHE_KEY = 'homepage.about_features';
 
     /**
      * Semua section terurut, keyed by `key`.
@@ -47,6 +50,32 @@ class Homepage
             3600,
             fn () => HomepageService::where('is_active', true)->orderBy('sort_order')->orderBy('id')->get()
         );
+    }
+
+    /**
+     * Kartu fitur Why GODEVI yang aktif, terurut.
+     *
+     * @return \Illuminate\Support\Collection<int, \App\Models\HomepageAboutFeature>
+     */
+    public static function aboutFeatures()
+    {
+        return Cache::remember(
+            static::ABOUT_FEATURES_CACHE_KEY,
+            3600,
+            fn () => HomepageAboutFeature::where('is_active', true)->orderBy('sort_order')->orderBy('id')->get()
+        );
+    }
+
+    /**
+     * URL gambar kartu fitur Why GODEVI.
+     */
+    public static function aboutFeatureImage(?string $image): ?string
+    {
+        if (! $image) {
+            return null;
+        }
+
+        return static::resolveImage($image, 'homepage-about-features');
     }
 
     /**
@@ -188,5 +217,6 @@ class Homepage
     {
         Cache::forget(static::SECTIONS_CACHE_KEY);
         Cache::forget(static::SERVICES_CACHE_KEY);
+        Cache::forget(static::ABOUT_FEATURES_CACHE_KEY);
     }
 }

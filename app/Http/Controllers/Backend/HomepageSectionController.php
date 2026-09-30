@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Helpers\CustomImage;
 use App\Helpers\Homepage;
 use App\Http\Controllers\Controller;
+use App\Models\HomepageAboutFeature;
 use App\Models\HomepageSection;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,12 @@ class HomepageSectionController extends Controller
     {
         $section = HomepageSection::findOrFail($id);
 
-        return view('backend.homepage_sections.edit')->with(compact('section'));
+        // Kartu fitur dikelola langsung di halaman edit section About (id 3).
+        $features = $section->key === 'about'
+            ? HomepageAboutFeature::orderBy('sort_order')->orderBy('id')->get()
+            : collect();
+
+        return view('backend.homepage_sections.edit')->with(compact('section', 'features'));
     }
 
     public function update(Request $request, $id)

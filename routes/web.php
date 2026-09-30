@@ -19,6 +19,7 @@ use App\Http\Controllers\Backend\DiscountMembersController;
 use App\Http\Controllers\Backend\EventsController;
 use App\Http\Controllers\Backend\FoundingController;
 use App\Http\Controllers\Backend\HomeController;
+use App\Http\Controllers\Backend\HomepageAboutFeatureController;
 use App\Http\Controllers\Backend\HomepageSectionController;
 use App\Http\Controllers\Backend\HomepageServiceController;
 use App\Http\Controllers\Backend\HomeStayController;
@@ -282,6 +283,8 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
     Route::post('homepage-sections/{id}/toggle', [HomepageSectionController::class, 'toggle'])->name('homepage-sections.toggle');
     Route::resource('homepage-services', HomepageServiceController::class);
     Route::post('homepage-services/{id}/toggle', [HomepageServiceController::class, 'toggle'])->name('homepage-services.toggle');
+    Route::resource('homepage-about-features', HomepageAboutFeatureController::class);
+    Route::post('homepage-about-features/{id}/toggle', [HomepageAboutFeatureController::class, 'toggle'])->name('homepage-about-features.toggle');
     Route::resource('page-heroes', PageHeroController::class, ['only' => ['index', 'edit', 'update']]);
     Route::get('booklet', [BookletController::class, 'index'])->name('booklet.index');
     Route::post('booklet', [BookletController::class, 'store'])->name('booklet.store');

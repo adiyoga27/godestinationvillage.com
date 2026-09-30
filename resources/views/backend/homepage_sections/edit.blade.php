@@ -150,4 +150,70 @@
         </div>
     </div>
 </div>
+
+@if ($section->key === 'about')
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Kartu Fitur Why GODEVI</h4>
+                <p class="card-description">4 kartu kecil di bawah deskripsi (Socially Responsible, dst). Tambah, edit, tampil/sembunyikan, hapus dari sini.</p>
+                <a href="{{ route('homepage-about-features.create') }}" class="btn btn-gradient-danger mb-3">
+                    <i class="mdi mdi-plus-circle-outline"></i> Tambah Kartu
+                </a>
+                <div class="table-responsive">
+                    <table class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Urutan</th>
+                                <th>Judul (EN / ID)</th>
+                                <th>Deskripsi</th>
+                                <th>Status</th>
+                                <th style="width: 260px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($features as $feature)
+                                <tr>
+                                    <td>{{ $feature->sort_order }}</td>
+                                    <td><strong>{{ $feature->title }}</strong><br><small class="text-muted">{{ $feature->title_id }}</small></td>
+                                    <td><small class="text-muted">{{ \Illuminate\Support\Str::limit($feature->desc_id ?: $feature->desc, 80) }}</small></td>
+                                    <td>
+                                        @if ($feature->is_active)
+                                            <span class="badge badge-success">Tampil</span>
+                                        @else
+                                            <span class="badge badge-secondary">Sembunyi</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('homepage-about-features.edit', $feature->id) }}" class="btn btn-sm btn-gradient-info">
+                                            <i class="mdi mdi-pencil"></i> Edit
+                                        </a>
+                                        <form method="POST" action="{{ route('homepage-about-features.toggle', $feature->id) }}" style="display:inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm {{ $feature->is_active ? 'btn-outline-secondary' : 'btn-gradient-success' }}">
+                                                <i class="mdi {{ $feature->is_active ? 'mdi-eye-off' : 'mdi-eye' }}"></i>
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{{ route('homepage-about-features.destroy', $feature->id) }}" style="display:inline;"
+                                            onsubmit="return confirm('Hapus kartu &quot;{{ $feature->title }}&quot;?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-gradient-danger">
+                                                <i class="mdi mdi-delete"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="5" class="text-center">Belum ada kartu. Klik Tambah Kartu.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 @endsection

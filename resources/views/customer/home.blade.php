@@ -255,21 +255,23 @@
                 {{ \App\Helpers\Homepage::text('about', 'subtitle', __('GODEVI (Go Destination Village) is a socially pro-active business dedicated to uplifting local communities in developing villages through tourism. We create a fair-trade marketplace by empowering village communities — ensuring travel benefits the people who call these places home.')) }}
             </p>
             <div class="mt-8 grid gap-4 sm:grid-cols-2">
-                @php
-                    $features = [
-                        ['icon' => 'M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Socially Responsible', 'desc' => 'Every experience supports local livelihoods and community growth.'],
-                        ['icon' => 'M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z', 'title' => 'Community Empowerment', 'desc' => 'A marketplace that champions fair trade and village entrepreneurs.'],
-                        ['icon' => 'M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.909m1.15-4.455l-1.15 4.455m0 0a7.5 7.5 0 003.106 3.106m4.134-12.26a3 3 0 014.242 4.242L7.5 19.5H6l-.25-2.25L7.5 15.75l3.75-3.75', 'title' => 'Sustainable Tourism', 'desc' => 'Rooted in sustainability, balancing people, planet and prosperity.'],
-                        ['icon' => 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12', 'title' => 'Local Experiences', 'desc' => 'Genuine tours, homestays and events led by village communities.'],
-                    ];
-                @endphp
-                @foreach ($features as $f)
+                {{-- Kartu fitur dari database (Admin > Pengaturan > Kelola Website > Fitur Why GODEVI). --}}
+                @foreach (\App\Helpers\Homepage::aboutFeatures() as $f)
+                    @php
+                        $fTitle = $isId ? ($f->title_id ?: $f->title) : $f->title;
+                        $fDesc = $isId ? ($f->desc_id ?: $f->desc) : $f->desc;
+                        $fImg = \App\Helpers\Homepage::aboutFeatureImage($f->image);
+                    @endphp
                     <div class="rounded-2xl bg-white p-5 shadow-[0_10px_30px_-15px_rgb(26_26_38/0.2)] transition hover:-translate-y-1">
-                        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $f['icon'] }}" /></svg>
+                        <span class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-brand-50 text-brand-600">
+                            @if ($fImg)
+                                <img src="{{ $fImg }}" alt="{{ $fTitle }}" class="h-8 w-8 object-contain" loading="lazy">
+                            @else
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            @endif
                         </span>
-                        <h3 class="mt-3 font-bold">{{ __($f['title']) }}</h3>
-                        <p class="mt-1 text-sm text-ink-500">{{ __($f['desc']) }}</p>
+                        <h3 class="mt-3 font-bold">{{ $fTitle }}</h3>
+                        <p class="mt-1 text-sm text-ink-500">{{ $fDesc }}</p>
                     </div>
                 @endforeach
             </div>
