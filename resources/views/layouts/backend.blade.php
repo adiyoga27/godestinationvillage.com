@@ -131,12 +131,6 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('team-dashboard.index') }}">
-              <span class="menu-title">Dashboard Tim</span>
-              <i class="mdi mdi-account-group menu-icon"></i>
-            </a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="{{ route('village-submissions.index') }}">
               <span class="menu-title">Pengajuan Desa</span>
               <i class="mdi mdi-map-marker-plus menu-icon"></i>

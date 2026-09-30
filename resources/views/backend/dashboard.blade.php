@@ -84,5 +84,16 @@
         </div>
         <br /><br />
     @endif
+
+    {{-- Inbox tim 4 alur digabung ke dashboard utama --}}
+    <div class="page-header">
+        <h3 class="page-title">
+          <span class="page-title-icon bg-gradient-info text-white mr-2">
+            <i class="mdi mdi-account-group"></i>
+          </span>
+          Dashboard Tim — Inbox 4 Alur
+        </h3>
+    </div>
+    @include('backend.team_dashboard._inbox')
 @endif
 @endsection

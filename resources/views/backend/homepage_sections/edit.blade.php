@@ -66,6 +66,20 @@
                     </div>
                 </div>
 
+                @if ($section->key === 'about')
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Badge Kecil (selalu English)</label>
+                    <div class="col-sm-4">
+                        {!! Form::text('badge_title', null, ['class' => 'form-control', 'maxlength' => '191', 'placeholder' => 'cth: SEE']) !!}
+                        <small class="form-text text-muted">Judul badge, cth: SEE. Tidak di-translate.</small>
+                    </div>
+                    <div class="col-sm-5">
+                        {!! Form::text('badge_subtitle', null, ['class' => 'form-control', 'maxlength' => '191', 'placeholder' => 'cth: Sustainability · Empowerment · Entrepreneurship']) !!}
+                        <small class="form-text text-muted">Sub badge, selalu tampil English.</small>
+                    </div>
+                </div>
+                @endif
+
                 <div class="form-group row">
                     <label class="col-sm-3 col-form-label">Gambar Section</label>
                     <div class="col-sm-9">

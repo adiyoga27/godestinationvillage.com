@@ -87,11 +87,11 @@
             <p data-hero-reveal class="eyebrow !text-white animate-fade-up" style="animation-delay: 0.1s">{{ $heroEyebrow }}</p>
             @endif
             <h1 data-hero-title data-titles='{!! json_encode($heroTitles, JSON_HEX_APOS | JSON_HEX_QUOT) !!}'
-                class="font-display text-3xl font-bold leading-[1.15] text-white sm:text-4xl lg:text-6xl animate-fade-up" style="animation-delay: 0.25s">
+                class="font-display text-2xl font-bold leading-[1.15] text-white sm:text-3xl lg:text-5xl animate-fade-up" style="animation-delay: 0.25s">
                 {{ $heroTitles[0] }}
             </h1>
             <p data-hero-subtitle data-titles='{!! json_encode($heroSubtitles, JSON_HEX_APOS | JSON_HEX_QUOT) !!}'
-                class="mt-4 max-w-xl text-base leading-relaxed text-white/80 lg:mt-6 lg:text-lg animate-fade-up" style="animation-delay: 0.4s">
+                class="mt-4 max-w-xl text-justify text-sm leading-relaxed text-white/80 sm:text-base lg:mt-6 lg:text-base animate-fade-up" style="animation-delay: 0.4s">
                 {{ $heroSubtitles[0] }}
             </p>
             <div class="mt-6 flex flex-wrap items-center gap-3 lg:mt-9 lg:gap-4 animate-fade-up" style="animation-delay: 0.55s" data-hero-buttons
@@ -242,8 +242,9 @@
                     class="h-[480px] w-full object-cover" loading="lazy">
             </div>
             <div class="absolute -bottom-8 -right-4 hidden w-52 rounded-3xl bg-brand-600 p-6 text-center text-white shadow-xl sm:block animate-float">
-                <p class="font-display text-4xl font-bold">{{ __('SEE') }}</p>
-                <p class="mt-1 text-xs font-semibold uppercase tracking-wider">{{ __('Sustainability · Empowerment · Entrepreneurship') }}</p>
+                {{-- Badge selalu English, tidak di-translate. Diinput via Admin > Homepage Sections > Tentang / Why GODEVI. --}}
+                <p class="font-display text-4xl font-bold">{{ \App\Helpers\Homepage::text('about', 'badge_title', 'SEE') }}</p>
+                <p class="mt-1 text-xs font-semibold uppercase tracking-wider">{{ \App\Helpers\Homepage::text('about', 'badge_subtitle', 'Sustainability · Empowerment · Entrepreneurship') }}</p>
             </div>
         </div>
 
@@ -312,22 +313,56 @@
 
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             @foreach (\App\Helpers\Homepage::services() as $i => $s)
-                <a data-vue="Reveal" data-props='{{ json_encode(['delay' => ($i % 4) * 80]) }}'
-                    href="{{ \App\Helpers\Homepage::url($s->url) ?: url('services') }}"
-                    class="group card card-hover p-6 text-center">
-                    <div class="mx-auto flex h-40 w-40 items-center justify-center">
-                        <img src="{{ \App\Helpers\Homepage::serviceImage($s->image) }}" alt="{{ $isId ? ($s->title_id ?: $s->title) : $s->title }}" class="h-full w-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-2 group-hover:scale-105" loading="lazy">
-                    </div>
-                    <h3 class="mt-5 font-bold leading-snug">{{ $isId ? ($s->title_id ?: $s->title) : $s->title }}</h3>
-                    <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 opacity-0 transition-opacity group-hover:opacity-100">
-                        {{ __('Learn more') }}
-                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-                    </span>
-                </a>
+                @php
+                    $sTitle = $isId ? ($s->title_id ?: $s->title) : $s->title;
+                    $sDesc = $isId ? ($s->desc_id ?: $s->desc) : $s->desc;
+                    $sUrl = \App\Helpers\Homepage::url($s->url);
+                    $sBtns = collect($s->buttons ?? [])->map(fn ($b) => [
+                        'label' => $isId ? (($b['label_id'] ?? '') ?: ($b['label'] ?? '')) : ($b['label'] ?? ''),
+                        'url' => \App\Helpers\Homepage::url($b['url'] ?? null),
+                    ])->filter(fn ($b) => $b['label'] !== '' && $b['url'] !== null)->values()->all();
+                @endphp
+                @if ($sDesc)
+                    <button type="button" data-vue="Reveal" data-props='{{ json_encode(['delay' => ($i % 4) * 80]) }}'
+                        data-service-modal
+                        data-title="{{ $sTitle }}"
+                        data-desc="{{ $sDesc }}"
+                        data-icon="{{ \App\Helpers\Homepage::serviceImage($s->image) }}"
+                        data-phone="{{ $s->phone ?: \App\Helpers\Homepage::SERVICE_DEFAULT_PHONE }}"
+                        data-whatsapp="{{ $s->whatsapp ?: \App\Helpers\Homepage::SERVICE_DEFAULT_WHATSAPP }}"
+                        data-file="{{ \App\Helpers\Homepage::serviceFile($s->file) }}"
+                        data-file-label="{{ __('Download') }}"
+                        data-buttons='@json($sBtns)'
+                        @if ($sUrl) data-page="{{ $sUrl }}" data-page-label="{{ __('Learn more') }}" @endif
+                        class="group card card-hover p-6 text-center">
+                        <div class="mx-auto flex h-40 w-40 items-center justify-center">
+                            <img src="{{ \App\Helpers\Homepage::serviceImage($s->image) }}" alt="{{ $sTitle }}" class="h-full w-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-2 group-hover:scale-105" loading="lazy">
+                        </div>
+                        <h3 class="mt-5 font-bold leading-snug">{{ $sTitle }}</h3>
+                        <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 opacity-0 transition-opacity group-hover:opacity-100">
+                            {{ __('Learn more') }}
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                        </span>
+                    </button>
+                @else
+                    <a data-vue="Reveal" data-props='{{ json_encode(['delay' => ($i % 4) * 80]) }}'
+                        href="{{ $sUrl ?: url('services') }}"
+                        class="group card card-hover p-6 text-center">
+                        <div class="mx-auto flex h-40 w-40 items-center justify-center">
+                            <img src="{{ \App\Helpers\Homepage::serviceImage($s->image) }}" alt="{{ $sTitle }}" class="h-full w-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-2 group-hover:scale-105" loading="lazy">
+                        </div>
+                        <h3 class="mt-5 font-bold leading-snug">{{ $sTitle }}</h3>
+                        <span class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 opacity-0 transition-opacity group-hover:opacity-100">
+                            {{ __('Learn more') }}
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                        </span>
+                    </a>
+                @endif
             @endforeach
         </div>
     </div>
 </section>
+@include('customer.partials.service-modal')
 @endif
 
 {{-- ============ VIRTUAL REALITY ============ --}}

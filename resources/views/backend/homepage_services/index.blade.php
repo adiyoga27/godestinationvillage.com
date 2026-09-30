@@ -30,6 +30,7 @@
                                 <th>Urutan</th>
                                 <th>Gambar</th>
                                 <th>Judul (EN / ID)</th>
+                                <th>Klik</th>
                                 <th>Status</th>
                                 <th style="width: 260px;">Aksi</th>
                             </tr>
@@ -46,6 +47,19 @@
                                         @endif
                                     </td>
                                     <td><strong>{{ $service->title }}</strong><br><small class="text-muted">{{ $service->title_id }}</small></td>
+                                    <td>
+                                        @if ($service->desc || $service->desc_id)
+                                            <span class="badge badge-info">Modal</span>
+                                        @else
+                                            <span class="badge badge-secondary">Link</span>
+                                        @endif
+                                        @if ($service->file)
+                                            <span class="badge badge-success" title="Ada file brosur">File</span>
+                                        @endif
+                                        @if (is_array($service->buttons) && count($service->buttons))
+                                            <span class="badge badge-warning" title="{{ count($service->buttons) }} tombol custom">+{{ count($service->buttons) }}</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($service->is_active)
                                             <span class="badge badge-success">Tampil</span>

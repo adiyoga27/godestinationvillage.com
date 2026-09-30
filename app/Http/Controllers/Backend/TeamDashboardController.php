@@ -21,43 +21,11 @@ class TeamDashboardController extends Controller
 
     public function index(Request $request)
     {
-        $status = $request->get('status');
-
-        $submissions = VillageSubmission::with('pic')->latest('id')->limit(10)->get();
-        $packageOrders = Order::with('pic')->latest('id')->limit(10)->get();
-        $eventOrders = OrderEvent::latest('id')->limit(10)->get();
-        $homestayOrders = OrderHomestay::latest('id')->limit(10)->get();
-        $assessmentResults = AssessmentResult::with(['track', 'pic'])->latest('id')->limit(10)->get();
-
-        $data = [
-            'teams' => OurTeam::orderBy('name')->get(),
-            'stats' => [
-                'submission_pending' => VillageSubmission::where('status', 'pending')->count(),
-                'submission_total' => VillageSubmission::count(),
-                'package_pending' => Order::where('payment_status', 'pending')->count(),
-                'package_success' => Order::where('payment_status', 'success')->count(),
-                'event_pending' => OrderEvent::where('payment_status', 'pending')->count(),
-                'event_success' => OrderEvent::where('payment_status', 'success')->count(),
-                'homestay_pending' => OrderHomestay::where('payment_status', 'pending')->count(),
-                'homestay_success' => OrderHomestay::where('payment_status', 'success')->count(),
-                'unassigned' => Order::whereNull('pic_team_id')->count()
-                    + OrderEvent::whereNull('pic_team_id')->count()
-                    + OrderHomestay::whereNull('pic_team_id')->count()
-                    + VillageSubmission::whereNull('pic_team_id')->count()
-                    + AssessmentResult::whereNull('pic_team_id')->count(),
-                'assessment_new' => AssessmentResult::where('status', 'baru')->count(),
-                'assessment_total' => AssessmentResult::count(),
-            ],
-            'submissions' => $submissions,
-            'packageOrders' => $packageOrders,
-            'eventOrders' => $eventOrders,
-            'homestayOrders' => $homestayOrders,
-            'assessmentResults' => $assessmentResults,
-            'tracks' => AssessmentTrack::orderBy('sort_order')->get(),
-            'filter_status' => $status,
-        ];
-
-        return view('backend.team_dashboard.index', $data);
+        // Dashboard Tim sudah digabung ke Dashboard utama (/administrator/dashboard).
+        // URL lama tetap diarahkan ke sana agar bookmark tidak rusak.
+        // Form assign PIC (POST team-dashboard.assign) tetap aktif karena partial
+        // _inbox yang dipakai dashboard utama mengarah ke route tersebut.
+        return redirect()->route('home');
     }
 
     public function assign(Request $request)

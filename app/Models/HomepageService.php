@@ -25,19 +25,26 @@ class HomepageService extends Model
     public $fillable = [
         'title',
         'title_id',
+        'desc',
+        'desc_id',
         'image',
         'url',
+        'phone',
+        'whatsapp',
+        'file',
+        'buttons',
         'sort_order',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'buttons' => 'array',
     ];
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['title', 'title_id', 'image', 'url', 'sort_order', 'is_active']);
+            ->logOnly(['title', 'title_id', 'desc', 'desc_id', 'image', 'url', 'phone', 'whatsapp', 'file', 'buttons', 'sort_order', 'is_active']);
     }
 }

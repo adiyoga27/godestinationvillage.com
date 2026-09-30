@@ -107,6 +107,30 @@ class Homepage
         return static::resolveImage($image, 'homepage-services');
     }
 
+    /**
+     * URL file lampiran item service (brosur untuk tombol Download).
+     */
+    public static function serviceFile(?string $file): ?string
+    {
+        if (! $file) {
+            return null;
+        }
+
+        if (Str::startsWith($file, ['http://', 'https://'])) {
+            return $file;
+        }
+
+        return asset('storage/homepage-services/'.$file);
+    }
+
+    /**
+     * Nomor default tombol Call / WhatsApp di modal service
+     * (dipakai bila item tidak punya phone/whatsapp sendiri).
+     */
+    public const SERVICE_DEFAULT_PHONE = '081997674778';
+
+    public const SERVICE_DEFAULT_WHATSAPP = '6281997674778';
+
     protected static function resolveImage(string $image, string $diskDir): string
     {
         if (Str::startsWith($image, ['http://', 'https://', 'assets/', 'storage/'])) {

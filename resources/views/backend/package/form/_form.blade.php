@@ -6,12 +6,14 @@
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Desa Wisata (*)</label>
                 <div class="col-sm-9">
-                    {!! Form::select('user_id', $villages, null, ['class' => 'selectpicker', 'required' => 'required', 'data-live-search' => 'true']) !!}
+                    {!! Form::select('village_id', $villages, $package->village_id ?? null, ['class' => 'selectpicker', 'required' => 'required', 'data-live-search' => 'true']) !!}
+                    {!! $errors->first('village_id', '<p class="text-danger">:message</p>') !!}
                     {!! $errors->first('user_id', '<p class="text-danger">:message</p>') !!}
                 </div>
             </div>
         @else
             <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+            <input type="hidden" name="village_id" value="{{ Auth::user()->village_id }}">
         @endif
 
         <div class="form-group row">

@@ -40,6 +40,8 @@ class HomepageSectionController extends Controller
             'title_id' => 'nullable|max:191',
             'subtitle' => 'nullable',
             'subtitle_id' => 'nullable',
+            'badge_title' => 'nullable|max:191',
+            'badge_subtitle' => 'nullable|max:191',
             'image' => 'nullable|image|max:10240',
             'button_label' => 'nullable|max:191',
             'button_label_id' => 'nullable|max:191',

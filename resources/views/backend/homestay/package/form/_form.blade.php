@@ -170,7 +170,8 @@
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Default Image</label>
             <div class="col-sm-9">
-                <input type="file" name="default_img" class="form-control">
+                <input type="file" name="default_img" class="form-control" accept=".jpg,.jpeg,.png">
+                <small class="form-text text-muted">Format: JPG, JPEG, PNG. Ukuran maks. 1MB.</small>
                 {!! $errors->first('default_img', '<p class="text-danger">:message</p>') !!}
             </div>
         </div>

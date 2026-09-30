@@ -31,6 +31,8 @@ class HomepageSection extends Model
         'title_id',
         'subtitle',
         'subtitle_id',
+        'badge_title',
+        'badge_subtitle',
         'image',
         'button_label',
         'button_label_id',
@@ -49,6 +51,6 @@ class HomepageSection extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['key', 'eyebrow', 'eyebrow_id', 'title', 'title_id', 'subtitle', 'subtitle_id', 'image', 'button_label', 'button_url', 'is_active', 'sort_order']);
+            ->logOnly(['key', 'eyebrow', 'eyebrow_id', 'title', 'title_id', 'subtitle', 'subtitle_id', 'badge_title', 'badge_subtitle', 'image', 'button_label', 'button_url', 'is_active', 'sort_order']);
     }
 }

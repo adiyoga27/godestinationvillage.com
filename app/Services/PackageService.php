@@ -66,19 +66,53 @@ class PackageService
             ])->where('packages.deleted_at', NULL);
     }
 
+    /**
+     * Resolve desa wisata -> (village_id, user_id pemilik desa).
+     * $villageDetailId = village_details.id (dari dropdown admin).
+     * Return [village_id, user_id] atau [null, null] jika tidak ketemu.
+     */
+    protected static function resolveVillageIds($villageDetailId)
+    {
+        if (empty($villageDetailId)) {
+            return [null, null];
+        }
+        $detail = VillageDetail::find($villageDetailId);
+        if ($detail) {
+            return [$detail->id, $detail->user_id];
+        }
+        return [null, null];
+    }
+
     public static function create($payload)
     {
         try {
             DB::beginTransaction();
             $payload['slug'] = Str::slug( $payload['name']);
             if (Auth::user()->role_id == 2) {
+                $payload['user_id'] = Auth::user()->id;
                 $payload['village_id'] = Auth::user()->village_id;
                 $payload['is_active'] = false;
                 $name = Auth::user()->name;
                 BotHelper::sendTelegram("Godevi - Pengajuan Tour Package, \n\nHi, $name \nTelah mengajukan Paket Wisata dengan judul $payload[name]. Silahkan check akun admin anda untuk melakukan validasi pengajuan paket wisata");
 
             }else{
-                $payload['village_id'] = $payload['user_id'];
+                // Form admin mengirim village_id (village_details.id).
+                // Dukung juga payload lama yang mengirim user_id berisi village_details.id.
+                $villageDetailId = $payload['village_id'] ?? $payload['user_id'] ?? null;
+                [$villageId, $ownerUserId] = self::resolveVillageIds($villageDetailId);
+                if ($villageId) {
+                    $payload['village_id'] = $villageId;
+                    $payload['user_id'] = $ownerUserId;
+                } else {
+                    // Fallback: user_id mungkin users.id asli (bukan village_details.id).
+                    $owner = !empty($payload['user_id']) ? User::find($payload['user_id']) : null;
+                    if ($owner && $owner->village_id) {
+                        $payload['village_id'] = $owner->village_id;
+                        $payload['user_id'] = $owner->id;
+                    } else {
+                        $payload['village_id'] = $villageDetailId;
+                    }
+                }
 
             }
             if (!empty($payload['default_img'])) {
@@ -127,6 +161,9 @@ class PackageService
     {
         try {
             $model = Package::find($id);
+            if (!$model) {
+                return false;
+            }
             $payload['slug'] = Str::slug( $payload['name']);
 
             if (!empty($payload['default_img'])) {
@@ -142,11 +179,45 @@ class PackageService
                     $upload_other = CustomImage::storeImage($value, 'packages/' . $model->id);
                 }
             }
+
+            // Jangan biarkan user desa mengganti milik desa lain.
+            if (Auth::check() && Auth::user()->role_id == 2) {
+                $payload['user_id'] = Auth::user()->id;
+                $payload['village_id'] = Auth::user()->village_id;
+            } elseif (isset($payload['village_id']) || isset($payload['user_id'])) {
+                // Admin: village_id adalah village_details.id.
+                // Edit manual dari admin otomatis meluruskan user_id yang salah (data lama).
+                // Dukung juga payload lama: user_id berisi village_details.id.
+                $villageDetailId = $payload['village_id'] ?? $payload['user_id'] ?? null;
+                [$villageId, $ownerUserId] = self::resolveVillageIds($villageDetailId);
+                if ($villageId) {
+                    $payload['village_id'] = $villageId;
+                    $payload['user_id'] = $ownerUserId;
+                } elseif (!empty($payload['user_id'])) {
+                    $owner = User::find($payload['user_id']);
+                    if ($owner && $owner->village_id) {
+                        $payload['village_id'] = $owner->village_id;
+                        $payload['user_id'] = $owner->id;
+                    }
+                }
+            }
+
             $dataPackage = Arr::except($payload, ['name_id', 'desc_id', 'itenaries_id', 'inclusion_id', 'term_id', 'duration_id', 'preparation_id','review','other_img']);
 
-            if($model->village_id == null){
+            if(empty($dataPackage['village_id'] ?? $model->village_id)){
 
-                $dataPackage['village_id'] = User::where('id', $model->user_id)->first()->village_id;
+                $ownerUser = User::where('id', $dataPackage['user_id'] ?? $model->user_id)->first();
+                if ($ownerUser && $ownerUser->village_id) {
+                    $dataPackage['village_id'] = $ownerUser->village_id;
+                }
+            }
+            // Self-healing data lama: jika user_id tidak cocok dengan pemilik village_id, luruskan.
+            if (!empty($dataPackage['village_id'] ?? $model->village_id)) {
+                $vid = $dataPackage['village_id'] ?? $model->village_id;
+                $detail = VillageDetail::find($vid);
+                if ($detail && ($dataPackage['user_id'] ?? $model->user_id) != $detail->user_id) {
+                    $dataPackage['user_id'] = $detail->user_id;
+                }
             }
             $model->update($dataPackage);
 
