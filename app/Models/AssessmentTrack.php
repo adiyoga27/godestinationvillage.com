@@ -16,12 +16,15 @@ class AssessmentTrack extends Model
         'description',
         'target_audience',
         'estimated_minutes',
+        'price',
+        'scale_labels',
         'is_active',
         'sort_order',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'scale_labels' => 'array',
     ];
 
     public function questions()

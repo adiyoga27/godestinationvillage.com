@@ -18,6 +18,15 @@ class AssessmentSeeder extends Seeder
 
     protected function track(array $attrs): AssessmentTrack
     {
+        // Harga awal per Brief §5 (admin dapat mengubah tanpa deploy).
+        $prices = [
+            'pariwisata' => 199000,
+            'ekonomi-desa' => 199000,
+            'regeneratif' => 299000,
+            'daya-saing-destinasi' => 499000,
+        ];
+        $attrs['price'] = $prices[$attrs['slug']] ?? 199000;
+
         return AssessmentTrack::updateOrCreate(['slug' => $attrs['slug']], $attrs);
     }
 
