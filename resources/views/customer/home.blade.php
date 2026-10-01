@@ -99,7 +99,8 @@
                 data-hero-btn1-urls='{!! json_encode($heroBtn1Urls, JSON_HEX_APOS | JSON_HEX_QUOT) !!}'
                 data-hero-btn1-colors='{!! json_encode($heroBtn1Colors, JSON_HEX_APOS | JSON_HEX_QUOT) !!}'>
                 @php
-                    $firstBtn1Style = $heroSlides[0]['btn1_color'] ? 'background-color:'.$heroSlides[0]['btn1_color'].';border-color:'.$heroSlides[0]['btn1_color'].';color:#fff;' : '';
+                    $firstBtn1Color = $heroSlides[0]['btn1_color'] ?? null;
+                    $firstBtn1Style = $firstBtn1Color ? 'background-color:'.$firstBtn1Color.';border-color:'.$firstBtn1Color.';color:#fff;box-shadow:0 10px 25px -8px '.$firstBtn1Color.'80;' : '';
                     $firstHidden = empty($heroSlides[0]['btn1_label']) ? 'display:none;' : '';
                 @endphp
                 <a data-hero-btn1 href="{{ $heroSlides[0]['btn1_url'] ?? '#' }}" class="btn btn-primary !px-6 !py-3 text-sm lg:!px-8 lg:!py-4 lg:text-base" style="{{ $firstBtn1Style }}{{ $firstHidden }}">
@@ -648,10 +649,12 @@
                 btn.style.backgroundColor = color;
                 btn.style.borderColor = color;
                 btn.style.color = contrastText(color);
+                btn.style.boxShadow = `0 10px 25px -8px ${color}80`;
             } else {
                 btn.style.backgroundColor = '';
                 btn.style.borderColor = '';
                 btn.style.color = '';
+                btn.style.boxShadow = '';
             }
         };
 
