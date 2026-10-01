@@ -19,7 +19,7 @@
                 <h2 class="font-display text-3xl font-bold leading-tight text-ink-950 sm:text-4xl lg:text-[2.75rem]">
                     Desa adalah potensi unik yang layak diperkenalkan ke dunia.
                 </h2>
-                <p class="mt-6 leading-relaxed text-ink-600">
+                <p class="mt-6 text-justify leading-relaxed text-ink-600">
                     <strong class="text-ink-900">GODEVI</strong> adalah unit bisnis
                     <strong class="text-ink-900">PT Banua Wisata Lestari</strong> yang bergerak di bidang
                     riset dan konsultansi pengembangan desa serta destinasi pariwisata. Sejak
@@ -28,7 +28,7 @@
                     pendekatan yang memadukan riset ilmiah, penguatan ekonomi desa dan koperasi,
                     strategi tata kelola destinasi, hingga komersialisasi produk dan pengalaman wisata secara nyata.
                 </p>
-                <p class="mt-4 leading-relaxed text-ink-600">
+                <p class="mt-4 text-justify leading-relaxed text-ink-600">
                     Kerja GODEVI dijalankan lewat <strong class="text-ink-900">empat pilar layanan yang saling menopang</strong> —
                     mulai dari bukti hingga transaksi nyata di pasar.
                 </p>
@@ -138,13 +138,13 @@
             <div data-vue="Reveal">
                 <p class="eyebrow !text-brand-400">Keyakinan Kami</p>
                 <h2 class="font-display text-3xl font-bold leading-tight text-white sm:text-4xl">Berangkat dari data, berorientasi pada pemulihan.</h2>
-                <p class="mt-5 leading-relaxed text-white/70">
+                <p class="mt-5 text-justify leading-relaxed text-white/70">
                     GODEVI meyakini bahwa desa adalah ruang berkumpulnya berbagai potensi yang unik dan layak
                     diperkenalkan ke dunia — namun pengembangannya harus berangkat dari
                     <strong class="text-white">data, bukan asumsi</strong>, dan berorientasi pada
                     <strong class="text-white">pemulihan (regeneratif), bukan sekadar eksploitasi</strong>.
                 </p>
-                <p class="mt-4 leading-relaxed text-white/70">
+                <p class="mt-4 text-justify leading-relaxed text-white/70">
                     Pendekatan ini didukung oleh kepakaran akademis tim GODEVI di bidang pariwisata regeneratif,
                     tata kelola destinasi, dan ketahanan pariwisata — yang telah dituangkan dalam
                     publikasi ilmiah terindeks dan buku referensi.
