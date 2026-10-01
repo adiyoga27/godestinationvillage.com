@@ -79,9 +79,47 @@ class AssessmentFlowsTest extends TestCase
         $track = AssessmentTrack::where('slug', 'regeneratif')->firstOrFail();
 
         $this->assertSame('Ekstraktif', AssessmentService::bandFor($track, 10)['label']);
-        $this->assertSame('Transisi', AssessmentService::bandFor($track, 30)['label']);
-        $this->assertSame('Berkembang ke Regeneratif', AssessmentService::bandFor($track, 60)['label']);
+        $this->assertSame('Ekstraktif', AssessmentService::bandFor($track, 40)['label']);
+        $this->assertSame('Berkelanjutan', AssessmentService::bandFor($track, 50)['label']);
+        $this->assertSame('Regeneratif Awal', AssessmentService::bandFor($track, 70)['label']);
         $this->assertSame('Regeneratif Matang', AssessmentService::bandFor($track, 90)['label']);
+    }
+
+    public function test_score_formula_matches_brief(): void
+    {
+        // Brief §3: overall = round((Σ skor_dimensi × bobot) / 5 × 100).
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+        $questions = $track->activeQuestions()->orderBy('sort_order')->get();
+        $this->assertNotEmpty($questions);
+
+        $allThree = [];
+        foreach ($questions as $q) {
+            $allThree[$q->id] = 3;
+        }
+        // Pariwisata: bobot 25/20/15/15/15/10 → semua 3 = 60.
+        $this->assertSame(60, AssessmentService::compute($track, $questions, $allThree)['total']);
+
+        $allFive = [];
+        foreach ($questions as $q) {
+            $allFive[$q->id] = 5;
+        }
+        $this->assertSame(100, AssessmentService::compute($track, $questions, $allFive)['total']);
+
+        $allOne = [];
+        foreach ($questions as $q) {
+            $allOne[$q->id] = 1;
+        }
+        $this->assertSame(20, AssessmentService::compute($track, $questions, $allOne)['total']);
+    }
+
+    public function test_pariwisata_bands_match_brief(): void
+    {
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+
+        $this->assertSame('Rintisan', AssessmentService::bandFor($track, 40)['label']);
+        $this->assertSame('Berkembang', AssessmentService::bandFor($track, 60)['label']);
+        $this->assertSame('Siap', AssessmentService::bandFor($track, 80)['label']);
+        $this->assertSame('Unggul', AssessmentService::bandFor($track, 81)['label']);
     }
 
     public function test_admin_pages_require_auth(): void

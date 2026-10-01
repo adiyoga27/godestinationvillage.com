@@ -28,10 +28,17 @@
                 <span class="rounded-full bg-cream-100 px-3 py-1.5 text-ink-700">Untuk: {{ $track->target_audience }}</span>
                 <span class="rounded-full bg-cream-100 px-3 py-1.5 text-ink-700">±{{ $track->estimated_minutes }} menit</span>
                 <span class="rounded-full bg-cream-100 px-3 py-1.5 text-ink-700">{{ $track->questions_count }} pernyataan</span>
+                <span class="rounded-full bg-brand-600 px-3 py-1.5 text-white">Skor gratis · Laporan Rp {{ number_format($track->price ?? 199000, 0, ',', '.') }}</span>
             </div>
+            @if ($track->slug === 'daya-saing-destinasi')
+                <div class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-relaxed text-amber-900">
+                    <p class="font-bold">Catatan metode</p>
+                    <p class="mt-1">{{ \App\Services\AssessmentService::TTDI_DISCLAIMER }}</p>
+                </div>
+            @endif
             <div class="mt-6 rounded-2xl bg-cream-50 p-5 text-sm leading-relaxed text-ink-600">
                 <p class="font-bold text-ink-900">Cara mengisi</p>
-                <p class="mt-1">Nilai setiap pernyataan dengan skala 1 (sangat belum siap) sampai 5 (sangat siap) sesuai kondisi nyata saat ini. Hasil berupa <strong>skor kesiapan</strong>, <strong>analisis kekuatan & tantangan</strong>, dan <strong>draf strategi</strong>.</p>
+                <p class="mt-1">Nilai setiap pernyataan dengan skala 1 (Belum ada) sampai 5 (Sangat matang) sesuai kondisi nyata saat ini. Hasil berupa <strong>skor kesiapan</strong>, <strong>analisis kekuatan & tantangan</strong>, dan <strong>draf strategi</strong>.</p>
             </div>
         </div>
 

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Front;
 use App\Helpers\BotHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Guest\AssessmentSubmitRequest;
+use App\Models\AssessmentOrder;
 use App\Models\AssessmentResult;
 use App\Models\AssessmentTrack;
 use App\Services\AssessmentService;
+use App\Services\Midtrans\CreateSnapTokenService;
 use App\Support\Seo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -144,6 +146,10 @@ class AssessmentController extends Controller
             'band_desc' => AssessmentService::bandFor($result->track, (float) $result->total_score)['desc'],
         ];
 
+        if ($result->track->slug === 'daya-saing-destinasi') {
+            $computed['subindexes'] = AssessmentService::subindexScores($computed['dimensions']);
+        }
+
         $names = array_keys($computed['dimensions']);
         $computed['strengths'] = array_slice($names, 0, 2);
         $computed['challenges'] = array_slice(array_reverse($names), 0, 2);
@@ -162,9 +168,114 @@ class AssessmentController extends Controller
         $data['result'] = $result;
         $data['computed'] = $computed;
         $data['labels'] = AssessmentService::SCALE_LABELS;
+        $data['pendingOrder'] = AssessmentOrder::where('assessment_result_id', $result->id)
+            ->where('status', 'pending')->latest()->first();
         $data['seo'] = Seo::make()->title('Hasil Asesmen: '.$result->track->name)->noindex()->toArray();
 
         return view('customer.assessment.result', $data);
+    }
+
+    /**
+     * Buat order Midtrans untuk membuka laporan lengkap (Brief §5).
+     * Satu order = satu laporan. Harga diambil dari track (admin-editable).
+     */
+    public function checkout(Request $request, string $uuid)
+    {
+        $result = AssessmentResult::with('track')->where('uuid', $uuid)->firstOrFail();
+
+        if ($result->is_unlocked) {
+            return redirect()->route('assessment.result', $result->uuid);
+        }
+
+        $existing = AssessmentOrder::where('assessment_result_id', $result->id)
+            ->where('status', 'pending')->latest()->first();
+
+        if ($existing && $existing->gateway_ref) {
+            return redirect()->route('assessment.payment', $existing->code);
+        }
+
+        $amount = (int) ($result->track->price ?? 199000);
+
+        $order = AssessmentOrder::create([
+            'assessment_result_id' => $result->id,
+            'code' => AssessmentOrder::generateCode(),
+            'amount' => $amount,
+            'gateway' => 'midtrans',
+            'status' => 'pending',
+        ]);
+
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order->code,
+                'gross_amount' => $amount,
+            ],
+            'item_details' => [[
+                'id' => 'asesmen-'.$result->track->slug,
+                'price' => $amount,
+                'quantity' => 1,
+                'name' => 'Laporan Asesmen: '.$result->track->name,
+            ]],
+            'customer_details' => [
+                'first_name' => $result->name,
+                'email' => $result->email,
+                'phone' => $result->phone,
+            ],
+            'credit_card' => ['secure' => true],
+            'expiry' => ['unit' => 'hour', 'duration' => 24],
+        ];
+
+        try {
+            $snap = new CreateSnapTokenService($order);
+            $order->gateway_ref = $snap->getSnapToken($params);
+            $order->save();
+        } catch (\Throwable $th) {
+            BotHelper::errorBot('Assessment Checkout', $th);
+            $order->update(['status' => 'failed']);
+
+            return back()->with('error', 'Gagal membuat pembayaran. Silakan coba lagi.');
+        }
+
+        return redirect()->route('assessment.payment', $order->code);
+    }
+
+    public function payment(string $code)
+    {
+        $order = AssessmentOrder::with('result.track')->where('code', $code)->firstOrFail();
+
+        if ($order->status === 'paid' || $order->result->is_unlocked) {
+            return redirect()->route('assessment.result', $order->result->uuid);
+        }
+
+        if (! $order->gateway_ref) {
+            return redirect()->route('assessment.result', $order->result->uuid)
+                ->with('error', 'Token pembayaran tidak tersedia. Silakan buat ulang pembayaran.');
+        }
+
+        $data['snapToken'] = $order->gateway_ref;
+        $data['redirectURISuccess'] = route('assessment.result', $order->result->uuid);
+        $data['redirectURIError'] = route('assessment.result', $order->result->uuid);
+        $data['seo'] = Seo::make()->title('Pembayaran Laporan Asesmen')->noindex()->toArray();
+
+        return view('customer.payment.midtrans', $data);
+    }
+
+    /**
+     * Mode Tim GODEVI: buka laporan tanpa bayar, wajib login staf (Brief §4).
+     */
+    public function unlockStaff(Request $request, string $uuid)
+    {
+        $result = AssessmentResult::where('uuid', $uuid)->firstOrFail();
+
+        if (! $result->is_unlocked) {
+            $result->update([
+                'is_unlocked' => true,
+                'unlocked_at' => now(),
+            ]);
+            \App\Jobs\GenerateAssessmentReport::dispatch($result->uuid)->afterCommit();
+        }
+
+        return redirect()->route('assessment.result', $result->uuid)
+            ->with('status', 'Laporan dibuka via Mode Tim GODEVI.');
     }
 
     protected function findTrack(string $slug): AssessmentTrack

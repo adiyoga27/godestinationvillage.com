@@ -191,6 +191,10 @@ Route::prefix('guest-booking')->group(function () {
 Route::prefix('asesmen')->group(function () {
     Route::get('/', [AssessmentController::class, 'index'])->name('assessment.index');
     Route::get('/hasil/{uuid}', [AssessmentController::class, 'result'])->name('assessment.result');
+    Route::post('/hasil/{uuid}/checkout', [AssessmentController::class, 'checkout'])->name('assessment.checkout');
+    Route::get('/bayar/{code}', [AssessmentController::class, 'payment'])->name('assessment.payment');
+    Route::post('/hasil/{uuid}/unlock-staff', [AssessmentController::class, 'unlockStaff'])
+        ->middleware('auth')->name('assessment.unlock_staff');
     Route::get('/{slug}', [AssessmentController::class, 'intro'])->name('assessment.intro');
     Route::post('/{slug}/mulai', [AssessmentController::class, 'start'])->name('assessment.start');
     Route::get('/{slug}/soal', [AssessmentController::class, 'form'])->name('assessment.form');

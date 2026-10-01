@@ -28,6 +28,7 @@
                         <span class="rounded-full bg-cream-100 px-3 py-1.5 text-ink-700">Untuk: {{ $track->target_audience }}</span>
                         <span class="rounded-full bg-cream-100 px-3 py-1.5 text-ink-700">±{{ $track->estimated_minutes }} menit</span>
                         <span class="rounded-full bg-cream-100 px-3 py-1.5 text-ink-700">{{ $track->questions_count }} pernyataan</span>
+                        <span class="rounded-full bg-brand-600 px-3 py-1.5 text-white">Skor gratis · Laporan Rp {{ number_format($track->price ?? 199000, 0, ',', '.') }}</span>
                     </div>
                     <div class="mt-7">
                         <a href="{{ route('assessment.intro', $track->slug) }}" class="btn btn-primary w-full !py-4">Mulai Asesmen {{ $track->name }}</a>

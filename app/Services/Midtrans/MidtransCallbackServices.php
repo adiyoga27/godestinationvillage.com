@@ -6,6 +6,8 @@ use App\Helpers\BotHelper;
 use App\Mail\OrderEmail;
 use App\Mail\OrderEventEmail;
 use App\Mail\OrderHomestayEmail;
+use App\Models\AssessmentOrder;
+use App\Models\AssessmentResult;
 use App\Models\Event;
 use App\Models\Homestay;
 use App\Models\Order;
@@ -27,6 +29,12 @@ class MidtransCallbackServices
         $payment_type = $payload['payment_type'];
         $transaction_time = $payload['transaction_time'];
         $status = $payload['transaction_status'];
+
+        // Alur asesmen (prefix ASM): verifikasi signature + idempoten (Brief §5, §11).
+        if (substr($invoice, 0, 3) === 'ASM') {
+            return self::assessment($payload);
+        }
+
         if ($status == 'capture' || $status == 'settlement') {
             $date = date('d M Y H:i', strtotime($transaction_time)).' wita';
             // check Order Package
@@ -92,6 +100,82 @@ class MidtransCallbackServices
         }
 
         return $dataTransaction;
+    }
+
+    /**
+     * Webhook asesmen. Hanya webhook terverifikasi yang boleh membuka laporan —
+     * redirect browser tidak dipercaya sebagai bukti bayar (Brief §5).
+     */
+    public static function assessment(array $payload)
+    {
+        $invoice = $payload['order_id'] ?? null;
+        $order = $invoice ? AssessmentOrder::where('code', $invoice)->first() : null;
+
+        if (! $order) {
+            Log::warning('Midtrans ASM: order tidak ditemukan: '.$invoice);
+
+            return ['ok' => false, 'reason' => 'order_not_found'];
+        }
+
+        // Idempoten: webhook boleh datang berulang; proses sekali saja.
+        if ($order->status === 'paid') {
+            return ['ok' => true, 'duplicate' => true];
+        }
+
+        // Verifikasi signature Midtrans: sha512(order_id + status_code + gross_amount + server_key).
+        $serverKey = config('midtrans.server_key');
+        $expected = hash('sha512',
+            ($payload['order_id'] ?? '')
+            .($payload['status_code'] ?? '')
+            .($payload['gross_amount'] ?? '')
+            .$serverKey
+        );
+
+        if (! hash_equals($expected, (string) ($payload['signature_key'] ?? ''))) {
+            Log::warning('Midtrans ASM: signature tidak valid: '.$invoice);
+
+            return ['ok' => false, 'reason' => 'bad_signature'];
+        }
+
+        // Cocokkan nominal dengan order (tolak kurang bayar).
+        if ((int) $payload['gross_amount'] < (int) $order->amount) {
+            Log::warning('Midtrans ASM: nominal kurang: '.$invoice);
+            $order->update(['status' => 'failed']);
+
+            return ['ok' => false, 'reason' => 'amount_mismatch'];
+        }
+
+        $status = $payload['transaction_status'] ?? '';
+
+        if ($status === 'capture' || $status === 'settlement') {
+            $order->update([
+                'status' => 'paid',
+                'payment_type' => $payload['payment_type'] ?? null,
+                'paid_at' => now(),
+            ]);
+
+            $result = AssessmentResult::find($order->assessment_result_id);
+            if ($result && ! $result->is_unlocked) {
+                $result->update(['is_unlocked' => true, 'unlocked_at' => now()]);
+                \App\Jobs\GenerateAssessmentReport::dispatch($result->uuid)->afterCommit();
+            }
+
+            try {
+                BotHelper::sendTelegram("Godevi - Payment Asesmen Success, \n\nInvoice : $invoice \nNominal : {$order->amount}.\n");
+            } catch (\Throwable $e) {
+                Log::error('Telegram ASM error: '.$e->getMessage());
+            }
+
+            return ['ok' => true];
+        }
+
+        if (in_array($status, ['deny', 'cancel', 'expire'])) {
+            $order->update(['status' => $status === 'expire' ? 'expired' : 'failed']);
+
+            return ['ok' => true, 'status' => $status];
+        }
+
+        return ['ok' => true, 'status' => $status];
     }
 
     public static function sendFirebaseNotification($invoice, $type)
