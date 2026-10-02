@@ -343,7 +343,9 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
         Route::delete('/questions/{id}', [AssessmentQuestionController::class, 'destroy'])->name('destroy');
     });
     // Asesmen: inbox hasil + tindak lanjut tim
-    Route::resource('assessment-results', AssessmentResultController::class, ['only' => ['index', 'show', 'update', 'destroy']]);
+    Route::resource('assessment-results', AssessmentResultController::class, ['only' => ['index', 'create', 'store', 'show', 'update', 'destroy']]);
+    Route::post('assessment-results/{id}/approve', [AssessmentResultController::class, 'approve'])->name('assessment-results.approve');
+    Route::post('assessment-results/{id}/regenerate', [AssessmentResultController::class, 'regenerate'])->name('assessment-results.regenerate');
     Route::resource('founding', FoundingController::class);
     Route::resource('ourteam', OurTeamController::class);
     Route::resource('boardexpert', BoardExpertController::class);

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\BotHelper;
 use App\Jobs\GenerateAssessmentReport;
 use App\Models\AssessmentOrder;
+use App\Models\AssessmentResult;
 use App\Services\Midtrans\Midtrans;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -88,5 +89,30 @@ class AssessmentPaymentService
         } catch (\Throwable $e) {
             Log::error('Telegram ASM error: '.$e->getMessage());
         }
+    }
+
+    /**
+     * Approve pembayaran secara manual oleh admin (mis. transfer langsung / pembayaran di luar Midtrans).
+     * Memakai order pending terakhir bila ada; bila belum ada, dibuatkan invoice manual.
+     */
+    public static function approveManually(AssessmentResult $result, int $adminId, ?string $note = null): AssessmentOrder
+    {
+        $order = $result->orders()->where('status', 'pending')->latest('id')->first()
+            ?? $result->orders()->create([
+                'code' => AssessmentOrder::generateCode(),
+                'amount' => (int) ($result->track->price ?? 0),
+                'gateway' => 'manual',
+                'status' => 'pending',
+            ]);
+
+        $result->update([
+            'approved_by' => $adminId,
+            'approved_at' => now(),
+            'approval_note' => $note,
+        ]);
+
+        self::markPaid($order, 'manual');
+
+        return $order->refresh();
     }
 }

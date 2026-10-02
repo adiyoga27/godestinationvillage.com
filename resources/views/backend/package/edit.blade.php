@@ -17,26 +17,20 @@
 @endsection
 
 @section('content')
-<div class="row">
-    <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                {!! Form::model($package, ['url' => route('package.update', $package->id),
-                  'method'=>'put', 'files'=>true, 'class'=>'form-sample']) !!}
-                  @include('backend.package.form._form')
-                {!! Form::close() !!}
-            </div>
-        </div>
-    </div>
-</div>
+{!! Form::model($package, ['url' => route('package.update', $package->id),
+      'method'=>'put', 'files'=>true, 'class'=>'form-sample']) !!}
+  @include('backend.package.form._form')
+{!! Form::close() !!}
 @endsection
 
 @section('js')
   <script src="{{ asset('assets/admin/tinymce/js/tinymce/tinymce.min.js') }}"></script>
   <script type="text/javascript">
             tinymce.init({
-      selector: "textarea",
-      height: 400,
+      selector: "textarea.gd-rich",
+      height: 320,
+      menubar: false,
+      branding: false,
       plugins: [
         "advlist autolink link image lists charmap print preview hr anchor pagebreak",
         "searchreplace wordcount visualblocks visualchars insertdatetime media nonbreaking",

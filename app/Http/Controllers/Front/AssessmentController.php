@@ -11,6 +11,7 @@ use App\Models\AssessmentResult;
 use App\Models\AssessmentTrack;
 use App\Services\AssessmentPaymentService;
 use App\Services\AssessmentService;
+use App\Services\AssessmentSubmissionService;
 use App\Services\Midtrans\CreateSnapTokenService;
 use App\Support\Seo;
 use Illuminate\Http\Request;
@@ -72,39 +73,8 @@ class AssessmentController extends Controller
     public function start(Request $request, string $slug)
     {
         $track = $this->findTrack($slug);
-        $profile = AssessmentService::profileFor($track);
-        $business = $profile['business_fields'];
-
-        $validated = $request->validate([
-            'organization' => 'required|string|max:191',
-            'institution' => [$profile['destination_fields'] ? 'required' : 'nullable', 'string', 'max:191'],
-            'business_type' => [
-                $business || $profile['entity_field'] ? 'required' : 'nullable',
-                Rule::in($profile['entity_field'] ? AssessmentService::ENTITY_TYPES : AssessmentService::BUSINESS_TYPES),
-            ],
-            'business_sector' => [$business ? 'required' : 'nullable', Rule::in(AssessmentService::BUSINESS_SECTORS)],
-            'member_count' => 'nullable|integer|min:1|max:1000000',
-            'province' => 'required|string|max:191',
-            'regency' => 'required|string|max:191',
-            'district' => 'nullable|string|max:191',
-            'subdistrict' => 'nullable|string|max:191',
-            'postal_code' => 'nullable|string|max:10',
-            'name' => 'required|string|max:191',
-            'phone' => 'required|string|max:50',
-            'profile_description' => 'nullable|string|max:3000',
-        ], [
-            'province.required' => 'Pilih lokasi dari hasil pencarian '.$profile['location_label'].'.',
-            'regency.required' => 'Pilih lokasi dari hasil pencarian '.$profile['location_label'].'.',
-        ], [
-            'organization' => $profile['organization_label'],
-            'institution' => 'Instansi/OPD Pengusul',
-            'business_type' => $profile['entity_field'] ? 'Jenis Entitas' : 'Jenis Badan Usaha',
-            'business_sector' => 'Sektor Usaha',
-            'member_count' => 'Jumlah Anggota/Pelaku Usaha',
-            'name' => 'Nama Kontak',
-            'phone' => $profile['phone_label'],
-            'profile_description' => $profile['description_label'],
-        ]);
+        [$rules, $messages, $attributes] = AssessmentSubmissionService::profileRules($track);
+        $validated = $request->validate($rules, $messages, $attributes);
         $validated['phone'] = AssessmentPaymentService::normalizePhone($validated['phone']);
 
         $request->session()->put('assessment_identity_'.$track->id, $validated);
@@ -144,59 +114,12 @@ class AssessmentController extends Controller
                 ->with('error', 'Sesi identitas berakhir. Mohon isi ulang identitas.');
         }
 
-        $questions = $track->activeQuestions()->get();
-        $validIds = $questions->pluck('id')->all();
-        $answers = collect($request->validated()['answers'])
-            ->only($validIds)
-            ->map(fn ($v) => (int) $v)
-            ->all();
-
-        if (count($answers) !== count($validIds)) {
-            return back()->withInput()->with('error', 'Masih ada pernyataan yang belum dijawab.');
-        }
-
-        // Catatan dikirim per pertanyaan pertama tiap dimensi → simpan sebagai [dimensi => catatan].
-        $dimensionByQuestion = $questions->pluck('dimension', 'id');
-        $notes = collect($request->validated()['notes'] ?? [])
-            ->filter(fn ($note, $id) => isset($dimensionByQuestion[$id]) && trim((string) $note) !== '')
-            ->mapWithKeys(fn ($note, $id) => [$dimensionByQuestion[$id] => trim($note)])
-            ->all();
-        $free = (int) $track->price === 0;
-
         try {
-            $computed = AssessmentService::compute($track, $questions, $answers);
+            $validated = $request->validated();
+            $result = AssessmentSubmissionService::store($track, $identity, $validated['answers'], $validated['notes'] ?? [], ['source' => 'guest']);
 
-            $result = AssessmentResult::create([
-                'uuid' => (string) Str::uuid(),
-                'track_id' => $track->id,
-                'name' => $identity['name'],
-                'phone' => $identity['phone'] ?? null,
-                'organization' => $identity['organization'] ?? null,
-                'institution' => $identity['institution'] ?? null,
-                'business_type' => $identity['business_type'] ?? null,
-                'business_sector' => $identity['business_sector'] ?? null,
-                'member_count' => $identity['member_count'] ?? null,
-                'province' => $identity['province'] ?? null,
-                'regency' => $identity['regency'] ?? null,
-                'district' => $identity['district'] ?? null,
-                'subdistrict' => $identity['subdistrict'] ?? null,
-                'postal_code' => $identity['postal_code'] ?? null,
-                'profile_description' => $identity['profile_description'] ?? null,
-                'answers' => $answers,
-                'dimension_scores' => $computed['dimensions'],
-                'dimension_notes' => $notes ?: null,
-                'total_score' => $computed['total'],
-                'band' => $computed['band'],
-                // Arsip lengkap hasil hitung (kekuatan, tantangan, aksi prioritas, subindeks TTDI, dll).
-                'computed_result' => $computed,
-                'status' => 'baru',
-                // Jalur gratis (harga 0) langsung terbuka; selain itu menunggu pembayaran.
-                'is_unlocked' => $free,
-                'unlocked_at' => $free ? now() : null,
-            ]);
-
-            if ($free) {
-                GenerateAssessmentReport::dispatch($result->uuid)->afterCommit();
+            if (! $result) {
+                return back()->withInput()->with('error', 'Masih ada pernyataan yang belum dijawab.');
             }
 
             $request->session()->forget('assessment_identity_'.$track->id);

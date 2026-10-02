@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\AssessmentResult;
 use App\Models\AssessmentTrack;
 use App\Models\OurTeam;
+use App\Jobs\GenerateAssessmentReport;
+use App\Services\AssessmentPaymentService;
+use App\Services\AssessmentService;
+use App\Services\AssessmentSubmissionService;
 use Illuminate\Http\Request;
 
 class AssessmentResultController extends Controller
@@ -25,6 +29,14 @@ class AssessmentResultController extends Controller
         if ($request->filled('status') && in_array($request->get('status'), ['baru', 'dihubungi', 'selesai'], true)) {
             $query->where('status', $request->get('status'));
         }
+        if ($request->get('payment') === 'lunas') {
+            $query->where('is_unlocked', true);
+        } elseif ($request->get('payment') === 'belum') {
+            $query->where('is_unlocked', false);
+        }
+        if (in_array($request->get('source'), ['guest', 'admin'], true)) {
+            $query->where('source', $request->get('source'));
+        }
         if ($request->filled('q')) {
             $q = $request->get('q');
             $query->where(function ($w) use ($q) {
@@ -33,23 +45,117 @@ class AssessmentResultController extends Controller
                     ->orWhere('organization', 'like', "%{$q}%")
                     ->orWhere('phone', 'like', "%{$q}%")
                     ->orWhere('regency', 'like', "%{$q}%")
-                    ->orWhere('province', 'like', "%{$q}%");
+                    ->orWhere('province', 'like', "%{$q}%")
+                    ->orWhereHas('orders', fn ($o) => $o->where('code', 'like', "%{$q}%"));
             });
         }
 
         $data['results'] = $query->paginate(20)->withQueryString();
         $data['tracks'] = AssessmentTrack::orderBy('sort_order')->get();
-        $data['filters'] = $request->only(['track_id', 'status', 'q']);
+        $data['filters'] = $request->only(['track_id', 'status', 'q', 'payment', 'source']);
+        $data['stats'] = [
+            'total' => AssessmentResult::count(),
+            'unpaid' => AssessmentResult::where('is_unlocked', false)->count(),
+            'paid' => AssessmentResult::where('is_unlocked', true)->count(),
+            'revenue' => (int) \App\Models\AssessmentOrder::where('status', 'paid')->where('gateway', '!=', 'manual')->sum('amount'),
+        ];
 
         return view('backend.assessments.results.index', $data);
     }
 
     public function show($id)
     {
-        $data['result'] = AssessmentResult::with(['track', 'track.activeQuestions', 'pic', 'latestOrder'])->findOrFail($id);
+        $data['result'] = AssessmentResult::with(['track', 'track.activeQuestions', 'pic', 'latestOrder', 'orders', 'creator', 'approver'])->findOrFail($id);
         $data['teams'] = OurTeam::orderBy('name')->get();
 
         return view('backend.assessments.results.show', $data);
+    }
+
+    /**
+     * Input asesmen manual oleh admin atas nama guest — tanpa pembayaran, hasil langsung terbuka.
+     */
+    public function create(Request $request)
+    {
+        $tracks = AssessmentTrack::where('is_active', true)->orderBy('sort_order')->get();
+        $track = $tracks->firstWhere('slug', $request->get('track')) ?? null;
+
+        if ($track) {
+            $track->load('activeQuestions');
+            $grouped = $track->activeQuestions->groupBy('dimension');
+            $data['grouped'] = $grouped;
+            $data['weights'] = AssessmentService::displayWeights($track, $grouped);
+            $data['profile'] = AssessmentService::profileFor($track);
+            $data['formConfig'] = AssessmentService::formFor($track);
+        }
+
+        $data['tracks'] = $tracks;
+        $data['track'] = $track;
+        $data['labels'] = AssessmentService::SCALE_LABELS;
+
+        return view('backend.assessments.results.create', $data);
+    }
+
+    public function store(Request $request)
+    {
+        $track = AssessmentTrack::where('is_active', true)->findOrFail($request->input('track_id'));
+        [$rules, $messages, $attributes] = AssessmentSubmissionService::profileRules($track);
+
+        $validated = $request->validate($rules + [
+            'email' => 'nullable|email|max:191',
+            'answers' => 'required|array',
+            'answers.*' => 'required|integer|min:1|max:5',
+            'notes' => 'nullable|array',
+            'notes.*' => 'nullable|string|max:1000',
+            'internal_note' => 'nullable|string|max:5000',
+        ], $messages + ['answers.required' => 'Isi seluruh penilaian dimensi.'], $attributes);
+
+        $result = AssessmentSubmissionService::store($track, $validated, $validated['answers'], $validated['notes'] ?? [], [
+            'source' => 'admin',
+            'created_by' => $request->user()->id,
+            'is_unlocked' => true,
+            'internal_note' => $validated['internal_note'] ?? null,
+        ]);
+
+        if (! $result) {
+            return back()->withInput()->with('error', 'Masih ada dimensi yang belum dinilai.');
+        }
+
+        return redirect()->route('assessment-results.show', $result->id)
+            ->with('status', 'Asesmen manual disimpan. Laporan AI sedang dibuat.');
+    }
+
+    /**
+     * Approve pembayaran manual (transfer langsung, dll.) → hasil terbuka & laporan AI dibuat.
+     */
+    public function approve(Request $request, $id)
+    {
+        $result = AssessmentResult::with('track')->findOrFail($id);
+
+        if ($result->is_unlocked) {
+            return back()->with('error', 'Hasil ini sudah lunas / terbuka.');
+        }
+
+        $validated = $request->validate(['approval_note' => 'nullable|string|max:500']);
+        $order = AssessmentPaymentService::approveManually($result, $request->user()->id, $validated['approval_note'] ?? null);
+
+        return back()->with('status', 'Pembayaran di-approve manual ('.$order->code.'). Laporan AI sedang dibuat.');
+    }
+
+    /**
+     * Buat ulang laporan AI (mis. setelah gagal atau API key baru dipasang).
+     */
+    public function regenerate($id)
+    {
+        $result = AssessmentResult::findOrFail($id);
+
+        if (! $result->is_unlocked) {
+            return back()->with('error', 'Laporan hanya dibuat untuk hasil yang sudah lunas / di-approve.');
+        }
+
+        $result->update(['ai_report' => null, 'report_status' => 'pending', 'report_error' => null]);
+        GenerateAssessmentReport::dispatch($result->uuid);
+
+        return back()->with('status', 'Laporan AI dijadwalkan ulang.');
     }
 
     public function update(Request $request, $id)

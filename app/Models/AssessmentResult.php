@@ -12,6 +12,8 @@ class AssessmentResult extends Model
     protected $fillable = [
         'uuid',
         'track_id',
+        'source',
+        'created_by',
         'name',
         'email',
         'phone',
@@ -33,6 +35,9 @@ class AssessmentResult extends Model
         'band',
         'computed_result',
         'is_unlocked',
+        'approved_by',
+        'approved_at',
+        'approval_note',
         'unlocked_at',
         'ai_report',
         'ai_prompt',
@@ -54,6 +59,7 @@ class AssessmentResult extends Model
         'total_score' => 'float',
         'is_unlocked' => 'boolean',
         'unlocked_at' => 'datetime',
+        'approved_at' => 'datetime',
     ];
 
     public function track()
@@ -75,7 +81,11 @@ class AssessmentResult extends Model
     public function paymentLabel(): string
     {
         if ($this->is_unlocked) {
-            return 'Lunas';
+            return match (true) {
+                $this->source === 'admin' => 'Input admin (tanpa bayar)',
+                $this->approved_by !== null => 'Lunas (approve manual)',
+                default => 'Lunas',
+            };
         }
 
         return match ($this->latestOrder?->status) {
@@ -89,6 +99,16 @@ class AssessmentResult extends Model
     public function latestPaidOrder()
     {
         return $this->hasOne(AssessmentOrder::class, 'assessment_result_id')->where('status', 'paid')->latestOfMany();
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 
     public function pic()

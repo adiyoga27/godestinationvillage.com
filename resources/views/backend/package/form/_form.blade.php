@@ -1,286 +1,67 @@
+@php
+    $isAdmin = Auth::user()->role_id == 1;
+    $currentImg = ! empty($package->default_img ?? null) ? asset('storage/packages/'.$package->default_img) : null;
+@endphp
 
+@include('backend.partials.form.errors')
 
-<div class="row">
-    <div class="col-md-12">
-        @if (Auth::user()->role_id == 1)
-            <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Desa Wisata (*)</label>
-                <div class="col-sm-9">
-                    {!! Form::select('village_id', $villages, $package->village_id ?? null, ['class' => 'selectpicker', 'required' => 'required', 'data-live-search' => 'true']) !!}
-                    {!! $errors->first('village_id', '<p class="text-danger">:message</p>') !!}
-                    {!! $errors->first('user_id', '<p class="text-danger">:message</p>') !!}
+<div class="gd-form">
+    <div class="gd-form__main">
+        @include('backend.partials.form.card-open', ['icon' => 'information-outline', 'title' => 'Informasi Dasar', 'desc' => 'Nama, kategori, dan desa pemilik paket.'])
+            @if ($isAdmin)
+                <div class="gd-field">
+                    <label class="gd-label">Desa Wisata <span class="gd-req">*</span></label>
+                    {!! Form::select('village_id', $villages, $package->village_id ?? null, ['class' => 'selectpicker', 'required' => 'required', 'data-live-search' => 'true', 'data-width' => '100%', 'title' => 'Pilih desa wisata...']) !!}
+                    {!! $errors->first('village_id', '<p class="gd-error">:message</p>') !!}
+                    {!! $errors->first('user_id', '<p class="gd-error">:message</p>') !!}
+                </div>
+            @else
+                <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                <input type="hidden" name="village_id" value="{{ Auth::user()->village_id }}">
+            @endif
+
+            <div class="gd-grid-2">
+                <div class="gd-field">
+                    <label class="gd-label">Kategori Paket <span class="gd-req">*</span></label>
+                    {!! Form::select('category_id', $categories, null, ['class' => 'selectpicker', 'required' => 'required', 'data-live-search' => 'true', 'data-width' => '100%', 'title' => 'Pilih kategori...']) !!}
+                    {!! $errors->first('category_id', '<p class="gd-error">:message</p>') !!}
+                </div>
+                <div class="gd-field">
+                    <label class="gd-label">Tag Paket <span class="gd-req">*</span></label>
+                    {!! Form::select('tag_id', $tags, null, ['class' => 'selectpicker', 'required' => 'required', 'data-live-search' => 'true', 'data-width' => '100%', 'title' => 'Pilih tag...']) !!}
+                    {!! $errors->first('tag_id', '<p class="gd-error">:message</p>') !!}
                 </div>
             </div>
-        @else
-            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-            <input type="hidden" name="village_id" value="{{ Auth::user()->village_id }}">
-        @endif
 
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Kategori Paket (*)</label>
-            <div class="col-sm-9">
-                {!! Form::select('category_id', $categories, null, ['class' => 'selectpicker', 'required' => 'required', 'data-live-search' => 'true']) !!}
-                {!! $errors->first('category_id', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
+            @include('backend.partials.form.bilingual', ['title' => 'Nama Paket', 'en' => 'name', 'id' => 'name_id', 'idValue' => $packageTranslate->name ?? null, 'required' => true, 'type' => 'text', 'placeholder' => 'e.g. Rice Terrace Trekking', 'placeholderId' => 'mis. Trekking Sawah Terasering'])
+        @include('backend.partials.form.card-close')
 
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Tag Paket (*)</label>
-            <div class="col-sm-9">
-                {!! Form::select('tag_id', $tags, null, ['class' => 'selectpicker', 'required' => 'required', 'data-live-search' => 'true']) !!}
-                {!! $errors->first('tag_id', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Nama Paket (*)</label>
-            <div class="col-sm-9">
-                <label>English : </label>
-                {!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required']) !!}
-                {!! $errors->first('name', '<p class="text-danger">:message</p>') !!}
-            </div>
-
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9">
-                <label>Indonesia : </label>
-                {!! Form::text('name_id', $packageTranslate->name ?? null, ['class' => 'form-control', 'required' => 'required']) !!}
-                {!! $errors->first('name_id', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Harga Paket (*)</label>
-            <div class="col-sm-9">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text bg-danger text-white">IDR</span>
-                    </div>
-                    {!! Form::number('price', null, ['class' => 'form-control', 'required' => 'required', 'min' => 0, 'step' => 500]) !!}
-                    <small class="form-text text-muted">Rupiah penuh, contoh: 180000 (bukan 180). Isi 0 untuk gratis.</small>
-                </div>
-                {!! $errors->first('price', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Diskon Paket (*)</label>
-            <div class="col-sm-9">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text bg-danger text-white">IDR</span>
-                    </div>
-                    {!! Form::number('disc', null, ['class' => 'form-control', 'required' => 'required']) !!}
-                </div>
-                {!! $errors->first('disc', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Default Image</label>
-            <div class="col-sm-9">
-                <input type="file" name="default_img" class="form-control">
-                {!! $errors->first('default_img', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-
-        {{-- <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Other Images</label>
-            <div class="col-sm-9">
-                <input type="file" name="other_img[]" class="form-control" multiple="true">
-                {!! $errors->first('other_img', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div> --}}
-
-        {{-- <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Review</label>
-            <div class="col-sm-9">
-                <div class="starrating risingstar d-flex flex-row-reverse" style="float: left">
-                    {!! Form::radio('review', 5, null, ['id' => 'star5']) !!}<label for="star5" title="5 star"></label>
-                    {!! Form::radio('review', 4, null, ['id' => 'star4']) !!}<label for="star4" title="4 star"></label>
-                    {!! Form::radio('review', 3, null, ['id' => 'star3']) !!}<label for="star3" title="3 star"></label>
-                    {!! Form::radio('review', 2, null, ['id' => 'star2']) !!}<label for="star2" title="2 star"></label>
-                    {!! Form::radio('review', 1, null, ['id' => 'star1']) !!}<label for="star1" title="1 star"></label>
-                </div>
-            </div>
-        </div> --}}
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Deskripsi (*)</label>
-            <div class="col-sm-9">
-                <label>English : </label>
-                {!! Form::textarea('desc', null, ['class' => 'form-control']) !!}
-                {!! $errors->first('desc', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9">
-                <label>Indonesia : </label>
-                {!! Form::textarea('desc_id', $packageTranslate->desc ?? null, ['class' => 'form-control']) !!}
-                {!! $errors->first('desc_id', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-
-        {{-- <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Review</label>
-          <div class="col-sm-9">
-            {!! Form::textarea('review', null, ['class'=>'form-control']) !!}
-            {!! $errors->first('review', '<p class="text-danger">:message</p>') !!}
-          </div>
-        </div> --}}
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Itenaries</label>
-            <div class="col-sm-9">
-                <label>English : </label>
-                {!! Form::textarea('itenaries', null, ['class' => 'form-control']) !!}
-                {!! $errors->first('itenaries', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9">
-                <label>Indonesia : </label>
-                {!! Form::textarea('itenaries_id', $packageTranslate->itenaries ?? null, ['class' => 'form-control']) !!}
-                {!! $errors->first('itenaries_id', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Inclusion</label>
-            <div class="col-sm-9">
-                <label>English : </label>
-
-                {!! Form::textarea('inclusion', null, ['class' => 'form-control']) !!}
-                {!! $errors->first('inclusion', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9">
-                <label>Indonesia : </label>
-
-                {!! Form::textarea('inclusion_id', $packageTranslate->inclusion ?? null, ['class' => 'form-control']) !!}
-                {!! $errors->first('inclusion_id', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-
-        {{-- <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Exclusion</label>
-            <div class="col-sm-9">
-                <label>English : </label>
-
-                {!! Form::textarea('exclusion', null, ['class' => 'form-control']) !!}
-                {!! $errors->first('exclusion', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div> --}}
-
-        {{-- <div class="form-group row">
-            <label class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9">
-                <label>Indonesia : </label>
-
-                {!! Form::textarea('exclusion_id', $packageTranslate->exclusion ?? null, ['class' => 'form-control']) !!}
-                {!! $errors->first('exclusion_id', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div> --}}
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Term & Condition</label>
-            <div class="col-sm-9">
-                <label>English : </label>
-
-                {!! Form::textarea('term', null, ['class' => 'form-control']) !!}
-                {!! $errors->first('term', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9">
-                <label>Indonesia : </label>
-
-                {!! Form::textarea('term_id', $packageTranslate->term ?? null, ['class' => 'form-control']) !!}
-                {!! $errors->first('term_id', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Durasi</label>
-            <div class="col-sm-9">
-                <label>English : </label>
-
-                {!! Form::textarea('duration', null, ['class' => 'form-control']) !!}
-                {!! $errors->first('duration', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9">
-                <label>Indonesia : </label>
-
-                {!! Form::textarea('duration_id', $packageTranslate->duration ?? null, ['class' => 'form-control']) !!}
-                {!! $errors->first('duration_id', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Perisapan Yang Diperlukan</label>
-            <div class="col-sm-9">
-                <label>English : </label>
-
-                {!! Form::textarea('preparation', null, ['class' => 'form-control']) !!}
-                {!! $errors->first('preparation', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9">
-                <label>Indonesia : </label>
-
-                {!! Form::textarea('preparation_id', $packageTranslate->preparation ?? null, ['class' => 'form-control']) !!}
-                {!! $errors->first('preparation_id', '<p class="text-danger">:message</p>') !!}
-            </div>
-        </div>
-        @if (Auth::user()->role_id == 1)
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Status (*)</label>
-            <div class="col-sm-4">
-                <div class="form-check">
-                    <label class="form-check-label">
-                        <input type="radio" class="form-check-input" name="is_active" value="1" @if (empty($package)) checked=""
-                    @else
-                        @if ($package->is_active == 1)
-                            checked="" @endif
-                        @endif
-                        >
-                        Aktif
-                        <i class="input-helper"></i>
-                    </label>
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <div class="form-check">
-                    <label class="form-check-label">
-                        <input type="radio" class="form-check-input" name="is_active" value="0" @if (!empty($package))
-                        @if ($package->is_active == 0)
-                            checked="" @endif
-                        @endif
-                        >
-                        Tidak Aktif
-                        <i class="input-helper"></i>
-                    </label>
-                </div>
-            </div>
-        </div>
-        @endif
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label"></label>
-            <div class="col-sm-9">
-                <button type="submit" class="btn btn-lg btn-gradient-danger mb-2">Save</button>
-            </div>
-        </div>
+        @include('backend.partials.form.card-open', ['icon' => 'format-text', 'title' => 'Konten Paket', 'desc' => 'Isi versi English dan Indonesia. Pindah bahasa lewat tombol EN / ID.'])
+            @include('backend.partials.form.bilingual', ['title' => 'Deskripsi', 'hint' => 'Gambaran umum paket yang tampil di halaman detail.', 'en' => 'desc', 'id' => 'desc_id', 'idValue' => $packageTranslate->desc ?? null, 'required' => true])
+            @include('backend.partials.form.bilingual', ['title' => 'Itinerary', 'hint' => 'Rangkaian kegiatan dari awal sampai akhir.', 'en' => 'itenaries', 'id' => 'itenaries_id', 'idValue' => $packageTranslate->itenaries ?? null])
+            @include('backend.partials.form.bilingual', ['title' => 'Inclusion', 'hint' => 'Apa saja yang sudah termasuk dalam harga.', 'en' => 'inclusion', 'id' => 'inclusion_id', 'idValue' => $packageTranslate->inclusion ?? null])
+            @include('backend.partials.form.bilingual', ['title' => 'Term & Condition', 'hint' => 'Syarat, ketentuan, dan kebijakan pembatalan.', 'en' => 'term', 'id' => 'term_id', 'idValue' => $packageTranslate->term ?? null])
+            @include('backend.partials.form.bilingual', ['title' => 'Durasi', 'hint' => 'Lama kegiatan, mis. 3 jam / 2 hari 1 malam.', 'en' => 'duration', 'id' => 'duration_id', 'idValue' => $packageTranslate->duration ?? null])
+            @include('backend.partials.form.bilingual', ['title' => 'Persiapan yang Diperlukan', 'hint' => 'Barang atau kondisi yang perlu disiapkan peserta.', 'en' => 'preparation', 'id' => 'preparation_id', 'idValue' => $packageTranslate->preparation ?? null])
+        @include('backend.partials.form.card-close')
     </div>
+
+    <aside class="gd-form__side">
+        @include('backend.partials.form.card-open', ['icon' => 'cash', 'title' => 'Harga', 'desc' => 'Dalam Rupiah penuh.'])
+            @include('backend.partials.form.money', ['name' => 'price', 'label' => 'Harga Paket', 'required' => true, 'hint' => 'Contoh 180000 (bukan 180). Isi 0 untuk gratis.'])
+            @include('backend.partials.form.money', ['name' => 'disc', 'label' => 'Diskon Paket', 'required' => true, 'hint' => 'Potongan dalam Rupiah. Isi 0 bila tanpa diskon.', 'last' => true])
+        @include('backend.partials.form.card-close')
+
+        @include('backend.partials.form.card-open', ['icon' => 'image', 'title' => 'Gambar Utama', 'desc' => 'Tampil di kartu & header paket.'])
+            @include('backend.partials.form.image-upload', ['name' => 'default_img', 'current' => $currentImg])
+        @include('backend.partials.form.card-close')
+
+        @if ($isAdmin)
+            @include('backend.partials.form.card-open', ['icon' => 'eye', 'title' => 'Status Publikasi', 'desc' => 'Paket aktif tampil di website.'])
+                @include('backend.partials.form.choice', ['name' => 'is_active', 'value' => empty($package) ? 1 : $package->is_active])
+            @include('backend.partials.form.card-close')
+        @endif
+    </aside>
 </div>
+
+@include('backend.partials.form.actionbar', ['cancel' => url('administrator/package'), 'label' => 'Simpan Paket'])
