@@ -96,8 +96,8 @@
                             </span>
                             <span class="font-display text-5xl font-bold leading-none text-ink-100 transition group-hover:text-ink-200">0{{ $i + 1 }}</span>
                         </div>
-                        <p class="mt-6 text-xs font-bold uppercase tracking-[0.18em] {{ $a['text'] }}">{{ $track->tagline }}</p>
-                        <h3 class="mt-2 font-display text-2xl font-bold leading-tight text-ink-950">{{ $track->name }}</h3>
+                        <h3 class="mt-6 font-display text-2xl font-bold leading-tight text-ink-950">{{ $track->name }}</h3>
+                        <p class="mt-2 text-xs font-bold uppercase tracking-[0.18em] {{ $a['text'] }}">{{ $track->tagline }}</p>
                         <p class="mt-3 flex-1 text-[15px] leading-relaxed text-ink-600">{{ $track->description }}</p>
                         <dl class="mt-6 grid grid-cols-3 divide-x divide-ink-100 rounded-2xl bg-cream-50 py-4 text-center">
                             <div class="px-2">
