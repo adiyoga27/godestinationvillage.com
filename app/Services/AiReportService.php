@@ -30,22 +30,34 @@ class AiReportService
     public static function buildPrompt(AssessmentResult $result, array $computed): string
     {
         $track = $result->track;
+        $notes = $result->dimension_notes ?? [];
         $lines = [];
         foreach ($computed['dimensions'] ?? [] as $name => $dim) {
             $weight = $dim['weight'] ?? null;
-            $lines[] = '- '.$name.' (bobot '.($weight !== null ? $weight.'%' : '-').'): rata-rata '
+            $line = '- '.$name.' (bobot '.($weight !== null ? $weight.'%' : '-').'): rata-rata '
                 .($dim['average'] ?? '?').'/5 → skor '.($dim['score'] ?? '?').'/100';
+            if (! empty($notes[$name])) {
+                $line .= "\n  Catatan pengguna: ".str_replace("\n", ' ', $notes[$name]);
+            }
+            $lines[] = $line;
         }
         $dims = implode("\n", $lines);
+        $notesRule = $notes
+            ? "\n- Catatan pengguna per dimensi adalah konteks lapangan: gunakan untuk mempertajam analisa, kekuatan, tantangan, dan strategi agar spesifik terhadap kondisi tersebut. Catatan tidak mengubah skor."
+            : '';
 
         $profile = implode("\n", array_filter([
             'Nama: '.$result->name,
             'Organisasi/Desa/Usaha: '.($result->organization ?? '-'),
-            $result->business_type ? 'Jenis Badan Usaha: '.$result->business_type : null,
+            $result->institution ? 'Instansi/OPD Pengusul: '.$result->institution : null,
+            $result->business_type ? 'Jenis Badan Usaha/Entitas: '.$result->business_type : null,
             $result->business_sector ? 'Sektor Usaha: '.$result->business_sector : null,
             $result->member_count ? 'Jumlah Anggota/Pelaku Usaha: '.$result->member_count : null,
             'Kabupaten/Kota: '.($result->regency ?? '-'),
             'Provinsi: '.($result->province ?? '-'),
+            $result->district ? 'Kecamatan: '.$result->district : null,
+            $result->subdistrict ? 'Kelurahan/Desa: '.$result->subdistrict : null,
+            $result->postal_code ? 'Kode Pos: '.$result->postal_code : null,
             'Deskripsi: '.($result->profile_description ?? '-'),
         ]));
 
@@ -72,6 +84,7 @@ class AiReportService
             INSTRUKSI KRITIS:
             - Skor di bawah dihitung sistem dan bersifat final. Jangan menghitung ulang skor, jangan mengubah kategori.
             - Jawab HANYA dengan JSON valid tanpa markdown, tanpa teks di luar JSON.
+            - Deskripsi profil dan catatan pengguna adalah informasi tambahan dari responden; manfaatkan untuk rekomendasi yang kontekstual.{$notesRule}
             - Kunci JSON wajib: ringkasan (string), kekuatan (tepat 3 string), tantangan (tepat 3 string), langkah_prioritas (tepat 5 string berurutan dari paling mendesak), layanan_godevi_disarankan[] (layanan GODEVI yang relevan).{$extra}
 
             PROFIL:
@@ -86,12 +99,17 @@ class AiReportService
     }
 
     /**
-     * @return array{ok: bool, report?: array, error?: string, usage?: array}
+     * @return array{ok: bool, report?: array, error?: string, prompt: string, meta: array}
      */
     public static function generate(AssessmentResult $result, array $computed): array
     {
         $driver = config('ai.driver', 'deepseek');
         $prompt = self::buildPrompt($result, $computed);
+        $meta = [
+            'driver' => $driver,
+            'model' => config('ai.model'),
+            'attempts' => [],
+        ];
 
         for ($attempt = 1; $attempt <= 2; $attempt++) {
             $res = $driver === 'claude'
@@ -100,12 +118,21 @@ class AiReportService
 
             if (! $res['ok']) {
                 Log::warning("AI report attempt $attempt gagal: ".$res['error']);
+                $meta['attempts'][] = ['at' => now()->toIso8601String(), 'ok' => false, 'error' => $res['error']];
 
                 continue;
             }
 
             $report = self::extractJson($res['text']);
             $err = self::validate($result->track->slug, $report);
+            $meta['attempts'][] = [
+                'at' => now()->toIso8601String(),
+                'ok' => $err === null,
+                'error' => $err,
+                'usage' => $res['usage'] ?? null,
+                // Simpan jawaban mentah bila gagal divalidasi, untuk ditelusuri.
+                'raw' => $err === null ? null : mb_substr((string) $res['text'], 0, 20000),
+            ];
             if ($err === null) {
                 Log::info('AI report OK', [
                     'result' => $result->uuid,
@@ -114,13 +141,16 @@ class AiReportService
                     'usage' => $res['usage'] ?? null,
                 ]);
 
-                return ['ok' => true, 'report' => $report, 'usage' => $res['usage'] ?? null];
+                $meta['usage'] = $res['usage'] ?? null;
+                $meta['generated_at'] = now()->toIso8601String();
+
+                return ['ok' => true, 'report' => $report, 'prompt' => $prompt, 'meta' => $meta];
             }
 
             Log::warning("AI report attempt $attempt JSON tidak valid: $err");
         }
 
-        return ['ok' => false, 'error' => $err ?? ($res['error'] ?? 'unknown')];
+        return ['ok' => false, 'error' => $err ?? ($res['error'] ?? 'unknown'), 'prompt' => $prompt, 'meta' => $meta];
     }
 
     protected static function callDeepSeek(string $prompt): array

@@ -51,8 +51,9 @@ class AssessmentController extends Controller
             'description' => $qs->count() === 1 ? $qs->first()->help_text : $qs->count().' pernyataan',
             'weight' => round($weights[$name]),
         ])->values();
-        $data['showWeight'] = $weights->map(fn ($w) => round($w, 1))->unique()->count() > 1;
         $data['formConfig'] = AssessmentService::formFor($track);
+        $data['showWeight'] = ($data['formConfig']['show_weight'] ?? false)
+            || $weights->map(fn ($w) => round($w, 1))->unique()->count() > 1;
         $data['profile'] = AssessmentService::profileFor($track);
 
         $data['track'] = $track;
@@ -76,27 +77,33 @@ class AssessmentController extends Controller
 
         $validated = $request->validate([
             'organization' => 'required|string|max:191',
-            'business_type' => [$business ? 'required' : 'nullable', Rule::in(AssessmentService::BUSINESS_TYPES)],
+            'institution' => [$profile['destination_fields'] ? 'required' : 'nullable', 'string', 'max:191'],
+            'business_type' => [
+                $business || $profile['entity_field'] ? 'required' : 'nullable',
+                Rule::in($profile['entity_field'] ? AssessmentService::ENTITY_TYPES : AssessmentService::BUSINESS_TYPES),
+            ],
             'business_sector' => [$business ? 'required' : 'nullable', Rule::in(AssessmentService::BUSINESS_SECTORS)],
             'member_count' => 'nullable|integer|min:1|max:1000000',
             'province' => 'required|string|max:191',
             'regency' => 'required|string|max:191',
             'district' => 'nullable|string|max:191',
             'subdistrict' => 'nullable|string|max:191',
+            'postal_code' => 'nullable|string|max:10',
             'name' => 'required|string|max:191',
             'phone' => 'required|string|max:50',
             'profile_description' => 'nullable|string|max:3000',
         ], [
-            'province.required' => 'Pilih lokasi dari hasil pencarian Provinsi / Kabupaten/Kota.',
-            'regency.required' => 'Pilih lokasi dari hasil pencarian Provinsi / Kabupaten/Kota.',
+            'province.required' => 'Pilih lokasi dari hasil pencarian '.$profile['location_label'].'.',
+            'regency.required' => 'Pilih lokasi dari hasil pencarian '.$profile['location_label'].'.',
         ], [
             'organization' => $profile['organization_label'],
-            'business_type' => 'Jenis Badan Usaha',
+            'institution' => 'Instansi/OPD Pengusul',
+            'business_type' => $profile['entity_field'] ? 'Jenis Entitas' : 'Jenis Badan Usaha',
             'business_sector' => 'Sektor Usaha',
             'member_count' => 'Jumlah Anggota/Pelaku Usaha',
             'name' => 'Nama Kontak',
-            'phone' => 'No. WhatsApp / Telepon',
-            'profile_description' => 'Deskripsi singkat',
+            'phone' => $profile['phone_label'],
+            'profile_description' => $profile['description_label'],
         ]);
         $validated['phone'] = AssessmentPaymentService::normalizePhone($validated['phone']);
 
@@ -165,6 +172,7 @@ class AssessmentController extends Controller
                 'name' => $identity['name'],
                 'phone' => $identity['phone'] ?? null,
                 'organization' => $identity['organization'] ?? null,
+                'institution' => $identity['institution'] ?? null,
                 'business_type' => $identity['business_type'] ?? null,
                 'business_sector' => $identity['business_sector'] ?? null,
                 'member_count' => $identity['member_count'] ?? null,
@@ -172,12 +180,15 @@ class AssessmentController extends Controller
                 'regency' => $identity['regency'] ?? null,
                 'district' => $identity['district'] ?? null,
                 'subdistrict' => $identity['subdistrict'] ?? null,
+                'postal_code' => $identity['postal_code'] ?? null,
                 'profile_description' => $identity['profile_description'] ?? null,
                 'answers' => $answers,
                 'dimension_scores' => $computed['dimensions'],
                 'dimension_notes' => $notes ?: null,
                 'total_score' => $computed['total'],
                 'band' => $computed['band'],
+                // Arsip lengkap hasil hitung (kekuatan, tantangan, aksi prioritas, subindeks TTDI, dll).
+                'computed_result' => $computed,
                 'status' => 'baru',
                 // Jalur gratis (harga 0) langsung terbuka; selain itu menunggu pembayaran.
                 'is_unlocked' => $free,

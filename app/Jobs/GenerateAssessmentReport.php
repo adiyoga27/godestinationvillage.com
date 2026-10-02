@@ -41,15 +41,19 @@ class GenerateAssessmentReport implements ShouldQueue
             'band' => $result->band,
         ];
         if ($result->track->slug === 'daya-saing-destinasi') {
+            // Hasil lama (sebelum computed_result disimpan) dihitung ulang dari skor dimensi.
             $computed['subindexes'] = \App\Services\AssessmentService::subindexScores($computed['dimensions']);
         }
 
         $out = AiReportService::generate($result, $computed);
 
+        // Prompt & metadata AI selalu diarsipkan, berhasil maupun gagal.
+        $audit = ['ai_prompt' => $out['prompt'], 'ai_meta' => $out['meta']];
+
         if ($out['ok']) {
-            $result->update(['ai_report' => $out['report'], 'report_status' => 'done']);
+            $result->update(['ai_report' => $out['report'], 'report_status' => 'done'] + $audit);
         } else {
-            $result->update(['report_status' => 'failed', 'report_error' => $out['error'] ?? 'unknown']);
+            $result->update(['report_status' => 'failed', 'report_error' => $out['error'] ?? 'unknown'] + $audit);
             Log::error('GenerateAssessmentReport gagal', ['uuid' => $result->uuid, 'error' => $out['error'] ?? null]);
         }
     }

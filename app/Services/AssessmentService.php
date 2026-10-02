@@ -22,11 +22,7 @@ class AssessmentService
 
     /**
      * Bobot dimensi per jalur (persen, total 100) — Brief §3.1–§3.4.
-     *
-     * CATATAN: dimensi DB untuk jalur regeneratif belum dipetakan ulang ke
-     * dimensi brief (butuh teks DIM_* dari prototype
-     * godevi-readiness-impact-assistant.html). Selama belum dipetakan,
-     * jalur tersebut memakai bobot setara (fallback equal weight).
+     * Jalur tanpa entri di sini memakai bobot setara (fallback equal weight).
      */
     public const DIMENSION_WEIGHTS = [
         'pariwisata' => [
@@ -47,25 +43,35 @@ class AssessmentService
             'Akses Permodalan & Kemitraan' => 10,
             'Kapasitas SDM & Manajemen Usaha' => 15,
         ],
+        // Regeneratif: 7 dimensi.
+        'regeneratif' => [
+            'Dampak Positif terhadap Ekosistem' => 18,
+            'Sirkularitas & Pengelolaan Sumber Daya' => 14,
+            'Pemberdayaan & Kepemilikan Komunitas Lokal' => 18,
+            'Keaslian & Pelestarian Budaya' => 14,
+            'Rantai Pasok & Sirkulasi Ekonomi Lokal' => 14,
+            'Edukasi & Transformasi Pengunjung/Konsumen' => 12,
+            'Tata Kelola Adaptif & Pembelajaran Berkelanjutan' => 10,
+        ],
         // TTDI: 17 pilar, bobot sama rata 1/17 (Brief §3.3).
         'daya-saing-destinasi' => [
-            'Iklim Usaha' => 5.882,
-            'Keamanan & Keselamatan' => 5.882,
-            'Kesehatan & Kebersihan' => 5.882,
-            'SDM & Pasar Tenaga Kerja' => 5.882,
-            'Kesiapan TIK' => 5.882,
-            'Prioritas Pariwisata' => 5.882,
-            'Keterbukaan Internasional' => 5.882,
-            'Daya Saing Harga' => 5.882,
-            'Infrastruktur Transportasi Udara' => 5.882,
-            'Infrastruktur Darat & Pelabuhan' => 5.882,
-            'Infrastruktur Layanan Wisatawan' => 5.882,
-            'Sumber Daya Alam' => 5.882,
-            'Sumber Daya Budaya' => 5.882,
-            'Sumber Daya Non-Leisure' => 5.882,
-            'Keberlanjutan Lingkungan' => 5.882,
-            'Ketahanan Sosial-Ekonomi' => 5.882,
-            'Dampak Sosial-Ekonomi Pariwisata' => 5.882,
+            'Lingkungan Usaha (Business Environment)' => 5.882,
+            'Keamanan & Keselamatan (Safety and Security)' => 5.882,
+            'Kesehatan & Higienitas (Health and Hygiene)' => 5.882,
+            'SDM & Pasar Tenaga Kerja (Human Resources and Labour Market)' => 5.882,
+            'Kesiapan ICT (ICT Readiness)' => 5.882,
+            'Prioritas Kebijakan Pariwisata (Prioritization of T&T)' => 5.882,
+            'Keterbukaan Internasional (International Openness)' => 5.882,
+            'Daya Saing Harga (Price Competitiveness)' => 5.882,
+            'Infrastruktur Transportasi Udara (Air Transport Infrastructure)' => 5.882,
+            'Infrastruktur Darat & Pelabuhan (Ground and Port Infrastructure)' => 5.882,
+            'Infrastruktur Layanan Wisatawan (Tourist Service Infrastructure)' => 5.882,
+            'Sumber Daya Alam (Natural Resources)' => 5.882,
+            'Sumber Daya Budaya (Cultural Resources)' => 5.882,
+            'Sumber Daya Non-Wisata Santai (Non-Leisure Resources)' => 5.882,
+            'Keberlanjutan Lingkungan (Environmental Sustainability)' => 5.882,
+            'Ketahanan Sosial-Ekonomi (Socioeconomic Resilience and Conditions)' => 5.882,
+            'Tekanan & Dampak Permintaan Wisata (T&T Demand Pressure and Impact)' => 5.882,
         ],
     ];
 
@@ -74,31 +80,31 @@ class AssessmentService
      */
     public const TTDI_SUBINDEXES = [
         'A. Enabling Environment' => [
-            'Iklim Usaha',
-            'Keamanan & Keselamatan',
-            'Kesehatan & Kebersihan',
-            'SDM & Pasar Tenaga Kerja',
-            'Kesiapan TIK',
+            'Lingkungan Usaha (Business Environment)',
+            'Keamanan & Keselamatan (Safety and Security)',
+            'Kesehatan & Higienitas (Health and Hygiene)',
+            'SDM & Pasar Tenaga Kerja (Human Resources and Labour Market)',
+            'Kesiapan ICT (ICT Readiness)',
         ],
         'B. T&T Policy & Enabling Conditions' => [
-            'Prioritas Pariwisata',
-            'Keterbukaan Internasional',
-            'Daya Saing Harga',
+            'Prioritas Kebijakan Pariwisata (Prioritization of T&T)',
+            'Keterbukaan Internasional (International Openness)',
+            'Daya Saing Harga (Price Competitiveness)',
         ],
         'C. Infrastructure' => [
-            'Infrastruktur Transportasi Udara',
-            'Infrastruktur Darat & Pelabuhan',
-            'Infrastruktur Layanan Wisatawan',
+            'Infrastruktur Transportasi Udara (Air Transport Infrastructure)',
+            'Infrastruktur Darat & Pelabuhan (Ground and Port Infrastructure)',
+            'Infrastruktur Layanan Wisatawan (Tourist Service Infrastructure)',
         ],
         'D. T&T Demand Drivers' => [
-            'Sumber Daya Alam',
-            'Sumber Daya Budaya',
-            'Sumber Daya Non-Leisure',
+            'Sumber Daya Alam (Natural Resources)',
+            'Sumber Daya Budaya (Cultural Resources)',
+            'Sumber Daya Non-Wisata Santai (Non-Leisure Resources)',
         ],
         'E. T&T Sustainability' => [
-            'Keberlanjutan Lingkungan',
-            'Ketahanan Sosial-Ekonomi',
-            'Dampak Sosial-Ekonomi Pariwisata',
+            'Keberlanjutan Lingkungan (Environmental Sustainability)',
+            'Ketahanan Sosial-Ekonomi (Socioeconomic Resilience and Conditions)',
+            'Tekanan & Dampak Permintaan Wisata (T&T Demand Pressure and Impact)',
         ],
     ];
 
@@ -128,6 +134,18 @@ class AssessmentService
             'intro' => 'Nilai setiap dimensi berdasarkan kondisi saat ini. Skor menentukan kategori kesiapan dan menjadi dasar rekomendasi.',
             'submit_label' => 'Buat Analisis & Strategi',
         ],
+        'daya-saing-destinasi' => [
+            'title' => 'Identifikasi Potensi',
+            'intro' => 'Nilai setiap dimensi berdasarkan kondisi saat ini. Skor menentukan kategori kesiapan dan menjadi dasar rekomendasi.',
+            'submit_label' => 'Buat Analisis & Strategi',
+            'sections' => self::TTDI_SUBINDEXES,
+            'show_weight' => true,
+        ],
+        'regeneratif' => [
+            'title' => 'Identifikasi Potensi',
+            'intro' => 'Nilai setiap dimensi berdasarkan kondisi saat ini. Skor menentukan kategori kesiapan dan menjadi dasar rekomendasi.',
+            'submit_label' => 'Buat Analisis & Strategi',
+        ],
     ];
 
     /** Pilihan profil usaha (jalur Ekonomi Desa). */
@@ -138,6 +156,18 @@ class AssessmentService
         'UMKM perorangan',
         'CV / PT',
         'Belum berbadan hukum',
+    ];
+
+    /** Pilihan jenis entitas (jalur Regeneratif). */
+    public const ENTITY_TYPES = [
+        'Daya Tarik Wisata (DTW)',
+        'Desa Wisata / Pokdarwis',
+        'Hotel / Villa / Homestay',
+        'Restoran / Cafe',
+        'Biro Perjalanan / Tour Operator',
+        'UMKM / Produsen',
+        'Koperasi / BUMDes',
+        'Lainnya',
     ];
 
     public const BUSINESS_SECTORS = [
@@ -169,6 +199,11 @@ class AssessmentService
             'description_hint' => 'Sangat membantu kualitas analisa',
             'description_placeholder' => 'cth: sawah terasering, air terjun, tari tradisional, kuliner khas, homestay 10 kamar…',
             'business_fields' => false,
+            'destination_fields' => false,
+            'entity_field' => false,
+            'location_label' => 'Lokasi (Provinsi, Kab/Kota, Kecamatan, Kelurahan)',
+            'location_placeholder' => 'Ketik min. 3 huruf nama desa, kecamatan, atau kab/kota…',
+            'phone_label' => 'No. WhatsApp / Telepon',
             'submit_label' => null,
         ],
         'ekonomi-desa' => [
@@ -185,6 +220,40 @@ class AssessmentService
             'description_hint' => 'Sangat membantu — sebutkan jika produk belum jelas',
             'description_placeholder' => 'mis. Koperasi baru terbentuk, anggota petani kopi & penenun, belum ada produk unggulan yang disepakati...',
             'business_fields' => true,
+            'submit_label' => 'Lanjut ke Identifikasi Potensi',
+        ],
+        'daya-saing-destinasi' => [
+            'title' => 'Profil Kawasan Destinasi',
+            'subtitle' => 'Diisi oleh: Tim GODEVI. Data ini menjadi dasar analisis pada tahap berikutnya.',
+            'main_group' => 'Kawasan',
+            'organization_label' => 'Nama Kawasan/Destinasi',
+            'organization_placeholder' => 'mis. Kawasan Wisata Kintamani',
+            'contact_group' => 'Kontak Pengusul',
+            'contact_label' => 'Nama Kontak',
+            'contact_placeholder' => 'Nama & jabatan penanggung jawab',
+            'phone_label' => 'No. WhatsApp/Telepon Kontak',
+            'description_group' => 'Kawasan & Isu',
+            'description_label' => 'Deskripsi Singkat Kawasan & Isu Utama',
+            'description_hint' => 'Sangat membantu kualitas analisis',
+            'description_placeholder' => 'mis. Kawasan geopark dengan isu utama pengelolaan sampah dan konektivitas transportasi...',
+            'destination_fields' => true,
+            'submit_label' => 'Lanjut ke Identifikasi Potensi',
+        ],
+        'regeneratif' => [
+            'title' => 'Profil Usaha/Entitas',
+            'subtitle' => 'Diisi oleh: Tim GODEVI. Data ini menjadi dasar analisis pada tahap berikutnya.',
+            'main_group' => 'Usaha/Entitas',
+            'organization_label' => 'Nama Usaha/Entitas',
+            'organization_placeholder' => 'mis. Cafe Kopi Catur',
+            'contact_group' => 'Kontak',
+            'contact_label' => 'Nama Kontak',
+            'contact_placeholder' => 'Nama & jabatan penanggung jawab',
+            'phone_label' => 'No. WhatsApp/Telepon Kontak',
+            'description_group' => 'Praktik Saat Ini',
+            'description_label' => 'Deskripsi Singkat Praktik Saat Ini',
+            'description_hint' => 'Sebutkan praktik ramah lingkungan/sosial yang sudah berjalan, jika ada',
+            'description_placeholder' => 'mis. Cafe memakai kemasan sekali pakai, bahan baku sebagian dari petani lokal, belum ada program lingkungan formal...',
+            'entity_field' => true,
             'submit_label' => 'Lanjut ke Identifikasi Potensi',
         ],
     ];

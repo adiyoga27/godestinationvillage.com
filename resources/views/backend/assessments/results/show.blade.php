@@ -18,7 +18,10 @@
     <div class="col-lg-8 grid-margin stretch-card">
         <div class="card"><div class="card-body">
             <h4 class="card-title">{{ $result->organization }} <small class="text-muted">— {{ $result->name }}</small></h4>
-            <p>{{ collect([$result->subdistrict, $result->district, $result->regency, $result->province])->filter()->implode(', ') }}</p>
+            <p>{{ collect([$result->subdistrict, $result->district, $result->regency, $result->province])->filter()->implode(', ') }} {{ $result->postal_code }}</p>
+            @if ($result->institution)
+                <p>Instansi/OPD pengusul: {{ $result->institution }}</p>
+            @endif
             @if ($result->business_type || $result->business_sector || $result->member_count)
                 <p>{{ collect([$result->business_type, $result->business_sector, $result->member_count ? $result->member_count.' anggota/pelaku usaha' : null])->filter()->implode(' · ') }}</p>
             @endif

@@ -7,7 +7,10 @@ use App\Models\AssessmentTrack;
 use App\Models\OurTeam;
 use App\Models\User;
 use App\Services\AssessmentService;
+use App\Jobs\GenerateAssessmentReport;
+use App\Services\AiReportService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -169,6 +172,130 @@ class AssessmentFlowsTest extends TestCase
             $allOne[$q->id] = 1;
         }
         $this->assertSame(20, AssessmentService::compute($track, $questions, $allOne)['total']);
+    }
+
+    public function test_daya_saing_destinasi_profile_and_seventeen_pillars(): void
+    {
+        $this->get(route('assessment.intro', 'daya-saing-destinasi'))
+            ->assertStatus(200)
+            ->assertSee('Profil Kawasan Destinasi', false)
+            ->assertSee('Instansi/OPD Pengusul', false)
+            ->assertSee('location-detail', false);
+
+        $base = [
+            'organization' => 'Kawasan Wisata Kintamani',
+            'regency' => 'Bangli',
+            'province' => 'Bali',
+            'name' => 'Kadis Test',
+            'phone' => '08123456789',
+        ];
+
+        $this->post(route('assessment.start', 'daya-saing-destinasi'), $base)
+            ->assertSessionHasErrors(['institution']);
+
+        $this->post(route('assessment.start', 'daya-saing-destinasi'), $base + [
+            'institution' => 'Dinas Pariwisata Kabupaten Bangli',
+        ])->assertRedirect(route('assessment.form', 'daya-saing-destinasi'));
+
+        $this->get(route('assessment.form', 'daya-saing-destinasi'))
+            ->assertStatus(200)
+            ->assertSee('A. Enabling Environment', false)
+            ->assertSee('E. T&amp;T Sustainability', false)
+            ->assertSee('Bobot 6%', false);
+
+        $track = AssessmentTrack::where('slug', 'daya-saing-destinasi')->firstOrFail();
+        $dims = $track->activeQuestions()->orderBy('sort_order')->pluck('dimension')->all();
+        $this->assertSame(array_keys(AssessmentService::weightsFor($track)), $dims);
+        $this->assertSame($dims, array_merge(...array_values(AssessmentService::TTDI_SUBINDEXES)));
+    }
+
+    public function test_regeneratif_entity_profile_and_seven_weighted_dimensions(): void
+    {
+        $this->get(route('assessment.intro', 'regeneratif'))
+            ->assertStatus(200)
+            ->assertSee('Profil Usaha/Entitas', false)
+            ->assertSee('Jenis Entitas', false)
+            ->assertSee('location-search', false);
+
+        $base = [
+            'organization' => 'Cafe Kopi Catur',
+            'province' => 'Bali',
+            'regency' => 'Kab. Bangli',
+            'name' => 'Pemilik Test',
+            'phone' => '08123456789',
+        ];
+
+        $this->post(route('assessment.start', 'regeneratif'), $base)
+            ->assertSessionHasErrors(['business_type']);
+
+        $this->post(route('assessment.start', 'regeneratif'), $base + ['business_type' => 'Restoran / Cafe'])
+            ->assertRedirect(route('assessment.form', 'regeneratif'));
+
+        $track = AssessmentTrack::where('slug', 'regeneratif')->firstOrFail();
+        $questions = $track->activeQuestions()->orderBy('sort_order')->get();
+        $weights = AssessmentService::weightsFor($track);
+        $this->assertSame(array_keys($weights), $questions->pluck('dimension')->all());
+        $this->assertSame(100, array_sum($weights));
+
+        $this->get(route('assessment.form', 'regeneratif'))->assertSee('Bobot 18%', false);
+    }
+
+    public function test_every_track_sends_notes_to_ai_and_archives_report(): void
+    {
+        config(['ai.driver' => 'deepseek', 'ai.deepseek_key' => 'test-key']);
+        $report = [];
+        Http::fake(function () use (&$report) {
+            return Http::response([
+                'choices' => [['message' => ['content' => json_encode($report)]]],
+                'usage' => ['total_tokens' => 1234],
+            ]);
+        });
+
+        foreach (['pariwisata', 'ekonomi-desa', 'daya-saing-destinasi', 'regeneratif'] as $slug) {
+            $track = AssessmentTrack::where('slug', $slug)->firstOrFail();
+            $questions = $track->activeQuestions()->orderBy('sort_order')->get();
+            $answers = $questions->mapWithKeys(fn ($q) => [$q->id => 3])->all();
+            $computed = AssessmentService::compute($track, $questions, $answers);
+            $dimension = $questions->first()->dimension;
+
+            $report = array_fill_keys(AiReportService::requiredKeys($slug), ['x']);
+            $report['ringkasan'] = 'Ringkasan '.$slug;
+            $report['kekuatan'] = $report['tantangan'] = ['a', 'b', 'c'];
+            $report['langkah_prioritas'] = ['1', '2', '3', '4', '5'];
+
+            $result = AssessmentResult::create([
+                'uuid' => (string) Str::uuid(),
+                'track_id' => $track->id,
+                'name' => 'AI Test',
+                'organization' => 'Org '.$slug,
+                'province' => 'Bali',
+                'regency' => 'Kab. Bangli',
+                'answers' => $answers,
+                'dimension_scores' => $computed['dimensions'],
+                'dimension_notes' => [$dimension => 'Catatan khusus '.$slug],
+                'total_score' => $computed['total'],
+                'band' => $computed['band'],
+                'computed_result' => $computed,
+                'status' => 'baru',
+                'is_unlocked' => true,
+                'unlocked_at' => now(),
+            ]);
+
+            try {
+                (new GenerateAssessmentReport($result->uuid))->handle();
+                $result->refresh();
+
+                $this->assertSame('done', $result->report_status, $slug);
+                $this->assertSame('Ringkasan '.$slug, $result->ai_report['ringkasan']);
+                $this->assertStringContainsString('Catatan pengguna: Catatan khusus '.$slug, $result->ai_prompt);
+                $this->assertSame('deepseek', $result->ai_meta['driver']);
+                $this->assertSame(1234, $result->ai_meta['usage']['total_tokens']);
+                $this->assertSame($computed['total'], $result->computed_result['total']);
+                Http::assertSent(fn ($req) => str_contains($req['messages'][1]['content'], 'Catatan khusus '.$slug));
+            } finally {
+                $result->delete();
+            }
+        }
     }
 
     public function test_ekonomi_desa_uses_seven_weighted_dimensions(): void

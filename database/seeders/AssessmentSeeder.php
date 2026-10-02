@@ -109,50 +109,31 @@ class AssessmentSeeder extends Seeder
             'tagline' => 'Untuk Pemda & Institusi — 17 Pilar TTDI',
             'description' => 'Mengikuti seluruh 17 pilar resmi Travel & Tourism Development Index (TTDI) World Economic Forum, diadaptasi ke skala kawasan/kabupaten.',
             'target_audience' => 'Pemda, dinas pariwisata, Bappeda, institusi kawasan',
-            'estimated_minutes' => 15,
+            'estimated_minutes' => 10,
             'is_active' => true,
             'sort_order' => 3,
         ]);
 
-        $pillars = [
-            ['Iklim Usaha', 'Perizinan usaha pariwisata di daerah mudah, cepat, dan terintegrasi (OSS/digital).', 'Izin homestay, restoran, biro perjalanan, dan event.'],
-            ['Iklim Usaha', 'Ada insentif/kemudahan investasi pariwisata (lahan, pajak daerah, kemitraan).', 'Regulasi dan promosi investasi yang terdokumentasi.'],
-            ['Keamanan & Keselamatan', 'Kawasan wisata aman dari kriminalitas dan ada posko/petugas keamanan.', 'Data kejadian dan SOP penanganan darurat.'],
-            ['Keamanan & Keselamatan', 'Ada sistem mitigasi bencana dan keselamatan wisatawan (rambu, asuransi, rescue).', 'Peta risiko, jalur evakuasi, tim siaga.'],
-            ['Kesehatan & Kebersihan', 'Fasilitas kesehatan mudah dijangkau dari kawasan wisata utama.', 'Puskesmas/klinik/RS rujukan dan nomor darurat.'],
-            ['Kesehatan & Kebersihan', 'Sanitasi dan kebersihan kawasan terjaga (TPS, toilet umum, air bersih).', 'Jadwal kebersihan dan audit sanitasi.'],
-            ['SDM & Pasar Tenaga Kerja', 'Ketersediaan tenaga pariwisata terampil dan tersertifikasi mencukupi.', 'Pemandu, hospitality, dan ekonomi kreatif bersertifikat.'],
-            ['SDM & Pasar Tenaga Kerja', 'Ada program vokasi/pelatihan pariwisata berkelanjutan bersama industri.', 'Politeknik, BLK, atau akademi pariwisata.'],
-            ['Kesiapan TIK', 'Konektivitas digital menjangkau kawasan wisata (4G/5G, wifi publik).', 'Cakupan sinyal dan titik wifi gratis.'],
-            ['Kesiapan TIK', 'Layanan digital tersedia (tiket online, pembayaran nontunai, informasi digital).', 'E-ticketing, QRIS, dan dashboard data kunjungan.'],
-            ['Prioritas Pariwisata', 'Pariwisata menjadi prioritas dokumen perencanaan (RPJMD/Renstra) dengan anggaran memadai.', 'Program dan pagu anggaran pariwisata daerah.'],
-            ['Prioritas Pariwisata', 'Ada kelembagaan promosi (BPPD/DMO) dan kalender event daerah.', 'Badan promosi aktif dan CoE/event unggulan.'],
-            ['Keterbukaan Internasional', 'Aksesibilitas internasional baik (bandara/pelabuhan, konektivitas, visa).', 'Rute langsung, pelabuhan cruise, fasilitas imigrasi.'],
-            ['Keterbukaan Internasional', 'Informasi dan layanan ramah wisman (multibahasa, money changer, tourist info).', 'Signage dan TIC berstandar.'],
-            ['Daya Saing Harga', 'Harga jasa wisata kompetitif dan transparan (tiket, parkir, kuliner).', 'Standarisasi tarif dan publikasi harga resmi.'],
-            ['Daya Saing Harga', 'Ada variasi segmen harga (backpacker hingga premium) tanpa jebakan harga.', 'Paket berlapis dan pengawasan pungli.'],
-            ['Infrastruktur Transportasi Udara', 'Kapasitas dan frekuensi penerbangan ke gerbang kawasan memadai.', 'Slot, maskapai, dan konektivitas antarmoda.'],
-            ['Infrastruktur Transportasi Udara', 'Bandara didukung layanan wisatawan (info, transport lanjutan, bagasi).', 'Airport transfer dan tourist helpdesk.'],
-            ['Infrastruktur Darat & Pelabuhan', 'Jalan menuju DTW utama mantap dan angkutan umum/darat tersedia.', 'Kondisi jalan, shuttle, dan terminal.'],
-            ['Infrastruktur Darat & Pelabuhan', 'Pelabuhan/dermaga wisata aman dan terjadwal (bila relevan).', 'Standar keselamatan penyeberangan.'],
-            ['Infrastruktur Layanan Wisatawan', 'Ketersediaan akomodasi, restoran, dan TIC memadai di kawasan utama.', 'Rasio kamar vs kunjungan, sebaran TIC.'],
-            ['Infrastruktur Layanan Wisatawan', 'Atraksi didukung fasilitas pengalaman (pusat informasi, suvenir, toilet).', 'Visitor center dan amenitas inti.'],
-            ['Sumber Daya Alam', 'Daya tarik alam teridentifikasi, terpetakan, dan terlindungi statusnya.', 'Inventarisasi dan zonasi konservasi.'],
-            ['Sumber Daya Alam', 'Ada produk wisata berbasis alam yang dikelola berkelanjutan.', 'Ekowisata dengan kuota daya dukung.'],
-            ['Sumber Daya Budaya', 'Aset budaya terinventarisasi (tangible & intangible) dan terpelihara.', 'Cagar budaya, warisan takbenda, maestro.'],
-            ['Sumber Daya Budaya', 'Budaya dikemas jadi pengalaman wisata yang menghormati adat.', 'Aturan kunjungan situs sakral/budaya.'],
-            ['Sumber Daya Non-Leisure', 'Potensi MICE, edukasi, wellness, dan sport tourism terpetakan.', 'Venue, kampus, fasilitas olahraga.'],
-            ['Sumber Daya Non-Leisure', 'Ada event/kunjungan non-leisure rutin yang mendatangkan wisatawan.', 'Konferensi, kompetisi, program edukasi.'],
-            ['Keberlanjutan Lingkungan', 'Ada kebijakan dan aksi lingkungan (sampah, emisi, konservasi).', 'Regulasi plastik sekali pakai, PROKLIM, dsb.'],
-            ['Keberlanjutan Lingkungan', 'Destinasi/kawasan mengikuti sertifikasi atau standar keberlanjutan.', 'GSTC, CHSE, desa wisata berkelanjutan.'],
-            ['Ketahanan Sosial-Ekonomi', 'Manfaat pariwisata terdistribusi ke masyarakat lokal (tenaga kerja, UMKM).', 'Data serapan lokal dan kemitraan.'],
-            ['Ketahanan Sosial-Ekonomi', 'Ada perlindungan sosial dan kesiapan krisis ekonomi bagi pelaku wisata.', 'Dana darurat, diversifikasi pasar.'],
-            ['Dampak Sosial-Ekonomi Pariwisata', 'Kontribusi pariwisata terhadap PDRB dan PAD terukur dan tumbuh.', 'Neraca pariwisata daerah/satelit.'],
-            ['Dampak Sosial-Ekonomi Pariwisata', 'Data kunjungan dan belanja wisatawan dikumpulkan dan dipakai untuk kebijakan.', 'Survei profil dan pola belanja wisatawan.'],
-        ];
-
-        // Kelompokkan 2 soal per pilar: dimensi = nama pilar + konteks kawasan.
-        $this->addQuestions($track, $pillars);
+        // 17 pilar TTDI, satu pernyataan per pilar; subindeks & bobot di AssessmentService.
+        $this->addQuestions($track, [
+            ['Lingkungan Usaha (Business Environment)', 'Lingkungan Usaha (Business Environment)', 'Kemudahan berusaha di sektor pariwisata pada level daerah — perizinan usaha wisata, insentif investasi, birokrasi pelaku usaha.'],
+            ['Keamanan & Keselamatan (Safety and Security)', 'Keamanan & Keselamatan (Safety and Security)', 'Tingkat keamanan bagi wisatawan dan pelaku usaha, riwayat insiden, sistem pengamanan kawasan.'],
+            ['Kesehatan & Higienitas (Health and Hygiene)', 'Kesehatan & Higienitas (Health and Hygiene)', 'Akses fasilitas kesehatan, standar higiene di destinasi, kesiapan tanggap darurat kesehatan.'],
+            ['SDM & Pasar Tenaga Kerja (Human Resources and Labour Market)', 'SDM & Pasar Tenaga Kerja (Human Resources and Labour Market)', 'Ketersediaan tenaga kerja terampil pariwisata, lembaga pelatihan, kualitas dan perlindungan tenaga kerja lokal.'],
+            ['Kesiapan ICT (ICT Readiness)', 'Kesiapan ICT (ICT Readiness)', 'Konektivitas internet, adopsi teknologi digital oleh pelaku usaha dan pemerintah daerah setempat.'],
+            ['Prioritas Kebijakan Pariwisata (Prioritization of T&T)', 'Prioritas Kebijakan Pariwisata (Prioritization of T&T)', 'Sejauh mana pariwisata menjadi prioritas dalam RPJMD/RIPPARDA daerah, alokasi anggaran, dan dukungan politik.'],
+            ['Keterbukaan Internasional (International Openness)', 'Keterbukaan Internasional (International Openness)', 'Kemudahan akses bagi wisatawan mancanegara — promosi internasional, kemitraan lintas negara (adaptasi lokal dari indikator kebijakan visa nasional TTDI).'],
+            ['Daya Saing Harga (Price Competitiveness)', 'Daya Saing Harga (Price Competitiveness)', 'Kewajaran harga akomodasi, layanan, dan aktivitas wisata dibanding destinasi pembanding.'],
+            ['Infrastruktur Transportasi Udara (Air Transport Infrastructure)', 'Infrastruktur Transportasi Udara (Air Transport Infrastructure)', 'Akses dan kualitas bandara terdekat, frekuensi penerbangan yang melayani kawasan ini.'],
+            ['Infrastruktur Darat & Pelabuhan (Ground and Port Infrastructure)', 'Infrastruktur Darat & Pelabuhan (Ground and Port Infrastructure)', 'Kualitas jalan menuju kawasan, transportasi umum, pelabuhan/dermaga bila relevan.'],
+            ['Infrastruktur Layanan Wisatawan (Tourist Service Infrastructure)', 'Infrastruktur Layanan Wisatawan (Tourist Service Infrastructure)', 'Ketersediaan akomodasi, penyewaan kendaraan, ATM/perbankan, pusat informasi wisata.'],
+            ['Sumber Daya Alam (Natural Resources)', 'Sumber Daya Alam (Natural Resources)', 'Kekayaan lanskap, kawasan lindung, keragaman hayati yang menjadi daya tarik wisata alam.'],
+            ['Sumber Daya Budaya (Cultural Resources)', 'Sumber Daya Budaya (Cultural Resources)', 'Situs budaya/sejarah, tradisi hidup, kekayaan kuliner dan kesenian lokal.'],
+            ['Sumber Daya Non-Wisata Santai (Non-Leisure Resources)', 'Sumber Daya Non-Wisata Santai (Non-Leisure Resources)', 'Potensi kawasan untuk MICE (rapat/insentif/konvensi/pameran), wisata minat khusus, atau kunjungan bisnis.'],
+            ['Keberlanjutan Lingkungan (Environmental Sustainability)', 'Keberlanjutan Lingkungan (Environmental Sustainability)', 'Pengelolaan sampah, kualitas udara/air, upaya mitigasi perubahan iklim dan konservasi kawasan.'],
+            ['Ketahanan Sosial-Ekonomi (Socioeconomic Resilience and Conditions)', 'Ketahanan Sosial-Ekonomi (Socioeconomic Resilience and Conditions)', 'Pemerataan manfaat ekonomi pariwisata, kesetaraan dalam angkatan kerja, jaring pengaman sosial masyarakat lokal.'],
+            ['Tekanan & Dampak Permintaan Wisata (T&T Demand Pressure and Impact)', 'Tekanan & Dampak Permintaan Wisata (T&T Demand Pressure and Impact)', 'Tingkat tekanan kunjungan terhadap daya dukung kawasan (overtourism), dampak terhadap sumber daya lokal.'],
+        ]);
     }
 
     protected function seedRegeneratif(): void
@@ -163,27 +144,20 @@ class AssessmentSeeder extends Seeder
             'tagline' => 'Lintas Sektor — Spektrum Ekstraktif → Regeneratif Matang',
             'description' => 'Untuk DTW, desa wisata, hotel, restoran/cafe, biro perjalanan/tour operator, UMKM, dan usaha lain — mengukur posisi usahamu di spektrum ekstraktif menuju regeneratif matang.',
             'target_audience' => 'DTW, desa wisata, hotel, restoran/cafe, tour operator, UMKM',
-            'estimated_minutes' => 10,
+            'estimated_minutes' => 7,
             'is_active' => true,
             'sort_order' => 4,
         ]);
 
+        // Satu pernyataan per dimensi; bobot di AssessmentService::DIMENSION_WEIGHTS.
         $this->addQuestions($track, [
-            ['Tata Kelola & Kepemilikan Lokal', 'Kepemilikan dan keputusan usaha dikendalikan warga/komunitas lokal.', 'Bukan sekadar tenaga kerja, tapi pemilik dan pengambil keputusan.'],
-            ['Tata Kelola & Kepemilikan Lokal', 'Keuntungan dibagi adil dan transparan ke komunitas (bagi hasil, dana desa, beasiswa).', 'Ada skema benefit-sharing tertulis.'],
-            ['Tata Kelola & Kepemilikan Lokal', 'Komunitas punya suara dalam rencana pengembangan (musyawarah/forum).', 'Persetujuan komunitas sebelum ekspansi.'],
-            ['Lingkungan & Ekologi', 'Operasional memulihkan alam, bukan sekadar mengurangi kerusakan (tanam, konservasi, restorasi).', 'Regeneratif = meninggalkan alam lebih baik.'],
-            ['Lingkungan & Ekologi', 'Jejak karbon, air, dan limbah diukur dan diturunkan sistematis.', 'Audit sederhana + target tahunan.'],
-            ['Lingkungan & Ekologi', 'Rantai pasok mengutamakan bahan lokal, musiman, dan rendah kemasan.', 'Pangan lokal, refill, tolak sekali pakai.'],
-            ['Sosial & Budaya', 'Budaya lokal dihormati dan dikuatkan (bukan dikomodifikasi merusak).', 'Protokol adat, dress code, pembagian peran adat.'],
-            ['Sosial & Budaya', 'Pekerja lokal dibayar adil, terlatih, dan punya jenjang karier.', 'Upah layak, kontrak jelas, pelatihan rutin.'],
-            ['Sosial & Budaya', 'Usaha berkontribusi pada ketahanan komunitas (darurat, pendidikan, kesehatan).', 'Dana sosial atau program komunitas.'],
-            ['Ekonomi Sirkular', 'Uang wisatawan berputar di ekonomi lokal (belanja lokal, hindari kebocoran).', 'Target % belanja ke pemasok lokal.'],
-            ['Ekonomi Sirkular', 'Limbah menjadi sumber daya (kompos, kerajinan, energi).', 'Zero-waste menuju sirkular.'],
-            ['Ekonomi Sirkular', 'Kolaborasi antar usaha lokal (paket bersama, koperasi pemasaran).', 'Ekosistem, bukan kompetisi destruktif.'],
-            ['Wisatawan & Edukasi', 'Wisatawan diedukasi menjadi penjaga (briefing, interpretasi, partisipasi).', 'Dari konsumen menjadi kontributor.'],
-            ['Wisatawan & Edukasi', 'Ada pengalaman partisipatif (tanam, bersih pantai, belajar adat).', 'Hands-on memberi dampak langsung.'],
-            ['Wisatawan & Edukasi', 'Dampak kunjungan dikomunikasikan jujur (transparansi, bukan greenwashing).', 'Laporan dampak berkala ke publik.'],
+            ['Dampak Positif terhadap Ekosistem', 'Dampak Positif terhadap Ekosistem', 'Sejauh mana operasional aktif memulihkan lingkungan (restorasi, konservasi, penanaman) — bukan sekadar mengurangi dampak negatif.'],
+            ['Sirkularitas & Pengelolaan Sumber Daya', 'Sirkularitas & Pengelolaan Sumber Daya', 'Pengelolaan sampah, penggunaan ulang material, efisiensi energi/air, pengurangan single-use plastic.'],
+            ['Pemberdayaan & Kepemilikan Komunitas Lokal', 'Pemberdayaan & Kepemilikan Komunitas Lokal', 'Sejauh mana masyarakat lokal bukan hanya menerima manfaat, tapi memiliki peran dan kepemilikan nyata dalam operasional/keputusan.'],
+            ['Keaslian & Pelestarian Budaya', 'Keaslian & Pelestarian Budaya', 'Integrasi budaya/tradisi lokal yang hidup dan otentik, bukan sekadar dekorasi atau pertunjukan seremonial.'],
+            ['Rantai Pasok & Sirkulasi Ekonomi Lokal', 'Rantai Pasok & Sirkulasi Ekonomi Lokal', 'Proporsi bahan baku, tenaga kerja, dan mitra usaha yang bersumber dari sekitar lokasi — mengurangi kebocoran ekonomi ke luar daerah.'],
+            ['Edukasi & Transformasi Pengunjung/Konsumen', 'Edukasi & Transformasi Pengunjung/Konsumen', 'Sejauh mana pengunjung/konsumen diajak memahami dan terlibat aktif dalam nilai regeneratif, bukan hanya mengonsumsi pasif.'],
+            ['Tata Kelola Adaptif & Pembelajaran Berkelanjutan', 'Tata Kelola Adaptif & Pembelajaran Berkelanjutan', 'Ada tidaknya mekanisme monitoring, evaluasi, dan penyesuaian praktik secara berkala berdasarkan dampak nyata.'],
         ]);
 
         // Catatan: skor regeneratif dibaca sebagai spektrum

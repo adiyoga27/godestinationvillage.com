@@ -5,7 +5,9 @@
 @php
     $icons = \App\Services\AssessmentService::DIMENSION_ICONS;
     $totalWeight = max(1, $weights->sum());
-    $showWeight = $weights->unique()->count() > 1;
+    $showWeight = ($formConfig['show_weight'] ?? false) || $weights->unique()->count() > 1;
+    // Judul kelompok (mis. subindeks TTDI) ditampilkan sebelum dimensi pertama tiap kelompok.
+    $sectionStarts = collect($formConfig['sections'] ?? [])->mapWithKeys(fn ($dims, $title) => [$dims[0] => $title]);
     $totalQuestions = $track->activeQuestions->count();
     $unitLabel = $grouped->count() === $totalQuestions ? 'dimensi' : 'pernyataan';
 @endphp
@@ -70,6 +72,9 @@
                     $noteKey = $questions->first()->id;
                     $hasNote = filled(old('notes.'.$noteKey));
                 @endphp
+                @if ($sectionStarts->has($dimension))
+                    <h3 class="flex items-center gap-3 pt-4 font-display text-lg font-bold text-ink-950 sm:text-xl"><span class="h-px w-8 bg-brand-500"></span>{{ $sectionStarts[$dimension] }}</h3>
+                @endif
                 <article id="dim-{{ $loop->iteration }}" data-dimension="{{ $loop->iteration }}" class="dim-card scroll-mt-56 rounded-3xl border border-ink-100 bg-white p-6 shadow-[0_10px_30px_-12px_rgb(26_26_38/0.12)] transition-all duration-300 sm:p-9">
                     <div class="flex items-start gap-4">
                         <span class="dim-badge relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 transition-all duration-300">

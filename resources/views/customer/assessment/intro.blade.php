@@ -124,7 +124,11 @@
             @foreach ([
                 $profile['business_fields']
                     ? ['Isi profil usaha', 'Nama usaha, jenis & sektor, lokasi, dan kontak pengurus.']
-                    : ['Isi profil desa', 'Nama desa/DTW, lokasi, dan kontak pengelola.'],
+                    : ($profile['destination_fields']
+                        ? ['Isi profil kawasan', 'Nama kawasan, kabupaten/provinsi, instansi pengusul, dan kontak.']
+                        : ($profile['entity_field']
+                            ? ['Isi profil entitas', 'Nama usaha/entitas, jenis entitas, lokasi, dan kontak.']
+                            : ['Isi profil desa', 'Nama desa/DTW, lokasi, dan kontak pengelola.'])),
                 ['Nilai '.$track->questions_count.' '.$unitLabel, 'Skala 1–5 sesuai kondisi nyata saat ini.'],
                 ['Terima analisa', $track->price > 0 ? 'Bayar '.$priceLabel.', hasil langsung terbuka.' : 'Hasil langsung terbuka.'],
             ] as $i => [$title, $desc])
@@ -210,10 +214,10 @@
 
                             <div class="relative" id="location-picker">
                                 <label class="block">
-                                    <span class="label-gd">Provinsi / Kabupaten / Kota <span class="text-brand-600">*</span></span>
+                                    <span class="label-gd">{{ $profile['location_label'] }} <span class="text-brand-600">*</span></span>
                                     <span class="relative block">
                                         <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-400" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-                                        <input type="text" id="location-search" autocomplete="off" class="input-gd !py-3.5 !pl-12 !pr-11" placeholder="Ketik min. 3 huruf nama desa, kecamatan, atau kab/kota…">
+                                        <input type="text" id="location-search" autocomplete="off" class="input-gd !py-3.5 !pl-12 !pr-11" placeholder="{{ $profile['location_placeholder'] }}">
                                         <span id="location-spinner" class="loc-spinner" hidden aria-hidden="true"></span>
                                         <svg id="location-check" class="loc-check" hidden viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 111.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z" clip-rule="evenodd"/></svg>
                                     </span>
@@ -223,7 +227,30 @@
                                 <input type="hidden" name="regency" id="location-city" value="{{ old('regency') }}">
                                 <input type="hidden" name="district" id="location-district" value="{{ old('district') }}">
                                 <input type="hidden" name="subdistrict" id="location-subdistrict" value="{{ old('subdistrict') }}">
+                                <input type="hidden" name="postal_code" id="location-postal" value="{{ old('postal_code') }}">
+                                {{-- Rincian lokasi terpilih --}}
+                                <dl id="location-detail" class="mt-3 hidden grid-cols-2 gap-x-4 gap-y-2 rounded-2xl bg-cream-50 p-4 text-sm sm:grid-cols-5">
+                                    @foreach (['subdistrict' => 'Kelurahan', 'district' => 'Kecamatan', 'city' => 'Kota/Kab', 'province' => 'Provinsi', 'postal' => 'Kode Pos'] as $key => $label)
+                                        <div><dt class="text-[11px] font-bold uppercase tracking-wider text-ink-400">{{ $label }}</dt><dd data-loc="{{ $key }}" class="font-semibold text-ink-900">-</dd></div>
+                                    @endforeach
+                                </dl>
                             </div>
+
+                            @if ($profile['destination_fields'])
+                                <label class="block"><span class="label-gd">Instansi/OPD Pengusul <span class="text-brand-600">*</span></span><input type="text" name="institution" value="{{ old('institution') }}" required class="input-gd !py-3.5" placeholder="mis. Dinas Pariwisata Kabupaten Bangli"></label>
+                            @endif
+
+                            @if ($profile['entity_field'])
+                                <label class="block">
+                                    <span class="label-gd">Jenis Entitas <span class="text-brand-600">*</span></span>
+                                    <select name="business_type" required class="input-gd !py-3.5">
+                                        <option value="" disabled {{ old('business_type') ? '' : 'selected' }}>Pilih...</option>
+                                        @foreach (\App\Services\AssessmentService::ENTITY_TYPES as $opt)
+                                            <option value="{{ $opt }}" {{ old('business_type') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
+                                        @endforeach
+                                    </select>
+                                </label>
+                            @endif
 
                             @if ($profile['business_fields'])
                                 <div class="grid gap-5 sm:grid-cols-2">
@@ -260,7 +287,7 @@
                         <div class="mt-4 grid gap-5 sm:grid-cols-2">
                             <label class="block"><span class="label-gd">{{ $profile['contact_label'] }} <span class="text-brand-600">*</span></span><input type="text" name="name" value="{{ old('name') }}" required class="input-gd !py-3.5" placeholder="{{ $profile['contact_placeholder'] }}"></label>
                             <label class="block">
-                                <span class="label-gd">No. WhatsApp / Telepon <span class="text-brand-600">*</span></span>
+                                <span class="label-gd">{{ $profile['phone_label'] }} <span class="text-brand-600">*</span></span>
                                 <input type="tel" name="phone" value="{{ old('phone') }}" required class="input-gd !py-3.5" placeholder="08xx-xxxx-xxxx">
                                 <span class="mt-1.5 block text-xs text-ink-400">Dipakai untuk cek status & membuka hasil kembali.</span>
                             </label>
@@ -346,11 +373,21 @@
 (function () {
     const input = document.getElementById('location-search');
     const list = document.getElementById('location-results');
+    const detail = document.getElementById('location-detail');
     const fields = {
         province: document.getElementById('location-province'),
         city: document.getElementById('location-city'),
         district: document.getElementById('location-district'),
         subdistrict: document.getElementById('location-subdistrict'),
+        postal: document.getElementById('location-postal'),
+    };
+    const showDetail = () => {
+        const filled = !!fields.city.value;
+        detail.classList.toggle('hidden', !filled);
+        detail.classList.toggle('grid', filled);
+        Object.keys(fields).forEach((k) => {
+            detail.querySelector('[data-loc="' + k + '"]').textContent = fields[k].value || '-';
+        });
     };
     const spinner = document.getElementById('location-spinner');
     const check = document.getElementById('location-check');
@@ -359,6 +396,14 @@
     let controller = null;
 
     const titleCase = (str) => (str || '').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+    // Urutan tampilan: Kel. → Kec. → Kota/Kab → Prov., kode pos di baris kedua.
+    const placeLine = (p) => [
+        p.subdistrict && 'Kel. ' + titleCase(p.subdistrict),
+        p.district && 'Kec. ' + titleCase(p.district),
+        titleCase(p.city),
+        p.province && 'Prov. ' + titleCase(p.province),
+    ].filter(Boolean).join(', ');
+    const fullLine = (p) => placeLine(p) + (p.postal ? ', ' + p.postal : '');
     const hide = () => list.classList.add('hidden');
     const message = (text) => {
         list.innerHTML = '';
@@ -386,6 +431,7 @@
     const clearSelection = () => {
         Object.values(fields).forEach((f) => { f.value = ''; });
         check.hidden = true;
+        showDetail();
     };
 
     const render = (items) => {
@@ -396,10 +442,11 @@
             li.className = 'cursor-pointer px-4 py-3 hover:bg-cream-50';
             const main = document.createElement('div');
             main.className = 'font-semibold text-ink-900';
-            main.textContent = titleCase(item.city) + ', ' + titleCase(item.province);
+            const parts = { province: item.province, city: item.city, district: item.district, subdistrict: item.subdistrict, postal: item.postal_code };
+            main.textContent = placeLine(parts);
             const sub = document.createElement('div');
-            sub.className = 'text-xs text-ink-500';
-            sub.textContent = [item.subdistrict, item.district].filter(Boolean).map(titleCase).join(', ');
+            sub.className = 'mt-0.5 text-xs text-ink-500';
+            sub.textContent = parts.postal ? 'Kode Pos ' + parts.postal : '';
             li.append(main, sub);
             li.addEventListener('mousedown', (e) => {
                 e.preventDefault();
@@ -407,8 +454,10 @@
                 fields.city.value = titleCase(item.city);
                 fields.district.value = titleCase(item.district);
                 fields.subdistrict.value = titleCase(item.subdistrict);
-                input.value = [item.subdistrict, item.district, item.city, item.province].filter(Boolean).map(titleCase).join(', ');
+                fields.postal.value = item.postal_code || '';
+                input.value = fullLine(parts);
                 check.hidden = false;
+                showDetail();
                 hide();
             });
             list.appendChild(li);
@@ -458,8 +507,9 @@
     countDesc();
 
     if (fields.city.value) {
-        input.value = [fields.subdistrict.value, fields.district.value, fields.city.value, fields.province.value].filter(Boolean).join(', ');
+        input.value = fullLine(Object.fromEntries(Object.entries(fields).map(([k, f]) => [k, f.value])));
         check.hidden = false;
+        showDetail();
     }
 })();
 </script>
