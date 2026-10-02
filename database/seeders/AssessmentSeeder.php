@@ -84,27 +84,20 @@ class AssessmentSeeder extends Seeder
             'tagline' => 'Usaha Desa, UMKM & Koperasi',
             'description' => 'Termasuk Koperasi Desa/Kelurahan Merah Putih — identifikasi produk unggulan, model bisnis, dan strategi pasar usaha desa Anda.',
             'target_audience' => 'BUMDes, UMKM desa, pengurus Koperasi Desa/Kelurahan Merah Putih',
-            'estimated_minutes' => 10,
+            'estimated_minutes' => 7,
             'is_active' => true,
             'sort_order' => 2,
         ]);
 
+        // Satu pernyataan per dimensi; bobot di AssessmentService::DIMENSION_WEIGHTS.
         $this->addQuestions($track, [
-            ['Produk Unggulan', 'Usaha memiliki produk/jasa unggulan yang jelas dan berdaya saing.', 'Satu hero product dengan keunggulan dibanding pesaing.'],
-            ['Produk Unggulan', 'Produk memiliki standar mutu konsisten dan kemasan/label yang layak jual.', 'Termasuk PIRT/halal/BPOM bila relevan dan kemasan informatif.'],
-            ['Produk Unggulan', 'Ada diferensiasi (varian, kemasan premium, edisi khas desa).', 'Segmentasi harga: reguler, premium, oleh-oleh.'],
-            ['Model Bisnis & Kelembagaan', 'Bentuk kelembagaan jelas (BUMDes/UMKM/koperasi) dengan legalitas dasar.', 'NIB, badan hukum koperasi, atau AD/ART BUMDes.'],
-            ['Model Bisnis & Kelembagaan', 'Khusus koperasi: RAT berjalan, simpanan/pinjaman tertib, dan anggota aktif berpartisipasi.', 'Indikator kesehatan Koperasi Desa/Kelurahan Merah Putih.'],
-            ['Model Bisnis & Kelembagaan', 'Ada pencatatan keuangan dan pemisahan keuangan usaha vs pribadi.', 'Pembukuan sederhana namun rutin dan bisa diaudit.'],
-            ['Permodalan & Keuangan', 'Arus kas tercatat dan usaha mampu menutup biaya operasional dari pendapatan sendiri.', 'Tidak bergantung permanen pada bantuan.'],
-            ['Permodalan & Keuangan', 'Ada akses permodalan (dana desa, KUR, kemitraan, investor) dan riwayat pembiayaan sehat.', 'Riwayat kredit lancar, proposal bisnis tersedia.'],
-            ['Permodalan & Keuangan', 'Ada dana cadangan dan rencana investasi 1–2 tahun ke depan.', 'Peremajaan alat, ekspansi, atau diversifikasi produk.'],
-            ['Pemasaran & Akses Pasar', 'Ada saluran penjualan lebih dari satu (offline, online/marketplace, reseller, wisata).', 'Tidak bergantung pada satu pembeli/tengkulak.'],
-            ['Pemasaran & Akses Pasar', 'Brand dan promosi berjalan rutin (media sosial, katalog, bazar, kemitraan).', 'Kalender promosi dan materi katalog produk.'],
-            ['Pemasaran & Akses Pasar', 'Harga dihitung dari HPP dan ada strategi margin per saluran jual.', 'Tahu BEP dan margin tiap kanal penjualan.'],
-            ['SDM & Digitalisasi', 'Ada penanggung jawab tiap fungsi (produksi, keuangan, pemasaran) meski tim kecil.', 'Jobdesk tertulis, bukan semua dikerjakan ketua.'],
-            ['SDM & Digitalisasi', 'Transaksi dan administrasi terbantu tools digital (kasir/POS, e-wallet, marketplace).', 'QRIS, pembukuan digital, atau katalog online.'],
-            ['SDM & Digitalisasi', 'Anggota/pengelola mengikuti pelatihan minimal 1x setahun.', 'Pelatihan produksi, pemasaran digital, atau manajemen koperasi.'],
+            ['Kejelasan Produk/Jasa Unggulan', 'Kejelasan Produk/Jasa Unggulan', 'Apakah usaha/koperasi sudah punya produk atau jasa unggulan yang jelas dan konsisten diproduksi? Ini titik lemah paling umum pada Koperasi Desa/Kelurahan Merah Putih yang baru terbentuk.'],
+            ['Kapasitas Produksi & Bahan Baku', 'Kapasitas Produksi & Bahan Baku', 'Ketersediaan bahan baku lokal, kapasitas dan konsistensi produksi, standar kualitas.'],
+            ['Legalitas & Kelembagaan', 'Legalitas & Kelembagaan', 'Akta pendirian/NIB, struktur pengurus, Rapat Anggota Tahunan (RAT) untuk koperasi, sertifikasi (halal/PIRT/BPOM).'],
+            ['Akses Pasar & Jaringan Distribusi', 'Akses Pasar & Jaringan Distribusi', 'Jangkauan pasar saat ini (lokal/regional/nasional), mitra distribusi, keterlibatan dalam rantai pasok yang lebih besar.'],
+            ['Kehadiran Digital & Branding Usaha', 'Kehadiran Digital & Branding Usaha', 'Katalog produk, media sosial usaha, marketplace, kemasan dan identitas merek.'],
+            ['Akses Permodalan & Kemitraan', 'Akses Permodalan & Kemitraan', 'Akses ke modal kerja, pembiayaan koperasi/perbankan, kemitraan dengan offtaker atau investor.'],
+            ['Kapasitas SDM & Manajemen Usaha', 'Kapasitas SDM & Manajemen Usaha', 'Kemampuan pengurus/anggota dalam pembukuan, manajemen operasional, dan pengambilan keputusan usaha.'],
         ]);
     }
 

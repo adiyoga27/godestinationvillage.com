@@ -23,8 +23,8 @@ class AssessmentService
     /**
      * Bobot dimensi per jalur (persen, total 100) — Brief §3.1–§3.4.
      *
-     * CATATAN: dimensi DB untuk jalur ekonomi-desa & regeneratif belum
-     * dipetakan ulang ke 7 dimensi brief (butuh teks DIM_* dari prototype
+     * CATATAN: dimensi DB untuk jalur regeneratif belum dipetakan ulang ke
+     * dimensi brief (butuh teks DIM_* dari prototype
      * godevi-readiness-impact-assistant.html). Selama belum dipetakan,
      * jalur tersebut memakai bobot setara (fallback equal weight).
      */
@@ -36,6 +36,16 @@ class AssessmentService
             'Kesiapan Komunitas & SDM' => 15,
             'Tata Kelola & Kelembagaan' => 15,
             'Kehadiran Digital Saat Ini' => 10,
+        ],
+        // Ekonomi Desa / Koperasi: 7 dimensi.
+        'ekonomi-desa' => [
+            'Kejelasan Produk/Jasa Unggulan' => 20,
+            'Kapasitas Produksi & Bahan Baku' => 15,
+            'Legalitas & Kelembagaan' => 15,
+            'Akses Pasar & Jaringan Distribusi' => 15,
+            'Kehadiran Digital & Branding Usaha' => 10,
+            'Akses Permodalan & Kemitraan' => 10,
+            'Kapasitas SDM & Manajemen Usaha' => 15,
         ],
         // TTDI: 17 pilar, bobot sama rata 1/17 (Brief §3.3).
         'daya-saing-destinasi' => [
@@ -112,6 +122,11 @@ class AssessmentService
             'hero_image' => 'assets/customer/img/page-title-area/explorer.jpg',
             'title' => 'Identifikasi Potensi',
             'intro' => 'Nilai setiap dimensi berdasarkan kondisi saat ini. Skor menentukan kategori kesiapan dan menjadi dasar rekomendasi.',
+        ],
+        'ekonomi-desa' => [
+            'title' => 'Identifikasi Potensi',
+            'intro' => 'Nilai setiap dimensi berdasarkan kondisi saat ini. Skor menentukan kategori kesiapan dan menjadi dasar rekomendasi.',
+            'submit_label' => 'Buat Analisis & Strategi',
         ],
     ];
 

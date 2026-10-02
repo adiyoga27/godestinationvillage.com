@@ -171,6 +171,21 @@ class AssessmentFlowsTest extends TestCase
         $this->assertSame(20, AssessmentService::compute($track, $questions, $allOne)['total']);
     }
 
+    public function test_ekonomi_desa_uses_seven_weighted_dimensions(): void
+    {
+        $track = AssessmentTrack::where('slug', 'ekonomi-desa')->firstOrFail();
+        $questions = $track->activeQuestions()->orderBy('sort_order')->get();
+
+        $weights = AssessmentService::weightsFor($track);
+        $this->assertCount(7, $weights);
+        $this->assertSame(100, array_sum($weights));
+        $this->assertEqualsCanonicalizing(array_keys($weights), $questions->pluck('dimension')->unique()->values()->all());
+
+        // Hanya dimensi berbobot 20% bernilai 5, sisanya 1 → (5×20 + 1×80) / 5 = 36.
+        $answers = $questions->mapWithKeys(fn ($q) => [$q->id => $q->dimension === 'Kejelasan Produk/Jasa Unggulan' ? 5 : 1])->all();
+        $this->assertSame(36, AssessmentService::compute($track, $questions, $answers)['total']);
+    }
+
     public function test_pariwisata_bands_match_brief(): void
     {
         $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();

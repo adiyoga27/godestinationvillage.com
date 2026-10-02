@@ -135,10 +135,13 @@
                         <p data-submit-title class="font-display text-2xl font-bold">Hampir selesai!</p>
                         <p data-submit-hint class="mt-1 text-sm text-white/60">Nilai semua {{ $unitLabel }} untuk melihat hasil.</p>
                     </div>
-                    <button type="submit" class="btn-primary group shrink-0 !px-9 !py-4 text-base">
-                        {{ $track->price > 0 ? 'Kirim & Lanjut Pembayaran' : 'Kirim & Lihat Hasil' }}
-                        <svg class="h-5 w-5 transition group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                    </button>
+                    <div class="flex shrink-0 flex-col-reverse gap-3 sm:flex-row sm:items-center">
+                        <a href="{{ route('assessment.intro', $track->slug) }}" class="btn border border-white/25 !py-4 text-white hover:bg-white/10">← Kembali</a>
+                        <button type="submit" class="btn-primary group !px-9 !py-4 text-base">
+                            {{ $formConfig['submit_label'] ?? ($track->price > 0 ? 'Kirim & Lanjut Pembayaran' : 'Kirim & Lihat Hasil') }}
+                            <svg class="h-5 w-5 transition group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>
