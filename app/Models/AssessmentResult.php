@@ -16,6 +16,8 @@ class AssessmentResult extends Model
         'email',
         'phone',
         'organization',
+        'subdistrict',
+        'district',
         'regency',
         'province',
         'profile_description',
@@ -52,6 +54,26 @@ class AssessmentResult extends Model
     public function orders()
     {
         return $this->hasMany(AssessmentOrder::class, 'assessment_result_id');
+    }
+
+    public function latestOrder()
+    {
+        return $this->hasOne(AssessmentOrder::class, 'assessment_result_id')->latestOfMany();
+    }
+
+    /** Label status pembayaran untuk guest & admin. */
+    public function paymentLabel(): string
+    {
+        if ($this->is_unlocked) {
+            return 'Lunas';
+        }
+
+        return match ($this->latestOrder?->status) {
+            'expired' => 'Pembayaran kedaluwarsa',
+            'failed' => 'Pembayaran gagal',
+            'refunded' => 'Dana dikembalikan',
+            default => 'Menunggu pembayaran',
+        };
     }
 
     public function latestPaidOrder()

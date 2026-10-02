@@ -23,6 +23,7 @@
                 <div class="form-group"><label>Tagline</label><input type="text" name="tagline" value="{{ old('tagline') }}" class="form-control"></div>
                 <div class="form-group"><label>Deskripsi</label><textarea name="description" rows="4" class="form-control">{{ old('description') }}</textarea></div>
                 <div class="form-group"><label>Target Peserta</label><input type="text" name="target_audience" value="{{ old('target_audience') }}" class="form-control"></div>
+                <div class="form-group"><label>Harga Asesmen (Rp) *</label><input type="number" name="price" value="{{ old('price', 199000) }}" class="form-control" min="0" required><small class="text-muted">Isi 0 bila gratis (hasil langsung terbuka tanpa pembayaran).</small></div>
                 <div class="form-row">
                     <div class="form-group col-md-4"><label>Estimasi (menit)</label><input type="number" name="estimated_minutes" value="{{ old('estimated_minutes', 10) }}" class="form-control" min="1"></div>
                     <div class="form-group col-md-4"><label>Urutan</label><input type="number" name="sort_order" value="{{ old('sort_order', 0) }}" class="form-control" min="0"></div>

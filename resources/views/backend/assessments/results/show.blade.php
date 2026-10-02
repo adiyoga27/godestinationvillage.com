@@ -17,8 +17,18 @@
 <div class="row">
     <div class="col-lg-8 grid-margin stretch-card">
         <div class="card"><div class="card-body">
-            <h4 class="card-title">{{ $result->name }} <small class="text-muted">({{ $result->organization }})</small></h4>
-            <p>{{ $result->email }} · {{ $result->phone }} · {{ $result->created_at }}</p>
+            <h4 class="card-title">{{ $result->organization }} <small class="text-muted">— {{ $result->name }}</small></h4>
+            <p>{{ collect([$result->subdistrict, $result->district, $result->regency, $result->province])->filter()->implode(', ') }}</p>
+            <p>{{ collect([$result->phone, $result->email])->filter()->implode(' · ') }} · {{ $result->created_at }}</p>
+            @if ($result->profile_description)
+                <p class="mb-1"><strong>Deskripsi aset & potensi:</strong></p>
+                <p style="white-space: pre-line">{{ $result->profile_description }}</p>
+            @endif
+            <p>Pembayaran: <label class="badge {{ $result->is_unlocked ? 'badge-gradient-success' : 'badge-gradient-warning' }}">{{ $result->paymentLabel() }}</label>
+                @if ($result->latestOrder)
+                    · {{ $result->latestOrder->code }} · Rp {{ number_format($result->latestOrder->amount, 0, ',', '.') }}{{ $result->latestOrder->payment_type ? ' · '.$result->latestOrder->payment_type : '' }}{{ $result->latestOrder->paid_at ? ' · '.$result->latestOrder->paid_at->format('d M Y H:i') : '' }}
+                @endif
+            </p>
             <p>Skor total: <strong>{{ number_format($result->total_score, 2) }}/100</strong> — <strong>{{ $result->band }}</strong></p>
             <a href="{{ url('asesmen/hasil/'.$result->uuid) }}" target="_blank" class="btn btn-sm btn-info mb-3">Lihat halaman hasil guest</a>
             <div class="table-responsive">
@@ -26,7 +36,11 @@
                     <thead><tr><th>Dimensi</th><th>Skor</th><th>Rata-rata</th></tr></thead>
                     <tbody>
                         @foreach (($result->dimension_scores ?? []) as $name => $dim)
-                            <tr><td><strong>{{ $name }}</strong></td><td>{{ number_format($dim['score'] ?? 0, 1) }}</td><td>{{ $dim['average'] ?? '-' }}</td></tr>
+                            <tr>
+                                <td><strong>{{ $name }}</strong>@if (! empty($result->dimension_notes[$name]))<br><small class="text-muted" style="white-space: pre-line">Catatan: {{ $result->dimension_notes[$name] }}</small>@endif</td>
+                                <td>{{ number_format($dim['score'] ?? 0, 1) }}</td>
+                                <td>{{ $dim['average'] ?? '-' }}</td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>

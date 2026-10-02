@@ -9,6 +9,9 @@ class AssessmentOrder extends Model
 {
     use HasFactory;
 
+    /** Prefix kode order, dipakai webhook Midtrans untuk mengenali order asesmen. */
+    public const CODE_PREFIX = 'ASM';
+
     protected $fillable = [
         'assessment_result_id',
         'code',
@@ -33,7 +36,7 @@ class AssessmentOrder extends Model
     public static function generateCode(): string
     {
         do {
-            $code = 'ASM-'.date('Ymd').'-'.strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
+            $code = self::CODE_PREFIX.'-'.date('Ymd').'-'.strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
         } while (self::where('code', $code)->exists());
 
         return $code;

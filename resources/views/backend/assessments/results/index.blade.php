@@ -30,26 +30,27 @@
                             <option value="{{ $st }}" {{ ($filters['status'] ?? '') === $st ? 'selected' : '' }}>{{ ucfirst($st) }}</option>
                         @endforeach
                     </select>
-                    <input type="text" name="q" value="{{ $filters['q'] ?? '' }}" class="form-control mr-2" placeholder="Cari nama / email / organisasi">
+                    <input type="text" name="q" value="{{ $filters['q'] ?? '' }}" class="form-control mr-2" placeholder="Cari desa / kontak / kab/kota">
                     <button class="btn btn-primary">Filter</button>
                 </form>
                 <div class="table-responsive">
                     <table class="table table-hover">
-                        <thead><tr><th>Tanggal</th><th>Jalur</th><th>Pengisi</th><th>Skor</th><th>Band</th><th>Status</th><th>PIC</th><th></th></tr></thead>
+                        <thead><tr><th>Tanggal</th><th>Jalur</th><th>Pengisi</th><th>Skor</th><th>Band</th><th>Pembayaran</th><th>Status</th><th>PIC</th><th></th></tr></thead>
                         <tbody>
                             @forelse ($results as $r)
                                 <tr>
                                     <td>{{ $r->created_at }}</td>
                                     <td>{{ optional($r->track)->name }}</td>
-                                    <td><strong>{{ $r->name }}</strong><br><small>{{ $r->organization }}<br>{{ $r->email }} / {{ $r->phone }}</small></td>
+                                    <td><strong>{{ $r->organization ?: $r->name }}</strong><br><small>{{ collect([$r->regency, $r->province])->filter()->implode(', ') }}<br>{{ $r->name }} / {{ $r->phone }}</small></td>
                                     <td><strong>{{ number_format($r->total_score, 0) }}</strong></td>
                                     <td>{{ $r->band }}</td>
+                                    <td><label class="badge {{ $r->is_unlocked ? 'badge-gradient-success' : 'badge-gradient-warning' }}">{{ $r->paymentLabel() }}</label></td>
                                     <td><label class="badge {{ $r->status === 'selesai' ? 'badge-gradient-success' : ($r->status === 'dihubungi' ? 'badge-gradient-info' : 'badge-gradient-warning') }}">{{ ucfirst($r->status) }}</label></td>
                                     <td>{{ optional($r->pic)->name ?? '-' }}</td>
                                     <td><a href="{{ route('assessment-results.show', $r->id) }}" class="btn btn-sm btn-primary">Detail</a></td>
                                 </tr>
                             @empty
-                                <tr><td colspan="8" class="text-center">Belum ada hasil masuk.</td></tr>
+                                <tr><td colspan="9" class="text-center">Belum ada hasil masuk.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

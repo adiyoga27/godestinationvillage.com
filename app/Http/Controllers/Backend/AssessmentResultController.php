@@ -17,7 +17,7 @@ class AssessmentResultController extends Controller
 
     public function index(Request $request)
     {
-        $query = AssessmentResult::with(['track', 'pic'])->latest('id');
+        $query = AssessmentResult::with(['track', 'pic', 'latestOrder'])->latest('id');
 
         if ($request->filled('track_id')) {
             $query->where('track_id', $request->get('track_id'));
@@ -30,7 +30,10 @@ class AssessmentResultController extends Controller
             $query->where(function ($w) use ($q) {
                 $w->where('name', 'like', "%{$q}%")
                     ->orWhere('email', 'like', "%{$q}%")
-                    ->orWhere('organization', 'like', "%{$q}%");
+                    ->orWhere('organization', 'like', "%{$q}%")
+                    ->orWhere('phone', 'like', "%{$q}%")
+                    ->orWhere('regency', 'like', "%{$q}%")
+                    ->orWhere('province', 'like', "%{$q}%");
             });
         }
 
@@ -43,7 +46,7 @@ class AssessmentResultController extends Controller
 
     public function show($id)
     {
-        $data['result'] = AssessmentResult::with(['track', 'track.activeQuestions', 'pic'])->findOrFail($id);
+        $data['result'] = AssessmentResult::with(['track', 'track.activeQuestions', 'pic', 'latestOrder'])->findOrFail($id);
         $data['teams'] = OurTeam::orderBy('name')->get();
 
         return view('backend.assessments.results.show', $data);

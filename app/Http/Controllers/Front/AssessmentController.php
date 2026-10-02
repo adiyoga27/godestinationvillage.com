@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Front;
 use App\Helpers\BotHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Guest\AssessmentSubmitRequest;
+use App\Jobs\GenerateAssessmentReport;
 use App\Models\AssessmentOrder;
 use App\Models\AssessmentResult;
 use App\Models\AssessmentTrack;
+use App\Services\AssessmentPaymentService;
 use App\Services\AssessmentService;
 use App\Services\Midtrans\CreateSnapTokenService;
 use App\Support\Seo;
@@ -37,7 +39,19 @@ class AssessmentController extends Controller
     public function intro(string $slug)
     {
         $track = $this->findTrack($slug);
-        $track->loadCount('activeQuestions as questions_count');
+        $track->load('activeQuestions');
+        $track->questions_count = $track->activeQuestions->count();
+
+        // Ringkasan dimensi yang dinilai + bobotnya untuk halaman intro.
+        $grouped = $track->activeQuestions->groupBy('dimension');
+        $weights = AssessmentService::displayWeights($track, $grouped);
+        $data['dimensions'] = $grouped->map(fn ($qs, $name) => [
+            'name' => $name,
+            'description' => $qs->count() === 1 ? $qs->first()->help_text : $qs->count().' pernyataan',
+            'weight' => round($weights[$name]),
+        ])->values();
+        $data['showWeight'] = $weights->map(fn ($w) => round($w, 1))->unique()->count() > 1;
+        $data['formConfig'] = AssessmentService::formFor($track);
 
         $data['track'] = $track;
         $data['seo'] = Seo::make()
@@ -57,11 +71,24 @@ class AssessmentController extends Controller
         $track = $this->findTrack($slug);
 
         $validated = $request->validate([
+            'organization' => 'required|string|max:191',
+            'province' => 'required|string|max:191',
+            'regency' => 'required|string|max:191',
+            'district' => 'nullable|string|max:191',
+            'subdistrict' => 'nullable|string|max:191',
             'name' => 'required|string|max:191',
-            'email' => 'required|email|max:191',
-            'phone' => 'nullable|string|max:50',
-            'organization' => 'nullable|string|max:191',
+            'phone' => 'required|string|max:50',
+            'profile_description' => 'nullable|string|max:3000',
+        ], [
+            'province.required' => 'Pilih lokasi dari hasil pencarian Provinsi / Kabupaten/Kota.',
+            'regency.required' => 'Pilih lokasi dari hasil pencarian Provinsi / Kabupaten/Kota.',
+        ], [
+            'organization' => 'Nama Desa / Daya Tarik Wisata',
+            'name' => 'Nama Kontak',
+            'phone' => 'No. WhatsApp / Telepon',
+            'profile_description' => 'Deskripsi singkat',
         ]);
+        $validated['phone'] = AssessmentPaymentService::normalizePhone($validated['phone']);
 
         $request->session()->put('assessment_identity_'.$track->id, $validated);
 
@@ -83,6 +110,8 @@ class AssessmentController extends Controller
         $data['track'] = $track;
         $data['grouped'] = $grouped;
         $data['labels'] = AssessmentService::SCALE_LABELS;
+        $data['formConfig'] = AssessmentService::formFor($track);
+        $data['weights'] = AssessmentService::displayWeights($track, $grouped);
         $data['seo'] = Seo::make()->title('Isi Asesmen: '.$track->name)->noindex()->toArray();
 
         return view('customer.assessment.form', $data);
@@ -109,6 +138,14 @@ class AssessmentController extends Controller
             return back()->withInput()->with('error', 'Masih ada pernyataan yang belum dijawab.');
         }
 
+        // Catatan dikirim per pertanyaan pertama tiap dimensi → simpan sebagai [dimensi => catatan].
+        $dimensionByQuestion = $questions->pluck('dimension', 'id');
+        $notes = collect($request->validated()['notes'] ?? [])
+            ->filter(fn ($note, $id) => isset($dimensionByQuestion[$id]) && trim((string) $note) !== '')
+            ->mapWithKeys(fn ($note, $id) => [$dimensionByQuestion[$id] => trim($note)])
+            ->all();
+        $free = (int) $track->price === 0;
+
         try {
             $computed = AssessmentService::compute($track, $questions, $answers);
 
@@ -116,15 +153,27 @@ class AssessmentController extends Controller
                 'uuid' => (string) Str::uuid(),
                 'track_id' => $track->id,
                 'name' => $identity['name'],
-                'email' => $identity['email'],
                 'phone' => $identity['phone'] ?? null,
                 'organization' => $identity['organization'] ?? null,
+                'province' => $identity['province'] ?? null,
+                'regency' => $identity['regency'] ?? null,
+                'district' => $identity['district'] ?? null,
+                'subdistrict' => $identity['subdistrict'] ?? null,
+                'profile_description' => $identity['profile_description'] ?? null,
                 'answers' => $answers,
                 'dimension_scores' => $computed['dimensions'],
+                'dimension_notes' => $notes ?: null,
                 'total_score' => $computed['total'],
                 'band' => $computed['band'],
                 'status' => 'baru',
+                // Jalur gratis (harga 0) langsung terbuka; selain itu menunggu pembayaran.
+                'is_unlocked' => $free,
+                'unlocked_at' => $free ? now() : null,
             ]);
+
+            if ($free) {
+                GenerateAssessmentReport::dispatch($result->uuid)->afterCommit();
+            }
 
             $request->session()->forget('assessment_identity_'.$track->id);
 
@@ -138,7 +187,24 @@ class AssessmentController extends Controller
 
     public function result(string $uuid)
     {
-        $result = AssessmentResult::with(['track', 'track.activeQuestions'])->where('uuid', $uuid)->firstOrFail();
+        $result = AssessmentResult::with(['track', 'track.activeQuestions', 'latestOrder'])->where('uuid', $uuid)->firstOrFail();
+
+        // Hasil hanya tampil setelah lunas. Webhook bisa terlambat → cek langsung ke Midtrans.
+        if (! $result->is_unlocked) {
+            if ($result->latestOrder) {
+                AssessmentPaymentService::sync($result->latestOrder);
+                $result->refresh()->load('latestOrder');
+            }
+
+            if (! $result->is_unlocked) {
+                $data['result'] = $result;
+                $data['pendingOrder'] = $result->latestOrder?->status === 'pending' && $result->latestOrder->gateway_ref ? $result->latestOrder : null;
+                $data['seo'] = Seo::make()->title('Pembayaran Asesmen: '.$result->track->name)->noindex()->toArray();
+
+                return view('customer.assessment.payment', $data);
+            }
+        }
+
         $computed = [
             'dimensions' => $result->dimension_scores ?? [],
             'total' => (float) $result->total_score,
@@ -168,6 +234,8 @@ class AssessmentController extends Controller
         $data['result'] = $result;
         $data['computed'] = $computed;
         $data['labels'] = AssessmentService::SCALE_LABELS;
+        $data['bands'] = array_reverse(AssessmentService::bandsFor($result->track));
+        $data['formConfig'] = AssessmentService::formFor($result->track);
         $data['pendingOrder'] = AssessmentOrder::where('assessment_result_id', $result->id)
             ->where('status', 'pending')->latest()->first();
         $data['seo'] = Seo::make()->title('Hasil Asesmen: '.$result->track->name)->noindex()->toArray();
@@ -215,11 +283,11 @@ class AssessmentController extends Controller
                 'quantity' => 1,
                 'name' => 'Laporan Asesmen: '.$result->track->name,
             ]],
-            'customer_details' => [
+            'customer_details' => array_filter([
                 'first_name' => $result->name,
                 'email' => $result->email,
                 'phone' => $result->phone,
-            ],
+            ]),
             'credit_card' => ['secure' => true],
             'expiry' => ['unit' => 'hour', 'duration' => 24],
         ];
@@ -271,11 +339,27 @@ class AssessmentController extends Controller
                 'is_unlocked' => true,
                 'unlocked_at' => now(),
             ]);
-            \App\Jobs\GenerateAssessmentReport::dispatch($result->uuid)->afterCommit();
+            GenerateAssessmentReport::dispatch($result->uuid)->afterCommit();
         }
 
         return redirect()->route('assessment.result', $result->uuid)
             ->with('status', 'Laporan dibuka via Mode Tim GODEVI.');
+    }
+
+    /**
+     * Cek status & riwayat asesmen guest berdasarkan No. WhatsApp.
+     */
+    public function status(Request $request)
+    {
+        $phone = AssessmentPaymentService::normalizePhone($request->query('phone'));
+
+        $data['phone'] = $request->query('phone');
+        $data['results'] = strlen($phone) >= 8
+            ? AssessmentResult::with(['track', 'latestOrder'])->where('phone', $phone)->latest()->get()
+            : null;
+        $data['seo'] = Seo::make()->title('Cek Status Asesmen')->noindex()->toArray();
+
+        return view('customer.assessment.status', $data);
     }
 
     protected function findTrack(string $slug): AssessmentTrack

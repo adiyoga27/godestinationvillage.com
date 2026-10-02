@@ -46,6 +46,7 @@ use App\Http\Controllers\Backend\VillageSubmissionController as AdminVillageSubm
 use App\Http\Controllers\Front\AssessmentController;
 use App\Http\Controllers\Front\GuestBookingController;
 use App\Http\Controllers\Front\InvoiceController;
+use App\Http\Controllers\Front\LocationSearchController;
 use App\Http\Controllers\Front\OrderController;
 use App\Http\Controllers\Front\PageController;
 use App\Http\Controllers\Front\ReservationEventController;
@@ -188,8 +189,12 @@ Route::prefix('guest-booking')->group(function () {
 });
 
 // Asesmen kesiapan 4 jalur (guest, tanpa login, gratis — tanpa payment)
+// Pencarian lokasi (provinsi/kab/kota) via API Mengantar
+Route::get('/lokasi/cari', [LocationSearchController::class, 'search'])->middleware('throttle:60,1')->name('location.search');
+
 Route::prefix('asesmen')->group(function () {
     Route::get('/', [AssessmentController::class, 'index'])->name('assessment.index');
+    Route::get('/cek', [AssessmentController::class, 'status'])->middleware('throttle:20,1')->name('assessment.status');
     Route::get('/hasil/{uuid}', [AssessmentController::class, 'result'])->name('assessment.result');
     Route::post('/hasil/{uuid}/checkout', [AssessmentController::class, 'checkout'])->name('assessment.checkout');
     Route::get('/bayar/{code}', [AssessmentController::class, 'payment'])->name('assessment.payment');

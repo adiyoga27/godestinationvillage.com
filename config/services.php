@@ -62,4 +62,11 @@ return [
         'type' => env('RECAPTCHA_TYPE', 'score'),
     ],
 
+    'mengantar' => [
+        'base_url' => env('MENGANTAR_BASE_URL', 'https://api-public.mengantar.com'),
+        'api_key' => env('MENGANTAR_API_KEY'),
+        'origin_id' => env('MENGANTAR_ORIGIN_ID'),
+        'provider' => env('SHIPPING_PROVIDER', 'mengantar'),
+    ],
+
 ];

@@ -34,6 +34,7 @@ class AssessmentTrackController extends Controller
             'description' => 'nullable|string|max:5000',
             'target_audience' => 'nullable|string|max:191',
             'estimated_minutes' => 'nullable|integer|min:1|max:120',
+            'price' => 'required|integer|min:0',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
@@ -64,6 +65,7 @@ class AssessmentTrackController extends Controller
             'description' => 'nullable|string|max:5000',
             'target_audience' => 'nullable|string|max:191',
             'estimated_minutes' => 'nullable|integer|min:1|max:120',
+            'price' => 'required|integer|min:0',
             'sort_order' => 'nullable|integer|min:0',
         ]);
 

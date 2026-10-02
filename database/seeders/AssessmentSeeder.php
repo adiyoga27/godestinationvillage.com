@@ -45,6 +45,11 @@ class AssessmentSeeder extends Seeder
                 ]
             );
         }
+
+        // Nonaktifkan pernyataan lama yang tidak lagi dipakai (hasil lama tetap menyimpan salinannya).
+        AssessmentQuestion::where('track_id', $track->id)
+            ->whereNotIn('question', array_column($rows, 1))
+            ->update(['is_active' => false]);
     }
 
     protected function seedPariwisata(): void
@@ -55,27 +60,19 @@ class AssessmentSeeder extends Seeder
             'tagline' => 'Desa Wisata / Daya Tarik Wisata',
             'description' => 'Identifikasi potensi, strategi pemasaran, dan branding destinasi desa wisata atau daya tarik wisata Anda.',
             'target_audience' => 'Pengelola desa wisata, Pokdarwis, pengelola DTW',
-            'estimated_minutes' => 10,
+            'estimated_minutes' => 5,
             'is_active' => true,
             'sort_order' => 1,
         ]);
 
+        // Satu pernyataan per dimensi; bobot di AssessmentService::DIMENSION_WEIGHTS (Brief §3.1).
         $this->addQuestions($track, [
-            ['Potensi & Atraksi', 'Desa/DTW memiliki atraksi unggulan yang jelas dan berbeda dari destinasi lain.', 'Contoh: alam, budaya, kuliner, atau aktivitas khas yang menjadi magnet utama.'],
-            ['Potensi & Atraksi', 'Atraksi utama didukung aktivitas turunan (paket half-day/full-day, workshop, live-in).', 'Wisatawan punya alasan untuk tinggal lebih lama dan belanja lebih banyak.'],
-            ['Potensi & Atraksi', 'Potensi dievaluasi berkala dan ada kalender atraksi/event tahunan.', 'Contoh: festival tahunan, musim panen, ritual budaya terjadwal.'],
-            ['Aksesibilitas & Amenitas', 'Akses menuju lokasi mudah (jalan, petunjuk arah, transportasi, informasi).', 'Termasuk papan penunjuk, titik kumpul, dan info transportasi publik/swasta.'],
-            ['Aksesibilitas & Amenitas', 'Fasilitas dasar tersedia dan terawat (toilet, parkir, tempat ibadah, kuliner, homestay).', 'Standar kebersihan dan keamanan fasilitas dinilai rutin.'],
-            ['Aksesibilitas & Amenitas', 'Informasi kunjungan mudah ditemukan online (jam buka, tiket, kontak, peta).', 'Website, Google Maps, dan media sosial aktif dan akurat.'],
-            ['Pemasaran & Branding', 'Destinasi memiliki nama/brand dan cerita (storytelling) yang konsisten.', 'Logo, tagline, dan narasi yang dipakai di semua kanal sama.'],
-            ['Pemasaran & Branding', 'Ada kanal pemasaran aktif (media sosial, OTA, kemitraan biro perjalanan).', 'Minimal satu kanal utama yang di-update mingguan.'],
-            ['Pemasaran & Branding', 'Ulasan wisatawan dipantau dan ditindaklanjuti.', 'Rating Google/TripAdvisor/OTA dibalas dan jadi bahan perbaikan.'],
-            ['Kelembagaan & SDM', 'Ada kelembagaan pengelola yang jelas (Pokdarwis/BUMDes/kelompok) dengan AD/ART dan pembagian tugas.', 'Struktur, SK, dan rapat rutin terdokumentasi.'],
-            ['Kelembagaan & SDM', 'SDM/pemandu lokal tersertifikasi atau terlatih (pemandu, homestay, kuliner).', 'Pelatihan hospitality, guiding, dan keamanan dasar.'],
-            ['Kelembagaan & SDM', 'Keuangan dikelola transparan (pembukuan, bagi hasil ke masyarakat).', 'Ada laporan keuangan berkala yang bisa diakses anggota.'],
-            ['Keberlanjutan', 'Ada aturan daya dukung (batas kunjungan, zonasi, kode etik wisatawan).', 'Contoh: kuota harian, zona sakral, larangan plastik sekali pakai.'],
-            ['Keberlanjutan', 'Manfaat ekonomi dirasakan warga lokal (tenaga kerja, produk lokal terserap).', 'Minimal 50% belanja operasional ke produk/jasa lokal.'],
-            ['Keberlanjutan', 'Limbah dan energi dikelola (sampah terpilah, air, energi terbarukan).', 'Bank sampah, komposting, atau kemitraan pengelolaan limbah.'],
+            ['Daya Tarik Alam & Budaya', 'Daya Tarik Alam & Budaya', 'Keunikan lanskap, situs budaya, tradisi, kesenian, atau kuliner khas yang menjadi daya tarik utama.'],
+            ['Aksesibilitas & Infrastruktur', 'Aksesibilitas & Infrastruktur', 'Kondisi jalan, jarak dari pusat kota/bandara, transportasi umum, listrik, air bersih, sinyal komunikasi.'],
+            ['Amenitas & Akomodasi', 'Amenitas & Akomodasi', 'Ketersediaan homestay, rumah makan, toilet umum, area parkir, dan penunjuk arah.'],
+            ['Kesiapan Komunitas & SDM', 'Kesiapan Komunitas & SDM', 'Kapasitas pemandu lokal, Kelompok Sadar Wisata (Pokdarwis), keramahan, kemampuan bahasa asing.'],
+            ['Tata Kelola & Kelembagaan', 'Tata Kelola & Kelembagaan', 'Keberadaan BUMDes/Pokdarwis aktif, pembagian manfaat ekonomi, aturan desa terkait wisata.'],
+            ['Kehadiran Digital Saat Ini', 'Kehadiran Digital Saat Ini', 'Google Maps/Business, media sosial aktif, ulasan daring, sistem reservasi atau pembayaran digital.'],
         ]);
     }
 

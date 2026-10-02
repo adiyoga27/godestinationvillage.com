@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Mail\OrderEmail;
+use App\Models\AssessmentOrder;
 use App\Models\Order;
+use App\Services\AssessmentPaymentService;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -65,6 +67,16 @@ class PaymentController extends Controller
         $type = $notif->payment_type;
         $orderId = $notif->order_id;
         $fraud = $notif->fraud_status ?? null;
+
+        // Order asesmen: status diverifikasi ulang langsung ke Midtrans.
+        if (str_starts_with((string) $orderId, AssessmentOrder::CODE_PREFIX.'-')) {
+            $order = AssessmentOrder::where('code', $orderId)->first();
+            if ($order) {
+                AssessmentPaymentService::sync($order);
+            }
+
+            return response('OK');
+        }
 
         if ($transaction === 'capture') {
             if ($type === 'credit_card' && $fraud === 'challenge') {

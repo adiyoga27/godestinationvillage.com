@@ -94,6 +94,46 @@ class AssessmentService
 
     public const TTDI_DISCLAIMER = 'Asesmen ini mengikuti struktur 17 pilar Travel & Tourism Development Index (WEF), diadaptasi menjadi penilaian mandiri skala kawasan/kabupaten dengan skor 1–5. Ini bukan replikasi 102 indikator data-keras resmi WEF dan bukan skor TTDI resmi.';
 
+    /** Ikon garis (heroicons outline, atribut d) untuk kartu dimensi, dipakai bergiliran. */
+    public const DIMENSION_ICONS = [
+        'M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z',
+        'M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z',
+        'M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25',
+        'M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z',
+        'M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z',
+        'M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3',
+    ];
+
+    /**
+     * Tampilan form khusus per jalur (gambar hero, judul & pengantar halaman penilaian).
+     */
+    public const TRACK_FORMS = [
+        'pariwisata' => [
+            'hero_image' => 'assets/customer/img/page-title-area/explorer.jpg',
+            'title' => 'Identifikasi Potensi',
+            'intro' => 'Nilai setiap dimensi berdasarkan kondisi saat ini. Skor menentukan kategori kesiapan dan menjadi dasar rekomendasi.',
+        ],
+    ];
+
+    public static function formFor(AssessmentTrack $track): array
+    {
+        return self::TRACK_FORMS[$track->slug] ?? [];
+    }
+
+    /**
+     * Bobot (persen) tiap dimensi jalur sesuai urutan pertanyaan; bobot setara bila belum dikonfigurasi.
+     *
+     * @param  Collection<string, mixed>  $grouped  pertanyaan dikelompokkan per dimensi
+     * @return Collection<string, float>
+     */
+    public static function displayWeights(AssessmentTrack $track, Collection $grouped): Collection
+    {
+        $configured = self::weightsFor($track);
+        $equal = $grouped->count() > 0 ? 100 / $grouped->count() : 0;
+
+        return $grouped->map(fn ($qs, $name) => (float) ($configured[$name] ?? $equal));
+    }
+
     public static function weightsFor(AssessmentTrack $track): array
     {
         return self::DIMENSION_WEIGHTS[$track->slug] ?? [];

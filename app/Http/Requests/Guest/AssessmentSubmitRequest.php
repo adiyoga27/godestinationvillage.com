@@ -16,6 +16,8 @@ class AssessmentSubmitRequest extends FormRequest
         return [
             'answers' => 'required|array',
             'answers.*' => 'required|integer|min:1|max:5',
+            'notes' => 'nullable|array',
+            'notes.*' => 'nullable|string|max:1000',
         ];
     }
 

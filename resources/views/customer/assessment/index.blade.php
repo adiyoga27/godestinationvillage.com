@@ -31,12 +31,12 @@
                 </h1>
                 <p class="mt-5 max-w-xl leading-relaxed text-white/70">
                     Empat jalur penilaian mandiri untuk desa wisata, usaha desa, kawasan, dan produk regeneratif.
-                    Skorenskala 1–5, hasilnya langsung tampil beserta draf strategi.
+                    Skor berskala 1–5, hasil & draf strategi terbuka setelah pembayaran.
                 </p>
                 <div class="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm text-white/70">
                     <span class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-forest-300" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        Gratis, tanpa login
+                        Tanpa login
                     </span>
                     <span class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-forest-300" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -44,13 +44,13 @@
                     </span>
                     <span class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-forest-300" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-                        Hasil + strategi instan
+                        Laporan strategi AI
                     </span>
                 </div>
             </div>
             <div data-vue="Reveal" data-props='{"delay":140}' class="hidden lg:block">
                 <ol class="space-y-0 rounded-3xl border border-white/10 bg-white/[0.04] p-2 backdrop-blur">
-                    @foreach ([['Pilih jalur', 'Sesuai kebutuhanmu'], ['Isi profil & nilai', 'Skala 1–5 yang jujur'], ['Terima skor', 'Gratis + draf strategi'], ['Buka laporan', 'Lengkap setelah bayar']] as $i => $s)
+                    @foreach ([['Pilih jalur', 'Sesuai kebutuhanmu'], ['Isi profil & nilai', 'Skala 1–5 yang jujur'], ['Bayar sekali', 'QRIS / VA / e-wallet'], ['Buka hasil', 'Skor + laporan strategi']] as $i => $s)
                         <li class="flex items-center gap-4 rounded-2xl px-5 py-4 {{ $i === 0 ? 'bg-white/[0.07]' : '' }}">
                             <span class="font-display text-2xl font-bold {{ $i === 0 ? 'text-brand-400' : 'text-white/25' }}">0{{ $i + 1 }}</span>
                             <span>
@@ -73,7 +73,7 @@
                 <p class="eyebrow">Empat Jalur</p>
                 <h2 class="mt-2 font-display text-3xl font-bold text-ink-950 sm:text-4xl">Mulai dari yang paling sesuai</h2>
             </div>
-            <p class="max-w-sm text-sm leading-relaxed text-ink-500">Skor kesiapan selalu gratis. Laporan strategi lengkap per jalur dibuka dengan satu pembayaran.</p>
+            <p class="max-w-sm text-sm leading-relaxed text-ink-500">Skor kesiapan dan laporan strategi lengkap terbuka dengan satu pembayaran per asesmen.</p>
         </div>
 
         <div class="grid gap-6 md:grid-cols-2">
@@ -114,7 +114,7 @@
                             </div>
                         </dl>
                         <div class="mt-6 flex items-center justify-between gap-4 border-t border-dashed border-ink-100 pt-5">
-                            <p class="text-sm text-ink-500">Skor <strong class="text-forest-700">gratis</strong> · Laporan <strong class="text-ink-900">Rp {{ number_format($track->price ?? 199000, 0, ',', '.') }}</strong></p>
+                            <p class="text-sm text-ink-500">Skor + laporan <strong class="text-ink-900">Rp {{ number_format($track->price ?? 199000, 0, ',', '.') }}</strong></p>
                             <a href="{{ route('assessment.intro', $track->slug) }}"
                                 class="inline-flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white transition group-hover:gap-3 {{ $a['bg'] }}">
                                 Mulai
@@ -130,6 +130,7 @@
             Data profil Anda dilindungi UU Pelindungan Data Pribadi. Hasil asesmen bersifat penilaian mandiri —
             tim GODEVI siap mendampingi tindak lanjutnya.
         </p>
+        <p class="mt-4 text-center text-sm text-ink-500">Sudah pernah mengisi? <a href="{{ route('assessment.status') }}" class="font-semibold text-brand-600 underline underline-offset-2">Cek status & hasil asesmen</a></p>
     </div>
 </section>
 @endsection

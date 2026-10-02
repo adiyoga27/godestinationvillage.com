@@ -7,13 +7,13 @@ use App\Mail\OrderEmail;
 use App\Mail\OrderEventEmail;
 use App\Mail\OrderHomestayEmail;
 use App\Models\AssessmentOrder;
-use App\Models\AssessmentResult;
 use App\Models\Event;
 use App\Models\Homestay;
 use App\Models\Order;
 use App\Models\OrderEvent;
 use App\Models\OrderHomestay;
 use App\Models\Transaction;
+use App\Services\AssessmentPaymentService;
 use App\Services\FirebaseService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -148,23 +148,7 @@ class MidtransCallbackServices
         $status = $payload['transaction_status'] ?? '';
 
         if ($status === 'capture' || $status === 'settlement') {
-            $order->update([
-                'status' => 'paid',
-                'payment_type' => $payload['payment_type'] ?? null,
-                'paid_at' => now(),
-            ]);
-
-            $result = AssessmentResult::find($order->assessment_result_id);
-            if ($result && ! $result->is_unlocked) {
-                $result->update(['is_unlocked' => true, 'unlocked_at' => now()]);
-                \App\Jobs\GenerateAssessmentReport::dispatch($result->uuid)->afterCommit();
-            }
-
-            try {
-                BotHelper::sendTelegram("Godevi - Payment Asesmen Success, \n\nInvoice : $invoice \nNominal : {$order->amount}.\n");
-            } catch (\Throwable $e) {
-                Log::error('Telegram ASM error: '.$e->getMessage());
-            }
+            AssessmentPaymentService::markPaid($order, $payload['payment_type'] ?? null);
 
             return ['ok' => true];
         }

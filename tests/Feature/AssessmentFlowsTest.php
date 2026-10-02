@@ -31,12 +31,16 @@ class AssessmentFlowsTest extends TestCase
 
         $this->get(route('assessment.intro', $track->slug))->assertStatus(200);
 
-        $email = 'asesmen'.time().'@example.com';
+        $phone = '0899'.substr((string) time(), -7);
         $this->post(route('assessment.start', $track->slug), [
-            'name' => 'Pengisi Test',
-            'email' => $email,
-            'phone' => '08123456789',
             'organization' => 'Desa Test',
+            'province' => 'Bali',
+            'regency' => 'Kab. Bangli',
+            'district' => 'Bangli',
+            'subdistrict' => 'Kubu',
+            'name' => 'Pengisi Test',
+            'phone' => '+62 '.substr($phone, 1),
+            'profile_description' => 'Sawah terasering dan tari tradisional.',
         ])->assertRedirect(route('assessment.form', $track->slug));
 
         $this->get(route('assessment.form', $track->slug))->assertStatus(200);
@@ -45,27 +49,54 @@ class AssessmentFlowsTest extends TestCase
         foreach ($questions as $i => $q) {
             $answers[$q->id] = ($i % 5) + 1;
         }
+        $notes = [$questions->first()->id => 'Ada air terjun.'];
 
-        $submit = $this->post(route('assessment.submit', $track->slug), ['answers' => $answers]);
+        $submit = $this->post(route('assessment.submit', $track->slug), ['answers' => $answers, 'notes' => $notes]);
 
         try {
-            $result = AssessmentResult::where('email', $email)->first();
+            // No. WA tersimpan dalam format 08… agar bisa dicari di Cek Status.
+            $result = AssessmentResult::where('phone', $phone)->first();
             $this->assertNotNull($result, 'hasil asesmen tidak tersimpan');
             $submit->assertRedirect(route('assessment.result', $result->uuid));
 
+            $this->assertSame('Kab. Bangli', $result->regency);
+            $this->assertSame('Ada air terjun.', $result->dimension_notes[$questions->first()->dimension] ?? null);
             $this->assertTrue($result->total_score >= 0 && $result->total_score <= 100);
             $this->assertNotEmpty($result->band);
-            $this->assertNotEmpty($result->dimension_scores);
+            $this->assertFalse($result->is_unlocked);
 
+            // Sebelum bayar: hanya halaman pembayaran, tanpa skor.
+            $locked = $this->get(route('assessment.result', $result->uuid));
+            $locked->assertStatus(200);
+            $locked->assertSee('Bayar Sekarang', false);
+            $locked->assertDontSee('Peta kesiapan', false);
+
+            $this->get(route('assessment.status', ['phone' => '62'.substr($phone, 1)]))
+                ->assertStatus(200)
+                ->assertSee('Desa Test', false)
+                ->assertSee('Menunggu pembayaran', false);
+
+            // Setelah lunas: hasil lengkap tampil.
+            $result->update(['is_unlocked' => true, 'unlocked_at' => now(), 'report_status' => 'failed']);
             $page = $this->get(route('assessment.result', $result->uuid));
             $page->assertStatus(200);
             $page->assertSee((string) $result->band, false);
+            $page->assertSee('Peta kesiapan', false);
             $page->assertSee('Kekuatan', false);
             $page->assertSee('Tantangan', false);
             $page->assertSee('Draf Strategi', false);
         } finally {
-            AssessmentResult::where('email', $email)->delete();
+            AssessmentResult::where('phone', $phone)->delete();
         }
+    }
+
+    public function test_start_requires_location_from_search(): void
+    {
+        $this->post(route('assessment.start', 'pariwisata'), [
+            'organization' => 'Desa Test',
+            'name' => 'Pengisi Test',
+            'phone' => '08123456789',
+        ])->assertSessionHasErrors(['province', 'regency']);
     }
 
     public function test_form_requires_identity_first(): void
@@ -154,7 +185,8 @@ class AssessmentFlowsTest extends TestCase
             $this->actingAs($admin)->get(route('assessment-results.index'))->assertStatus(200);
             $this->actingAs($admin)->get(route('assessment-results.show', $result->id))->assertStatus(200);
             $this->actingAs($admin)->get(route('assessments.index'))->assertStatus(200);
-            $this->actingAs($admin)->get(route('team-dashboard.index'))->assertStatus(200);
+            // Dashboard Tim sudah digabung ke dashboard utama; URL lama diarahkan ke sana.
+            $this->actingAs($admin)->get(route('team-dashboard.index'))->assertRedirect(route('home'));
 
             $this->actingAs($admin)->put(route('assessment-results.update', $result->id), [
                 'status' => 'dihubungi',
