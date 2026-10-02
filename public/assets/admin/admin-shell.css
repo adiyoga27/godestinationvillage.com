@@ -66,9 +66,12 @@ body.gd-admin .footer { background: transparent; border-top: 1px solid #e9e6df; 
   border-bottom: 1px solid var(--gd-ink-line);
   flex-shrink: 0;
 }
-.gd-sidebar__brand a { display: flex; align-items: center; gap: .75rem; min-width: 0; }
-.gd-sidebar__logo-mini { width: 36px; height: 36px; border-radius: 10px; object-fit: contain; background: #fff; padding: 4px; flex-shrink: 0; }
-.gd-sidebar__logo { height: 28px; width: auto; filter: brightness(0) invert(1); }
+.gd-sidebar__brand a { display: flex; flex: 1; align-items: center; justify-content: center; gap: .75rem; min-width: 0; }
+/* Logo sama seperti homepage versi putih (sidebar gelap = seperti footer homepage). */
+.gd-sidebar__logo-mini { display: none; width: auto; max-width: 60px; height: 36px; border-radius: 8px; object-fit: contain; background: transparent; padding: 2px 4px; flex-shrink: 0; }
+.gd-sidebar__logo { display: block; margin: 0 auto; height: 42px; width: auto; max-width: 200px; object-fit: contain; }
+/* Saat sidebar diciutkan: tampilkan versi mini sebagai pengganti logo penuh. */
+body.gd-sb-mini .gd-sidebar:not(:hover) .gd-sidebar__logo-mini { display: block; }
 .gd-sidebar__close {
   display: none;
   border: 0;
@@ -226,7 +229,7 @@ body.gd-admin .footer { background: transparent; border-top: 1px solid #e9e6df; 
 }
 .gd-icon-btn:hover { background: #faf9f6; border-color: #dcd8ce; color: var(--gd-brand); }
 .gd-topbar__brand-mobile { display: none; }
-.gd-topbar__brand-mobile img { height: 26px; width: auto; }
+.gd-topbar__brand-mobile img { height: 32px; width: auto; object-fit: contain; }
 .gd-topbar__spacer { flex: 1; }
 .gd-topbar__site {
   display: inline-flex; align-items: center; gap: .375rem;

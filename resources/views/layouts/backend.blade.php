@@ -62,7 +62,7 @@
       <button type="button" class="gd-icon-btn gd-collapse-toggle" data-gd-collapse aria-label="Ciutkan/lebarkan sidebar">
         <i class="mdi mdi-chevron-double-left"></i><i class="mdi mdi-chevron-double-right"></i>
       </button>
-      <a class="gd-topbar__brand-mobile" href="{{ url('administrator/dashboard') }}"><img src="{{ url('assets/customer/dist/images/logo.png') }}" alt="GODEVI"></a>
+      <a class="gd-topbar__brand-mobile" href="{{ url('administrator/dashboard') }}"><img src="{{ url('assets/godevi-black.png') }}" alt="GODEVI"></a>
 
       <div class="gd-topbar__spacer"></div>
 
@@ -93,8 +93,8 @@
       <aside class="gd-sidebar" id="sidebar" aria-label="Navigasi admin">
         <div class="gd-sidebar__brand">
           <a href="{{ url('administrator/dashboard') }}">
-            <img class="gd-sidebar__logo-mini" src="{{ url('assets/customer/dist/images/icon.png') }}" alt="">
-            <img class="gd-sidebar__logo" src="{{ url('assets/customer/dist/images/logo.png') }}" alt="GODEVI">
+            <img class="gd-sidebar__logo-mini" src="{{ url('assets/godevi-white.png') }}" alt="GODEVI">
+            <img class="gd-sidebar__logo" src="{{ url('assets/godevi-white.png') }}" alt="GODEVI">
           </a>
           <button type="button" class="gd-sidebar__close" data-gd-drawer="close" aria-label="Tutup menu"><i class="mdi mdi-close"></i></button>
         </div>

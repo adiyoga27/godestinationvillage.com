@@ -39,8 +39,8 @@
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo" href="{{ url('administrator/dashboard') }}"><img style="width: 115px; height: auto" src="{{ url('assets/customer/dist/images/logo.png') }}" alt="logo"/></a>
-        <a class="navbar-brand brand-logo-mini" href="{{ url('administrator/dashboard') }}"><img style="height: 65px !important" src="{{ url('assets/customer/dist/images/icon.png') }}" alt="logo"/></a>
+        <a class="navbar-brand brand-logo" href="{{ url('administrator/dashboard') }}"><img style="width: 150px; height: auto" src="{{ url('assets/godevi-black.png') }}" alt="GODEVI"/></a>
+        <a class="navbar-brand brand-logo-mini" href="{{ url('administrator/dashboard') }}"><img style="height: 40px !important; width: auto;" src="{{ url('assets/godevi-black.png') }}" alt="GODEVI"/></a>
       </div>
     </nav>
     <!-- partial -->
