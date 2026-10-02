@@ -41,6 +41,9 @@ class AiReportService
         $profile = implode("\n", array_filter([
             'Nama: '.$result->name,
             'Organisasi/Desa/Usaha: '.($result->organization ?? '-'),
+            $result->business_type ? 'Jenis Badan Usaha: '.$result->business_type : null,
+            $result->business_sector ? 'Sektor Usaha: '.$result->business_sector : null,
+            $result->member_count ? 'Jumlah Anggota/Pelaku Usaha: '.$result->member_count : null,
             'Kabupaten/Kota: '.($result->regency ?? '-'),
             'Provinsi: '.($result->province ?? '-'),
             'Deskripsi: '.($result->profile_description ?? '-'),

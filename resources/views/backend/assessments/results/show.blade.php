@@ -19,6 +19,9 @@
         <div class="card"><div class="card-body">
             <h4 class="card-title">{{ $result->organization }} <small class="text-muted">— {{ $result->name }}</small></h4>
             <p>{{ collect([$result->subdistrict, $result->district, $result->regency, $result->province])->filter()->implode(', ') }}</p>
+            @if ($result->business_type || $result->business_sector || $result->member_count)
+                <p>{{ collect([$result->business_type, $result->business_sector, $result->member_count ? $result->member_count.' anggota/pelaku usaha' : null])->filter()->implode(' · ') }}</p>
+            @endif
             <p>{{ collect([$result->phone, $result->email])->filter()->implode(' · ') }} · {{ $result->created_at }}</p>
             @if ($result->profile_description)
                 <p class="mb-1"><strong>Deskripsi aset & potensi:</strong></p>

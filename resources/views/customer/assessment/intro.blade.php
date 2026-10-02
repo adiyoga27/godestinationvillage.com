@@ -122,7 +122,9 @@
     <div class="container-gd">
         <div class="grid gap-px overflow-hidden rounded-3xl bg-ink-100 shadow-[0_25px_50px_-12px_rgb(26_26_38/0.22)] sm:grid-cols-3">
             @foreach ([
-                ['Isi profil desa', 'Nama desa/DTW, lokasi, dan kontak pengelola.'],
+                $profile['business_fields']
+                    ? ['Isi profil usaha', 'Nama usaha, jenis & sektor, lokasi, dan kontak pengurus.']
+                    : ['Isi profil desa', 'Nama desa/DTW, lokasi, dan kontak pengelola.'],
                 ['Nilai '.$track->questions_count.' '.$unitLabel, 'Skala 1–5 sesuai kondisi nyata saat ini.'],
                 ['Terima analisa', $track->price > 0 ? 'Bayar '.$priceLabel.', hasil langsung terbuka.' : 'Hasil langsung terbuka.'],
             ] as $i => [$title, $desc])
@@ -195,16 +197,16 @@
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
                         </span>
                         <div>
-                            <h2 class="font-display text-2xl font-bold text-ink-950">Data Desa / Destinasi</h2>
-                            <p class="text-sm text-ink-500">Langkah 1 dari 2 — setelah ini Anda menilai {{ $track->questions_count }} {{ $unitLabel }}.</p>
+                            <h2 class="font-display text-2xl font-bold text-ink-950">{{ $profile['title'] }}</h2>
+                            <p class="text-sm text-ink-500">{{ $profile['subtitle'] ?? 'Langkah 1 dari 2 — setelah ini Anda menilai '.$track->questions_count.' '.$unitLabel.'.' }}</p>
                         </div>
                     </div>
 
-                    {{-- Destinasi --}}
+                    {{-- Profil utama --}}
                     <fieldset class="mt-8">
-                        <legend class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-ink-400"><span class="h-px w-6 bg-ink-200"></span>Destinasi</legend>
+                        <legend class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-ink-400"><span class="h-px w-6 bg-ink-200"></span>{{ $profile['main_group'] }}</legend>
                         <div class="mt-4 grid gap-5">
-                            <label class="block"><span class="label-gd">Nama Desa / Daya Tarik Wisata <span class="text-brand-600">*</span></span><input type="text" name="organization" value="{{ old('organization') }}" required class="input-gd !py-3.5" placeholder="cth: Desa Wisata Penglipuran"></label>
+                            <label class="block"><span class="label-gd">{{ $profile['organization_label'] }} <span class="text-brand-600">*</span></span><input type="text" name="organization" value="{{ old('organization') }}" required class="input-gd !py-3.5" placeholder="{{ $profile['organization_placeholder'] }}"></label>
 
                             <div class="relative" id="location-picker">
                                 <label class="block">
@@ -222,17 +224,44 @@
                                 <input type="hidden" name="district" id="location-district" value="{{ old('district') }}">
                                 <input type="hidden" name="subdistrict" id="location-subdistrict" value="{{ old('subdistrict') }}">
                             </div>
+
+                            @if ($profile['business_fields'])
+                                <div class="grid gap-5 sm:grid-cols-2">
+                                    <label class="block">
+                                        <span class="label-gd">Jenis Badan Usaha <span class="text-brand-600">*</span></span>
+                                        <select name="business_type" required class="input-gd !py-3.5">
+                                            <option value="" disabled {{ old('business_type') ? '' : 'selected' }}>Pilih...</option>
+                                            @foreach (\App\Services\AssessmentService::BUSINESS_TYPES as $opt)
+                                                <option value="{{ $opt }}" {{ old('business_type') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
+                                            @endforeach
+                                        </select>
+                                    </label>
+                                    <label class="block">
+                                        <span class="label-gd">Sektor Usaha <span class="text-brand-600">*</span></span>
+                                        <select name="business_sector" required class="input-gd !py-3.5">
+                                            <option value="" disabled {{ old('business_sector') ? '' : 'selected' }}>Pilih...</option>
+                                            @foreach (\App\Services\AssessmentService::BUSINESS_SECTORS as $opt)
+                                                <option value="{{ $opt }}" {{ old('business_sector') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
+                                            @endforeach
+                                        </select>
+                                    </label>
+                                </div>
+                                <label class="block sm:max-w-xs">
+                                    <span class="label-gd">Jumlah Anggota/Pelaku Usaha <span class="font-normal text-ink-400">(opsional)</span></span>
+                                    <input type="number" name="member_count" value="{{ old('member_count') }}" min="1" inputmode="numeric" class="input-gd !py-3.5" placeholder="mis. 25">
+                                </label>
+                            @endif
                         </div>
                     </fieldset>
 
                     {{-- Kontak --}}
                     <fieldset class="mt-9">
-                        <legend class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-ink-400"><span class="h-px w-6 bg-ink-200"></span>Kontak Pengelola</legend>
+                        <legend class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-ink-400"><span class="h-px w-6 bg-ink-200"></span>{{ $profile['contact_group'] }}</legend>
                         <div class="mt-4 grid gap-5 sm:grid-cols-2">
-                            <label class="block"><span class="label-gd">Nama Kontak (Pokdarwis / BUMDes) <span class="text-brand-600">*</span></span><input type="text" name="name" value="{{ old('name') }}" required class="input-gd !py-3.5" placeholder="Nama lengkap"></label>
+                            <label class="block"><span class="label-gd">{{ $profile['contact_label'] }} <span class="text-brand-600">*</span></span><input type="text" name="name" value="{{ old('name') }}" required class="input-gd !py-3.5" placeholder="{{ $profile['contact_placeholder'] }}"></label>
                             <label class="block">
                                 <span class="label-gd">No. WhatsApp / Telepon <span class="text-brand-600">*</span></span>
-                                <input type="tel" name="phone" value="{{ old('phone') }}" required class="input-gd !py-3.5" placeholder="08xxxxxxxxxx">
+                                <input type="tel" name="phone" value="{{ old('phone') }}" required class="input-gd !py-3.5" placeholder="08xx-xxxx-xxxx">
                                 <span class="mt-1.5 block text-xs text-ink-400">Dipakai untuk cek status & membuka hasil kembali.</span>
                             </label>
                         </div>
@@ -240,21 +269,24 @@
 
                     {{-- Deskripsi --}}
                     <fieldset class="mt-9">
-                        <legend class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-ink-400"><span class="h-px w-6 bg-ink-200"></span>Aset & Potensi</legend>
+                        <legend class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-ink-400"><span class="h-px w-6 bg-ink-200"></span>{{ $profile['description_group'] }}</legend>
                         <label class="mt-4 block">
-                            <span class="label-gd">Deskripsi singkat <span class="font-normal text-ink-400">(opsional)</span></span>
-                            <textarea name="profile_description" id="profile-description" rows="4" maxlength="3000" class="input-gd" placeholder="cth: sawah terasering, air terjun, tari tradisional, kuliner khas, homestay 10 kamar…">{{ old('profile_description') }}</textarea>
+                            <span class="label-gd">{{ $profile['description_label'] }} <span class="font-normal text-ink-400">(opsional)</span></span>
+                            <textarea name="profile_description" id="profile-description" rows="4" maxlength="3000" class="input-gd" placeholder="{{ $profile['description_placeholder'] }}">{{ old('profile_description') }}</textarea>
                             <span class="mt-1.5 flex justify-between gap-4 text-xs text-ink-400">
-                                <span class="inline-flex items-center gap-1.5"><svg class="h-3.5 w-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 14.6 4.6 17.5l1.2-6L1.3 7.3l6.1-.7L10 1z"/></svg>Sangat membantu kualitas analisa</span>
+                                <span class="inline-flex items-center gap-1.5"><svg class="h-3.5 w-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 14.6 4.6 17.5l1.2-6L1.3 7.3l6.1-.7L10 1z"/></svg>{{ $profile['description_hint'] }}</span>
                                 <span><span id="desc-count">0</span>/3000</span>
                             </span>
                         </label>
                     </fieldset>
 
-                    <button type="submit" class="btn-primary group mt-10 w-full !py-4 text-base">
-                        Lanjut Menilai {{ ucfirst($unitLabel) }}
-                        <svg class="h-5 w-5 transition group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                    </button>
+                    <div class="mt-10 flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+                        <a href="{{ route('assessment.index') }}" class="btn-secondary !py-4 sm:!px-7">← Batal</a>
+                        <button type="submit" class="btn-primary group flex-1 !py-4 text-base">
+                            {{ $profile['submit_label'] ?? 'Lanjut Menilai '.ucfirst($unitLabel) }}
+                            <svg class="h-5 w-5 transition group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                        </button>
+                    </div>
                     <p class="mt-4 text-center text-xs text-ink-400">Data hanya dipakai untuk analisa & tindak lanjut tim GODEVI.</p>
                 </form>
             </div>

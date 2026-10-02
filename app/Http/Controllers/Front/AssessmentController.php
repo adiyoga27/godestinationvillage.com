@@ -15,6 +15,7 @@ use App\Services\Midtrans\CreateSnapTokenService;
 use App\Support\Seo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class AssessmentController extends Controller
 {
@@ -52,6 +53,7 @@ class AssessmentController extends Controller
         ])->values();
         $data['showWeight'] = $weights->map(fn ($w) => round($w, 1))->unique()->count() > 1;
         $data['formConfig'] = AssessmentService::formFor($track);
+        $data['profile'] = AssessmentService::profileFor($track);
 
         $data['track'] = $track;
         $data['seo'] = Seo::make()
@@ -69,9 +71,14 @@ class AssessmentController extends Controller
     public function start(Request $request, string $slug)
     {
         $track = $this->findTrack($slug);
+        $profile = AssessmentService::profileFor($track);
+        $business = $profile['business_fields'];
 
         $validated = $request->validate([
             'organization' => 'required|string|max:191',
+            'business_type' => [$business ? 'required' : 'nullable', Rule::in(AssessmentService::BUSINESS_TYPES)],
+            'business_sector' => [$business ? 'required' : 'nullable', Rule::in(AssessmentService::BUSINESS_SECTORS)],
+            'member_count' => 'nullable|integer|min:1|max:1000000',
             'province' => 'required|string|max:191',
             'regency' => 'required|string|max:191',
             'district' => 'nullable|string|max:191',
@@ -83,7 +90,10 @@ class AssessmentController extends Controller
             'province.required' => 'Pilih lokasi dari hasil pencarian Provinsi / Kabupaten/Kota.',
             'regency.required' => 'Pilih lokasi dari hasil pencarian Provinsi / Kabupaten/Kota.',
         ], [
-            'organization' => 'Nama Desa / Daya Tarik Wisata',
+            'organization' => $profile['organization_label'],
+            'business_type' => 'Jenis Badan Usaha',
+            'business_sector' => 'Sektor Usaha',
+            'member_count' => 'Jumlah Anggota/Pelaku Usaha',
             'name' => 'Nama Kontak',
             'phone' => 'No. WhatsApp / Telepon',
             'profile_description' => 'Deskripsi singkat',
@@ -155,6 +165,9 @@ class AssessmentController extends Controller
                 'name' => $identity['name'],
                 'phone' => $identity['phone'] ?? null,
                 'organization' => $identity['organization'] ?? null,
+                'business_type' => $identity['business_type'] ?? null,
+                'business_sector' => $identity['business_sector'] ?? null,
+                'member_count' => $identity['member_count'] ?? null,
                 'province' => $identity['province'] ?? null,
                 'regency' => $identity['regency'] ?? null,
                 'district' => $identity['district'] ?? null,

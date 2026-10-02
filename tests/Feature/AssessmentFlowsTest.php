@@ -90,6 +90,34 @@ class AssessmentFlowsTest extends TestCase
         }
     }
 
+    public function test_ekonomi_desa_requires_business_profile(): void
+    {
+        $this->get(route('assessment.intro', 'ekonomi-desa'))
+            ->assertStatus(200)
+            ->assertSee('Profil Usaha / Koperasi', false)
+            ->assertSee('Jenis Badan Usaha', false)
+            ->assertSee('Lanjut ke Identifikasi Potensi', false);
+
+        $base = [
+            'organization' => 'Koperasi Merah Putih Desa Catur',
+            'province' => 'Bali',
+            'regency' => 'Kab. Bangli',
+            'name' => 'Pengurus Test',
+            'phone' => '08123456789',
+        ];
+
+        $this->post(route('assessment.start', 'ekonomi-desa'), $base)
+            ->assertSessionHasErrors(['business_type', 'business_sector']);
+
+        $this->post(route('assessment.start', 'ekonomi-desa'), $base + [
+            'business_type' => 'Koperasi',
+            'business_sector' => 'Pertanian & Perkebunan',
+            'member_count' => 25,
+        ])->assertRedirect(route('assessment.form', 'ekonomi-desa'));
+
+        $this->assertSame('Koperasi', session('assessment_identity_'.AssessmentTrack::where('slug', 'ekonomi-desa')->value('id'))['business_type']);
+    }
+
     public function test_start_requires_location_from_search(): void
     {
         $this->post(route('assessment.start', 'pariwisata'), [

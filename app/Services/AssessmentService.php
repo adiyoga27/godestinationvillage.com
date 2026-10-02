@@ -115,6 +115,70 @@ class AssessmentService
         ],
     ];
 
+    /** Pilihan profil usaha (jalur Ekonomi Desa). */
+    public const BUSINESS_TYPES = [
+        'Koperasi',
+        'BUMDes / BUMDesma',
+        'Kelompok Usaha Bersama (KUB)',
+        'UMKM perorangan',
+        'CV / PT',
+        'Belum berbadan hukum',
+    ];
+
+    public const BUSINESS_SECTORS = [
+        'Pertanian & Perkebunan',
+        'Peternakan',
+        'Perikanan',
+        'Olahan Pangan & Kuliner',
+        'Kerajinan & Fesyen',
+        'Pariwisata & Jasa',
+        'Perdagangan / Toko Desa',
+        'Lainnya',
+    ];
+
+    /**
+     * Teks form profil (halaman intro) per jalur; jalur lain memakai default desa/destinasi.
+     */
+    public const PROFILE_FORMS = [
+        'default' => [
+            'title' => 'Data Desa / Destinasi',
+            'subtitle' => null,
+            'main_group' => 'Destinasi',
+            'organization_label' => 'Nama Desa / Daya Tarik Wisata',
+            'organization_placeholder' => 'cth: Desa Wisata Penglipuran',
+            'contact_group' => 'Kontak Pengelola',
+            'contact_label' => 'Nama Kontak (Pokdarwis / BUMDes)',
+            'contact_placeholder' => 'Nama lengkap',
+            'description_group' => 'Aset & Potensi',
+            'description_label' => 'Deskripsi singkat',
+            'description_hint' => 'Sangat membantu kualitas analisa',
+            'description_placeholder' => 'cth: sawah terasering, air terjun, tari tradisional, kuliner khas, homestay 10 kamar…',
+            'business_fields' => false,
+            'submit_label' => null,
+        ],
+        'ekonomi-desa' => [
+            'title' => 'Profil Usaha / Koperasi',
+            'subtitle' => 'Diisi oleh: Tim GODEVI. Data ini menjadi dasar analisis pada tahap berikutnya.',
+            'main_group' => 'Usaha',
+            'organization_label' => 'Nama Usaha / Koperasi',
+            'organization_placeholder' => 'mis. Koperasi Merah Putih Desa Catur',
+            'contact_group' => 'Kontak Pengurus',
+            'contact_label' => 'Nama Kontak (Pengurus)',
+            'contact_placeholder' => 'Nama penanggung jawab',
+            'description_group' => 'Usaha & Produk',
+            'description_label' => 'Deskripsi Singkat Usaha/Produk Saat Ini',
+            'description_hint' => 'Sangat membantu — sebutkan jika produk belum jelas',
+            'description_placeholder' => 'mis. Koperasi baru terbentuk, anggota petani kopi & penenun, belum ada produk unggulan yang disepakati...',
+            'business_fields' => true,
+            'submit_label' => 'Lanjut ke Identifikasi Potensi',
+        ],
+    ];
+
+    public static function profileFor(AssessmentTrack $track): array
+    {
+        return array_merge(self::PROFILE_FORMS['default'], self::PROFILE_FORMS[$track->slug] ?? []);
+    }
+
     public static function formFor(AssessmentTrack $track): array
     {
         return self::TRACK_FORMS[$track->slug] ?? [];
