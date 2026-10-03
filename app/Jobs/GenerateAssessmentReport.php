@@ -55,6 +55,7 @@ class GenerateAssessmentReport implements ShouldQueue
             \App\Services\AssessmentMailer::send($result->fresh('track'), 'report', $result->latestPaidOrder);
         } else {
             $result->update(['report_status' => 'failed', 'report_error' => $out['error'] ?? 'unknown'] + $audit);
+            \App\Services\AssessmentNotifier::reportFailed($result, $out['error'] ?? 'unknown');
             Log::error('GenerateAssessmentReport gagal', ['uuid' => $result->uuid, 'error' => $out['error'] ?? null]);
         }
     }

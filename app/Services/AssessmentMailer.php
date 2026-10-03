@@ -21,7 +21,11 @@ class AssessmentMailer
             return false;
         }
 
-        $entry = ['type' => $type, 'to' => $to, 'order' => $order?->code, 'at' => now()->toIso8601String()];
+        $entry = ['type' => $type, 'to' => $to, 'order' => $order?->code, 'at' => now()->toIso8601String(), 'mailer' => config('mail.default')];
+        // Mailer log/array hanya mencatat, tidak benar-benar mengirim ke inbox.
+        if (self::isSimulated()) {
+            $entry['simulated'] = true;
+        }
 
         try {
             $result->loadMissing('track');
@@ -37,6 +41,14 @@ class AssessmentMailer
         $log[] = $entry;
         $result->forceFill(['email_log' => $log])->saveQuietly();
 
+        AssessmentNotifier::email($result, $type, $order, $entry);
+
         return $entry['ok'];
+    }
+
+    /** True bila mailer aktif tidak mengirim email sungguhan (MAIL_MAILER=log/array). */
+    public static function isSimulated(): bool
+    {
+        return in_array(config('mail.default'), ['log', 'array'], true);
     }
 }

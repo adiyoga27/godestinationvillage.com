@@ -654,6 +654,39 @@ class AssessmentFlowsTest extends TestCase
         }
     }
 
+    public function test_telegram_notifies_email_status_and_errors(): void
+    {
+        config(['telegram.token' => 'test-token', 'telegram.chat_id' => '123']);
+        Http::fake(['api.telegram.org/*' => Http::response(['ok' => true])]);
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+        $result = AssessmentResult::create([
+            'uuid' => (string) Str::uuid(), 'track_id' => $track->id, 'name' => 'Tele', 'organization' => 'Desa & Telegram #1',
+            'email' => 'tele@example.com', 'regency' => 'Kab. Bangli',
+            'answers' => [], 'dimension_scores' => [], 'total_score' => 50, 'band' => 'Berkembang', 'status' => 'baru',
+        ]);
+        $order = $result->orders()->create(['code' => 'ASM-T-'.strtoupper(Str::random(6)), 'amount' => 199000, 'status' => 'pending']);
+
+        try {
+            // Mode log (phpunit: MAIL_MAILER=array) → peringatan tidak terkirim.
+            \App\Services\AssessmentMailer::send($result, 'invoice', $order);
+            Http::assertSent(fn ($req) => str_contains($req['text'], '⚠️ Email Invoice TIDAK TERKIRIM')
+                && str_contains($req['text'], 'Desa & Telegram #1') // & dan # tidak terpotong
+                && str_contains($req['text'], $order->code.' · Rp 199.000 · PENDING'));
+
+            // SMTP gagal → notifikasi error dengan pesannya.
+            config(['mail.default' => 'smtp', 'mail.mailers.smtp.host' => '127.0.0.1', 'mail.mailers.smtp.port' => 1, 'mail.mailers.smtp.timeout' => 2]);
+            \App\Services\AssessmentMailer::send($result, 'invoice', $order);
+            Http::assertSent(fn ($req) => str_starts_with($req['text'], '❌ Email Invoice GAGAL') && str_contains($req['text'], 'Error: '));
+            $this->assertFalse($result->fresh()->lastEmail()['ok']);
+
+            \App\Services\AssessmentNotifier::reportFailed($result, 'deepseek_http_401 (API key ditolak)');
+            Http::assertSent(fn ($req) => str_contains($req['text'], '❌ Laporan AI asesmen GAGAL') && str_contains($req['text'], 'deepseek_http_401'));
+        } finally {
+            $result->orders()->delete();
+            $result->delete();
+        }
+    }
+
     public function test_admin_can_follow_up_result(): void
     {
         $admin = User::where('role_id', 1)->first();

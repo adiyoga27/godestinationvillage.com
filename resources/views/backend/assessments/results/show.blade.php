@@ -272,11 +272,12 @@
         @include('backend.partials.form.card-open', ['icon' => 'email', 'title' => 'Email ke Responden', 'desc' => $result->email ?: 'Belum ada email'])
             @forelse (array_reverse($result->email_log ?? []) as $log)
                 <div class="gd-log">
-                    <i class="mdi {{ ! empty($log['ok']) ? 'mdi-check-circle gd-text--green' : 'mdi-close-circle gd-text--red' }}"></i>
+                    <i class="mdi {{ ! empty($log['simulated']) ? 'mdi-email-alert gd-text--amber' : (! empty($log['ok']) ? 'mdi-check-circle gd-text--green' : 'mdi-close-circle gd-text--red') }}"></i>
                     <div>
                         <strong>{{ $emailTypes[$log['type']] ?? $log['type'] }}</strong>{{ ! empty($log['order']) ? ' · '.$log['order'] : '' }}
                         <div class="gd-table__meta">{{ \Illuminate\Support\Carbon::parse($log['at'])->format('d M Y H:i') }} · {{ $log['to'] }}</div>
                         @if (! empty($log['error']))<div class="gd-table__meta gd-text--red">{{ $log['error'] }}</div>@endif
+                        @if (! empty($log['simulated']))<div class="gd-table__meta gd-text--amber">Tidak terkirim — mailer <code>{{ $log['mailer'] ?? 'log' }}</code> hanya mencatat ke log.</div>@endif
                     </div>
                 </div>
             @empty

@@ -37,6 +37,13 @@
     ])->filter();
 @endphp
 
+@if (\App\Services\AssessmentMailer::isSimulated())
+    <div class="gd-callout gd-callout--amber mt-0 mb-3">
+        <i class="mdi mdi-email-alert"></i> <strong>Email belum benar-benar terkirim.</strong>
+        Mailer aktif <code>{{ config('mail.default') }}</code> hanya menulis email ke log. Set <code>MAIL_MAILER=smtp</code> (host <code>godevi.org</code>) di <code>.env</code>, lalu jalankan <code>php artisan optimize</code>.
+    </div>
+@endif
+
 {{-- ============ RINGKASAN (klik = filter) ============ --}}
 <div class="gd-stats">
     <a href="{{ $tabUrl('all') }}" class="gd-stat gd-stat--link {{ $tab === 'all' ? 'is-active' : '' }}">
@@ -167,7 +174,9 @@
                     @if ($reportFailed)
                         <span class="gd-pill gd-pill--red mt-1"><i class="mdi mdi-alert"></i> Laporan AI gagal</span>
                     @endif
-                    @if ($lastEmail && empty($lastEmail['ok']))
+                    @if ($lastEmail && ! empty($lastEmail['simulated']))
+                        <span class="gd-pill gd-pill--amber" title="MAIL_MAILER={{ $lastEmail['mailer'] ?? 'log' }} — hanya dicatat di log"><i class="mdi mdi-email-alert"></i> Email {{ \App\Models\AssessmentResult::EMAIL_TYPES[$lastEmail['type']] ?? '' }} tidak terkirim (mode log)</span>
+                    @elseif ($lastEmail && empty($lastEmail['ok']))
                         <span class="gd-pill gd-pill--red" title="{{ $lastEmail['error'] ?? '' }}"><i class="mdi mdi-email-alert"></i> Email {{ \App\Models\AssessmentResult::EMAIL_TYPES[$lastEmail['type']] ?? '' }} gagal</span>
                     @elseif ($lastEmail)
                         <span class="gd-row__meta"><i class="mdi mdi-check-circle gd-text--green"></i> {{ \App\Models\AssessmentResult::EMAIL_TYPES[$lastEmail['type']] ?? 'Email' }} terkirim</span>

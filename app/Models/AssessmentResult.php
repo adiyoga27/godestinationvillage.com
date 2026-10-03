@@ -126,7 +126,7 @@ class AssessmentResult extends Model
         ]);
     }
 
-    /** Entri terakhir riwayat email (untuk penanda gagal/terkirim). */
+    /** Entri terakhir riwayat email (untuk penanda gagal/terkirim/simulasi). */
     public function lastEmail(): ?array
     {
         $log = $this->email_log ?? [];
