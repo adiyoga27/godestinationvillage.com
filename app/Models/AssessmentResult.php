@@ -119,7 +119,8 @@ class AssessmentResult extends Model
         $order = $this->relationLoaded('latestOrder') ? $this->latestOrder : $this->latestOrder()->first();
 
         return array_filter([
-            'invoice' => ! $this->is_unlocked && $order ? self::EMAIL_TYPES['invoice'] : null,
+            // Belum ada invoice? Dibuat otomatis saat dikirim (lihat resendEmail).
+            'invoice' => ! $this->is_unlocked && ($order || (int) ($this->track->price ?? 0) > 0) ? self::EMAIL_TYPES['invoice'] : null,
             'paid' => $this->is_unlocked && ($this->relationLoaded('latestPaidOrder') ? $this->latestPaidOrder : $this->latestPaidOrder()->first()) ? self::EMAIL_TYPES['paid'] : null,
             'report' => $this->is_unlocked && ! empty($this->ai_report) ? self::EMAIL_TYPES['report'] : null,
         ]);

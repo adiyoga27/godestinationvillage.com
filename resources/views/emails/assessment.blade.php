@@ -55,7 +55,7 @@
                                             @if ($order->status === 'paid')
                                                 <span style="color:#15803d;font-weight:bold;">LUNAS</span>{{ $order->paid_at ? ' · '.$order->paid_at->format('d M Y H:i') : '' }}{{ $order->payment_type ? ' · '.strtoupper(str_replace('_', ' ', $order->payment_type)) : '' }}
                                             @else
-                                                <span style="color:#b45309;font-weight:bold;">MENUNGGU PEMBAYARAN</span> · berlaku 24 jam
+                                                <span style="color:#b45309;font-weight:bold;">MENUNGGU PEMBAYARAN</span>
                                             @endif
                                         </td>
                                     </tr>

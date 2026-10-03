@@ -164,7 +164,7 @@ class AssessmentResultController extends Controller
         }
         if (! array_key_exists($type, $result->sendableEmails())) {
             $reason = match ($type) {
-                'invoice' => $result->is_unlocked ? 'hasil sudah lunas/terbuka' : 'guest belum checkout (belum ada invoice)',
+                'invoice' => $result->is_unlocked ? 'hasil sudah lunas/terbuka' : 'jalur ini gratis',
                 'paid' => 'belum ada pembayaran lunas',
                 default => $result->is_unlocked ? 'laporan AI belum tersedia' : 'hasil belum lunas',
             };
@@ -172,7 +172,7 @@ class AssessmentResultController extends Controller
             return back()->with('error', "Email {$label} tidak bisa dikirim: {$reason}.");
         }
 
-        $order = $type === 'invoice' ? $result->latestOrder : $result->latestPaidOrder;
+        $order = $type === 'invoice' ? AssessmentPaymentService::ensureInvoice($result) : $result->latestPaidOrder;
         $ok = AssessmentMailer::send($result, $type, $order);
 
         return back()->with(

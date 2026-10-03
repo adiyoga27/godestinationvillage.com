@@ -201,7 +201,7 @@
                             @if (! $r->email)
                                 <span class="dropdown-item disabled"><i class="mdi mdi-email-outline"></i> Belum ada email</span>
                             @elseif (empty($sendable))
-                                <span class="dropdown-item disabled"><i class="mdi mdi-email-outline"></i> {{ $r->is_unlocked ? 'Menunggu laporan AI' : 'Belum ada invoice' }}</span>
+                                <span class="dropdown-item disabled"><i class="mdi mdi-email-outline"></i> {{ $r->is_unlocked ? 'Menunggu laporan AI' : 'Jalur gratis' }}</span>
                             @else
                                 @foreach ($sendable as $type => $label)
                                     <form action="{{ route('assessment-results.email', $r->id) }}" method="post" data-confirm="Kirim email {{ $label }} ke {{ $r->email }}?">

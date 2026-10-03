@@ -6,6 +6,7 @@ use App\Helpers\BotHelper;
 use App\Jobs\GenerateAssessmentReport;
 use App\Models\AssessmentOrder;
 use App\Models\AssessmentResult;
+use App\Services\Midtrans\CreateSnapTokenService;
 use App\Services\Midtrans\Midtrans;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -116,5 +117,72 @@ class AssessmentPaymentService
         self::markPaid($order, 'manual');
 
         return $order->refresh();
+    }
+
+    /**
+     * Invoice (order pending) untuk hasil berbayar yang belum lunas. Dipakai ulang bila sudah ada,
+     * sehingga nomor invoice tetap sama dari email pertama sampai checkout.
+     */
+    public static function ensureInvoice(AssessmentResult $result): ?AssessmentOrder
+    {
+        $result->loadMissing('track');
+        $amount = (int) ($result->track->price ?? 0);
+
+        if ($result->is_unlocked || $amount <= 0) {
+            return null;
+        }
+
+        return $result->orders()->where('status', 'pending')->latest('id')->first()
+            ?? $result->orders()->create([
+                'code' => AssessmentOrder::generateCode(),
+                'amount' => $amount,
+                'gateway' => 'midtrans',
+                'status' => 'pending',
+            ]);
+    }
+
+    /**
+     * Pastikan order punya Snap token Midtrans (dibuat saat guest membuka halaman bayar).
+     *
+     * @throws \Throwable bila Midtrans menolak / tidak bisa dihubungi
+     */
+    public static function ensureSnapToken(AssessmentOrder $order): AssessmentOrder
+    {
+        if ($order->gateway_ref) {
+            return $order;
+        }
+
+        $result = $order->result()->with('track')->first();
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order->code,
+                'gross_amount' => (int) $order->amount,
+            ],
+            'item_details' => [[
+                'id' => 'asesmen-'.$result->track->slug,
+                'price' => (int) $order->amount,
+                'quantity' => 1,
+                'name' => 'Laporan Asesmen: '.$result->track->name,
+            ]],
+            'customer_details' => array_filter([
+                'first_name' => $result->name,
+                'email' => $result->email,
+                'phone' => $result->phone,
+            ]),
+            'credit_card' => ['secure' => true],
+            'expiry' => ['unit' => 'hour', 'duration' => 24],
+        ];
+
+        $order->gateway_ref = (new CreateSnapTokenService($order))->getSnapToken($params);
+        $order->save();
+
+        return $order;
+    }
+
+    /** Sudahkah email invoice untuk order ini pernah terkirim? */
+    public static function invoiceEmailed(AssessmentResult $result, AssessmentOrder $order): bool
+    {
+        return collect($result->email_log ?? [])
+            ->contains(fn ($e) => ($e['type'] ?? null) === 'invoice' && ($e['order'] ?? null) === $order->code && ! empty($e['ok']));
     }
 }

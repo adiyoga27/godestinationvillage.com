@@ -140,6 +140,11 @@ class AssessmentController extends Controller
                     ->with('status', 'Input admin tersimpan — hasil langsung terbuka tanpa pembayaran. Laporan AI sedang dibuat.');
             }
 
+            // Invoice langsung dibuat & dikirim ke email guest (setelah respons, agar halaman tidak lambat).
+            if ($order = AssessmentPaymentService::ensureInvoice($result)) {
+                dispatch(fn () => AssessmentMailer::send($result->fresh(), 'invoice', $order))->afterResponse();
+            }
+
             return redirect()->route('assessment.result', $result->uuid);
         } catch (\Throwable $th) {
             BotHelper::errorBot('Assessment Submit', $th);
@@ -218,55 +223,23 @@ class AssessmentController extends Controller
             return redirect()->route('assessment.result', $result->uuid);
         }
 
-        $existing = AssessmentOrder::where('assessment_result_id', $result->id)
-            ->where('status', 'pending')->latest()->first();
-
-        if ($existing && $existing->gateway_ref) {
-            return redirect()->route('assessment.payment', $existing->code);
+        // Pakai invoice yang sudah dibuat saat submit (nomor tetap sama dengan di email).
+        $order = AssessmentPaymentService::ensureInvoice($result);
+        if (! $order) {
+            return redirect()->route('assessment.result', $result->uuid);
         }
 
-        $amount = (int) ($result->track->price ?? 199000);
-
-        $order = AssessmentOrder::create([
-            'assessment_result_id' => $result->id,
-            'code' => AssessmentOrder::generateCode(),
-            'amount' => $amount,
-            'gateway' => 'midtrans',
-            'status' => 'pending',
-        ]);
-
-        $params = [
-            'transaction_details' => [
-                'order_id' => $order->code,
-                'gross_amount' => $amount,
-            ],
-            'item_details' => [[
-                'id' => 'asesmen-'.$result->track->slug,
-                'price' => $amount,
-                'quantity' => 1,
-                'name' => 'Laporan Asesmen: '.$result->track->name,
-            ]],
-            'customer_details' => array_filter([
-                'first_name' => $result->name,
-                'email' => $result->email,
-                'phone' => $result->phone,
-            ]),
-            'credit_card' => ['secure' => true],
-            'expiry' => ['unit' => 'hour', 'duration' => 24],
-        ];
-
         try {
-            $snap = new CreateSnapTokenService($order);
-            $order->gateway_ref = $snap->getSnapToken($params);
-            $order->save();
+            AssessmentPaymentService::ensureSnapToken($order);
         } catch (\Throwable $th) {
             BotHelper::errorBot('Assessment Checkout', $th);
-            $order->update(['status' => 'failed']);
 
             return back()->with('error', 'Gagal membuat pembayaran. Silakan coba lagi.');
         }
 
-        AssessmentMailer::send($result, 'invoice', $order);
+        if (! AssessmentPaymentService::invoiceEmailed($result, $order)) {
+            AssessmentMailer::send($result, 'invoice', $order);
+        }
 
         return redirect()->route('assessment.payment', $order->code);
     }
@@ -279,9 +252,18 @@ class AssessmentController extends Controller
             return redirect()->route('assessment.result', $order->result->uuid);
         }
 
-        if (! $order->gateway_ref) {
+        // Link "Bayar Sekarang" di email invoice: token Midtrans dibuat saat halaman bayar dibuka.
+        if (! $order->gateway_ref && $order->status === 'pending') {
+            try {
+                AssessmentPaymentService::ensureSnapToken($order);
+            } catch (\Throwable $th) {
+                BotHelper::errorBot('Assessment Payment Token', $th);
+            }
+        }
+
+        if (! $order->gateway_ref || $order->status !== 'pending') {
             return redirect()->route('assessment.result', $order->result->uuid)
-                ->with('error', 'Token pembayaran tidak tersedia. Silakan buat ulang pembayaran.');
+                ->with('error', 'Pembayaran untuk invoice ini tidak tersedia. Silakan klik "Bayar Sekarang" di halaman hasil.');
         }
 
         $data['snapToken'] = $order->gateway_ref;

@@ -286,7 +286,7 @@
             @if (! $result->email)
                 <p class="gd-hint mb-0">Responden belum mengisi email.</p>
             @elseif (empty($sendable))
-                <p class="gd-hint mb-0">{{ $result->is_unlocked ? 'Email hasil bisa dikirim setelah laporan AI selesai.' : 'Invoice bisa dikirim setelah guest checkout.' }}</p>
+                <p class="gd-hint mb-0">{{ $result->is_unlocked ? 'Email hasil bisa dikirim setelah laporan AI selesai.' : 'Jalur ini gratis — tidak ada invoice.' }}</p>
             @else
                 <form action="{{ route('assessment-results.email', $result->id) }}" method="post" class="gd-inline-form mt-2" data-confirm="Kirim email ke {{ $result->email }}?">
                     @csrf

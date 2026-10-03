@@ -600,6 +600,60 @@ class AssessmentFlowsTest extends TestCase
         }
     }
 
+    public function test_guest_submit_creates_invoice_and_emails_it(): void
+    {
+        Mail::fake();
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+        $questions = $track->activeQuestions()->get();
+        $org = 'Desa Invoice '.Str::random(5);
+
+        $this->post(route('assessment.start', 'pariwisata'), [
+            'organization' => $org, 'province' => 'Bali', 'regency' => 'Kab. Bangli',
+            'name' => 'Guest', 'phone' => '0812345', 'email' => 'guest-invoice@example.com',
+        ])->assertRedirect(route('assessment.form', 'pariwisata'));
+        $this->post(route('assessment.submit', 'pariwisata'), ['answers' => $questions->mapWithKeys(fn ($q) => [$q->id => 3])->all()]);
+
+        $result = AssessmentResult::where('organization', $org)->first();
+        try {
+            $this->assertNotNull($result);
+            $this->assertFalse($result->is_unlocked);
+            $order = $result->orders()->first();
+            $this->assertNotNull($order, 'invoice dibuat saat submit');
+            $this->assertSame('pending', $order->status);
+            $this->assertSame((int) $track->price, (int) $order->amount);
+            Mail::assertSent(AssessmentMail::class, fn ($m) => $m->type === 'invoice' && $m->order?->is($order) && $m->hasTo('guest-invoice@example.com'));
+
+            // Invoice dipakai ulang (tidak membuat nomor baru).
+            $this->assertTrue(\App\Services\AssessmentPaymentService::ensureInvoice($result)->is($order));
+            $this->assertTrue(\App\Services\AssessmentPaymentService::invoiceEmailed($result->fresh(), $order));
+        } finally {
+            $result?->orders()->delete();
+            $result?->delete();
+        }
+    }
+
+    public function test_admin_can_send_invoice_for_result_without_checkout(): void
+    {
+        Mail::fake();
+        $admin = User::where('role_id', 1)->firstOrFail();
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+        $result = AssessmentResult::create([
+            'uuid' => (string) Str::uuid(), 'track_id' => $track->id, 'name' => 'Lama', 'organization' => 'Desa Lama', 'email' => 'lama@example.com',
+            'answers' => [], 'dimension_scores' => [], 'total_score' => 50, 'band' => 'Berkembang', 'status' => 'baru',
+        ]);
+
+        try {
+            $this->assertSame(0, $result->orders()->count());
+            $this->assertArrayHasKey('invoice', $result->sendableEmails());
+            $this->actingAs($admin)->post(route('assessment-results.email', $result->id), ['type' => 'invoice'])->assertSessionHas('status');
+            $this->assertSame(1, $result->orders()->count());
+            Mail::assertSent(AssessmentMail::class, fn ($m) => $m->type === 'invoice' && $m->order?->code === $result->orders()->first()->code);
+        } finally {
+            $result->orders()->delete();
+            $result->delete();
+        }
+    }
+
     public function test_admin_can_follow_up_result(): void
     {
         $admin = User::where('role_id', 1)->first();
