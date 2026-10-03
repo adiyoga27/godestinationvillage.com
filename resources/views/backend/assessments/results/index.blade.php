@@ -121,6 +121,8 @@
                 $wa = $r->phone ? 'https://wa.me/62'.ltrim(preg_replace('/\D/', '', $r->phone), '0') : null;
                 [$stLabel, $stClass] = $statusMeta[$r->status] ?? [ucfirst($r->status), 'gd-pill--ink'];
                 $reportFailed = $r->is_unlocked && empty($r->ai_report) && $r->report_status === 'failed';
+                $sendable = $r->sendableEmails();
+                $lastEmail = $r->lastEmail();
                 $deleteNote = $r->orders->isNotEmpty() ? ' Invoice terkait ('.$r->orders->pluck('code')->implode(', ').') ikut terhapus.' : '';
             @endphp
             <article class="gd-row">
@@ -165,6 +167,11 @@
                     @if ($reportFailed)
                         <span class="gd-pill gd-pill--red mt-1"><i class="mdi mdi-alert"></i> Laporan AI gagal</span>
                     @endif
+                    @if ($lastEmail && empty($lastEmail['ok']))
+                        <span class="gd-pill gd-pill--red" title="{{ $lastEmail['error'] ?? '' }}"><i class="mdi mdi-email-alert"></i> Email {{ \App\Models\AssessmentResult::EMAIL_TYPES[$lastEmail['type']] ?? '' }} gagal</span>
+                    @elseif ($lastEmail)
+                        <span class="gd-row__meta"><i class="mdi mdi-check-circle gd-text--green"></i> {{ \App\Models\AssessmentResult::EMAIL_TYPES[$lastEmail['type']] ?? 'Email' }} terkirim</span>
+                    @endif
                 </div>
 
                 {{-- Tindak lanjut --}}
@@ -189,6 +196,21 @@
                             <a class="dropdown-item" href="{{ route('assessment.result', $r->uuid) }}" target="_blank" rel="noopener"><i class="mdi mdi-open-in-new"></i> Buka halaman hasil</a>
                             <button type="button" class="dropdown-item" data-copy="{{ route('assessment.result', $r->uuid) }}"><i class="mdi mdi-link-variant"></i> Salin link hasil</button>
                             @if ($wa)<a class="dropdown-item" href="{{ $wa }}" target="_blank" rel="noopener"><i class="mdi mdi-whatsapp"></i> Chat WhatsApp</a>@endif
+                            <div class="dropdown-divider"></div>
+                            <h6 class="dropdown-header">Kirim ulang email</h6>
+                            @if (! $r->email)
+                                <span class="dropdown-item disabled"><i class="mdi mdi-email-outline"></i> Belum ada email</span>
+                            @elseif (empty($sendable))
+                                <span class="dropdown-item disabled"><i class="mdi mdi-email-outline"></i> {{ $r->is_unlocked ? 'Menunggu laporan AI' : 'Belum ada invoice' }}</span>
+                            @else
+                                @foreach ($sendable as $type => $label)
+                                    <form action="{{ route('assessment-results.email', $r->id) }}" method="post" data-confirm="Kirim email {{ $label }} ke {{ $r->email }}?">
+                                        @csrf
+                                        <input type="hidden" name="type" value="{{ $type }}">
+                                        <button class="dropdown-item"><i class="mdi mdi-{{ ['invoice' => 'receipt', 'paid' => 'cash', 'report' => 'file-document'][$type] }}"></i> {{ $label }}</button>
+                                    </form>
+                                @endforeach
+                            @endif
                             <div class="dropdown-divider"></div>
                             <form action="{{ route('assessment-results.destroy', $r->id) }}" method="post" data-confirm="Hapus hasil asesmen {{ $title }}?{{ $deleteNote }} Tindakan ini tidak bisa dibatalkan.">
                                 @csrf
@@ -226,13 +248,6 @@
 @section('js')
 <script>
 (function () {
-    // Konfirmasi aman (teks dari atribut, bukan disisipkan ke string JS).
-    document.querySelectorAll('form[data-confirm]').forEach(function (form) {
-        form.addEventListener('submit', function (e) {
-            if (!window.confirm(form.getAttribute('data-confirm'))) e.preventDefault();
-        });
-    });
-
     // Filter langsung diterapkan: dropdown saat berubah, pencarian setelah berhenti mengetik.
     var form = document.querySelector('form[data-autosubmit]');
     if (form) {

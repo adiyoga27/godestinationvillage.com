@@ -561,6 +561,45 @@ class AssessmentFlowsTest extends TestCase
         }
     }
 
+    public function test_admin_resend_email_respects_payment_status(): void
+    {
+        Mail::fake();
+        $admin = User::where('role_id', 1)->firstOrFail();
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+        $make = fn (array $extra) => AssessmentResult::create(array_merge([
+            'uuid' => (string) Str::uuid(), 'track_id' => $track->id, 'name' => 'Mail', 'organization' => 'Desa Mail', 'email' => 'mail@example.com',
+            'answers' => [], 'dimension_scores' => [], 'total_score' => 50, 'band' => 'Berkembang', 'status' => 'baru',
+        ], $extra));
+
+        $unpaid = $make([]);
+        $unpaid->orders()->create(['code' => 'ASM-T-'.strtoupper(Str::random(6)), 'amount' => 199000, 'status' => 'pending']);
+        $paid = $make(['is_unlocked' => true, 'unlocked_at' => now(), 'ai_report' => ['ringkasan' => 'x']]);
+        $paid->orders()->create(['code' => 'ASM-T-'.strtoupper(Str::random(6)), 'amount' => 199000, 'status' => 'paid', 'paid_at' => now()]);
+
+        try {
+            $this->assertSame(['invoice'], array_keys($unpaid->sendableEmails()));
+            $this->assertSame(['paid', 'report'], array_keys($paid->sendableEmails()));
+
+            // Menu daftar hanya menampilkan email yang relevan.
+            $list = $this->actingAs($admin)->get(route('assessment-results.index', ['q' => 'Desa Mail']))->assertStatus(200);
+            $list->assertSee('Kirim ulang email', false)->assertSee('Kirim email Invoice ke mail@example.com?', false)->assertSee('Kirim email Hasil &amp; strategi ke mail@example.com?', false);
+
+            $this->actingAs($admin)->post(route('assessment-results.email', $unpaid->id), ['type' => 'invoice'])->assertSessionHas('status');
+            Mail::assertSent(AssessmentMail::class, fn ($m) => $m->type === 'invoice' && $m->result->is($unpaid));
+
+            // Tidak boleh: hasil belum lunas, atau invoice untuk yang sudah lunas.
+            $this->actingAs($admin)->post(route('assessment-results.email', $unpaid->id), ['type' => 'report'])->assertSessionHas('error');
+            $this->actingAs($admin)->post(route('assessment-results.email', $paid->id), ['type' => 'invoice'])->assertSessionHas('error');
+
+            $this->actingAs($admin)->post(route('assessment-results.email', $paid->id), ['type' => 'paid'])->assertSessionHas('status');
+            $this->actingAs($admin)->post(route('assessment-results.email', $paid->id), ['type' => 'report'])->assertSessionHas('status');
+            Mail::assertSent(AssessmentMail::class, 3);
+            $this->assertSame(['paid', 'report'], array_column($paid->fresh()->email_log, 'type'));
+        } finally {
+            foreach ([$unpaid, $paid] as $r) { $r->orders()->delete(); $r->delete(); }
+        }
+    }
+
     public function test_admin_can_follow_up_result(): void
     {
         $admin = User::where('role_id', 1)->first();

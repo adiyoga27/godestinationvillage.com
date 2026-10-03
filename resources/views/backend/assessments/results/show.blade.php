@@ -282,13 +282,18 @@
             @empty
                 <p class="gd-hint">Belum ada email terkirim.</p>
             @endforelse
-            @if ($result->email)
-                <form action="{{ route('assessment-results.email', $result->id) }}" method="post" class="gd-inline-form mt-2">
+            @php $sendable = $result->sendableEmails(); @endphp
+            @if (! $result->email)
+                <p class="gd-hint mb-0">Responden belum mengisi email.</p>
+            @elseif (empty($sendable))
+                <p class="gd-hint mb-0">{{ $result->is_unlocked ? 'Email hasil bisa dikirim setelah laporan AI selesai.' : 'Invoice bisa dikirim setelah guest checkout.' }}</p>
+            @else
+                <form action="{{ route('assessment-results.email', $result->id) }}" method="post" class="gd-inline-form mt-2" data-confirm="Kirim email ke {{ $result->email }}?">
                     @csrf
-                    <select name="type" class="form-control gd-input">
-                        @foreach ($emailTypes as $k => $label)<option value="{{ $k }}" @selected($k === ($rep ? 'report' : 'invoice'))>{{ $label }}</option>@endforeach
+                    <select name="type" class="form-control gd-input" aria-label="Jenis email">
+                        @foreach ($sendable as $k => $label)<option value="{{ $k }}" @selected($loop->last)>{{ $label }}</option>@endforeach
                     </select>
-                    <button class="gd-btn gd-btn--ghost"><i class="mdi mdi-send"></i> Kirim</button>
+                    <button class="gd-btn gd-btn--ghost"><i class="mdi mdi-send"></i> Kirim ulang</button>
                 </form>
             @endif
         @include('backend.partials.form.card-close')

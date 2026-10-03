@@ -365,6 +365,12 @@
     });
   })(jQuery);
 
+  // Konfirmasi aman untuk form[data-confirm] (teks dari atribut, bukan disisipkan ke string JS).
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (form.matches && form.matches('form[data-confirm]') && !window.confirm(form.getAttribute('data-confirm'))) e.preventDefault();
+  }, true);
+
   // Komponen form admin: tab bahasa EN/ID, preview gambar, format Rupiah.
   (function () {
     document.querySelectorAll('[data-gd-lang-group]').forEach(function (group) {

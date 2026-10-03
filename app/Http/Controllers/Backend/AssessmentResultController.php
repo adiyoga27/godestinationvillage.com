@@ -66,7 +66,7 @@ class AssessmentResultController extends Controller
         $tab = in_array($tab, self::TABS, true) ? $tab : 'all';
 
         $data['results'] = $applyTab($base(), $tab)
-            ->with(['track', 'pic', 'latestOrder', 'orders:id,assessment_result_id,code'])
+            ->with(['track', 'pic', 'latestOrder', 'latestPaidOrder', 'orders:id,assessment_result_id,code'])
             ->latest('id')
             ->paginate(20)
             ->withQueryString();
@@ -157,21 +157,28 @@ class AssessmentResultController extends Controller
         $result = AssessmentResult::with(['track', 'latestOrder', 'latestPaidOrder'])->findOrFail($id);
         $type = $request->validate(['type' => 'required|in:invoice,paid,report'])['type'];
 
+        $label = AssessmentResult::EMAIL_TYPES[$type];
+
         if (! $result->email) {
             return back()->with('error', 'Hasil ini belum punya email.');
         }
-        if ($type === 'report' && empty($result->ai_report)) {
-            return back()->with('error', 'Laporan AI belum tersedia.');
+        if (! array_key_exists($type, $result->sendableEmails())) {
+            $reason = match ($type) {
+                'invoice' => $result->is_unlocked ? 'hasil sudah lunas/terbuka' : 'guest belum checkout (belum ada invoice)',
+                'paid' => 'belum ada pembayaran lunas',
+                default => $result->is_unlocked ? 'laporan AI belum tersedia' : 'hasil belum lunas',
+            };
+
+            return back()->with('error', "Email {$label} tidak bisa dikirim: {$reason}.");
         }
 
         $order = $type === 'invoice' ? $result->latestOrder : $result->latestPaidOrder;
-        if ($type !== 'report' && ! $order) {
-            return back()->with('error', 'Belum ada invoice untuk dikirim.');
-        }
-
         $ok = AssessmentMailer::send($result, $type, $order);
 
-        return back()->with($ok ? 'status' : 'error', $ok ? 'Email terkirim ke '.$result->email.'.' : 'Email gagal dikirim — lihat riwayat email.');
+        return back()->with(
+            $ok ? 'status' : 'error',
+            $ok ? "Email {$label} terkirim ke {$result->email}." : "Email {$label} gagal dikirim ke {$result->email} — cek pengaturan SMTP & riwayat email."
+        );
     }
 
     public function update(Request $request, $id)

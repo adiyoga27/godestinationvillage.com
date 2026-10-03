@@ -98,6 +98,41 @@ class AssessmentResult extends Model
         };
     }
 
+    public const EMAIL_TYPES = [
+        'invoice' => 'Invoice',
+        'paid' => 'Pembayaran berhasil',
+        'report' => 'Hasil & strategi',
+    ];
+
+    /**
+     * Jenis email yang boleh dikirim (ulang) sesuai status saat ini.
+     * Invoice hanya selama belum lunas; bukti lunas & hasil hanya setelah lunas/terbuka.
+     *
+     * @return array<string, string> [type => label]
+     */
+    public function sendableEmails(): array
+    {
+        if (blank($this->email)) {
+            return [];
+        }
+
+        $order = $this->relationLoaded('latestOrder') ? $this->latestOrder : $this->latestOrder()->first();
+
+        return array_filter([
+            'invoice' => ! $this->is_unlocked && $order ? self::EMAIL_TYPES['invoice'] : null,
+            'paid' => $this->is_unlocked && ($this->relationLoaded('latestPaidOrder') ? $this->latestPaidOrder : $this->latestPaidOrder()->first()) ? self::EMAIL_TYPES['paid'] : null,
+            'report' => $this->is_unlocked && ! empty($this->ai_report) ? self::EMAIL_TYPES['report'] : null,
+        ]);
+    }
+
+    /** Entri terakhir riwayat email (untuk penanda gagal/terkirim). */
+    public function lastEmail(): ?array
+    {
+        $log = $this->email_log ?? [];
+
+        return $log ? end($log) : null;
+    }
+
     /** Laporan AI boleh dicoba ulang: gagal, atau macet di status "diproses" lebih dari 3 menit. */
     public function canRetryReport(): bool
     {
