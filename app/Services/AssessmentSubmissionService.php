@@ -18,7 +18,7 @@ class AssessmentSubmissionService
      *
      * @return array{0: array, 1: array, 2: array} [rules, messages, attributes]
      */
-    public static function profileRules(AssessmentTrack $track): array
+    public static function profileRules(AssessmentTrack $track, bool $adminMode = false): array
     {
         $profile = AssessmentService::profileFor($track);
         $business = $profile['business_fields'];
@@ -39,7 +39,8 @@ class AssessmentSubmissionService
             'postal_code' => 'nullable|string|max:10',
             'name' => 'required|string|max:191',
             'phone' => 'required|string|max:50',
-            'email' => 'required|email:rfc|max:191',
+            // Input admin boleh tanpa email responden (mis. data kunjungan lapangan).
+            'email' => [$adminMode ? 'nullable' : 'required', 'email:rfc', 'max:191'],
             'profile_description' => 'nullable|string|max:3000',
         ];
 

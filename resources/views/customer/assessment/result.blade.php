@@ -13,7 +13,8 @@
     $showWeight = $totalWeight > 0 && count(array_unique(array_map(fn ($d) => $d['weight'] ?? 0, $dims))) > 1;
     $location = collect([$result->regency, $result->province])->filter()->implode(', ');
     $hasAiReport = ! empty($result->ai_report);
-    $reportPending = ! $hasAiReport && ($result->report_status ?? '') !== 'failed';
+    $canRetry = $result->is_unlocked && $result->canRetryReport();
+    $reportPending = ! $hasAiReport && ! $canRetry;
 @endphp
 
 @include('customer.assessment._hero', [
@@ -78,6 +79,12 @@
 
         @if (session('status'))
             <div class="mt-6 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">{{ session('status') }}</div>
+        @endif
+        @if (session('error'))
+            <div class="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{{ session('error') }}</div>
+        @endif
+        @if (auth()->check() && (int) auth()->user()->role_id !== 3)
+            <a href="{{ route('assessment-results.show', $result->id) }}" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 py-2 text-sm font-bold text-ink-800 transition hover:border-brand-600 hover:text-brand-600">Buka di panel admin →</a>
         @endif
 
         {{-- ============ LAPORAN STRATEGI (AI) ============ --}}
@@ -151,8 +158,27 @@
                     @if (! empty($rep['catatan_ttdi']))
                         <div class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-relaxed text-amber-900">{{ $rep['catatan_ttdi'] }}</div>
                     @endif
-                @elseif (($result->report_status ?? '') === 'failed')
-                    <p class="mt-4 rounded-2xl bg-red-50 p-4 text-sm text-red-700">Pembuatan laporan gagal ({{ $result->report_error }}). Tim kami akan menindaklanjuti — hubungi kami dengan menyebut kode hasil di atas.</p>
+                @elseif ($canRetry)
+                    <div class="mt-5 rounded-2xl border border-red-100 bg-red-50 p-5">
+                        <p class="text-sm font-bold text-red-800">Laporan analisa belum berhasil disusun.</p>
+                        <p class="mt-1 text-sm leading-relaxed text-red-700">Skor Anda di bawah sudah tersimpan dan aman. Silakan coba susun ulang laporannya — bila masih gagal, tim kami akan menindaklanjuti (sebutkan kode hasil di atas).</p>
+                        <form action="{{ route('assessment.retry_report', $result->uuid) }}" method="post" class="mt-4" data-retry-form>
+                            @csrf
+                            <button type="submit" class="btn btn-primary inline-flex items-center gap-2 !py-3">
+                                <span data-label class="inline-flex items-center gap-2">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                                    Coba susun ulang laporan
+                                </span>
+                                <span data-loading class="hidden items-center gap-2">
+                                    <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>
+                                    Menyusun laporan… (bisa sampai 1 menit)
+                                </span>
+                            </button>
+                        </form>
+                        @if (auth()->check() && (int) auth()->user()->role_id !== 3)
+                            <p class="mt-3 text-xs text-red-600">Info staf: {{ $result->report_error ?: 'proses macet' }}</p>
+                        @endif
+                    </div>
                 @else
                     <div class="mt-6 space-y-3" aria-hidden="true">
                         <div class="report-skeleton h-4 w-11/12"></div>
@@ -343,6 +369,16 @@
         // Laporan AI masih disusun di antrean → muat ulang berkala sampai selesai.
         setTimeout(function () { window.location.reload(); }, 15000);
     @endif
+    document.querySelectorAll('[data-retry-form]').forEach(function (form) {
+        form.addEventListener('submit', function () {
+            var btn = form.querySelector('button');
+            btn.disabled = true;
+            btn.querySelector('[data-label]').classList.add('hidden');
+            var loading = btn.querySelector('[data-loading]');
+            loading.classList.remove('hidden');
+            loading.classList.add('inline-flex');
+        });
+    });
     (function () {
         // Angka skor menghitung naik dari 0.
         var el = document.querySelector('[data-count]');

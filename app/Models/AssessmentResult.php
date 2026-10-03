@@ -98,6 +98,17 @@ class AssessmentResult extends Model
         };
     }
 
+    /** Laporan AI boleh dicoba ulang: gagal, atau macet di status "diproses" lebih dari 3 menit. */
+    public function canRetryReport(): bool
+    {
+        if (! empty($this->ai_report)) {
+            return false;
+        }
+
+        return $this->report_status === 'failed'
+            || ($this->report_status === 'generating' && $this->updated_at?->lt(now()->subMinutes(3)));
+    }
+
     public function latestPaidOrder()
     {
         return $this->hasOne(AssessmentOrder::class, 'assessment_result_id')->where('status', 'paid')->latestOfMany();

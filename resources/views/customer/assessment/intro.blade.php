@@ -130,7 +130,7 @@
                             ? ['Isi profil entitas', 'Nama usaha/entitas, jenis entitas, lokasi, dan kontak.']
                             : ['Isi profil desa', 'Nama desa/DTW, lokasi, dan kontak pengelola.'])),
                 ['Nilai '.$track->questions_count.' '.$unitLabel, 'Skala 1–5 sesuai kondisi nyata saat ini.'],
-                ['Terima analisa', $track->price > 0 ? 'Bayar '.$priceLabel.', hasil langsung terbuka.' : 'Hasil langsung terbuka.'],
+                ['Terima analisa', $adminMode ? 'Input admin — tanpa pembayaran, hasil langsung terbuka.' : ($track->price > 0 ? 'Bayar '.$priceLabel.', hasil langsung terbuka.' : 'Hasil langsung terbuka.')],
             ] as $i => [$title, $desc])
                 <div data-vue="Reveal" style="--reveal-delay: {{ $i * 120 }}ms" class="flex items-start gap-4 bg-white p-6 sm:p-7">
                     <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-50 font-display text-lg font-bold text-brand-600">{{ $i + 1 }}</span>
@@ -194,6 +194,7 @@
                     </div>
                 @endif
 
+                @include('customer.assessment._admin_banner')
                 <form action="{{ route('assessment.start', $track->slug) }}" method="post" class="card p-6 sm:p-10">
                     @csrf
                     <div class="flex items-center gap-4 border-b border-ink-100 pb-6">
@@ -292,9 +293,10 @@
                                 <span class="mt-1.5 block text-xs text-ink-400">Dipakai untuk cek status & membuka hasil kembali.</span>
                             </label>
                             <label class="block sm:col-span-2">
-                                <span class="label-gd">Email <span class="text-brand-600">*</span></span>
-                                <input type="email" name="email" value="{{ old('email', auth()->user()->email ?? '') }}" required autocomplete="email" class="input-gd !py-3.5" placeholder="nama@email.com">
-                                <span class="mt-1.5 block text-xs text-ink-400">Invoice, bukti pembayaran, dan laporan hasil & strategi dikirim ke email ini.</span>
+                                <span class="label-gd">Email @if ($adminMode)<span class="font-normal text-ink-400">(opsional)</span>@else<span class="text-brand-600">*</span>@endif</span>
+                                {{-- Mode admin: jangan isi email admin; ini email responden. --}}
+                                <input type="email" name="email" value="{{ old('email', $adminMode ? '' : (auth()->user()->email ?? '')) }}" @unless ($adminMode) required @endunless autocomplete="email" class="input-gd !py-3.5" placeholder="nama@email.com">
+                                <span class="mt-1.5 block text-xs text-ink-400">{{ $adminMode ? 'Email responden. Bila diisi, laporan hasil & strategi dikirim ke email ini.' : 'Invoice, bukti pembayaran, dan laporan hasil & strategi dikirim ke email ini.' }}</span>
                             </label>
                         </div>
                     </fieldset>
@@ -313,7 +315,7 @@
                     </fieldset>
 
                     <div class="mt-10 flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
-                        <a href="{{ route('assessment.index') }}" class="btn-secondary !py-4 sm:!px-7">← Batal</a>
+                        <a href="{{ $adminMode ? route('assessment-results.create') : route('assessment.index') }}" class="btn-secondary !py-4 sm:!px-7">← Batal</a>
                         <button type="submit" class="btn-primary group flex-1 !py-4 text-base">
                             {{ $profile['submit_label'] ?? 'Lanjut Menilai '.ucfirst($unitLabel) }}
                             <svg class="h-5 w-5 transition group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>

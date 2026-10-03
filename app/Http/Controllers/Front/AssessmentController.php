@@ -57,6 +57,7 @@ class AssessmentController extends Controller
         $data['showWeight'] = ($data['formConfig']['show_weight'] ?? false)
             || $weights->map(fn ($w) => round($w, 1))->unique()->count() > 1;
         $data['profile'] = AssessmentService::profileFor($track);
+        $data['adminMode'] = $this->adminMode(request(), $track);
 
         $data['track'] = $track;
         $data['seo'] = Seo::make()
@@ -74,7 +75,7 @@ class AssessmentController extends Controller
     public function start(Request $request, string $slug)
     {
         $track = $this->findTrack($slug);
-        [$rules, $messages, $attributes] = AssessmentSubmissionService::profileRules($track);
+        [$rules, $messages, $attributes] = AssessmentSubmissionService::profileRules($track, $this->adminMode($request, $track));
         $validated = $request->validate($rules, $messages, $attributes);
         $validated['phone'] = AssessmentPaymentService::normalizePhone($validated['phone']);
 
@@ -100,6 +101,7 @@ class AssessmentController extends Controller
         $data['labels'] = AssessmentService::SCALE_LABELS;
         $data['formConfig'] = AssessmentService::formFor($track);
         $data['weights'] = AssessmentService::displayWeights($track, $grouped);
+        $data['adminMode'] = $this->adminMode($request, $track);
         $data['seo'] = Seo::make()->title('Isi Asesmen: '.$track->name)->noindex()->toArray();
 
         return view('customer.assessment.form', $data);
@@ -115,15 +117,28 @@ class AssessmentController extends Controller
                 ->with('error', 'Sesi identitas berakhir. Mohon isi ulang identitas.');
         }
 
+        // Mode Input Admin: form & perhitungan sama persis dengan guest, tetapi hasil langsung terbuka tanpa bayar.
+        $adminMode = $this->adminMode($request, $track);
+        $extra = $adminMode
+            ? ['source' => 'admin', 'created_by' => $request->user()->id, 'is_unlocked' => true]
+            : ['source' => 'guest'];
+
         try {
             $validated = $request->validated();
-            $result = AssessmentSubmissionService::store($track, $identity, $validated['answers'], $validated['notes'] ?? [], ['source' => 'guest']);
+            $result = AssessmentSubmissionService::store($track, $identity, $validated['answers'], $validated['notes'] ?? [], $extra);
 
             if (! $result) {
                 return back()->withInput()->with('error', 'Masih ada pernyataan yang belum dijawab.');
             }
 
             $request->session()->forget('assessment_identity_'.$track->id);
+
+            if ($adminMode) {
+                $request->session()->forget('assessment_admin_mode');
+
+                return redirect()->route('assessment.result', $result->uuid)
+                    ->with('status', 'Input admin tersimpan — hasil langsung terbuka tanpa pembayaran. Laporan AI sedang dibuat.');
+            }
 
             return redirect()->route('assessment.result', $result->uuid);
         } catch (\Throwable $th) {
@@ -275,6 +290,45 @@ class AssessmentController extends Controller
         $data['seo'] = Seo::make()->title('Pembayaran Laporan Asesmen')->noindex()->toArray();
 
         return view('customer.payment.midtrans', $data);
+    }
+
+    /**
+     * Guest mencoba ulang pembuatan laporan AI yang gagal (atau macet saat diproses).
+     * Hanya untuk hasil yang sudah lunas; laporan yang sudah jadi tidak bisa ditimpa dari sini.
+     */
+    public function retryReport(string $uuid)
+    {
+        $result = AssessmentResult::where('uuid', $uuid)->firstOrFail();
+
+        if (! $result->is_unlocked || ! empty($result->ai_report) || ! $result->canRetryReport()) {
+            return redirect()->route('assessment.result', $result->uuid);
+        }
+
+        $result->update(['report_status' => 'pending', 'report_error' => null]);
+        GenerateAssessmentReport::dispatch($result->uuid);
+
+        $result->refresh();
+
+        return redirect()->route('assessment.result', $result->uuid)->with(
+            $result->report_status === 'failed' ? 'error' : 'status',
+            $result->report_status === 'failed'
+                ? 'Laporan masih belum berhasil dibuat. Silakan coba lagi beberapa saat lagi atau hubungi tim kami.'
+                : 'Laporan sedang / sudah disusun ulang.'
+        );
+    }
+
+    /**
+     * Admin/staf yang memulai "Input Manual" dari panel admin untuk jalur ini.
+     */
+    protected function adminMode(Request $request, AssessmentTrack $track): bool
+    {
+        $mode = $request->session()->get('assessment_admin_mode');
+        $user = $request->user();
+
+        return $user && (int) $user->role_id !== 3
+            && is_array($mode)
+            && (int) ($mode['track_id'] ?? 0) === (int) $track->id
+            && (int) ($mode['user_id'] ?? 0) === (int) $user->id;
     }
 
     /**

@@ -1,5 +1,6 @@
 @if(!Auth::guest())
-    @if(Auth::user()->role_id <> 3)
+    {{-- Staf diarahkan ke panel admin, kecuali di halaman asesmen (Mode Input Admin & Mode Tim GODEVI). --}}
+    @if(Auth::user()->role_id <> 3 && ! request()->routeIs('assessment.*'))
     <script type="text/javascript">
         window.location = "{{ url('/administrator/dashboard') }}";//here double curly bracket
     </script>

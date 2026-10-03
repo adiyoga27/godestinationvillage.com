@@ -155,6 +155,10 @@ class AiReportService
 
     protected static function callDeepSeek(string $prompt): array
     {
+        if (blank(config('ai.deepseek_key'))) {
+            return ['ok' => false, 'error' => 'deepseek_api_key_belum_diisi (set DEEPSEEK_API_KEY di .env)'];
+        }
+
         try {
             $resp = Http::timeout(config('ai.timeout', 120))
                 ->withToken(config('ai.deepseek_key'))
@@ -169,7 +173,10 @@ class AiReportService
                 ]);
 
             if (! $resp->successful()) {
-                return ['ok' => false, 'error' => 'deepseek_http_'.$resp->status()];
+                // 401 = key salah/dicabut, 402 = saldo DeepSeek habis.
+                $hint = ['401' => ' (API key ditolak)', '402' => ' (saldo DeepSeek habis)'][$resp->status()] ?? '';
+
+                return ['ok' => false, 'error' => 'deepseek_http_'.$resp->status().$hint];
             }
 
             $json = $resp->json();

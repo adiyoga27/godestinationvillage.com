@@ -63,6 +63,7 @@
             </div>
         @endif
 
+        @include('customer.assessment._admin_banner')
         <form action="{{ route('assessment.submit', $track->slug) }}" method="post" id="assessment-form" novalidate class="space-y-6">
             @csrf
             @foreach ($grouped as $dimension => $questions)

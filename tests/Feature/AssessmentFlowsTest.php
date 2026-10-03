@@ -404,7 +404,7 @@ class AssessmentFlowsTest extends TestCase
         }
     }
 
-    public function test_admin_can_input_assessment_manually_without_payment(): void
+    public function test_admin_input_uses_same_guest_form_without_payment(): void
     {
         Mail::fake();
         $this->fakeAi('pariwisata');
@@ -412,12 +412,23 @@ class AssessmentFlowsTest extends TestCase
         $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
         $questions = $track->activeQuestions()->get();
 
-        $this->actingAs($admin)->get(route('assessment-results.create'))->assertStatus(200)->assertSee($track->name, false);
-        $this->actingAs($admin)->get(route('assessment-results.create', ['track' => 'pariwisata']))->assertStatus(200)->assertSee('answers['.$questions->first()->id.']', false);
+        $this->actingAs($admin)->get(route('assessment-results.create'))->assertStatus(200)->assertSee(route('assessment-results.input', 'pariwisata'), false);
+        $this->actingAs($admin)->get(route('assessment-results.input', 'pariwisata'))->assertRedirect(route('assessment.intro', 'pariwisata'));
 
-        $response = $this->actingAs($admin)->post(route('assessment-results.store'), [
-            'track_id' => $track->id, 'organization' => 'Desa Input Admin', 'province' => 'Bali', 'regency' => 'Kab. Gianyar',
+        // Form profil & soal yang sama dengan guest, hanya ada banner mode admin; email admin tidak diisikan.
+        $this->actingAs($admin)->get(route('assessment.intro', 'pariwisata'))
+            ->assertSee('Mode Input Admin', false)
+            ->assertDontSee('value="'.e($admin->email).'"', false)
+            // Layout publik biasanya mengalihkan staf ke dashboard; halaman asesmen dikecualikan.
+            ->assertDontSee("window.location = \"".url('/administrator/dashboard'), false);
+
+        $this->actingAs($admin)->post(route('assessment.start', 'pariwisata'), [
+            'organization' => 'Desa Input Admin', 'province' => 'Bali', 'regency' => 'Kab. Gianyar',
             'name' => 'Kepala Desa', 'phone' => '081234', 'email' => 'desa@example.com',
+        ])->assertRedirect(route('assessment.form', 'pariwisata'));
+        $this->actingAs($admin)->get(route('assessment.form', 'pariwisata'))->assertSee('Mode Input Admin', false);
+
+        $submit = $this->actingAs($admin)->post(route('assessment.submit', 'pariwisata'), [
             'answers' => $questions->mapWithKeys(fn ($q) => [$q->id => 3])->all(),
             'notes' => [$questions->first()->id => 'Catatan admin'],
         ]);
@@ -425,7 +436,7 @@ class AssessmentFlowsTest extends TestCase
         $result = AssessmentResult::where('organization', 'Desa Input Admin')->latest('id')->first();
         try {
             $this->assertNotNull($result);
-            $response->assertRedirect(route('assessment-results.show', $result->id));
+            $submit->assertRedirect(route('assessment.result', $result->uuid));
             $this->assertSame('admin', $result->source);
             $this->assertSame($admin->id, $result->created_by);
             $this->assertTrue($result->is_unlocked);
@@ -433,8 +444,120 @@ class AssessmentFlowsTest extends TestCase
             $this->assertSame('done', $result->report_status);
             $this->assertStringContainsString('Catatan admin', $result->ai_prompt);
             Mail::assertSent(AssessmentMail::class, fn ($m) => $m->type === 'report' && $m->hasTo('desa@example.com'));
+            $this->assertNull(session('assessment_admin_mode'));
+
+            // Skor sama dengan perhitungan guest untuk jawaban yang sama.
+            $this->assertSame(AssessmentService::compute($track, $questions, $questions->mapWithKeys(fn ($q) => [$q->id => 3])->all())['total'], (int) $result->total_score);
         } finally {
             $result?->delete();
+        }
+    }
+
+    public function test_guest_flow_unaffected_without_admin_mode(): void
+    {
+        $member = User::where('role_id', 3)->first();
+        if (! $member) {
+            $this->markTestSkipped('Butuh user member.');
+        }
+        // Member yang memalsukan session mode admin tetap diperlakukan sebagai guest.
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+        $this->actingAs($member)->withSession(['assessment_admin_mode' => ['track_id' => $track->id, 'user_id' => $member->id]])
+            ->get(route('assessment.intro', 'pariwisata'))->assertDontSee('Mode Input Admin', false);
+    }
+
+    public function test_guest_can_retry_failed_report(): void
+    {
+        Mail::fake();
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+        $questions = $track->activeQuestions()->get();
+        $answers = $questions->mapWithKeys(fn ($q) => [$q->id => 3])->all();
+        $computed = AssessmentService::compute($track, $questions, $answers);
+        $make = fn (array $extra) => AssessmentResult::create(array_merge([
+            'uuid' => (string) Str::uuid(), 'track_id' => $track->id, 'name' => 'Retry Test', 'organization' => 'Desa Retry',
+            'answers' => $answers, 'dimension_scores' => $computed['dimensions'], 'total_score' => $computed['total'],
+            'band' => $computed['band'], 'status' => 'baru',
+        ], $extra));
+
+        $failed = $make(['is_unlocked' => true, 'unlocked_at' => now(), 'report_status' => 'failed', 'report_error' => 'deepseek_http_401']);
+        $done = $make(['is_unlocked' => true, 'unlocked_at' => now(), 'report_status' => 'done', 'ai_report' => ['ringkasan' => 'Laporan lama']]);
+        $locked = $make(['is_unlocked' => false]);
+
+        try {
+            // Guest melihat tombol coba lagi, bukan kode error teknis.
+            $this->get(route('assessment.result', $failed->uuid))
+                ->assertSee('Coba susun ulang laporan', false)
+                ->assertDontSee('deepseek_http_401', false);
+
+            $this->fakeAi('pariwisata');
+            $this->post(route('assessment.retry_report', $failed->uuid))->assertRedirect(route('assessment.result', $failed->uuid));
+            $failed->refresh();
+            $this->assertSame('done', $failed->report_status);
+            $this->assertSame('Ringkasan uji', $failed->ai_report['ringkasan']);
+
+            // Laporan yang sudah jadi tidak ditimpa; hasil belum lunas tidak memicu AI.
+            $this->post(route('assessment.retry_report', $done->uuid))->assertRedirect();
+            $this->assertSame('Laporan lama', $done->fresh()->ai_report['ringkasan']);
+            $this->post(route('assessment.retry_report', $locked->uuid))->assertRedirect();
+            $this->assertNull($locked->fresh()->ai_report);
+            $this->assertNotSame('done', $locked->fresh()->report_status);
+        } finally {
+            AssessmentResult::whereIn('id', [$failed->id, $done->id, $locked->id])->delete();
+        }
+    }
+
+    public function test_admin_can_delete_result_from_list(): void
+    {
+        $admin = User::where('role_id', 1)->firstOrFail();
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+        $make = fn () => AssessmentResult::create([
+            'uuid' => (string) Str::uuid(), 'track_id' => $track->id, 'name' => 'Hapus Test', 'organization' => "Warung D'Uma",
+            'answers' => [], 'dimension_scores' => [], 'total_score' => 50, 'band' => 'Berkembang', 'status' => 'baru',
+        ]);
+        $a = $make();
+        $order = $a->orders()->create(['code' => 'ASM-TEST-'.strtoupper(Str::random(6)), 'amount' => 199000, 'status' => 'pending']);
+        $b = $make();
+
+        try {
+            $list = route('assessment-results.index', ['payment' => 'belum']);
+            $this->actingAs($admin)->get($list)
+                ->assertSee(route('assessment-results.destroy', $a->id), false)
+                ->assertSee('data-confirm="Hapus hasil asesmen Warung D&#039;Uma?', false);
+
+            $this->actingAs($admin)->delete(route('assessment-results.destroy', $a->id), ['redirect' => $list])->assertRedirect($list);
+            $this->assertNull(AssessmentResult::find($a->id));
+            $this->assertDatabaseMissing('assessment_orders', ['id' => $order->id]);
+
+            // Redirect ke luar aplikasi diabaikan.
+            $this->actingAs($admin)->delete(route('assessment-results.destroy', $b->id), ['redirect' => 'https://evil.example.com'])
+                ->assertRedirect(route('assessment-results.index'));
+        } finally {
+            AssessmentResult::whereIn('id', [$a->id, $b->id])->delete();
+        }
+    }
+
+    public function test_results_list_tabs_filter_correctly(): void
+    {
+        $admin = User::where('role_id', 1)->firstOrFail();
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+        $tag = 'TabTest'.Str::random(5);
+        $make = fn (array $extra) => AssessmentResult::create(array_merge([
+            'uuid' => (string) Str::uuid(), 'track_id' => $track->id, 'name' => 'Tab', 'organization' => $tag,
+            'answers' => [], 'dimension_scores' => [], 'total_score' => 50, 'band' => 'Berkembang', 'status' => 'baru',
+        ], $extra));
+        $unpaid = $make(['organization' => $tag.' Unpaid']);
+        $followup = $make(['organization' => $tag.' Followup', 'is_unlocked' => true]);
+        $failed = $make(['organization' => $tag.' Failed', 'is_unlocked' => true, 'status' => 'dihubungi', 'report_status' => 'failed']);
+
+        try {
+            $get = fn ($tab) => $this->actingAs($admin)->get(route('assessment-results.index', ['q' => $tag, 'tab' => $tab]))->assertStatus(200);
+            $get('unpaid')->assertSee($tag.' Unpaid')->assertDontSee($tag.' Followup');
+            $get('followup')->assertSee($tag.' Followup')->assertDontSee($tag.' Unpaid')->assertDontSee($tag.' Failed');
+            $get('failed')->assertSee($tag.' Failed')->assertDontSee($tag.' Followup');
+            $get('paid')->assertSee($tag.' Followup')->assertSee($tag.' Failed')->assertDontSee($tag.' Unpaid');
+            // Link lama ?payment=belum tetap berfungsi.
+            $this->actingAs($admin)->get(route('assessment-results.index', ['q' => $tag, 'payment' => 'belum']))->assertSee($tag.' Unpaid')->assertDontSee($tag.' Followup');
+        } finally {
+            AssessmentResult::whereIn('id', [$unpaid->id, $followup->id, $failed->id])->delete();
         }
     }
 

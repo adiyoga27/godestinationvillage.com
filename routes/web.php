@@ -197,6 +197,7 @@ Route::prefix('asesmen')->group(function () {
     Route::get('/cek', [AssessmentController::class, 'status'])->middleware('throttle:20,1')->name('assessment.status');
     Route::get('/hasil/{uuid}', [AssessmentController::class, 'result'])->name('assessment.result');
     Route::post('/hasil/{uuid}/checkout', [AssessmentController::class, 'checkout'])->name('assessment.checkout');
+    Route::post('/hasil/{uuid}/coba-lagi', [AssessmentController::class, 'retryReport'])->middleware('throttle:5,10')->name('assessment.retry_report');
     Route::get('/bayar/{code}', [AssessmentController::class, 'payment'])->name('assessment.payment');
     Route::post('/hasil/{uuid}/unlock-staff', [AssessmentController::class, 'unlockStaff'])
         ->middleware('auth')->name('assessment.unlock_staff');
@@ -343,7 +344,8 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
         Route::delete('/questions/{id}', [AssessmentQuestionController::class, 'destroy'])->name('destroy');
     });
     // Asesmen: inbox hasil + tindak lanjut tim
-    Route::resource('assessment-results', AssessmentResultController::class, ['only' => ['index', 'create', 'store', 'show', 'update', 'destroy']]);
+    Route::resource('assessment-results', AssessmentResultController::class, ['only' => ['index', 'create', 'show', 'update', 'destroy']]);
+    Route::get('assessment-results/input/{slug}', [AssessmentResultController::class, 'input'])->name('assessment-results.input');
     Route::post('assessment-results/{id}/approve', [AssessmentResultController::class, 'approve'])->name('assessment-results.approve');
     Route::post('assessment-results/{id}/regenerate', [AssessmentResultController::class, 'regenerate'])->name('assessment-results.regenerate');
     Route::post('assessment-results/{id}/email', [AssessmentResultController::class, 'resendEmail'])->name('assessment-results.email');

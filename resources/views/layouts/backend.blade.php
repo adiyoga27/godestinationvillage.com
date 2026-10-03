@@ -115,11 +115,12 @@
                 <span class="gd-nav__icon"><i class="mdi mdi-view-dashboard"></i></span><span class="gd-nav__label">Dashboard</span>
               </a>
             </li>
-            <li class="gd-nav__item">
+            {{-- Pengajuan Desa disembunyikan dari menu (halaman tetap bisa dibuka via URL). --}}
+            {{-- <li class="gd-nav__item">
               <a class="gd-nav__link" href="{{ route('village-submissions.index') }}" title="Pengajuan Desa">
                 <span class="gd-nav__icon"><i class="mdi mdi-map-marker-plus"></i></span><span class="gd-nav__label">Pengajuan Desa</span>
               </a>
-            </li>
+            </li> --}}
             <li class="gd-nav__item">
               <a class="gd-nav__link" data-toggle="collapse" href="#ui-asesmen" role="button" aria-expanded="false" aria-controls="ui-asesmen" title="Asesmen">
                 <span class="gd-nav__icon"><i class="mdi mdi-clipboard-check"></i></span><span class="gd-nav__label">Asesmen</span><i class="mdi mdi-chevron-down gd-nav__caret"></i>
