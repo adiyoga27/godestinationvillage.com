@@ -291,6 +291,11 @@
                                 <input type="tel" name="phone" value="{{ old('phone') }}" required class="input-gd !py-3.5" placeholder="08xx-xxxx-xxxx">
                                 <span class="mt-1.5 block text-xs text-ink-400">Dipakai untuk cek status & membuka hasil kembali.</span>
                             </label>
+                            <label class="block sm:col-span-2">
+                                <span class="label-gd">Email <span class="text-brand-600">*</span></span>
+                                <input type="email" name="email" value="{{ old('email', auth()->user()->email ?? '') }}" required autocomplete="email" class="input-gd !py-3.5" placeholder="nama@email.com">
+                                <span class="mt-1.5 block text-xs text-ink-400">Invoice, bukti pembayaran, dan laporan hasil & strategi dikirim ke email ini.</span>
+                            </label>
                         </div>
                     </fieldset>
 

@@ -10,6 +10,7 @@ use App\Models\AssessmentOrder;
 use App\Models\AssessmentResult;
 use App\Models\AssessmentTrack;
 use App\Services\AssessmentPaymentService;
+use App\Services\AssessmentMailer;
 use App\Services\AssessmentService;
 use App\Services\AssessmentSubmissionService;
 use App\Services\Midtrans\CreateSnapTokenService;
@@ -249,6 +250,8 @@ class AssessmentController extends Controller
 
             return back()->with('error', 'Gagal membuat pembayaran. Silakan coba lagi.');
         }
+
+        AssessmentMailer::send($result, 'invoice', $order);
 
         return redirect()->route('assessment.payment', $order->code);
     }

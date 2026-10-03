@@ -39,6 +39,7 @@ class AssessmentSubmissionService
             'postal_code' => 'nullable|string|max:10',
             'name' => 'required|string|max:191',
             'phone' => 'required|string|max:50',
+            'email' => 'required|email:rfc|max:191',
             'profile_description' => 'nullable|string|max:3000',
         ];
 
@@ -55,6 +56,7 @@ class AssessmentSubmissionService
             'member_count' => 'Jumlah Anggota/Pelaku Usaha',
             'name' => 'Nama Kontak',
             'phone' => $profile['phone_label'],
+            'email' => 'Email',
             'profile_description' => $profile['description_label'],
         ];
 

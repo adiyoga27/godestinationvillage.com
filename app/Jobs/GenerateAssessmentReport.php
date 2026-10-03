@@ -52,6 +52,7 @@ class GenerateAssessmentReport implements ShouldQueue
 
         if ($out['ok']) {
             $result->update(['ai_report' => $out['report'], 'report_status' => 'done'] + $audit);
+            \App\Services\AssessmentMailer::send($result->fresh('track'), 'report', $result->latestPaidOrder);
         } else {
             $result->update(['report_status' => 'failed', 'report_error' => $out['error'] ?? 'unknown'] + $audit);
             Log::error('GenerateAssessmentReport gagal', ['uuid' => $result->uuid, 'error' => $out['error'] ?? null]);

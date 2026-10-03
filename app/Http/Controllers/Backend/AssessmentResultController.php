@@ -7,6 +7,7 @@ use App\Models\AssessmentResult;
 use App\Models\AssessmentTrack;
 use App\Models\OurTeam;
 use App\Jobs\GenerateAssessmentReport;
+use App\Services\AssessmentMailer;
 use App\Services\AssessmentPaymentService;
 use App\Services\AssessmentService;
 use App\Services\AssessmentSubmissionService;
@@ -100,14 +101,15 @@ class AssessmentResultController extends Controller
         $track = AssessmentTrack::where('is_active', true)->findOrFail($request->input('track_id'));
         [$rules, $messages, $attributes] = AssessmentSubmissionService::profileRules($track);
 
-        $validated = $request->validate($rules + [
-            'email' => 'nullable|email|max:191',
+        $validated = $request->validate(array_merge($rules, [
+            // Admin boleh tanpa email (mis. data dari kunjungan lapangan).
+            'email' => 'nullable|email:rfc|max:191',
             'answers' => 'required|array',
             'answers.*' => 'required|integer|min:1|max:5',
             'notes' => 'nullable|array',
             'notes.*' => 'nullable|string|max:1000',
             'internal_note' => 'nullable|string|max:5000',
-        ], $messages + ['answers.required' => 'Isi seluruh penilaian dimensi.'], $attributes);
+        ]), $messages + ['answers.required' => 'Isi seluruh penilaian dimensi.'], $attributes);
 
         $result = AssessmentSubmissionService::store($track, $validated, $validated['answers'], $validated['notes'] ?? [], [
             'source' => 'admin',
@@ -156,6 +158,31 @@ class AssessmentResultController extends Controller
         GenerateAssessmentReport::dispatch($result->uuid);
 
         return back()->with('status', 'Laporan AI dijadwalkan ulang.');
+    }
+
+    /**
+     * Kirim ulang email ke guest: invoice, bukti lunas, atau hasil & strategi.
+     */
+    public function resendEmail(Request $request, $id)
+    {
+        $result = AssessmentResult::with(['track', 'latestOrder', 'latestPaidOrder'])->findOrFail($id);
+        $type = $request->validate(['type' => 'required|in:invoice,paid,report'])['type'];
+
+        if (! $result->email) {
+            return back()->with('error', 'Hasil ini belum punya email.');
+        }
+        if ($type === 'report' && empty($result->ai_report)) {
+            return back()->with('error', 'Laporan AI belum tersedia.');
+        }
+
+        $order = $type === 'invoice' ? $result->latestOrder : $result->latestPaidOrder;
+        if ($type !== 'report' && ! $order) {
+            return back()->with('error', 'Belum ada invoice untuk dikirim.');
+        }
+
+        $ok = AssessmentMailer::send($result, $type, $order);
+
+        return back()->with($ok ? 'status' : 'error', $ok ? 'Email terkirim ke '.$result->email.'.' : 'Email gagal dikirim — lihat riwayat email.');
     }
 
     public function update(Request $request, $id)

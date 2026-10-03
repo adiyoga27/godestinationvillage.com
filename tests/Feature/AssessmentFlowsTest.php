@@ -11,6 +11,8 @@ use App\Jobs\GenerateAssessmentReport;
 use App\Services\AiReportService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AssessmentMail;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -43,6 +45,7 @@ class AssessmentFlowsTest extends TestCase
             'subdistrict' => 'Kubu',
             'name' => 'Pengisi Test',
             'phone' => '+62 '.substr($phone, 1),
+            'email' => 'tes@example.com',
             'profile_description' => 'Sawah terasering dan tari tradisional.',
         ])->assertRedirect(route('assessment.form', $track->slug));
 
@@ -107,6 +110,7 @@ class AssessmentFlowsTest extends TestCase
             'regency' => 'Kab. Bangli',
             'name' => 'Pengurus Test',
             'phone' => '08123456789',
+            'email' => 'tes@example.com',
         ];
 
         $this->post(route('assessment.start', 'ekonomi-desa'), $base)
@@ -127,6 +131,7 @@ class AssessmentFlowsTest extends TestCase
             'organization' => 'Desa Test',
             'name' => 'Pengisi Test',
             'phone' => '08123456789',
+            'email' => 'tes@example.com',
         ])->assertSessionHasErrors(['province', 'regency']);
     }
 
@@ -188,6 +193,7 @@ class AssessmentFlowsTest extends TestCase
             'province' => 'Bali',
             'name' => 'Kadis Test',
             'phone' => '08123456789',
+            'email' => 'tes@example.com',
         ];
 
         $this->post(route('assessment.start', 'daya-saing-destinasi'), $base)
@@ -223,6 +229,7 @@ class AssessmentFlowsTest extends TestCase
             'regency' => 'Kab. Bangli',
             'name' => 'Pemilik Test',
             'phone' => '08123456789',
+            'email' => 'tes@example.com',
         ];
 
         $this->post(route('assessment.start', 'regeneratif'), $base)
@@ -328,6 +335,107 @@ class AssessmentFlowsTest extends TestCase
         $this->get(route('assessments.index'))->assertRedirect('/login');
         $this->get(route('assessment-results.index'))->assertRedirect('/login');
         $this->get(route('team-dashboard.index'))->assertRedirect('/login');
+    }
+
+    /** Respons DeepSeek palsu yang valid untuk jalur apa pun. */
+    private function fakeAi(string $slug): void
+    {
+        config(['ai.driver' => 'deepseek', 'ai.deepseek_key' => 'test-key']);
+        $report = array_fill_keys(AiReportService::requiredKeys($slug), [['nama' => 'Opsi A', 'alasan' => 'Alasan A']]);
+        $report['ringkasan'] = 'Ringkasan uji';
+        $report['kekuatan'] = $report['tantangan'] = ['a', 'b', 'c'];
+        $report['langkah_prioritas'] = ['1', '2', '3', '4', '5'];
+        Http::fake(['*' => Http::response(['choices' => [['message' => ['content' => json_encode($report)]]], 'usage' => ['total_tokens' => 10]])]);
+    }
+
+    public function test_intro_prefills_email_for_logged_in_user(): void
+    {
+        $user = User::whereNotNull('email')->first();
+        $this->actingAs($user)->get(route('assessment.intro', 'pariwisata'))
+            ->assertStatus(200)
+            ->assertSee('name="email" value="'.e($user->email).'"', false);
+
+        $this->post(route('assessment.start', 'pariwisata'), [
+            'organization' => 'Desa', 'province' => 'Bali', 'regency' => 'Kab. Bangli', 'name' => 'X', 'phone' => '0812',
+        ])->assertSessionHasErrors(['email']);
+    }
+
+    public function test_admin_manual_approve_sends_paid_and_report_emails(): void
+    {
+        Mail::fake();
+        $this->fakeAi('ekonomi-desa');
+        $admin = User::where('role_id', 1)->firstOrFail();
+        $track = AssessmentTrack::where('slug', 'ekonomi-desa')->firstOrFail();
+        $questions = $track->activeQuestions()->get();
+        $answers = $questions->mapWithKeys(fn ($q) => [$q->id => 4])->all();
+        $computed = AssessmentService::compute($track, $questions, $answers);
+
+        $result = AssessmentResult::create([
+            'uuid' => (string) Str::uuid(), 'track_id' => $track->id, 'name' => 'Approve Test', 'email' => 'approve@example.com',
+            'organization' => 'Koperasi Uji', 'answers' => $answers, 'dimension_scores' => $computed['dimensions'],
+            'total_score' => $computed['total'], 'band' => $computed['band'], 'status' => 'baru',
+        ]);
+
+        try {
+            $this->actingAs($admin)->get(route('assessment-results.index'))->assertSee('Approve', false);
+            $this->actingAs($admin)->post(route('assessment-results.approve', $result->id), ['approval_note' => 'Transfer BCA'])->assertRedirect();
+
+            $result->refresh();
+            $this->assertTrue($result->is_unlocked);
+            $this->assertSame($admin->id, $result->approved_by);
+            $this->assertSame('paid', $result->latestOrder->status);
+            $this->assertSame('manual', $result->latestOrder->payment_type);
+            $this->assertSame('done', $result->report_status);
+            Mail::assertSent(AssessmentMail::class, fn ($m) => $m->type === 'paid' && $m->hasTo('approve@example.com'));
+            Mail::assertSent(AssessmentMail::class, fn ($m) => $m->type === 'report');
+            $this->assertSame(['paid', 'report'], array_column($result->email_log, 'type'));
+
+            $this->actingAs($admin)->get(route('assessment-results.show', $result->id))
+                ->assertStatus(200)
+                ->assertSee('Ringkasan uji', false)
+                ->assertSee('Opsi A', false)
+                ->assertSee('Di-approve manual', false);
+
+            $this->actingAs($admin)->post(route('assessment-results.email', $result->id), ['type' => 'report'])->assertRedirect();
+            Mail::assertSent(AssessmentMail::class, 3);
+        } finally {
+            $result->orders()->delete();
+            $result->delete();
+        }
+    }
+
+    public function test_admin_can_input_assessment_manually_without_payment(): void
+    {
+        Mail::fake();
+        $this->fakeAi('pariwisata');
+        $admin = User::where('role_id', 1)->firstOrFail();
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+        $questions = $track->activeQuestions()->get();
+
+        $this->actingAs($admin)->get(route('assessment-results.create'))->assertStatus(200)->assertSee($track->name, false);
+        $this->actingAs($admin)->get(route('assessment-results.create', ['track' => 'pariwisata']))->assertStatus(200)->assertSee('answers['.$questions->first()->id.']', false);
+
+        $response = $this->actingAs($admin)->post(route('assessment-results.store'), [
+            'track_id' => $track->id, 'organization' => 'Desa Input Admin', 'province' => 'Bali', 'regency' => 'Kab. Gianyar',
+            'name' => 'Kepala Desa', 'phone' => '081234', 'email' => 'desa@example.com',
+            'answers' => $questions->mapWithKeys(fn ($q) => [$q->id => 3])->all(),
+            'notes' => [$questions->first()->id => 'Catatan admin'],
+        ]);
+
+        $result = AssessmentResult::where('organization', 'Desa Input Admin')->latest('id')->first();
+        try {
+            $this->assertNotNull($result);
+            $response->assertRedirect(route('assessment-results.show', $result->id));
+            $this->assertSame('admin', $result->source);
+            $this->assertSame($admin->id, $result->created_by);
+            $this->assertTrue($result->is_unlocked);
+            $this->assertSame(0, $result->orders()->count());
+            $this->assertSame('done', $result->report_status);
+            $this->assertStringContainsString('Catatan admin', $result->ai_prompt);
+            Mail::assertSent(AssessmentMail::class, fn ($m) => $m->type === 'report' && $m->hasTo('desa@example.com'));
+        } finally {
+            $result?->delete();
+        }
     }
 
     public function test_admin_can_follow_up_result(): void

@@ -80,6 +80,8 @@ class AssessmentPaymentService
             $result = $order->result;
             if ($result && ! $result->is_unlocked) {
                 $result->update(['is_unlocked' => true, 'unlocked_at' => now()]);
+                // Email "lunas" dikirim sebelum commit agar tiba lebih dulu dari email hasil (job jalan setelah commit).
+                AssessmentMailer::send($result, 'paid', $order);
                 GenerateAssessmentReport::dispatch($result->uuid)->afterCommit();
             }
         });
