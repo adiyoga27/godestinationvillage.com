@@ -96,8 +96,15 @@ class Seo
         return $this;
     }
 
+    /** Tambah satu objek JSON-LD (punya '@type'), atau beberapa blok bernama sekaligus. */
     public function schema(array $schema): self
     {
+        if (isset($schema['@type'])) {
+            $this->data['schema'][] = $schema;
+
+            return $this;
+        }
+
         $this->data['schema'] = array_merge($this->data['schema'], $schema);
 
         return $this;

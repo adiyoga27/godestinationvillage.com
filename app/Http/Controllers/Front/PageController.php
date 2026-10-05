@@ -406,6 +406,11 @@ $data['recent'] = HomeStayServices::recent();
     }
     public function faq()
     {
+        $data['categories'] = \App\Models\FaqCategory::where('is_active', true)
+            ->with(['faqs' => fn ($q) => $q->where('is_active', true)])
+            ->orderBy('sort_order')->orderBy('id')->get()
+            ->filter(fn ($category) => $category->faqs->isNotEmpty());
+
         $data['seo'] = Seo::make()
             ->title('Frequently Asked Questions')
             ->description('Answers to common questions about GODEVI village tourism, homestays, booking, payments and travel experiences in Indonesia.')
@@ -414,6 +419,18 @@ $data['recent'] = HomeStayServices::recent();
             ->organizationSchema()
             ->websiteSchema()
             ->breadcrumbSchema(['Home' => '/', 'FAQ' => '/faq'])
+            ->schema([
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'mainEntity' => $data['categories']->flatMap->faqs->map(fn ($faq) => [
+                    '@type' => 'Question',
+                    'name' => $faq->localQuestion(),
+                    'acceptedAnswer' => [
+                        '@type' => 'Answer',
+                        'text' => trim(html_entity_decode(strip_tags($faq->localAnswer()), ENT_QUOTES | ENT_HTML5)),
+                    ],
+                ])->values()->all(),
+            ])
             ->toArray();
 
         return view('customer/faq', $data);
@@ -434,6 +451,8 @@ $data['recent'] = HomeStayServices::recent();
     }
     public function term()
     {
+        $data['page'] = \App\Models\LegalPage::where('key', 'terms')->first();
+
         $data['seo'] = Seo::make()
             ->title('Terms & Conditions')
             ->description('Terms and conditions for booking tours, homestays and events with GODEVI (Go Destination Village).')
