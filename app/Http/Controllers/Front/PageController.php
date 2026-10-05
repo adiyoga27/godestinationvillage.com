@@ -49,7 +49,8 @@ class PageController extends Controller
         $data['category'] = Category::All();
         $data['users'] = Storage::files('reviews');
         $data['reviews'] = Review::with('users')->where('is_active', 1)->orderBy('id')->get();
-        $data['tag'] = Tag::all();
+        // Kartu "Explore Village" (Kelola Website > Kartu Explore Village).
+        $data['tag'] = Tag::where('status', true)->orderBy('sort_order')->orderBy('id')->get();
         $data['sliders'] = \App\Models\Slider::orderBy('id')->get();
         $data['events'] = Event::where('is_active', 1)->latest('id')->limit(3)->get();
         $data['homestays'] = Homestay::where('is_active', 1)->latest('id')->limit(3)->get();

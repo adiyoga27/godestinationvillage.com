@@ -24,6 +24,7 @@ use App\Http\Controllers\Backend\FaqCategoryController;
 use App\Http\Controllers\Backend\FaqController;
 use App\Http\Controllers\Backend\LegalPageController;
 use App\Http\Controllers\Backend\TranslationController;
+use App\Http\Controllers\Backend\ExploreCardController;
 use App\Http\Controllers\Backend\HomepageSectionController;
 use App\Http\Controllers\Backend\HomepageServiceController;
 use App\Http\Controllers\Backend\HomeStayController;
@@ -323,6 +324,8 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
     Route::resource('faq-categories', FaqCategoryController::class, ['except' => ['index', 'show']]);
     Route::get('legal-pages/{key}', [LegalPageController::class, 'edit'])->whereIn('key', array_keys(LegalPageController::PAGES))->name('legal-pages.edit');
     Route::put('legal-pages/{key}', [LegalPageController::class, 'update'])->whereIn('key', array_keys(LegalPageController::PAGES))->name('legal-pages.update');
+    Route::resource('explore-cards', ExploreCardController::class, ['except' => ['show']]);
+    Route::post('explore-cards/{id}/toggle', [ExploreCardController::class, 'toggle'])->name('explore-cards.toggle');
     Route::get('translations', [TranslationController::class, 'index'])->name('translations.index');
     Route::put('translations', [TranslationController::class, 'update'])->name('translations.update');
     Route::delete('translations/{hash}', [TranslationController::class, 'reset'])->where('hash', '[a-f0-9]{64}')->name('translations.reset');

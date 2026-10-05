@@ -234,6 +234,7 @@
                         <li><a class="gd-subnav__link" href="{{ route('page-heroes.index') }}">Hero Halaman</a></li>
                         <li><a class="gd-subnav__link" href="{{ url('administrator/slider') }}">Slider</a></li>
                         <li><a class="gd-subnav__link" href="{{ route('homepage-sections.index') }}">Homepage Sections</a></li>
+                        <li><a class="gd-subnav__link" href="{{ route('explore-cards.index') }}">Kartu Explore Village</a></li>
                         <li><a class="gd-subnav__link" href="{{ route('homepage-services.index') }}">Our Services</a></li>
                         <li><a class="gd-subnav__link" href="{{ url('administrator/booklet') }}">Booklet</a></li>
                         <li><a class="gd-subnav__link" href="{{ route('faqs.index') }}">FAQ</a></li>
