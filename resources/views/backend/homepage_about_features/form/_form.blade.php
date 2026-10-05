@@ -45,7 +45,7 @@
               </div>
             </div>
           @endif
-          <input type="file" name="image" accept="image/*" class="form-control">
+          <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp" class="form-control">
           {!! $errors->first('image', '<p class="text-danger">:message</p>') !!}
           <small class="form-text text-muted">Opsional. PNG/JPG maks 10 MB.</small>
         </div>

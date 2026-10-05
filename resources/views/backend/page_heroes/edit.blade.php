@@ -63,7 +63,7 @@
                                 <br><small class="form-text text-muted">Gambar saat ini (biarkan kosong untuk mempertahankan)</small>
                             </div>
                         @endif
-                        <input type="file" name="image" accept="image/*" class="form-control">
+                        <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp" class="form-control">
                         {!! $errors->first('image', '<p class="text-danger">:message</p>') !!}
                         <small class="form-text text-muted">Gambar landscape (mis. 1920x600), maksimal 10 MB.</small>
                     </div>

@@ -22,7 +22,7 @@ class VillageSubmissionRequest extends FormRequest
             'regency' => 'nullable|string|max:191',
             'description' => 'nullable|string|max:5000',
             'tourism_potential' => 'nullable|string|max:5000',
-            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:4096',
         ];
     }
 

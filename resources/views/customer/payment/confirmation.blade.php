@@ -53,8 +53,10 @@
 
                 <div>
                     <label for="bukti" class="mb-2 block text-sm font-bold text-ink-800">{{ __('Evidence of Transfer') }}</label>
-                    <input type="file" name="bukti" id="bukti"
+                    <input type="file" name="bukti" id="bukti" accept=".jpg,.jpeg,.png,.webp"
                         class="w-full rounded-xl border border-dashed border-ink-300 bg-cream-50 px-4 py-6 text-sm text-ink-600 focus:outline-none">
+                    <p class="mt-1.5 text-xs text-ink-400">JPG, JPEG, PNG, WEBP · maks. 2 MB</p>
+                    @error('bukti')<p class="mt-1.5 text-xs font-semibold text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 <button type="submit" class="btn btn-primary w-full !py-4">{{ __('Confirm Now') }}</button>

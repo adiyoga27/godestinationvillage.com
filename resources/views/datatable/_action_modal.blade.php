@@ -28,7 +28,7 @@
   				<div class="col-md-12">
   					<input type="hidden" name="id" id="id">
   					{{-- <div class="row"> --}}
-			          <input type="file" name="image" class="form-control">
+			          <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp" class="form-control">
 			        {{-- </div> --}}
 			    </div>
 			</div>

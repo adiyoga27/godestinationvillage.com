@@ -44,7 +44,7 @@
               <br><small class="form-text text-muted">Gambar saat ini: {{ $slider->img }} (biarkan kosong untuk mempertahankan)</small>
             </div>
           @endif
-          <input type="file" name="img" accept="image/*" class="form-control" {{ isset($slider) ? '' : 'required' }}>
+          <input type="file" name="img" accept=".jpg,.jpeg,.png,.webp" class="form-control" {{ isset($slider) ? '' : 'required' }}>
           {!! $errors->first('img', '<p class="text-danger">:message</p>') !!}
           <small class="form-text text-muted">Rekomendasi rasio lebar:tinggi 16:9 atau 3:2, maksimal 10 MB.</small>
         </div>

@@ -27,14 +27,14 @@
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Attachment</label>
             <div class="col-sm-9">
-                <input type="file" name="attachment" class="form-control">
+                <input type="file" name="attachment" accept=".jpg,.jpeg,.png,.webp" class="form-control">
                 {!! $errors->first('attachment', '<p class="text-danger">:message</p>') !!}
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Thumbnail</label>
             <div class="col-sm-9">
-                <input type="file" name="portofolio" class="form-control">
+                <input type="file" name="portofolio" accept=".jpg,.jpeg,.png,.webp" class="form-control">
                 {!! $errors->first('portofolio', '<p class="text-danger">:message</p>') !!}
                 <p>Upload gambar thumbnail dengan screenshot filenya atau photo yang identik dengan portofolio tersebut ..</p>
             </div>

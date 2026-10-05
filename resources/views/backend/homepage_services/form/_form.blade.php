@@ -27,7 +27,7 @@
               <br><small class="form-text text-muted">Gambar saat ini (biarkan kosong untuk mempertahankan)</small>
             </div>
           @endif
-          <input type="file" name="image" accept="image/*" class="form-control" {{ isset($service) ? '' : 'required' }}>
+          <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp" class="form-control" {{ isset($service) ? '' : 'required' }}>
           {!! $errors->first('image', '<p class="text-danger">:message</p>') !!}
           <small class="form-text text-muted">Format gambar (PNG/JPG), maksimal 10 MB. Tampil proporsional.</small>
         </div>
@@ -82,7 +82,7 @@
               </div>
             </div>
           @endif
-          <input type="file" name="file" class="form-control" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png">
+          <input type="file" name="file" class="form-control" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.webp">
           {!! $errors->first('file', '<p class="text-danger">:message</p>') !!}
           <small class="form-text text-muted">Opsional. Muncul sebagai tombol Download di modal. Maks 10 MB.</small>
         </div>

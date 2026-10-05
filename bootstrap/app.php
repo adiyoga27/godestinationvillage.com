@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
             \App\Http\Middleware\NoindexNonPrimaryHost::class,
+            \App\Http\Middleware\ValidateImageUploads::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

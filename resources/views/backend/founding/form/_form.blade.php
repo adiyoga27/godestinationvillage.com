@@ -74,7 +74,7 @@
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">Photo</label>
             <div class="col-sm-9">
-                <input type="file" name="avatar" class="form-control">
+                <input type="file" name="avatar" accept=".jpg,.jpeg,.png,.webp" class="form-control">
                 {!! $errors->first('avatar', '<p class="text-danger">:message</p>') !!}
             </div>
         </div>

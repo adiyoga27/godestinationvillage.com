@@ -80,7 +80,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label for="exampleInputEmail1">Evidence of transfer</label>
-                        <input name="bukti" type="file" class="form-control">
+                        <input name="bukti" type="file" accept=".jpg,.jpeg,.png,.webp" class="form-control">
                     </div>
                 </div> --}}
                 <div class="col-md-12">

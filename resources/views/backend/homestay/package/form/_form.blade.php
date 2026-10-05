@@ -63,7 +63,7 @@
         @include('backend.partials.form.card-close')
 
         @include('backend.partials.form.card-open', ['icon' => 'image', 'title' => 'Gambar Utama', 'desc' => 'Tampil di kartu & header homestay.'])
-            @include('backend.partials.form.image-upload', ['name' => 'default_img', 'current' => $currentImg, 'accept' => '.jpg,.jpeg,.png', 'hint' => 'JPG / JPEG / PNG, maks. 1 MB'])
+            @include('backend.partials.form.image-upload', ['name' => 'default_img', 'current' => $currentImg, 'accept' => '.jpg,.jpeg,.png,.webp', 'hint' => 'JPG / JPEG / PNG / WEBP, maks. 2 MB'])
         @include('backend.partials.form.card-close')
 
         @include('backend.partials.form.card-open', ['icon' => 'tune', 'title' => 'Pengaturan'])
