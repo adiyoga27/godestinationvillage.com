@@ -179,6 +179,18 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'button_url' => [
+            'not_regex' => 'Link tidak boleh mengarah ke file di komputer (file:///...). Unggah filenya ke server, lalu pakai URL dari server.',
+        ],
+        'button2_url' => [
+            'not_regex' => 'Link tidak boleh mengarah ke file di komputer (file:///...). Unggah filenya ke server, lalu pakai URL dari server.',
+        ],
+        'url' => [
+            'not_regex' => 'Link tidak boleh mengarah ke file di komputer (file:///...). Unggah filenya ke server, lalu pakai URL dari server.',
+        ],
+        'buttons.*.url' => [
+            'not_regex' => 'Link tidak boleh mengarah ke file di komputer (file:///...). Unggah filenya ke server, lalu pakai URL dari server.',
+        ],
     ],
 
     /*

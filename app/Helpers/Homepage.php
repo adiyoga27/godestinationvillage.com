@@ -174,7 +174,8 @@ class Homepage
      */
     public static function url(?string $url): ?string
     {
-        if (! $url) {
+        // Link file di komputer lokal (file:///C:/...) tidak bisa dibuka pengunjung.
+        if (! $url || Str::startsWith(strtolower($url), 'file:')) {
             return null;
         }
 

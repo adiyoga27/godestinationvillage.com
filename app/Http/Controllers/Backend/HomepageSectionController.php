@@ -51,10 +51,10 @@ class HomepageSectionController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'button_label' => 'nullable|max:191',
             'button_label_id' => 'nullable|max:191',
-            'button_url' => 'nullable|max:191',
+            'button_url' => ['nullable', 'max:191', 'not_regex:/^file:/i'],
             'button2_label' => 'nullable|max:191',
             'button2_label_id' => 'nullable|max:191',
-            'button2_url' => 'nullable|max:191',
+            'button2_url' => ['nullable', 'max:191', 'not_regex:/^file:/i'],
             'sort_order' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
         ]);

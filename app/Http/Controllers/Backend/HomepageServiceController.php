@@ -35,14 +35,14 @@ class HomepageServiceController extends Controller
             'desc' => 'nullable',
             'desc_id' => 'nullable',
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'url' => 'nullable|max:191',
+            'url' => ['nullable', 'max:191', 'not_regex:/^file:/i'],
             'phone' => 'nullable|max:50',
             'whatsapp' => 'nullable|max:50',
             'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,webp|max:10240',
             'buttons' => 'nullable|array',
             'buttons.*.label' => 'nullable|max:191',
             'buttons.*.label_id' => 'nullable|max:191',
-            'buttons.*.url' => 'nullable|max:500',
+            'buttons.*.url' => ['nullable', 'max:500', 'not_regex:/^file:/i'],
             'sort_order' => 'nullable|integer',
         ]);
 
@@ -78,14 +78,14 @@ class HomepageServiceController extends Controller
             'desc' => 'nullable',
             'desc_id' => 'nullable',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'url' => 'nullable|max:191',
+            'url' => ['nullable', 'max:191', 'not_regex:/^file:/i'],
             'phone' => 'nullable|max:50',
             'whatsapp' => 'nullable|max:50',
             'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,webp|max:10240',
             'buttons' => 'nullable|array',
             'buttons.*.label' => 'nullable|max:191',
             'buttons.*.label_id' => 'nullable|max:191',
-            'buttons.*.url' => 'nullable|max:500',
+            'buttons.*.url' => ['nullable', 'max:500', 'not_regex:/^file:/i'],
             'sort_order' => 'nullable|integer',
         ]);
 

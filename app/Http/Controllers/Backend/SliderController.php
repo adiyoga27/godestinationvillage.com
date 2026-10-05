@@ -111,11 +111,11 @@ class SliderController extends Controller
             'img' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'button_label' => 'nullable|max:191',
             'button_label_id' => 'nullable|max:191',
-            'button_url' => 'nullable|max:500',
+            'button_url' => ['nullable', 'max:500', 'not_regex:/^file:/i'],
             'button_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
             'button2_label' => 'nullable|max:191',
             'button2_label_id' => 'nullable|max:191',
-            'button2_url' => 'nullable|max:500',
+            'button2_url' => ['nullable', 'max:500', 'not_regex:/^file:/i'],
             'button2_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         ]);
 
@@ -147,11 +147,11 @@ class SliderController extends Controller
             'img' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'button_label' => 'nullable|max:191',
             'button_label_id' => 'nullable|max:191',
-            'button_url' => 'nullable|max:500',
+            'button_url' => ['nullable', 'max:500', 'not_regex:/^file:/i'],
             'button_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
             'button2_label' => 'nullable|max:191',
             'button2_label_id' => 'nullable|max:191',
-            'button2_url' => 'nullable|max:500',
+            'button2_url' => ['nullable', 'max:500', 'not_regex:/^file:/i'],
             'button2_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         ]);
 
