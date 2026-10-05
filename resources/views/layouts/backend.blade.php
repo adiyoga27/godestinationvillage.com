@@ -238,6 +238,7 @@
                         <li><a class="gd-subnav__link" href="{{ url('administrator/booklet') }}">Booklet</a></li>
                         <li><a class="gd-subnav__link" href="{{ route('faqs.index') }}">FAQ</a></li>
                         <li><a class="gd-subnav__link" href="{{ route('legal-pages.edit', 'terms') }}">Syarat &amp; Ketentuan</a></li>
+                        <li><a class="gd-subnav__link" href="{{ route('translations.index') }}">Bahasa Website</a></li>
                         <li><a class="gd-subnav__link" href="{{ url('administrator/instagram') }}">Instagram</a></li>
                       </ul>
                     </div>

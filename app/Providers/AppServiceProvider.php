@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Support\DatabaseTranslationLoader;
 use App\Support\Locales;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -10,7 +11,8 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        // Teks website dari lang/*.json bisa ditimpa dari admin (Bahasa Website).
+        $this->app->extend('translation.loader', fn ($loader) => new DatabaseTranslationLoader($loader));
     }
 
     public function boot(): void
