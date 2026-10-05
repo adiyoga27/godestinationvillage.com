@@ -12,6 +12,10 @@
     <meta name="keywords" content="{{ implode(', ', $seo['keywords']) }}">
 @endif
 <link rel="canonical" href="{{ $seo['canonical'] ?? url()->current() }}">
+{{-- Versi bahasa lain dari halaman ini (/id/... & /en/...). --}}
+@foreach (\App\Support\Locales::alternates() as $hreflang => $href)
+<link rel="alternate" hreflang="{{ $hreflang }}" href="{{ $href }}">
+@endforeach
 <meta name="robots" content="{{ $seo['robots'] ?? 'index,follow' }}">
 <meta name="theme-color" content="#d81c25">
 

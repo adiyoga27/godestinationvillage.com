@@ -23,7 +23,7 @@ class FaqAndTermsTest extends TestCase
         $hidden = Faq::create(['faq_category_id' => $category->id, 'question' => 'Hidden question?', 'answer' => '<p>x</p>', 'is_active' => false]);
 
         try {
-            $this->withSession(['locale' => 'en'])->get('/faq')
+            $this->get('/en/faq')
                 ->assertOk()
                 ->assertSee('Shown question?')
                 ->assertSee('Shown <strong>answer</strong>', false)
@@ -32,7 +32,7 @@ class FaqAndTermsTest extends TestCase
                 ->assertSee('"text":"Shown answer"', false);
 
             // Bahasa Indonesia memakai versi ID, kosong → English.
-            $this->withSession(['locale' => 'id'])->get('/faq')
+            $this->get('/id/faq')
                 ->assertSee('Kategori Uji')
                 ->assertSee('Pertanyaan tampil?')
                 ->assertSee('Shown <strong>answer</strong>', false);
@@ -94,8 +94,8 @@ class FaqAndTermsTest extends TestCase
 
             // Isi berubah & tanggal tidak disentuh → tanggal jadi hari ini.
             $this->assertTrue($page->fresh()->last_updated->isToday());
-            $this->withSession(['locale' => 'en'])->get('/term')->assertSee('Edited body');
-            $this->withSession(['locale' => 'id'])->get('/term')->assertSee('Bagian diubah')->assertSee('Syarat &amp; Ketentuan', false);
+            $this->get('/en/term')->assertSee('Edited body');
+            $this->get('/id/term')->assertSee('Bagian diubah')->assertSee('Syarat &amp; Ketentuan', false);
         } finally {
             $page->fresh()->forceFill($original)->save();
         }

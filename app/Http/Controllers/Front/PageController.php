@@ -190,7 +190,7 @@ class PageController extends Controller
                     ->orderBy('packages.id', 'desc')
                     ->limit(5)->get();
             $data['seo'] = Seo::make()
-                ->title($result->village_name.' Village Tourism')
+                ->title(__(':name Village Tourism', ['name' => preg_replace('/\s+(village|desa)$/i', '', Str::squish((string) $result->village_name))]))
                 ->description(Str::limit(strip_tags($result->desc ?? ''), 158))
                 ->image('storage/village/'.$result->image ?? null)
                 ->keywords([$result->village_name, 'desa wisata', 'village tourism indonesia'])
@@ -204,7 +204,7 @@ class PageController extends Controller
                     '@type' => 'TouristDestination',
                     'name' => $result->village_name,
                     'description' => $result->desc ?? null,
-                    'url' => '/village/'.$slug,
+                    'url' => url('/village/'.$slug),
                     'address' => ['@type' => 'PostalAddress', 'addressCountry' => 'ID'],
                 ])
                 ->toArray();
@@ -295,21 +295,25 @@ class PageController extends Controller
                                     ->leftJoin('village_details', 'village_details.id', '=', 'packages.village_id')
                                     ->leftJoin('users', 'users.id', '=', 'village_details.user_id')
                                     ->leftJoin('categories', 'categories.id', '=', 'packages.category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->orderBy('packages.id', 'desc')->limit(5)->get();
+        // Meta mengikuti bahasa halaman (terjemahan 'id' tersimpan di tabel *_translations).
+        $seoTr = $data['packages']->translate?->firstWhere('lang', App::getLocale());
+        $seoName = $seoTr?->name ?: $data['packages']->name;
+        $seoDesc = $seoTr?->desc ?: ($data['packages']->desc ?? '');
         $data['seo'] = Seo::make()
-            ->title($data['packages']->name)
-            ->description(Str::limit(strip_tags($data['packages']->desc ?? ''), 158))
+            ->title($seoName)
+            ->description(Str::limit(strip_tags($seoDesc), 158))
             ->image('storage/packages/'.$data['packages']->default_img)
-            ->keywords([$data['packages']->name, 'indonesia village tour', 'tour package indonesia'])
+            ->keywords([$seoName, 'indonesia village tour', 'tour package indonesia'])
             ->canonical('/tour-packages/'.$slug)
             ->type('product')
             ->organizationSchema()
             ->websiteSchema()
-            ->breadcrumbSchema(['Home' => '/', 'Tour Packages' => '/tour-packages', $data['packages']->name => '/tour-packages/'.$slug])
+            ->breadcrumbSchema(['Home' => '/', 'Tour Packages' => '/tour-packages', $seoName => '/tour-packages/'.$slug])
             ->schema([
                 '@context' => 'https://schema.org',
                 '@type' => 'Product',
-                'name' => $data['packages']->name,
-                'description' => $data['packages']->desc ?? null,
+                'name' => $seoName,
+                'description' => $seoDesc ?: null,
                 'image' => url('storage/packages/'.$data['packages']->default_img),
                 'offers' => [
                     '@type' => 'Offer',
@@ -339,21 +343,25 @@ class PageController extends Controller
             return abort(404);
         }
         $data['recent'] = EventService::recent();
+        // Meta mengikuti bahasa halaman (terjemahan 'id' tersimpan di tabel *_translations).
+        $seoTr = $data['packages']->translate?->firstWhere('lang', App::getLocale());
+        $seoName = $seoTr?->name ?: $data['packages']->name;
+        $seoDesc = $seoTr?->description ?: ($data['packages']->description ?? '');
         $data['seo'] = Seo::make()
-            ->title($data['packages']->name)
-            ->description(Str::limit(strip_tags($data['packages']->description ?? ''), 158))
+            ->title($seoName)
+            ->description(Str::limit(strip_tags($seoDesc), 158))
             ->image('storage/events/'.$data['packages']->default_img)
-            ->keywords([$data['packages']->name, 'indonesia village event', 'cultural event'])
+            ->keywords([$seoName, 'indonesia village event', 'cultural event'])
             ->canonical('/events/'.$slug)
             ->type('event')
             ->organizationSchema()
             ->websiteSchema()
-            ->breadcrumbSchema(['Home' => '/', 'Events' => '/events', $data['packages']->name => '/events/'.$slug])
+            ->breadcrumbSchema(['Home' => '/', 'Events' => '/events', $seoName => '/events/'.$slug])
             ->schema([
                 '@context' => 'https://schema.org',
                 '@type' => 'Event',
-                'name' => $data['packages']->name,
-                'description' => $data['packages']->description ?? null,
+                'name' => $seoName,
+                'description' => $seoDesc ?: null,
                 'image' => url('storage/events/'.$data['packages']->default_img),
                 'location' => $data['packages']->location ? ['@type' => 'Place', 'name' => $data['packages']->location] : null,
                 'startDate' => $data['packages']->date_event ? \Illuminate\Support\Carbon::parse($data['packages']->date_event)->toIso8601String() : null,
@@ -361,7 +369,7 @@ class PageController extends Controller
                     '@type' => 'Offer',
                     'price' => $data['packages']->price ?? 0,
                     'priceCurrency' => 'IDR',
-                    'url' => '/events/'.$slug,
+                    'url' => url('/events/'.$slug),
                 ],
             ])
             ->toArray();
@@ -378,21 +386,25 @@ class PageController extends Controller
             return abort(404);
         }
 $data['recent'] = HomeStayServices::recent();
+        // Meta mengikuti bahasa halaman (terjemahan 'id' tersimpan di tabel *_translations).
+        $seoTr = $data['packages']->translate?->firstWhere('lang', App::getLocale());
+        $seoName = $seoTr?->name ?: $data['packages']->name;
+        $seoDesc = $seoTr?->description ?: ($data['packages']->description ?? '');
         $data['seo'] = Seo::make()
-            ->title($data['packages']->name)
-            ->description(Str::limit(strip_tags($data['packages']->description ?? ''), 158))
+            ->title($seoName)
+            ->description(Str::limit(strip_tags($seoDesc), 158))
             ->image('storage/homestay/'.$data['packages']->default_img)
-            ->keywords([$data['packages']->name, 'indonesia homestay', 'village stay'])
+            ->keywords([$seoName, 'indonesia homestay', 'village stay'])
             ->canonical('/homestay/'.$data['packages']->id)
             ->type('product')
             ->organizationSchema()
             ->websiteSchema()
-            ->breadcrumbSchema(['Home' => '/', 'Homestay' => '/homestay', $data['packages']->name => '/homestay/'.$data['packages']->id])
+            ->breadcrumbSchema(['Home' => '/', 'Homestay' => '/homestay', $seoName => '/homestay/'.$data['packages']->id])
             ->schema([
                 '@context' => 'https://schema.org',
                 '@type' => 'Product',
-                'name' => $data['packages']->name,
-                'description' => $data['packages']->description ?? null,
+                'name' => $seoName,
+                'description' => $seoDesc ?: null,
                 'image' => url('storage/homestay/'.$data['packages']->default_img),
                 'offers' => [
                     '@type' => 'Offer',

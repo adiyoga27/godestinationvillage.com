@@ -38,9 +38,10 @@ class Seo
         return $instance;
     }
 
+    /** Teks meta melewati file terjemahan (lang/*.json) → meta mengikuti bahasa halaman. */
     public function title(string $title): self
     {
-        $title = trim($title);
+        $title = trim((string) __(trim($title)));
 
         $this->data['title'] = $title !== '' ? $title.' | GODEVI' : $this->data['title'];
 
@@ -49,7 +50,7 @@ class Seo
 
     public function description(string $description): self
     {
-        $this->data['description'] = Str::limit(strip_tags($description), 158, '...');
+        $this->data['description'] = Str::limit(strip_tags((string) __($description)), 158, '...');
 
         return $this;
     }
@@ -162,7 +163,7 @@ class Seo
         $this->data['schema']['webpage'] = [
             '@context' => 'https://schema.org',
             '@type' => 'WebPage',
-            'name' => $name ?? $this->data['title'],
+            'name' => $name !== null ? (string) __($name) : $this->data['title'],
             'description' => $this->data['description'],
             'url' => $this->data['canonical'],
             'inLanguage' => app()->getLocale() === 'id' ? 'id-ID' : 'en-US',
@@ -182,7 +183,7 @@ class Seo
             $list[] = [
                 '@type' => 'ListItem',
                 'position' => $position,
-                'name' => $name,
+                'name' => (string) __($name),
                 'item' => URL::to($url),
             ];
             $position++;

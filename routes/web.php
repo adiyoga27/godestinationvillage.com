@@ -60,6 +60,7 @@ use App\Http\Controllers\Front\SubscriberController as FrontSubscriberController
 use App\Http\Controllers\Front\VillageSubmissionController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\PaymentController;
+use App\Support\Locales;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -79,9 +80,7 @@ use Illuminate\Support\Facades\Session;
 
 // Route::get('analytic', [AnalyticController::class, 'index']);
 
-Route::get('/', [PageController::class, 'index']);
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
-Route::get('/home', [PageController::class, 'index']);
 Route::get('/redirects', function () {
     return redirect(Redirect::intended()->getTargetUrl());
 
@@ -89,9 +88,18 @@ Route::get('/redirects', function () {
 });
 
 Route::get('locale/{locale}', function ($locale) {
-    $locale = in_array($locale, ['id', 'en']) ? $locale : config('app.locale', 'id');
+    $locale = in_array($locale, Locales::SUPPORTED) ? $locale : Locales::DEFAULT;
     Session::put('locale', $locale);
     App::setLocale($locale);
+
+    // Dari halaman publik berbahasa → halaman yang sama dalam bahasa terpilih.
+    $previous = url()->previous();
+    [$current, $rest] = Locales::split(parse_url($previous, PHP_URL_PATH) ?? '/');
+    if ($current !== null && Locales::isLocalizedPath($rest)) {
+        $query = parse_url($previous, PHP_URL_QUERY);
+
+        return redirect(Locales::localizePath($rest, $locale).($query ? '?'.$query : ''));
+    }
 
     return redirect()->back();
 })->where(['locale' => 'id|en']);
@@ -108,10 +116,6 @@ Route::prefix('pay')->group(function () {
     });
 });
 
-Route::get('/services', [PageController::class, 'services']);
-Route::get('/faq', [PageController::class, 'faq']);
-Route::get('/contact', [PageController::class, 'contact']);
-Route::post('/contact/send', [PageController::class, 'contactSend'])->name('contact.send');
 
 Route::post('/subscribe', [FrontSubscriberController::class, 'store'])->name('subscribe.store');
 Route::get('/unsubscribe/{token}', [FrontSubscriberController::class, 'unsubscribe'])->name('unsubscribe.show');
@@ -132,18 +136,7 @@ Route::get('/invoice-homestay/{id}', [InvoiceController::class, 'homestay']);
 Route::get('/administrator/login', [LoginController::class, 'showLoginForm']);
 Route::get('/user/login', [PageController::class, 'login']);
 // Customer Page
-Route::get('/company-profile', [PageController::class, 'companyprofile']);
-Route::get('/tentang-godevi', [PageController::class, 'aboutGodevi'])->name('about.godevi');
-Route::get('/about-godevi', [PageController::class, 'aboutGodevi']);
 
-Route::prefix('village')->group(function () {
-    Route::get('/', [PageController::class, 'village']);
-    Route::get('/{slug}', [PageController::class, 'detailVillage']);
-});
-Route::prefix('tour-packages')->group(function () {
-    Route::get('/', [PageController::class, 'tourpackages']);
-    Route::get('/{slug}', [PageController::class, 'detailtour']);
-});
 Route::prefix('reservation')->group(function () {
     Route::get('/{email}', [PageController::class, 'reservation']);
     Route::get('/paid/{email}', [OrderController::class, 'reservationPaid']);
@@ -164,22 +157,7 @@ Route::prefix('midtrans')->group(function () {
     Route::post('/callbackPayment', [MidtransController::class, 'callbackPayment']);
 });
 
-Route::prefix('events')->group(function () {
-    Route::get('/', [PageController::class, 'eventsGodevi']);
-    Route::get('/{slug}', [PageController::class, 'detailEvent']);
-});
-Route::prefix('homestay')->group(function () {
-    Route::get('/', [PageController::class, 'homeStay']);
-    Route::get('/{id}', [PageController::class, 'detailHomestay']);
-});
-Route::get('/category-package/{id}', [PageController::class, 'categorypackage']);
 
-// Alur 1: Pendaftaran Desa Wisata (guest, tanpa login, tanpa payment)
-Route::prefix('daftar-desa')->group(function () {
-    Route::get('/', [VillageSubmissionController::class, 'create'])->name('village-submission.create');
-    Route::post('/', [VillageSubmissionController::class, 'store'])->name('village-submission.store');
-    Route::get('/berhasil/{uuid}', [VillageSubmissionController::class, 'success'])->name('village-submission.success');
-});
 
 // Alur 2-4: Guest booking tanpa login (payment Midtrans Snap via halaman payment/*)
 Route::prefix('guest-booking')->group(function () {
@@ -195,7 +173,57 @@ Route::prefix('guest-booking')->group(function () {
 // Pencarian lokasi (provinsi/kab/kota) via API Mengantar
 Route::get('/lokasi/cari', [LocationSearchController::class, 'search'])->middleware('throttle:60,1')->name('location.search');
 
-Route::prefix('asesmen')->group(function () {
+// Halaman publik per bahasa: /id/... dan /en/... (default /id). Daftar segmen ada di
+// App\Support\Locales::SEGMENTS; URL lama tanpa awalan dialihkan 301 oleh RedirectToLocalizedUrl.
+Route::redirect('/', '/'.Locales::DEFAULT, 301);
+Route::redirect('/home', '/'.Locales::DEFAULT, 301);
+
+Route::prefix('{locale}')->where(['locale' => 'id|en'])->group(function () {
+    Route::get('/', [PageController::class, 'index'])->name('home.localized');
+    Route::get('/services', [PageController::class, 'services']);
+    Route::get('/faq', [PageController::class, 'faq']);
+    Route::get('/contact', [PageController::class, 'contact']);
+    Route::post('/contact/send', [PageController::class, 'contactSend'])->name('contact.send');
+    Route::get('/company-profile', [PageController::class, 'companyprofile']);
+    Route::get('/tentang-godevi', [PageController::class, 'aboutGodevi'])->name('about.godevi');
+    Route::get('/about-godevi', [PageController::class, 'aboutGodevi']);
+    Route::prefix('village')->group(function () {
+        Route::get('/', [PageController::class, 'village']);
+        Route::get('/{slug}', [PageController::class, 'detailVillage']);
+    });
+    Route::prefix('tour-packages')->group(function () {
+        Route::get('/', [PageController::class, 'tourpackages']);
+        Route::get('/{slug}', [PageController::class, 'detailtour']);
+    });
+    Route::prefix('events')->group(function () {
+        Route::get('/', [PageController::class, 'eventsGodevi']);
+        Route::get('/{slug}', [PageController::class, 'detailEvent']);
+    });
+    Route::prefix('homestay')->group(function () {
+        Route::get('/', [PageController::class, 'homeStay']);
+        Route::get('/{id}', [PageController::class, 'detailHomestay']);
+    });
+    Route::get('/category-package/{id}', [PageController::class, 'categorypackage']);
+    // Alur 1: Pendaftaran Desa Wisata (guest, tanpa login, tanpa payment)
+    Route::prefix('daftar-desa')->group(function () {
+        Route::get('/', [VillageSubmissionController::class, 'create'])->name('village-submission.create');
+        Route::post('/', [VillageSubmissionController::class, 'store'])->name('village-submission.store');
+        Route::get('/berhasil/{uuid}', [VillageSubmissionController::class, 'success'])->name('village-submission.success');
+    });
+    Route::get('/term', [PageController::class, 'term']);
+    Route::get('/our-team', [PageController::class, 'ourteam']);
+    Route::get('/v-founding', [PageController::class, 'founding']);
+    Route::get('/v-board', [PageController::class, 'boardExpert']);
+    Route::get('/v-portofolio', [PageController::class, 'portofolio']);
+    Route::get('/our-partner', [PageController::class, 'ourpartner']);
+    Route::get('/news', [PageController::class, 'blog']);
+    Route::get('/news/{slug}', [PageController::class, 'detailpost']);
+    Route::post('/news/comment/{slug}', [PageController::class, 'postComment'])->middleware(['auth', 'log.activity']);
+    Route::get('/search', [SearchController::class, 'searchHome']);
+});
+
+// Isi asesmen hanya berbahasa Indonesia → selalu /id/asesmen (/en/asesmen dialihkan).
+Route::prefix('id/asesmen')->group(function () {
     Route::get('/', [AssessmentController::class, 'index'])->name('assessment.index');
     Route::get('/cek', [AssessmentController::class, 'status'])->middleware('throttle:20,1')->name('assessment.status');
     Route::get('/hasil/{uuid}', [AssessmentController::class, 'result'])->name('assessment.result');
@@ -225,21 +253,11 @@ Route::get('/payment-detail/{id}', [PageController::class, 'detailPayment']);
 Route::get('/payment-confirm/{id}', [PageController::class, 'confirmPayment']);
 Route::get('/do_cancel/{id}', [PageController::class, 'cancel']);
 Route::get('user/register', [PageController::class, 'register']);
-Route::get('/term', [PageController::class, 'term']);
 
 Route::get('/delete-account', [PageController::class, 'deleteAccount']);
-Route::get('/our-team', [PageController::class, 'ourteam']);
-Route::get('/v-founding', [PageController::class, 'founding']);
-Route::get('/v-board', [PageController::class, 'boardExpert']);
-Route::get('/v-portofolio', [PageController::class, 'portofolio']);
 
-Route::get('/our-partner', [PageController::class, 'ourpartner']);
-Route::get('/news', [PageController::class, 'blog']);
-Route::get('/news/{slug}', [PageController::class, 'detailpost']);
 Route::get('/news-mobile', [PageController::class, 'blog_mobile']);
 Route::get('/news-mobile/{id}', [PageController::class, 'detailpost_mobile']);
-Route::post('/news/comment/{slug}', [PageController::class, 'postComment'])->middleware(['auth', 'log.activity']);
-Route::get('/search', [SearchController::class, 'searchHome']);
 Route::get('/pay/{id}', [PaymentController::class, 'vtweb']);
 Route::post('/vt-notif', [PaymentController::class, 'notification']);
 
