@@ -4,8 +4,8 @@
 
 <x-partials.page-hero
     page="village"
-    title="{{ __('Explore Villages in Bali') }}"
-    subtitle="{{ __('Discover authentic Balinese villages, culture and community-driven tourism experiences curated by GODEVI.') }}"
+    title="{{ __('Explore Villages in Indonesia') }}"
+    subtitle="{{ __('Discover authentic Indonesian villages, culture and community-driven tourism experiences curated by GODEVI.') }}"
     image="assets/customer/img/page-title-area/explorer.jpg"
     :crumbs="[__('Home') => '/', __('Explore Village') => '']"
 />
@@ -24,11 +24,11 @@
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-64 overflow-hidden">
                         <img src="{{ $val->avatar ? asset('storage/users/' . $val->avatar) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $name }} — {{ __('village destination in Bali') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $name }} — {{ __('village destination in Indonesia') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         <div class="absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent to-transparent"></div>
                         <div class="absolute bottom-4 left-4 flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink-700 backdrop-blur">
                             <svg class="h-3.5 w-3.5 text-forest-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
-                            Bali · {{ __('Village') }}
+                            Indonesia · {{ __('Village') }}
                         </div>
                     </div>
                     <div class="flex flex-1 flex-col p-6">

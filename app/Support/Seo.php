@@ -14,7 +14,7 @@ class Seo
 {
     protected array $data = [
         'title' => 'GODEVI - Authentic Village Experiences',
-        'description' => 'GODEVI (Go Destination Village) is a socially pro-active tourism business dedicated to uplifting local communities in developing villages across Bali, Indonesia through sustainable and responsible village tourism.',
+        'description' => 'GODEVI (Go Destination Village) is a socially pro-active tourism business dedicated to uplifting local communities in developing villages across Indonesia through sustainable and responsible village tourism.',
         'keywords' => [],
         'image' => null,
         'canonical' => null,

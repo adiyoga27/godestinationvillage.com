@@ -28,6 +28,10 @@ class AssessmentResult extends Model
         'province',
         'postal_code',
         'profile_description',
+        'consent_terms_at',
+        'consent_contact',
+        'consent_research',
+        'consent_ip',
         'answers',
         'dimension_scores',
         'dimension_notes',
@@ -62,6 +66,9 @@ class AssessmentResult extends Model
         'is_unlocked' => 'boolean',
         'unlocked_at' => 'datetime',
         'approved_at' => 'datetime',
+        'consent_terms_at' => 'datetime',
+        'consent_contact' => 'boolean',
+        'consent_research' => 'boolean',
     ];
 
     public function track()

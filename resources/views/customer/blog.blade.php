@@ -5,7 +5,7 @@
 <x-partials.page-hero
     page="news"
     :title="__('News & Insights')"
-    subtitle="{{ __('Stories, updates and insights about sustainable village tourism and community empowerment in Bali.') }}"
+    subtitle="{{ __('Stories, updates and insights about sustainable village tourism and community empowerment in Indonesia.') }}"
     image="assets/customer/img/page-title-area/blog-style3.jpg"
     :crumbs="[__('Home') => '/', __('News') => '']"
 />

@@ -28,16 +28,16 @@
     } else {
         $heroSlides = [
             ['img' => 'slide-1.jpg', 'title' => 'Authentic Village Experience', 'title_id' => 'Pengalaman Desa Autentik',
-             'subtitle' => 'Step into living Balinese traditions, authentic daily life and unforgettable village experiences.',
-             'subtitle_id' => 'Masuki tradisi Bali yang hidup, keseharian autentik, dan pengalaman desa yang tak terlupakan.',
+             'subtitle' => 'Step into living Indonesian traditions, authentic daily life and unforgettable village experiences.',
+             'subtitle_id' => 'Masuki tradisi Nusantara yang hidup, keseharian autentik, dan pengalaman desa yang tak terlupakan.',
              'btn1_label' => null, 'btn1_url' => null, 'btn1_color' => null],
             ['img' => 'slide-2.jpg', 'title' => 'Local Economic Improvement', 'title_id' => 'Peningkatan Ekonomi Lokal',
              'subtitle' => 'Every journey directly supports local livelihoods and grows village economies.',
              'subtitle_id' => 'Setiap perjalanan secara langsung mendukung mata pencaharian warga dan menggerakkan ekonomi desa.',
              'btn1_label' => null, 'btn1_url' => null, 'btn1_color' => null],
             ['img' => 'slide-3.jpg', 'title' => 'Socially Responsible Tourism', 'title_id' => 'Wisata yang Bertanggung Jawab Secara Sosial',
-             'subtitle' => "Travel that gives back — empowering communities and protecting Bali's cultural heritage.",
-             'subtitle_id' => 'Berkelana sambil memberi dampak — memberdayakan masyarakat dan menjaga warisan budaya Bali.',
+             'subtitle' => "Travel that gives back — empowering communities and protecting Indonesia's cultural heritage.",
+             'subtitle_id' => 'Berkelana sambil memberi dampak — memberdayakan masyarakat dan menjaga warisan budaya Indonesia.',
              'btn1_label' => null, 'btn1_url' => null, 'btn1_color' => null],
             ['img' => 'slide-4.jpg', 'title' => 'Worry Free Travel Service', 'title_id' => 'Layanan Perjalanan Tanpa Khawatir',
              'subtitle' => 'From booking to arrival, enjoy reliable, hassle-free travel arranged by our local team.',
@@ -58,7 +58,7 @@
         @foreach ($heroSlides as $i => $slide)
             <div data-hero-slide data-index="{{ $i }}" class="hero-fade absolute inset-0 {{ $i === 0 ? 'opacity-100' : 'opacity-0' }}">
                 <img src="{{ asset('storage/sliders/' . $slide['img']) }}"
-                    alt="GODEVI authentic Balinese village {{ $i + 1 }}" class="h-full w-full object-cover" fetchpriority="{{ $i === 0 ? 'high' : 'auto' }}" loading="{{ $i === 0 ? 'eager' : 'lazy' }}">
+                    alt="GODEVI authentic Indonesian village {{ $i + 1 }}" class="h-full w-full object-cover" fetchpriority="{{ $i === 0 ? 'high' : 'auto' }}" loading="{{ $i === 0 ? 'eager' : 'lazy' }}">
             </div>
         @endforeach
         <div class="absolute inset-0 bg-gradient-to-r from-ink-950/90 via-ink-950/60 to-ink-950/20"></div>
@@ -174,7 +174,7 @@
                     ['value' => 50, 'suffix' => '+', 'label' => __('Assisted Villages & Destinations')],
                     ['value' => 2018, 'suffix' => '', 'label' => __('Established Since')],
                     ['value' => 4, 'suffix' => '', 'label' => __('Integrated Service Pillars')],
-                    ['value' => null, 'suffix' => '', 'label' => __('Working Area'), 'text' => __('Bali & Eastern Indonesia')],
+                    ['value' => null, 'suffix' => '', 'label' => __('Working Area'), 'text' => __('Across Indonesia')],
                 ];
             @endphp
             @foreach ($stats as $s)
@@ -201,7 +201,7 @@
         <div class="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <div data-vue="Reveal" class="max-w-2xl">
                 <p class="eyebrow">{{ \App\Helpers\Homepage::text('explore_village', 'eyebrow', __('Explore Village')) }}</p>
-                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('explore_village', 'title', __('Beautiful Balinese villages, authentic stories')) }}</h2>
+                <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('explore_village', 'title', __('Beautiful Indonesian villages, authentic stories')) }}</h2>
                 <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('explore_village', 'subtitle', __('Every village has a story. Step into living traditions and meet the communities whose daily lives inspire our tourism experiences.')) }}</p>
             </div>
             @php $exploreBtn = \App\Helpers\Homepage::button('explore_village', 1, __('View All Villages'), url('village')); @endphp
@@ -215,7 +215,7 @@
             @foreach ($tag->take(6) as $t)
                 <a href="{{ url('village/' . $t->slug ?? '') }}" data-vue="Reveal"
                     class="group relative block h-80 overflow-hidden rounded-3xl" aria-label="{{ __('Explore') }} {{ $t->name }}">
-                    <img src="{{ asset('storage/tag/' . $t->image) }}" alt="{{ $t->name }}, {{ __('village destination in Bali') }}"
+                    <img src="{{ asset('storage/tag/' . $t->image) }}" alt="{{ $t->name }}, {{ __('village destination in Indonesia') }}"
                         class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" onerror="this.onerror=null;this.src='{{ asset('assets/customer/frontdata/images/destination-1.jpg') }}';">
                     <div class="absolute inset-0 bg-gradient-to-t from-ink-950/90 via-ink-950/30 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-6">
@@ -239,7 +239,7 @@
     <div class="container-gd grid items-center gap-14 lg:grid-cols-2">
         <div class="relative" data-vue="Reveal">
             <div class="overflow-hidden rounded-3xl shadow-2xl">
-                <img src="{{ \App\Helpers\Homepage::image('about', 'assets/customer/frontdata/images/about.jpg') }}" alt="GODEVI village tourism community in Bali"
+                <img src="{{ \App\Helpers\Homepage::image('about', 'assets/customer/frontdata/images/about.jpg') }}" alt="GODEVI village tourism community in Indonesia"
                     class="h-[480px] w-full object-cover" loading="lazy">
             </div>
             <div class="absolute -bottom-8 -right-4 hidden w-52 rounded-3xl bg-brand-600 p-6 text-center text-white shadow-xl sm:block animate-float">
@@ -375,8 +375,8 @@
     <div class="container-gd relative grid items-center gap-12 lg:grid-cols-2">
         <div data-vue="Reveal">
             <p class="eyebrow !text-brand-400">{{ \App\Helpers\Homepage::text('virtual_reality', 'eyebrow', __('Virtual Reality')) }}</p>
-            <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ \App\Helpers\Homepage::text('virtual_reality', 'title', __('Witness the wonders of Balinese villages — before you arrive')) }}</h2>
-            <p class="mt-5 leading-relaxed text-white/70">{{ \App\Helpers\Homepage::text('virtual_reality', 'subtitle', __('Step into an immersive virtual reality experience that transports you to the fascinating world of Bali\'s villages. Preview the culture, landscapes and activities that await you.')) }}</p>
+            <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ \App\Helpers\Homepage::text('virtual_reality', 'title', __('Witness the wonders of Indonesian villages — before you arrive')) }}</h2>
+            <p class="mt-5 leading-relaxed text-white/70">{{ \App\Helpers\Homepage::text('virtual_reality', 'subtitle', __('Step into an immersive virtual reality experience that transports you to the fascinating world of Indonesia\'s villages. Preview the culture, landscapes and activities that await you.')) }}</p>
             @php $vrBtn = \App\Helpers\Homepage::button('virtual_reality', 1, __('Go Virtual'), 'https://www.vrfmipa.com/meler'); @endphp
             <a href="{{ $vrBtn['url'] }}" target="_blank" rel="noopener" class="btn btn-primary mt-8 !px-8 !py-4">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
@@ -415,7 +415,7 @@
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-56 overflow-hidden">
                         <img src="{{ $pkg->default_img ? asset('storage/packages/' . $pkg->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $trPkg?->name ?: $pkg->name }} — {{ __('Bali village tour package') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $trPkg?->name ?: $pkg->name }} — {{ __('Indonesian village tour package') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         <span class="badge absolute left-4 top-4 bg-white/95 text-brand-600 shadow-sm">X</span>
                         <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink-950/60 to-transparent"></div>
                     </div>
@@ -464,7 +464,7 @@
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-56 overflow-hidden">
                         <img src="{{ $ev->default_img ? asset('storage/events/' . $ev->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $ev->name }} — {{ __('Bali village event') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $ev->name }} — {{ __('Indonesian village event') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink-950/60 to-transparent"></div>
                     </div>
                     <div class="flex flex-1 flex-col p-6">
@@ -509,7 +509,7 @@
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-56 overflow-hidden">
                         <img src="{{ $hs->default_img ? asset('storage/homestay/' . $hs->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $hs->name }} — {{ __('Bali village homestay') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $hs->name }} — {{ __('Indonesian village homestay') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink-950/60 to-transparent"></div>
                     </div>
                     <div class="flex flex-1 flex-col p-6">
@@ -594,7 +594,7 @@
             <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-2xl"></div>
             <div class="pointer-events-none absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-white/10 blur-2xl"></div>
             <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">{{ \App\Helpers\Homepage::text('cta', 'title', __('Ready for an authentic village experience?')) }}</h2>
-            <p class="mx-auto mt-4 max-w-xl text-white/80">{{ \App\Helpers\Homepage::text('cta', 'subtitle', __('Book your tour, homestay or event today and support the communities that make Bali extraordinary.')) }}</p>
+            <p class="mx-auto mt-4 max-w-xl text-white/80">{{ \App\Helpers\Homepage::text('cta', 'subtitle', __('Book your tour, homestay or event today and support the communities that make Indonesia extraordinary.')) }}</p>
             <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
                 @php $ctaBtn = \App\Helpers\Homepage::button('cta', 1, __('Browse Experiences'), url('tour-packages')); @endphp
                 <a href="{{ $ctaBtn['url'] }}" class="btn btn-white !px-8 !py-4">{{ $ctaBtn['label'] }}</a>

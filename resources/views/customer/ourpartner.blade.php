@@ -5,7 +5,7 @@
 <x-partials.page-hero
     page="ourpartner"
     title="{{ __('Our Partners') }}"
-    subtitle="{{ __('The partners and collaborators supporting GODEVI in building sustainable village tourism communities across Bali.') }}"
+    subtitle="{{ __('The partners and collaborators supporting GODEVI in building sustainable village tourism communities across Indonesia.') }}"
     image="assets/customer/img/page-title-area/partner.jpg"
     :crumbs="[__('Home') => '/', __('Our Partners') => '']"
 />

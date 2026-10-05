@@ -79,6 +79,15 @@ class AssessmentController extends Controller
         $validated = $request->validate($rules, $messages, $attributes);
         $validated['phone'] = AssessmentPaymentService::normalizePhone($validated['phone']);
 
+        // Bukti persetujuan: waktu & IP saat responden mencentang S&K.
+        if ($request->boolean('agree_terms')) {
+            $validated['consent_terms_at'] = now()->toDateTimeString();
+            $validated['consent_ip'] = $request->ip();
+        }
+        $validated['consent_contact'] = $request->boolean('consent_contact');
+        $validated['consent_research'] = $request->boolean('consent_research');
+        unset($validated['agree_terms']);
+
         $request->session()->put('assessment_identity_'.$track->id, $validated);
 
         return redirect()->route('assessment.form', $track->slug);

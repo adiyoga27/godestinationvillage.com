@@ -47,6 +47,8 @@ class AssessmentFlowsTest extends TestCase
             'phone' => '+62 '.substr($phone, 1),
             'email' => 'tes@example.com',
             'profile_description' => 'Sawah terasering dan tari tradisional.',
+            'agree_terms' => '1',
+            'consent_contact' => '1',
         ])->assertRedirect(route('assessment.form', $track->slug));
 
         $this->get(route('assessment.form', $track->slug))->assertStatus(200);
@@ -70,6 +72,9 @@ class AssessmentFlowsTest extends TestCase
             $this->assertTrue($result->total_score >= 0 && $result->total_score <= 100);
             $this->assertNotEmpty($result->band);
             $this->assertFalse($result->is_unlocked);
+            $this->assertNotNull($result->consent_terms_at, 'bukti persetujuan S&K tidak tersimpan');
+            $this->assertTrue($result->consent_contact);
+            $this->assertFalse($result->consent_research);
 
             // Sebelum bayar: hanya halaman pembayaran, tanpa skor.
             $locked = $this->get(route('assessment.result', $result->uuid));
@@ -111,6 +116,7 @@ class AssessmentFlowsTest extends TestCase
             'name' => 'Pengurus Test',
             'phone' => '08123456789',
             'email' => 'tes@example.com',
+            'agree_terms' => '1',
         ];
 
         $this->post(route('assessment.start', 'ekonomi-desa'), $base)
@@ -194,6 +200,7 @@ class AssessmentFlowsTest extends TestCase
             'name' => 'Kadis Test',
             'phone' => '08123456789',
             'email' => 'tes@example.com',
+            'agree_terms' => '1',
         ];
 
         $this->post(route('assessment.start', 'daya-saing-destinasi'), $base)
@@ -230,6 +237,7 @@ class AssessmentFlowsTest extends TestCase
             'name' => 'Pemilik Test',
             'phone' => '08123456789',
             'email' => 'tes@example.com',
+            'agree_terms' => '1',
         ];
 
         $this->post(route('assessment.start', 'regeneratif'), $base)
@@ -346,6 +354,31 @@ class AssessmentFlowsTest extends TestCase
         $report['kekuatan'] = $report['tantangan'] = ['a', 'b', 'c'];
         $report['langkah_prioritas'] = ['1', '2', '3', '4', '5'];
         Http::fake(['*' => Http::response(['choices' => [['message' => ['content' => json_encode($report)]]], 'usage' => ['total_tokens' => 10]])]);
+    }
+
+    public function test_guest_must_agree_to_terms_before_starting(): void
+    {
+        $base = [
+            'organization' => 'Desa Persetujuan', 'province' => 'Bali', 'regency' => 'Kab. Bangli',
+            'name' => 'X', 'phone' => '0812', 'email' => 'tes@example.com',
+        ];
+
+        $this->post(route('assessment.start', 'pariwisata'), $base)->assertSessionHasErrors(['agree_terms']);
+        $this->post(route('assessment.start', 'pariwisata'), $base + ['agree_terms' => '1'])
+            ->assertRedirect(route('assessment.form', 'pariwisata'));
+
+        $identity = session('assessment_identity_'.AssessmentTrack::where('slug', 'pariwisata')->value('id'));
+        $this->assertNotEmpty($identity['consent_terms_at']);
+        $this->assertFalse($identity['consent_research']);
+        $this->assertArrayNotHasKey('agree_terms', $identity);
+    }
+
+    public function test_ai_prompt_excludes_contact_data(): void
+    {
+        $this->assertSame(
+            'Hubungi [telepon] / [email]. Ada 120 KK sejak 2018.',
+            AiReportService::scrubContact('Hubungi 0812-3456-7890 / budi@desa.id. Ada 120 KK sejak 2018.')
+        );
     }
 
     public function test_intro_prefills_email_for_logged_in_user(): void
@@ -609,7 +642,7 @@ class AssessmentFlowsTest extends TestCase
 
         $this->post(route('assessment.start', 'pariwisata'), [
             'organization' => $org, 'province' => 'Bali', 'regency' => 'Kab. Bangli',
-            'name' => 'Guest', 'phone' => '0812345', 'email' => 'guest-invoice@example.com',
+            'name' => 'Guest', 'phone' => '0812345', 'email' => 'guest-invoice@example.com', 'agree_terms' => '1',
         ])->assertRedirect(route('assessment.form', 'pariwisata'));
         $this->post(route('assessment.submit', 'pariwisata'), ['answers' => $questions->mapWithKeys(fn ($q) => [$q->id => 3])->all()]);
 

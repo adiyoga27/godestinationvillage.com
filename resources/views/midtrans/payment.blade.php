@@ -7,7 +7,7 @@
     <meta name="viewport"
         content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi">
 
-    <meta property="og:site_name" content="Godevi">
+    <meta property="og:site_name" content="GODEVI">
     <meta property="og:title" content="{{ $title ?? 'GODEVI - Authentic Village Experiences' }}" />
     <meta property="og:description" content="{{ $content ?? 'Automatic Approve Payment' }}" />
     <meta property="og:image" itemprop="image" content="{{ $image ?? url('assets/customer/frontdata/images/bird.png') }}">

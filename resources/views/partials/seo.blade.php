@@ -16,7 +16,7 @@
 <meta name="theme-color" content="#d81c25">
 
 <!-- Open Graph -->
-<meta property="og:site_name" content="{{ $siteName }}">
+<meta property="og:site_name" content="GODEVI">
 <meta property="og:type" content="{{ $seo['type'] ?? 'website' }}">
 <meta property="og:title" content="{{ $seo['title'] ?? $siteName }}">
 <meta property="og:description" content="{{ $seo['description'] ?? '' }}">

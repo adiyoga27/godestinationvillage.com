@@ -72,7 +72,7 @@
                 <p class="mt-2 text-sm font-semibold text-ink-500">Desa wisata<br>terdampingi</p>
             </div>
             <div class="card p-6 text-center">
-                <p class="font-display text-xl font-bold leading-tight text-brand-600 sm:text-2xl">Bali &<br>Indonesia Timur</p>
+                <p class="font-display text-xl font-bold leading-tight text-brand-600 sm:text-2xl">Seluruh<br>Indonesia</p>
                 <p class="mt-2 text-sm font-semibold text-ink-500">Wilayah kerja</p>
             </div>
             <div class="card p-6 text-center">

@@ -20,7 +20,7 @@
             <div class="space-y-10">
                 <div data-vue="Reveal" class="overflow-hidden rounded-3xl border border-ink-100 shadow-[0_25px_50px_-12px_rgb(26_26_38/0.25)]">
                     <div class="relative aspect-[16/9] w-full sm:aspect-[16/7]">
-                        <img src="{{ $hero }}" alt="{{ $vd->village_name ?? '' }} — {{ __('village destination in Bali') }}" class="h-full w-full object-cover" loading="eager">
+                        <img src="{{ $hero }}" alt="{{ $vd->village_name ?? '' }} — {{ __('village destination in Indonesia') }}" class="h-full w-full object-cover" loading="eager">
                         <span class="badge absolute left-5 top-5 bg-white/95 text-forest-700">{{ __('Authentic Village') }}</span>
                     </div>
                 </div>

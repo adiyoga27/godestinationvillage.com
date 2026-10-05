@@ -314,6 +314,26 @@
                         </label>
                     </fieldset>
 
+                    {{-- Persetujuan (guest saja; bukti disimpan dengan timestamp) --}}
+                    @unless ($adminMode)
+                        <fieldset class="mt-9 space-y-3 rounded-2xl border border-ink-100 bg-ink-50/60 p-5">
+                            <legend class="sr-only">Persetujuan</legend>
+                            <label class="flex items-start gap-3 text-sm text-ink-700">
+                                <input type="checkbox" name="agree_terms" value="1" required {{ old('agree_terms') ? 'checked' : '' }} class="mt-0.5 h-4 w-4 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-brand-500">
+                                <span>Saya menyetujui <a href="{{ url('term') }}" target="_blank" rel="noopener" class="font-semibold text-brand-600 hover:underline">Syarat &amp; Ketentuan</a> dan <a href="{{ url('term') }}#privacy-policy" target="_blank" rel="noopener" class="font-semibold text-brand-600 hover:underline">Kebijakan Privasi</a>. <span class="text-brand-600">*</span></span>
+                            </label>
+                            @error('agree_terms')<p class="pl-6 text-xs font-semibold text-red-600">{{ $message }}</p>@enderror
+                            <label class="flex items-start gap-3 text-sm text-ink-700">
+                                <input type="checkbox" name="consent_contact" value="1" {{ old('consent_contact') ? 'checked' : '' }} class="mt-0.5 h-4 w-4 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-brand-500">
+                                <span>Saya bersedia dihubungi Tim GODEVI untuk tindak lanjut hasil asesmen. <span class="text-ink-400">(opsional)</span></span>
+                            </label>
+                            <label class="flex items-start gap-3 text-sm text-ink-700">
+                                <input type="checkbox" name="consent_research" value="1" {{ old('consent_research') ? 'checked' : '' }} class="mt-0.5 h-4 w-4 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-brand-500">
+                                <span>Data saya boleh dipakai secara anonim untuk keperluan riset. <span class="text-ink-400">(opsional)</span></span>
+                            </label>
+                        </fieldset>
+                    @endunless
+
                     <div class="mt-10 flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
                         <a href="{{ $adminMode ? route('assessment-results.create') : route('assessment.index') }}" class="btn-secondary !py-4 sm:!px-7">← Batal</a>
                         <button type="submit" class="btn-primary group flex-1 !py-4 text-base">

@@ -38,10 +38,10 @@ class OrderController extends Controller
         if ($proses) {
             $order =  Order::find($id);
             $subject = 'Godevi - Order ' . $order->id . ' - Sukses';
-            $message = "We have received your Order(<a href='https://godevi.id/reservation/" . $proses->customer_email . "'>Details Order</a>) and Payment through paypal, here are your order details:";
+            $message = "We have received your Order(<a href='https://godevi.org/reservation/" . $proses->customer_email . "'>Details Order</a>) and Payment through paypal, here are your order details:";
             $email = new OrderEmail($subject, $order, $message);
             Mail::to($order->customer_email)->send($email);
-            Mail::to('hello@godevi.id')->send($email);
+            Mail::to('hello@godevi.org')->send($email);
             return $return;
         }
     }

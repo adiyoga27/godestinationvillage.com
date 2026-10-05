@@ -4,8 +4,8 @@
 
 <x-partials.page-hero
     page="homestay"
-    :title="__('Bali Homestay & Village Stay')"
-    subtitle="{{ __('Wake up to village life — stay with local families and experience genuine Balinese hospitality.') }}"
+    :title="__('Village Homestay & Stay')"
+    subtitle="{{ __('Wake up to village life — stay with local families and experience genuine Indonesian hospitality.') }}"
     image="assets/customer/frontdata/images/bg_1.jpg"
     :crumbs="[__('Home') => '/', __('Homestay') => '']"
 />
@@ -24,7 +24,7 @@
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-56 overflow-hidden">
                         <img src="{{ $pack->default_img ? asset('storage/homestay/' . $pack->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $name }} — {{ __('village homestay in Bali') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $name }} — {{ __('village homestay in Indonesia') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         <span class="badge absolute left-4 top-4 bg-white/95 text-forest-700">
                             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75v.75h-.75v-.75zm0 3h.75v.75h-.75v-.75zm0 3h.75v.75h-.75v-.75zm4.5-6h.75v.75h-.75v-.75zm0 3h.75v.75h-.75v-.75zm0 3h.75v.75h-.75v-.75z" /></svg>
                             {{ __('Homestay') }}

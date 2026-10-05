@@ -60,7 +60,7 @@ Warmest Regards, <br />
 Godevi
 <br />
 <br />
-<strong>Note:</strong> Please do not reply this email. For more information, do not hesitate to contact us at: hello@godestinationvillage.com</a>
+<strong>Note:</strong> Please do not reply this email. For more information, do not hesitate to contact us at: <a href="mailto:hello@godevi.org">hello@godevi.org</a>
 
 @endcomponent
 

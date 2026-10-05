@@ -27,6 +27,14 @@ class AiReportService
         };
     }
 
+    /** Samarkan email & nomor telepon yang mungkin diketik responden di teks bebas. */
+    public static function scrubContact(string $text): string
+    {
+        $text = preg_replace('/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i', '[email]', $text);
+
+        return preg_replace('/(?<!\d)(?:\+?62|0)[\s.-]?8\d(?:[\s.-]?\d){6,11}(?!\d)/', '[telepon]', $text);
+    }
+
     public static function buildPrompt(AssessmentResult $result, array $computed): string
     {
         $track = $result->track;
@@ -37,7 +45,7 @@ class AiReportService
             $line = '- '.$name.' (bobot '.($weight !== null ? $weight.'%' : '-').'): rata-rata '
                 .($dim['average'] ?? '?').'/5 → skor '.($dim['score'] ?? '?').'/100';
             if (! empty($notes[$name])) {
-                $line .= "\n  Catatan pengguna: ".str_replace("\n", ' ', $notes[$name]);
+                $line .= "\n  Catatan pengguna: ".self::scrubContact(str_replace("\n", ' ', $notes[$name]));
             }
             $lines[] = $line;
         }
@@ -46,8 +54,9 @@ class AiReportService
             ? "\n- Catatan pengguna per dimensi adalah konteks lapangan: gunakan untuk mempertajam analisa, kekuatan, tantangan, dan strategi agar spesifik terhadap kondisi tersebut. Catatan tidak mengubah skor."
             : '';
 
+        // Minimalisasi data: nama responden, kontak (WA/email) & kode pos tidak
+        // dikirim ke penyedia AI — tidak dibutuhkan untuk analisa.
         $profile = implode("\n", array_filter([
-            'Nama: '.$result->name,
             'Organisasi/Desa/Usaha: '.($result->organization ?? '-'),
             $result->institution ? 'Instansi/OPD Pengusul: '.$result->institution : null,
             $result->business_type ? 'Jenis Badan Usaha/Entitas: '.$result->business_type : null,
@@ -57,8 +66,7 @@ class AiReportService
             'Provinsi: '.($result->province ?? '-'),
             $result->district ? 'Kecamatan: '.$result->district : null,
             $result->subdistrict ? 'Kelurahan/Desa: '.$result->subdistrict : null,
-            $result->postal_code ? 'Kode Pos: '.$result->postal_code : null,
-            'Deskripsi: '.($result->profile_description ?? '-'),
+            'Deskripsi: '.($result->profile_description ? self::scrubContact($result->profile_description) : '-'),
         ]));
 
         $sub = '';

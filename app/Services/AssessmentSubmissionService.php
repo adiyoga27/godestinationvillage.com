@@ -42,9 +42,14 @@ class AssessmentSubmissionService
             // Input admin boleh tanpa email responden (mis. data kunjungan lapangan).
             'email' => [$adminMode ? 'nullable' : 'required', 'email:rfc', 'max:191'],
             'profile_description' => 'nullable|string|max:3000',
+            // Persetujuan S&K wajib bagi guest; input admin tidak melalui responden langsung.
+            'agree_terms' => $adminMode ? 'nullable' : 'accepted',
+            'consent_contact' => 'nullable|boolean',
+            'consent_research' => 'nullable|boolean',
         ];
 
         $messages = [
+            'agree_terms.accepted' => 'Anda perlu menyetujui Syarat & Ketentuan dan Kebijakan Privasi untuk melanjutkan.',
             'province.required' => 'Pilih lokasi dari hasil pencarian '.$profile['location_label'].'.',
             'regency.required' => 'Pilih lokasi dari hasil pencarian '.$profile['location_label'].'.',
         ];
@@ -113,6 +118,10 @@ class AssessmentSubmissionService
             'subdistrict' => $identity['subdistrict'] ?? null,
             'postal_code' => $identity['postal_code'] ?? null,
             'profile_description' => $identity['profile_description'] ?? null,
+            'consent_terms_at' => $identity['consent_terms_at'] ?? null,
+            'consent_contact' => (bool) ($identity['consent_contact'] ?? false),
+            'consent_research' => (bool) ($identity['consent_research'] ?? false),
+            'consent_ip' => $identity['consent_ip'] ?? null,
             'answers' => $answers,
             'dimension_scores' => $computed['dimensions'],
             'dimension_notes' => $notes ?: null,

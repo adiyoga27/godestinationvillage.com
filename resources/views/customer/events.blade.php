@@ -5,7 +5,7 @@
 <x-partials.page-hero
     page="events"
     :title="__('Village Events & Festivals')"
-    subtitle="{{ __('Join authentic village ceremonies, workshops and community events across Bali.') }}"
+    subtitle="{{ __('Join authentic village ceremonies, workshops and community events across Indonesia.') }}"
     image="assets/customer/img/page-title-area/header-event.png"
     :crumbs="[__('Home') => '/', __('Events') => '']"
 />
@@ -24,7 +24,7 @@
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-56 overflow-hidden">
                         <img src="{{ $pack->default_img ? asset('storage/events/' . $pack->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $name }} — {{ __('village event in Bali') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $name }} — {{ __('village event in Indonesia') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         @if ($pack->date_event)
                             <div class="absolute left-4 top-4 flex flex-col items-center rounded-2xl bg-white/95 px-3.5 py-2 text-center shadow-lg backdrop-blur">
                                 <span class="text-lg font-extrabold leading-none text-brand-600">{{ \Carbon\Carbon::parse($pack->date_event)->format('d') }}</span>

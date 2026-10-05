@@ -25,7 +25,7 @@ class SearchController extends Controller
             ->appends(['key' => $keyword]);
         $data['seo'] = Seo::make()
             ->title('Search Results' . ($keyword ? ': ' . $keyword : ''))
-            ->description('Search results for village tourism packages, tours and experiences across Bali on GODEVI.')
+            ->description('Search results for village tourism packages, tours and experiences across Indonesia on GODEVI.')
             ->canonical('/search')
             ->noindex()
             ->toArray();

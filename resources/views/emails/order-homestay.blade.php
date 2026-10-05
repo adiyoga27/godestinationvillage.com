@@ -50,7 +50,7 @@
                     </tr>
                     <tr>
                         <td style="background-color:#f4f1ea;padding:24px 40px;text-align:center;font-size:12px;color:#6b6b7b;">
-                            <p style="margin:0;">GODEVI — Go Destination Village · Bali, Indonesia</p>
+                            <p style="margin:0;">GODEVI — Go Destination Village · Indonesia</p>
                         </td>
                     </tr>
                 </table>

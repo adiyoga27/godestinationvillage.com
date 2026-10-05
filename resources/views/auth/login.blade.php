@@ -28,7 +28,7 @@
 
                     <div class="mt-10 lg:mt-0">
                         <p class="text-xs font-bold uppercase tracking-[0.2em] text-brand-400">Go Destination Village</p>
-                        <p class="mt-3 font-display text-2xl font-bold leading-tight text-white sm:text-[2rem]">{{ __('Authentic Bali, one village at a time.') }}</p>
+                        <p class="mt-3 font-display text-2xl font-bold leading-tight text-white sm:text-[2rem]">{{ __('Authentic Indonesia, one village at a time.') }}</p>
                         <ul class="mt-6 hidden space-y-3 sm:block">
                             @foreach ($benefits as [$icon, $text])
                                 <li class="flex items-center gap-3 text-sm font-medium text-white/85">

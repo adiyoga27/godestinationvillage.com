@@ -5,7 +5,7 @@
 <x-partials.page-hero
     page="founding"
     title="{{ __('The Founding') }}"
-    subtitle="{{ __('The story of GODEVI — a socially pro-active business built to uplift village communities in Bali.') }}"
+    subtitle="{{ __('The story of GODEVI — a socially pro-active business built to uplift village communities across Indonesia.') }}"
     image="assets/customer/img/page-title-area/founding-timenile.jpg"
     :crumbs="[__('Home') => '/', __('The Founding') => '']"
 />

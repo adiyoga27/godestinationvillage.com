@@ -4,7 +4,7 @@
 
 <x-partials.page-hero
     page="tour-packages"
-    title="{{ __('Bali Tour Packages') }}"
+    title="{{ __('Village Tour Packages') }}"
     subtitle="{{ __('Curated village experiences, cultural immersion and unforgettable adventures designed with local communities.') }}"
     image="assets/customer/img/page-title-area/bestoffer.jpg"
     :crumbs="[__('Home') => '/', __('Tour Packages') => '']"
@@ -23,7 +23,7 @@
                     class="group card card-hover flex flex-col overflow-hidden">
                     <div class="relative h-56 overflow-hidden">
                         <img src="{{ $pack->default_img ? asset('storage/packages/' . $pack->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $name }} — {{ __('village tour package in Bali') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                            alt="{{ $name }} — {{ __('village tour package in Indonesia') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
                         <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink-950/60 to-transparent"></div>
                         <div class="absolute bottom-4 left-4 flex flex-wrap items-center gap-2">
                             @if ($pack->cat_name ?? null)

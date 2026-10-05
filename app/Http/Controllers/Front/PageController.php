@@ -58,14 +58,14 @@ class PageController extends Controller
         $data['stat_packages'] = Package::where('is_active', '1')->count();
         $data['stat_partners'] = User::where('role_id', '2')->count();
         $data['seo'] = Seo::make()
-            ->title('Authentic Village Experiences in Bali')
-            ->description('GODEVI (Go Destination Village) connects travelers with authentic Balinese village experiences — village tours, homestays, events and socially responsible tourism packages in Bali, Indonesia.')
-            ->keywords(['village tourism bali', 'homestay bali', 'desa wisata bali', 'godevi', 'bali village tour'])
+            ->title('Authentic Village Experiences in Indonesia')
+            ->description('GODEVI (Go Destination Village) connects travelers with authentic Indonesian village experiences — village tours, homestays, events and socially responsible tourism packages in Indonesia.')
+            ->keywords(['village tourism indonesia', 'homestay indonesia', 'desa wisata indonesia', 'godevi', 'indonesia village tour'])
             ->image('assets/godevi-black.png')
             ->canonical('/')
             ->organizationSchema()
             ->websiteSchema()
-            ->webPageSchema('GODEVI - Authentic Village Experiences in Bali')
+            ->webPageSchema('GODEVI - Authentic Village Experiences in Indonesia')
             ->toArray();
         return view('customer.home', $data);
     }
@@ -83,8 +83,8 @@ class PageController extends Controller
         $data['recent'] = Blog::where('isPublished', '1')->latest('id')->limit(4)->get();
         $data['seo'] = Seo::make()
             ->title('News & Insights')
-            ->description('Read the latest news, stories and insights about sustainable village tourism in Bali from GODEVI — community empowerment, homestay experiences and authentic travel.')
-            ->keywords(['godevi news', 'village tourism news bali', 'desa wisata', 'sustainable tourism'])
+            ->description('Read the latest news, stories and insights about sustainable village tourism in Indonesia from GODEVI — community empowerment, homestay experiences and authentic travel.')
+            ->keywords(['godevi news', 'village tourism news indonesia', 'desa wisata', 'sustainable tourism'])
             ->canonical('/news')
             ->organizationSchema()
             ->websiteSchema()
@@ -141,9 +141,9 @@ class PageController extends Controller
     {
         $data['village'] = User::with(['village_detail'])->where('role_id', '2')->where('is_active', '1')->paginate(30);
         $data['seo'] = Seo::make()
-            ->title('Explore Villages in Bali')
-            ->description('Discover authentic Balinese villages with GODEVI. Explore village tourism destinations, community homestays and immersive local experiences across Bali.')
-            ->keywords(['desa wisata bali', 'village tourism bali', 'explore villages', 'balinese village'])
+            ->title('Explore Villages in Indonesia')
+            ->description('Discover authentic Indonesian villages with GODEVI. Explore village tourism destinations, community homestays and immersive local experiences across Indonesia.')
+            ->keywords(['desa wisata indonesia', 'village tourism indonesia', 'explore villages', 'indonesian village'])
             ->canonical('/village')
             ->organizationSchema()
             ->websiteSchema()
@@ -193,7 +193,7 @@ class PageController extends Controller
                 ->title($result->village_name.' Village Tourism')
                 ->description(Str::limit(strip_tags($result->desc ?? ''), 158))
                 ->image('storage/village/'.$result->image ?? null)
-                ->keywords([$result->village_name, 'desa wisata', 'village tourism bali'])
+                ->keywords([$result->village_name, 'desa wisata', 'village tourism indonesia'])
                 ->canonical('/village/'.$slug)
                 ->type('place')
                 ->organizationSchema()
@@ -205,7 +205,7 @@ class PageController extends Controller
                     'name' => $result->village_name,
                     'description' => $result->desc ?? null,
                     'url' => '/village/'.$slug,
-                    'address' => ['@type' => 'PostalAddress', 'addressRegion' => 'Bali', 'addressCountry' => 'ID'],
+                    'address' => ['@type' => 'PostalAddress', 'addressCountry' => 'ID'],
                 ])
                 ->toArray();
             return view('customer/detailvillage', $data);
@@ -223,8 +223,8 @@ class PageController extends Controller
         $data['packages'] = Package::select('packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'price', 'packages.desc', 'packages.id', 'packages.created_at', 'default_img', 'packages.slug')->with('translate')->leftJoin('village_details', 'village_details.id', '=', 'packages.village_id')->leftJoin('users', 'users.id', '=', 'village_details.user_id')->leftJoin('categories', 'categories.id', '=', 'packages.category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->orderBy('packages.created_at', 'desc')->orderBy('packages.id', 'desc')->paginate(10);
         $data['seo'] = Seo::make()
             ->title('Tour Packages & Experiences')
-            ->description('Browse affordable bali village adventure packages with GODEVI — immersive tours, cultural experiences and socially responsible travel in Bali villages.')
-            ->keywords(['bali tour packages', 'village tour bali', 'desa wisata bali paket', 'cultural experiences'])
+            ->description('Browse affordable Indonesian village adventure packages with GODEVI — immersive tours, cultural experiences and socially responsible travel in Indonesian villages.')
+            ->keywords(['indonesia tour packages', 'village tour indonesia', 'desa wisata indonesia paket', 'cultural experiences'])
             ->canonical('/tour-packages')
             ->organizationSchema()
             ->websiteSchema()
@@ -236,9 +236,9 @@ class PageController extends Controller
     {
         $data['packages'] = HomeStayServices::active();
         $data['seo'] = Seo::make()
-            ->title('Bali Homestay & Village Stay')
-            ->description('Stay overnight in authentic Balinese homestays with GODEVI. Immerse yourself in village life, local traditions and warm Balinese hospitality.')
-            ->keywords(['bali homestay', 'village homestay bali', 'desa wisata menginap', 'homestay godevi'])
+            ->title('Village Homestay & Stay')
+            ->description('Stay overnight in authentic Indonesian homestays with GODEVI. Immerse yourself in village life, local traditions and warm Indonesian hospitality.')
+            ->keywords(['indonesia homestay', 'village homestay indonesia', 'desa wisata menginap', 'homestay godevi'])
             ->canonical('/homestay')
             ->organizationSchema()
             ->websiteSchema()
@@ -252,8 +252,8 @@ class PageController extends Controller
         $data['packages'] = EventService::active();
         $data['seo'] = Seo::make()
             ->title('Village Events & Festivals')
-            ->description('Discover authentic village events and cultural festivals in Bali with GODEVI. Join local ceremonies, workshops and community activities.')
-            ->keywords(['bali events', 'village festival bali', 'cultural events bali', 'godevi events'])
+            ->description('Discover authentic village events and cultural festivals in Indonesia with GODEVI. Join local ceremonies, workshops and community activities.')
+            ->keywords(['indonesia events', 'village festival indonesia', 'cultural events indonesia', 'godevi events'])
             ->canonical('/events')
             ->organizationSchema()
             ->websiteSchema()
@@ -299,7 +299,7 @@ class PageController extends Controller
             ->title($data['packages']->name)
             ->description(Str::limit(strip_tags($data['packages']->desc ?? ''), 158))
             ->image('storage/packages/'.$data['packages']->default_img)
-            ->keywords([$data['packages']->name, 'bali village tour', 'tour package bali'])
+            ->keywords([$data['packages']->name, 'indonesia village tour', 'tour package indonesia'])
             ->canonical('/tour-packages/'.$slug)
             ->type('product')
             ->organizationSchema()
@@ -343,7 +343,7 @@ class PageController extends Controller
             ->title($data['packages']->name)
             ->description(Str::limit(strip_tags($data['packages']->description ?? ''), 158))
             ->image('storage/events/'.$data['packages']->default_img)
-            ->keywords([$data['packages']->name, 'bali village event', 'cultural event'])
+            ->keywords([$data['packages']->name, 'indonesia village event', 'cultural event'])
             ->canonical('/events/'.$slug)
             ->type('event')
             ->organizationSchema()
@@ -382,7 +382,7 @@ $data['recent'] = HomeStayServices::recent();
             ->title($data['packages']->name)
             ->description(Str::limit(strip_tags($data['packages']->description ?? ''), 158))
             ->image('storage/homestay/'.$data['packages']->default_img)
-            ->keywords([$data['packages']->name, 'bali homestay', 'village stay'])
+            ->keywords([$data['packages']->name, 'indonesia homestay', 'village stay'])
             ->canonical('/homestay/'.$data['packages']->id)
             ->type('product')
             ->organizationSchema()
@@ -408,7 +408,7 @@ $data['recent'] = HomeStayServices::recent();
     {
         $data['seo'] = Seo::make()
             ->title('Frequently Asked Questions')
-            ->description('Answers to common questions about GODEVI village tourism, homestays, booking, payments and travel experiences in Bali.')
+            ->description('Answers to common questions about GODEVI village tourism, homestays, booking, payments and travel experiences in Indonesia.')
             ->keywords(['godevi faq', 'village tourism faq', 'homestay booking faq'])
             ->canonical('/faq')
             ->organizationSchema()
@@ -423,7 +423,7 @@ $data['recent'] = HomeStayServices::recent();
         $data['seo'] = Seo::make()
             ->title('Our Services')
             ->description('GODEVI services — tourism planning and strategy, village revitalization, project management, human resources development, destination branding and research.')
-            ->keywords(['godevi services', 'tourism planning bali', 'destination branding', 'research tourism'])
+            ->keywords(['godevi services', 'tourism planning indonesia', 'destination branding', 'research tourism'])
             ->canonical('/services')
             ->organizationSchema()
             ->websiteSchema()
@@ -455,7 +455,7 @@ $data['recent'] = HomeStayServices::recent();
         $data = compact('ours');
         $data['seo'] = Seo::make()
             ->title('Our Team')
-            ->description('Meet the passionate team behind GODEVI who are dedicated to uplifting local communities through socially responsible village tourism in Bali.')
+            ->description('Meet the passionate team behind GODEVI who are dedicated to uplifting local communities through socially responsible village tourism in Indonesia.')
             ->canonical('/our-team')
             ->organizationSchema()
             ->websiteSchema()
@@ -470,7 +470,7 @@ $data['recent'] = HomeStayServices::recent();
         $data = compact('foundings');
         $data['seo'] = Seo::make()
             ->title('The Founding')
-            ->description('The story behind the founding of GODEVI — Go Destination Village, a socially pro-active business dedicated to uplifting village communities in Bali.')
+            ->description('The story behind the founding of GODEVI — Go Destination Village, a socially pro-active business dedicated to uplifting village communities in Indonesia.')
             ->canonical('/v-founding')
             ->organizationSchema()
             ->websiteSchema()
@@ -485,7 +485,7 @@ $data['recent'] = HomeStayServices::recent();
         $data = compact('portofolios');
         $data['seo'] = Seo::make()
             ->title('Our Portfolio')
-            ->description('Explore GODEVI portfolio — village tourism projects, community empowerment programs and sustainable tourism initiatives across Bali.')
+            ->description('Explore GODEVI portfolio — village tourism projects, community empowerment programs and sustainable tourism initiatives across Indonesia.')
             ->canonical('/v-portofolio')
             ->organizationSchema()
             ->websiteSchema()
@@ -513,7 +513,7 @@ $data['recent'] = HomeStayServices::recent();
     {
         $data['seo'] = Seo::make()
             ->title('Our Partners')
-            ->description('The partners and collaborators supporting GODEVI in building sustainable village tourism communities across Bali.')
+            ->description('The partners and collaborators supporting GODEVI in building sustainable village tourism communities across Indonesia.')
             ->canonical('/our-partner')
             ->organizationSchema()
             ->websiteSchema()
@@ -541,7 +541,7 @@ $data['recent'] = HomeStayServices::recent();
         $data['seo'] = Seo::make()
             ->title('Contact Us')
             ->description('Get in touch with GODEVI — Go Destination Village. Reach us by phone, email or visit us in Denpasar, Bali for village tourism and homestay inquiries.')
-            ->keywords(['contact godevi', 'godevi contact', 'village tourism bali contact'])
+            ->keywords(['contact godevi', 'godevi contact', 'village tourism indonesia contact'])
             ->canonical('/contact')
             ->organizationSchema()
             ->websiteSchema()
@@ -934,7 +934,7 @@ $data['recent'] = HomeStayServices::recent();
     {
         $data['seo'] = Seo::make()
             ->title('Company Profile')
-            ->description('Learn about GODEVI (PT Banua Wisata Lestari) — our vision, mission and commitment to socially responsible and sustainable village tourism in Bali.')
+            ->description('Learn about GODEVI (PT Banua Wisata Lestari) — our vision, mission and commitment to socially responsible and sustainable village tourism in Indonesia.')
             ->canonical('/company-profile')
             ->organizationSchema()
             ->websiteSchema()
@@ -948,7 +948,7 @@ $data['recent'] = HomeStayServices::recent();
         $data['seo'] = Seo::make()
             ->title('Tentang GODEVI — Go Destination Village')
             ->description('GODEVI adalah unit bisnis PT Banua Wisata Lestari yang bergerak di bidang riset dan konsultansi pengembangan desa serta destinasi pariwisata. Sejak 2018 mendampingi 50+ desa wisata di Bali dan Indonesia Timur.')
-            ->keywords(['tentang godevi', 'go destination village', 'PT Banua Wisata Lestari', 'desa wisata bali', 'pariwisata regeneratif'])
+            ->keywords(['tentang godevi', 'go destination village', 'PT Banua Wisata Lestari', 'desa wisata indonesia', 'pariwisata regeneratif'])
             ->canonical('/tentang-godevi')
             ->organizationSchema()
             ->websiteSchema()

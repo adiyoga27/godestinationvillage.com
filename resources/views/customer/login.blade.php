@@ -12,10 +12,10 @@
         <div class="mx-auto grid w-full max-w-4xl overflow-hidden rounded-[2rem] bg-white shadow-2xl sm:grid-cols-2">
             {{-- Brand side --}}
             <div class="relative hidden sm:block">
-                <img src="{{ asset('assets/customer/frontdata/images/about.jpg') }}" alt="GODEVI village tourism Bali" class="absolute inset-0 h-full w-full object-cover">
+                <img src="{{ asset('assets/customer/frontdata/images/about.jpg') }}" alt="GODEVI village tourism Indonesia" class="absolute inset-0 h-full w-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-brand-900/80 to-brand-950/60"></div>
                 <div class="absolute bottom-0 p-8">
-                    <p class="font-display text-3xl font-bold text-white">{{ __('Authentic Bali, one village at a time.') }}</p>
+                    <p class="font-display text-3xl font-bold text-white">{{ __('Authentic Indonesia, one village at a time.') }}</p>
                     <p class="mt-3 text-sm text-white/70">{{ __('Login to manage your reservations and bookings.') }}</p>
                 </div>
             </div>

@@ -5,13 +5,23 @@
 
     RewriteEngine On
 
-    # --- MIGRASI DOMAIN godestinationvillage.com -> www.godevi.org (NONAKTIF) ---
-    # AKTIFKAN (hapus tanda #) HANYA setelah DNS www.godevi.org menunjuk ke server ini.
-    # Aturan per-path: /village/x -> /village/x (query ikut terbawa), BUKAN blanket ke homepage.
-    # RewriteCond %{HTTP_HOST} ^(www\.)?godestinationvillage\.com$ [NC]
-    # RewriteRule ^(.*)$ https://www.godevi.org/$1 [R=301,L]
-    # RewriteCond %{HTTP_HOST} ^godevi\.org$ [NC]
-    # RewriteRule ^(.*)$ https://www.godevi.org/$1 [R=301,L]
+    # --- URL KANONIK: https://godevi.org (tanpa www) ---
+    # Domain lama & www -> godevi.org, path + query ikut (301 per-path, bukan ke homepage).
+    RewriteCond %{HTTP_HOST} ^(www\.)?godestinationvillage\.com$ [NC,OR]
+    RewriteCond %{HTTP_HOST} ^www\.godevi\.org$ [NC]
+    RewriteRule ^(.*)$ https://godevi.org/$1 [R=301,L]
+
+    # http -> https (hanya host produksi, supaya dev lokal tidak ikut ter-redirect)
+    RewriteCond %{HTTP_HOST} ^godevi\.org$ [NC]
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteRule ^(.*)$ https://godevi.org/$1 [R=301,L]
+
+    # Varian /index.php dan /index.php/... -> URL bersih. THE_REQUEST = request asli
+    # dari browser, jadi rewrite internal ke index.php di bawah tidak ikut ter-redirect.
+    RewriteCond %{HTTP_HOST} ^godevi\.org$ [NC]
+    RewriteCond %{THE_REQUEST} \s/+index\.php(/[^\s?]*)?[\s?] [NC]
+    RewriteRule ^index\.php(?:/(.*))?$ https://godevi.org/$1 [R=301,L]
     # ---------------------------------------------------------------------------
 
     # --- PROTEKSI TAMBAHAN ---
@@ -35,6 +45,12 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+</IfModule>
+
+# Salinan/staging di host lain (mis. *.codingaja.com) tidak boleh terindeks.
+<IfModule mod_headers.c>
+    SetEnvIfNoCase Host "^godevi\.org$" GODEVI_PRIMARY_HOST
+    Header always set X-Robots-Tag "noindex, nofollow" env=!GODEVI_PRIMARY_HOST
 </IfModule>
 
 # php -- BEGIN cPanel-generated handler, do not edit

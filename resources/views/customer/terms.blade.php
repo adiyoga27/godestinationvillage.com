@@ -24,7 +24,7 @@
                 <p>2.1.3 When using the Services, you shall be subject to any additional terms applicable to such Services, including the privacy policy adopted by GODEVI. All such terms are hereby expressly incorporated by reference in these Terms of Use.</p>
 
                 <h2 class="font-display !text-2xl">{{ __('3. Access and Use of the Services') }}</h2>
-                <p>3.1 Ownership of Content — This website, domain names (www.godevi.org), subdomains, features, content and application services are offered by GODEVI in connection with those owned and operated by GODEVI.</p>
+                <p>3.1 Ownership of Content — This website, domain names (godevi.org), subdomains, features, content and application services are offered by GODEVI in connection with those owned and operated by GODEVI.</p>
                 <p>3.2 Provision and Accessibility of Services — GODEVI may offer the Service on its own or on behalf of the Operator. The services you choose are solely for your own use. GODEVI may change, suspend or terminate any Service at any time, and may impose restrictions or limit your access to parts or all Services without notice or liability.</p>
                 <p>3.2.2 GODEVI does not guarantee that the Service will always be available or uninterrupted. You are responsible for making all necessary arrangements to access the Service and for ensuring that all people who access it through an Internet connection are aware of these Terms of Use.</p>
                 <p>3.2.3 If you link to this website, GODEVI may revoke your right to link at any time, at its sole discretion.</p>
@@ -51,7 +51,7 @@
                 <p>By completing a booking, you agree to receive confirmation messages and review invitations after you finish an activity. Leaving a review is optional. Upon submitting a review, your account may be awarded GODEVI credits subject to terms and conditions. By posting a review, you grant GODEVI the full, perpetual, free, transferable and irrevocable rights to all submitted user content. Reviews may not contain obscenities, hate speech, personal information of others or irrelevant content.</p>
 
                 <h2 class="font-display !text-2xl">{{ __('10. Booking Confirmation, Tickets, Vouchers, Fees and Payment') }}</h2>
-                <p>Certain Services are subject to instant confirmation. Through this Website you may purchase vouchers for the Services offered by the Operators. To use your Voucher you must appear in person at the designated meeting point on time and present the required documents. Vouchers are admission tickets to one-time events; unused vouchers will not be refunded unless expressly set forth. Cancelation windows vary on a case-by-case basis. If an Event is canceled by the Operator, GODEVI will process a full refund. Please contact GODEVI at hello@godevi.id for any required assistance.</p>
+                <p>Certain Services are subject to instant confirmation. Through this Website you may purchase vouchers for the Services offered by the Operators. To use your Voucher you must appear in person at the designated meeting point on time and present the required documents. Vouchers are admission tickets to one-time events; unused vouchers will not be refunded unless expressly set forth. Cancelation windows vary on a case-by-case basis. If an Event is canceled by the Operator, GODEVI will process a full refund. Please contact GODEVI at hello@godevi.org for any required assistance.</p>
 
                 <h2 class="font-display !text-2xl">{{ __('11. Discounts') }}</h2>
                 <p>GODEVI Credits are points awarded and accumulated in your GODEVI member account until expiry. Every ten (10) GODEVI Credits may be used to offset IDR 2,000 of the total check out price. GODEVI Coupons are one-time use coupons sent to your email or applied directly to your account. GODEVI reserves the right to terminate accounts or cancel all credits and coupons earned in a fraudulent manner.</p>
@@ -59,7 +59,7 @@
                 <h2 class="font-display !text-2xl">{{ __('12. Godevi Referral Program') }}</h2>
                 <p>On certain GODEVI Sites you may earn GODEVI Coupons when you invite friends to become members and those friends make a confirmed booking through an authorized GODEVI channel. You may only earn GODEVI Coupons via GODEVI's authorized invite mechanisms. Having multiple GODEVI accounts is a violation of these Terms of Use. GODEVI reserves the right to modify or terminate the Referral Program at any time.</p>
 
-                <h2 class="font-display !text-2xl">{{ __('13. Privacy Policy') }}</h2>
+                <h2 id="privacy-policy" class="font-display !text-2xl"{{ __('13. Privacy Policy') }}</h2>
                 <p>For GODEVI's policy relating to the use of your personal data, please review GODEVI's current Privacy Policy, which is incorporated by reference into these Terms of Use.</p>
 
                 <h2 class="font-display !text-2xl">{{ __('14. Indemnity') }}</h2>
@@ -87,7 +87,7 @@
                 <p>If any provision is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary. These Terms of Use are not assignable by you except with GODEVI's prior written consent. These Terms of Use have been drafted in the English language; in the event of inconsistency, the English language version shall always prevail.</p>
 
                 <h2 class="font-display !text-2xl">{{ __('22. Contact') }}</h2>
-                <p>Please contact GODEVI at hello@godevi.id to report any violations of these Terms of Use or to pose any questions regarding the Terms of Use or the Service.</p>
+                <p>Please contact GODEVI at hello@godevi.org to report any violations of these Terms of Use or to pose any questions regarding the Terms of Use or the Service.</p>
                 <p class="!mt-8 text-xs font-semibold uppercase tracking-wider text-ink-400">{{ __('Last updated on 18th Jun 2019.') }}</p>
             </div>
         </div>

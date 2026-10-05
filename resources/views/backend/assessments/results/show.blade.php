@@ -261,6 +261,9 @@
                 <div><span>Kontak</span><strong>{{ $result->name }}</strong></div>
                 <div><span>WhatsApp</span><strong>@if ($result->phone)<a href="https://wa.me/62{{ ltrim($result->phone, '0') }}" target="_blank" rel="noopener">{{ $result->phone }}</a>@else - @endif</strong></div>
                 <div><span>Email</span><strong>@if ($result->email)<a href="mailto:{{ $result->email }}">{{ $result->email }}</a>@else - @endif</strong></div>
+                <div><span>Setuju S&amp;K + Privasi</span><strong>{{ $result->consent_terms_at ? $result->consent_terms_at->format('d M Y H:i:s').($result->consent_ip ? ' · IP '.$result->consent_ip : '') : '-' }}</strong></div>
+                <div><span>Boleh dihubungi tim</span><strong>{{ $result->consent_contact ? 'Ya' : 'Tidak' }}</strong></div>
+                <div><span>Data anonim untuk riset</span><strong>{{ $result->consent_research ? 'Ya' : 'Tidak' }}</strong></div>
             </div>
             @if ($result->profile_description)
                 <p class="gd-label mt-3 mb-1">Deskripsi</p>
