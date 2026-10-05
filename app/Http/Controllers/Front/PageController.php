@@ -28,6 +28,7 @@ use App\Models\PostComment;
 use App\Models\VillageDetail;
 use App\Services\EventService;
 use App\Services\HomeStayServices;
+use App\Services\PublicListings;
 use App\Services\InstagramServices;
 use App\Services\Midtrans\CreateSnapTokenService;
 use App\Support\Seo;
@@ -78,10 +79,11 @@ class PageController extends Controller
         $data['category'] = Category::All();
         return view('customer/homebaru', $data);
     }
-    public function blog()
+    public function blog(Request $request)
     {
-        $data['blog'] = Blog::where('isPublished', '1')->latest('id')->paginate(5);
-        $data['recent'] = Blog::where('isPublished', '1')->latest('id')->limit(4)->get();
+        $data['filters'] = PublicListings::newsFilters($request);
+        $data['years'] = PublicListings::newsYears();
+        $data['blog'] = PublicListings::news($data['filters']);
         $data['seo'] = Seo::make()
             ->title('News & Insights')
             ->description('Read the latest news, stories and insights about sustainable village tourism in Indonesia from GODEVI — community empowerment, homestay experiences and authentic travel.')
@@ -138,9 +140,10 @@ class PageController extends Controller
         $data['recent'] = Blog::where('isPublished', '1')->latest('created_at')->limit(5)->get();
         return view('customer/detail-blog-mobile', $data);
     }
-    public function village()
+    public function village(Request $request)
     {
-        $data['village'] = User::with(['village_detail'])->where('role_id', '2')->where('is_active', '1')->paginate(30);
+        $data['filters'] = PublicListings::villageFilters($request);
+        $data['village'] = PublicListings::villages($data['filters']);
         $data['seo'] = Seo::make()
             ->title('Explore Villages in Indonesia')
             ->description('Discover authentic Indonesian villages with GODEVI. Explore village tourism destinations, community homestays and immersive local experiences across Indonesia.')
@@ -215,13 +218,11 @@ class PageController extends Controller
         }
       
     }
-    public function tourpackages()
+    public function tourpackages(Request $request)
     {
-        // Join desa via packages.village_id (bukan via packages.user_id) agar data lama
-        // yang user_id-nya keliru tetap tampil selama desanya aktif.
-        // Cek aktif lewat pemilik desa (village_details.user_id), bukan packages.user_id.
-        // Urut terbaru dulu berdasarkan tanggal dibuat.
-        $data['packages'] = Package::select('packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'price', 'packages.desc', 'packages.id', 'packages.created_at', 'default_img', 'packages.slug')->with('translate')->leftJoin('village_details', 'village_details.id', '=', 'packages.village_id')->leftJoin('users', 'users.id', '=', 'village_details.user_id')->leftJoin('categories', 'categories.id', '=', 'packages.category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->orderBy('packages.created_at', 'desc')->orderBy('packages.id', 'desc')->paginate(10);
+        $data['filters'] = PublicListings::packageFilters($request);
+        $data['filterOptions'] = PublicListings::packageOptions();
+        $data['packages'] = PublicListings::packages($data['filters']);
         $data['seo'] = Seo::make()
             ->title('Tour Packages & Experiences')
             ->description('Browse affordable Indonesian village adventure packages with GODEVI — immersive tours, cultural experiences and socially responsible travel in Indonesian villages.')
@@ -258,10 +259,11 @@ class PageController extends Controller
             ->toArray();
         return view('customer/homestay', $data);
     }
-    public function eventsGodevi()
+    public function eventsGodevi(Request $request)
     {
-        // $data['packages'] = Package::select('packages.name', 'categories.name as cat_name', 'village_details.village_name as vil_name', 'price', 'packages.desc', 'packages.id', 'default_img', 'paywish')->join('users', 'users.id', 'user_id')->join('village_details', 'users.id', 'village_details.user_id')->join('categories', 'categories.id', 'category_id')->where('users.is_active', '1')->where('packages.is_active', '1')->where('packages.category_id', '5')->paginate(10);
-        $data['packages'] = EventService::active();
+        $data['filters'] = PublicListings::eventFilters($request);
+        $data['filterOptions'] = PublicListings::eventOptions();
+        $data['packages'] = PublicListings::events($data['filters']);
         $data['seo'] = Seo::make()
             ->title('Village Events & Festivals')
             ->description('Discover authentic village events and cultural festivals in Indonesia with GODEVI. Join local ceremonies, workshops and community activities.')

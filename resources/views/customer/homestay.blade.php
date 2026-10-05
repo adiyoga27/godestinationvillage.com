@@ -23,8 +23,6 @@
         'price_desc' => __('Highest price'),
         'newest' => __('Newest'),
     ];
-    // URL halaman ini tanpa satu filter (untuk chip "hapus filter").
-    $without = fn (string ...$keys) => url('homestay').(($q = http_build_query(array_filter(\Illuminate\Support\Arr::except(request()->query(), array_merge($keys, ['page'])), fn ($v) => $v !== null && $v !== ''))) ? '?'.$q : '');
     $activeChips = array_filter([
         'q' => $filters['q'] ? '“'.$filters['q'].'”' : null,
         'village' => $filters['village'] ? ($filterOptions['villages'][$filters['village']] ?? null) : null,
@@ -37,7 +35,7 @@
 <section class="pb-16 sm:pb-20 lg:pb-24">
     <div class="container-gd">
         {{-- ============ FILTER ============ --}}
-        <form method="GET" action="{{ url('homestay') }}" data-homestay-filter
+        <form method="GET" action="{{ url('homestay') }}" data-listing-filter
             class="relative z-10 -mt-10 rounded-3xl border border-ink-100 bg-white p-4 shadow-[0_25px_50px_-12px_rgb(26_26_38/0.18)] sm:-mt-14 sm:p-6">
             <div class="flex flex-col gap-3 lg:flex-row lg:items-end">
                 <label class="flex-1">
@@ -95,7 +93,7 @@
 
                 <label class="flex shrink-0 items-center gap-2 text-sm font-semibold text-ink-600">
                     <span class="whitespace-nowrap">{{ __('Sort by') }}</span>
-                    <select name="sort" class="input-gd !w-auto !py-2" data-autosubmit>
+                    <select name="sort" class="input-gd !w-auto !py-2" data-autosubmit data-default="recommended">
                         @foreach ($sortLabels as $key => $label)
                             <option value="{{ $key }}" @selected($filters['sort'] === $key)>{{ $label }}</option>
                         @endforeach
@@ -105,22 +103,7 @@
         </form>
 
         {{-- ============ HASIL ============ --}}
-        <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-sm text-ink-500">
-                <strong class="text-base text-ink-950">{{ $packages->total() }}</strong> {{ __('homestays found') }}
-            </p>
-            @if ($activeChips)
-                <div class="flex flex-wrap items-center gap-2">
-                    @foreach ($activeChips as $key => $label)
-                        <a href="{{ $without($key) }}" class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1.5 text-xs font-semibold text-brand-700 transition hover:bg-brand-100" aria-label="{{ __('Remove filter') }}: {{ $label }}">
-                            {{ $label }}
-                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                        </a>
-                    @endforeach
-                    <a href="{{ url('homestay') }}" class="text-xs font-bold text-ink-500 underline-offset-2 hover:text-brand-600 hover:underline">{{ __('Reset all') }}</a>
-                </div>
-            @endif
-        </div>
+        @include('customer.partials.listing.results', ['total' => $packages->total(), 'noun' => __('homestays found'), 'chips' => $activeChips, 'base' => 'homestay'])
 
         <div class="mt-6 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($packages as $pack)
@@ -136,7 +119,7 @@
                     class="group flex flex-col overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-[0_10px_30px_-12px_rgb(26_26_38/0.15)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_25px_50px_-12px_rgb(26_26_38/0.25)]">
                     <div class="relative aspect-[4/3] overflow-hidden bg-ink-100">
                         <img src="{{ $pack->default_img ? asset('storage/homestay/' . $pack->default_img) : asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}"
-                            alt="{{ $name }} — {{ __('village homestay in Indonesia') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy">
+                            alt="{{ $name }} — {{ __('village homestay in Indonesia') }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" onerror="this.onerror=null;this.src='{{ asset('assets/customer/frontdata/images/destination-' . (($loop->index % 6) + 1) . '.jpg') }}';">
                         <div class="absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent to-transparent"></div>
 
                         <div class="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
@@ -149,7 +132,7 @@
                                 <span></span>
                             @endif
                             @if ($hasDiscount)
-                                <span class="badge bg-brand-600 text-white shadow-sm">-{{ (int) round((1 - $pack->disc / $pack->price) * 100) }}%</span>
+                                <span class="badge bg-brand-600 text-white shadow-sm">-{{ (int) floor((1 - $pack->disc / $pack->price) * 100) }}%</span>
                             @endif
                         </div>
 
@@ -210,56 +193,9 @@
             @endforelse
         </div>
 
-        {{-- ============ PAGINATION ============ --}}
-        @if ($packages->hasPages())
-            @php
-                $current = $packages->currentPage();
-                $last = $packages->lastPage();
-                $pages = collect([1, $current - 1, $current, $current + 1, $last])->filter(fn ($p) => $p >= 1 && $p <= $last)->unique()->sort()->values();
-                $pill = 'inline-flex h-11 min-w-11 items-center justify-center rounded-full px-3 text-sm font-bold transition';
-            @endphp
-            <nav class="mt-14 flex items-center justify-center gap-2" aria-label="{{ __('Pagination') }}">
-                @if ($packages->onFirstPage())
-                    <span class="{{ $pill }} border border-ink-100 text-ink-300" aria-hidden="true">‹</span>
-                @else
-                    <a href="{{ $packages->previousPageUrl() }}" rel="prev" class="{{ $pill }} border border-ink-200 text-ink-600 hover:border-brand-600 hover:text-brand-600" aria-label="{{ __('Previous') }}">‹</a>
-                @endif
-                @foreach ($pages as $i => $page)
-                    @if ($i > 0 && $page - $pages[$i - 1] > 1)
-                        <span class="px-1 text-ink-300">…</span>
-                    @endif
-                    @if ($page == $current)
-                        <span class="{{ $pill }} bg-brand-600 text-white" aria-current="page">{{ $page }}</span>
-                    @else
-                        <a href="{{ $packages->url($page) }}" class="{{ $pill }} border border-ink-200 text-ink-600 hover:border-brand-600 hover:text-brand-600">{{ $page }}</a>
-                    @endif
-                @endforeach
-                @if ($packages->hasMorePages())
-                    <a href="{{ $packages->nextPageUrl() }}" rel="next" class="{{ $pill }} border border-ink-200 text-ink-600 hover:border-brand-600 hover:text-brand-600" aria-label="{{ __('Next') }}">›</a>
-                @else
-                    <span class="{{ $pill }} border border-ink-100 text-ink-300" aria-hidden="true">›</span>
-                @endif
-            </nav>
-        @endif
+        @include('customer.partials.listing.pagination', ['paginator' => $packages])
     </div>
 </section>
 
-<script>
-    // Filter langsung diterapkan saat pilihan diubah; kolom kosong tidak ikut ke URL.
-    (function () {
-        var form = document.querySelector('[data-homestay-filter]');
-        if (!form) return;
-        form.querySelectorAll('[data-autosubmit]').forEach(function (el) {
-            el.addEventListener('change', function () { form.requestSubmit ? form.requestSubmit() : form.submit(); });
-        });
-        form.addEventListener('submit', function () {
-            form.querySelectorAll('input, select').forEach(function (el) {
-                if ((el.type === 'radio' || el.type === 'checkbox') ? false : el.value === '' || (el.name === 'sort' && el.value === 'recommended')) {
-                    el.disabled = true;
-                }
-            });
-            form.querySelectorAll('input[name="price"][value=""]').forEach(function (el) { if (el.checked) el.disabled = true; });
-        });
-    })();
-</script>
+@include('customer.partials.listing.script')
 @endsection
