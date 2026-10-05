@@ -26,6 +26,13 @@ class SiteSettingController extends Controller
         $validated = $request->validate([
             'settings' => 'required|array',
             'settings.*' => 'nullable|string|max:500',
+            'settings.facebook' => 'nullable|url|max:500',
+            'settings.instagram' => 'nullable|url|max:500',
+            'settings.youtube' => 'nullable|url|max:500',
+            'settings.linkedin' => 'nullable|url|max:500',
+            'settings.tourismtrends' => 'nullable|url|max:500',
+        ], [
+            'settings.*.url' => 'Isi dengan URL lengkap, diawali https://',
         ]);
 
         foreach ($validated['settings'] as $key => $value) {

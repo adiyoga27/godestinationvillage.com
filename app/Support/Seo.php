@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Helpers\Site;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
@@ -129,11 +130,11 @@ class Seo
                 'email' => 'hello@godevi.org',
                 'areaServed' => 'ID',
             ],
-            'sameAs' => [
-                'https://www.facebook.com/godestinationvillage/',
-                'https://www.instagram.com/godestinationvillage/',
-                'https://www.youtube.com/channel/UCule1cMKmK4RKh_n-Rrx81A',
-            ],
+            // Profil resmi dari admin (Pengaturan Website): sosmed, LinkedIn, tourismtrends.org.
+            'sameAs' => collect(['facebook', 'instagram', 'youtube', 'linkedin', 'tourismtrends'])
+                ->map(fn ($key) => trim((string) Site::get($key)))
+                ->filter(fn ($url) => filter_var($url, FILTER_VALIDATE_URL))
+                ->unique()->values()->all(),
         ];
 
         return $this;
