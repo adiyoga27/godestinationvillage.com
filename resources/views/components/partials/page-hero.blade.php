@@ -22,7 +22,8 @@
         <nav aria-label="Breadcrumb">
             <ol class="flex items-center justify-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-white/60">
                 <li><a href="{{ url('/') }}" class="transition hover:text-white">{{ __('Home') }}</a></li>
-                @foreach ($crumbs as $label => $link)
+                {{-- Beranda sudah ditampilkan di atas; crumb ke '/' dari halaman tidak diulang. --}}
+                @foreach (collect($crumbs)->reject(fn ($link) => $link === '/') as $label => $link)
                     <li class="flex items-center gap-1.5">
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                         @if (!empty($link))

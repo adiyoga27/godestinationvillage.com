@@ -233,9 +233,20 @@ class PageController extends Controller
             ->toArray();
         return view('customer/tourpackages', $data);
     }
-    public function homeStay()
+    public function homeStay(Request $request)
     {
-        $data['packages'] = HomeStayServices::active();
+        $filters = [
+            'q' => mb_substr(trim((string) $request->query('q', '')), 0, 100),
+            'village' => $request->integer('village') ?: null,
+            'type' => $request->integer('type') ?: null,
+            'price' => array_key_exists((string) $request->query('price'), HomeStayServices::PRICE_RANGES) ? (string) $request->query('price') : null,
+            'breakfast' => $request->boolean('breakfast'),
+            'sort' => in_array($request->query('sort'), HomeStayServices::SORTS, true) ? $request->query('sort') : 'recommended',
+        ];
+        $data['filters'] = $filters;
+        $data['activeFilterCount'] = count(array_filter([$filters['q'], $filters['village'], $filters['type'], $filters['price'], $filters['breakfast']]));
+        $data['filterOptions'] = HomeStayServices::filterOptions();
+        $data['packages'] = HomeStayServices::search($filters);
         $data['seo'] = Seo::make()
             ->title('Village Homestay & Stay')
             ->description('Stay overnight in authentic Indonesian homestays with GODEVI. Immerse yourself in village life, local traditions and warm Indonesian hospitality.')

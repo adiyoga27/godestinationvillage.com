@@ -43,7 +43,8 @@ class OrderHomestay extends Model
 
     public function package()
     {
-        return $this->belongsTo(Homestay::class, 'homestay_id', 'id');
+        // Homestay yang sudah dihapus (soft delete) tetap tampil di riwayat order.
+        return $this->belongsTo(Homestay::class, 'homestay_id', 'id')->withTrashed();
     }
 
     public function bank_account()

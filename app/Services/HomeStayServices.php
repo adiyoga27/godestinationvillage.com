@@ -28,6 +28,79 @@ class HomeStayServices
     {
         return Homestay::with('translate')->where('is_active', 1)->paginate(5);
     }
+    /** Pilihan urutan di halaman /homestay. */
+    public const SORTS = ['recommended', 'price_asc', 'price_desc', 'newest'];
+
+    /** Rentang harga per malam (harga akhir setelah diskon): key => [min, max]. */
+    public const PRICE_RANGES = [
+        'under-300k' => [0, 299999],
+        '300k-700k' => [300000, 700000],
+        '700k-1500k' => [700001, 1500000],
+        'over-1500k' => [1500001, null],
+    ];
+
+    /**
+     * Daftar homestay aktif dengan filter halaman /homestay.
+     *
+     * @param  array{q?: string, village?: int|string, type?: int|string, price?: string, breakfast?: bool, sort?: string}  $filters
+     */
+    public static function search(array $filters, int $perPage = 9)
+    {
+        $finalPrice = 'CASE WHEN homestay.disc > 0 THEN homestay.disc ELSE homestay.price END';
+
+        $query = Homestay::with(['translate', 'category', 'village'])
+            ->select('homestay.*')
+            ->where('homestay.is_active', 1);
+
+        if (filled($filters['q'] ?? null)) {
+            $term = '%'.str_replace(['%', '_'], ['\\%', '\\_'], trim($filters['q'])).'%';
+            $query->where(function ($q) use ($term) {
+                $q->where('homestay.name', 'like', $term)
+                    ->orWhere('homestay.location', 'like', $term)
+                    ->orWhere('homestay.owner_name', 'like', $term)
+                    ->orWhereHas('village', fn ($v) => $v->where('village_name', 'like', $term))
+                    ->orWhereHas('translate', fn ($t) => $t->where('name', 'like', $term)->orWhere('location', 'like', $term));
+            });
+        }
+        if (filled($filters['village'] ?? null)) {
+            $query->where('homestay.village_id', (int) $filters['village']);
+        }
+        if (filled($filters['type'] ?? null)) {
+            $query->where('homestay.category_id', (int) $filters['type']);
+        }
+        if ($range = self::PRICE_RANGES[$filters['price'] ?? ''] ?? null) {
+            $query->whereRaw("$finalPrice >= ?", [$range[0]]);
+            if ($range[1] !== null) {
+                $query->whereRaw("$finalPrice <= ?", [$range[1]]);
+            }
+        }
+        if (! empty($filters['breakfast'])) {
+            $query->where('homestay.is_breakfast', 1);
+        }
+
+        match ($filters['sort'] ?? 'recommended') {
+            'price_asc' => $query->orderByRaw("$finalPrice asc"),
+            'price_desc' => $query->orderByRaw("$finalPrice desc"),
+            'newest' => $query->orderByDesc('homestay.created_at'),
+            default => $query->orderByDesc('homestay.disc')->orderBy('homestay.id'),
+        };
+
+        return $query->orderBy('homestay.id')->paginate($perPage)->withQueryString();
+    }
+
+    /** Pilihan filter: hanya desa & tipe kamar yang punya homestay aktif. */
+    public static function filterOptions(): array
+    {
+        $active = Homestay::where('is_active', 1);
+
+        return [
+            'villages' => \App\Models\VillageDetail::whereIn('id', (clone $active)->select('village_id'))
+                ->orderBy('village_name')->pluck('village_name', 'id'),
+            'types' => \App\Models\CategoryHomestay::whereIn('id', (clone $active)->select('category_id'))
+                ->orderBy('id')->pluck('name', 'id'),
+        ];
+    }
+
     public static function recent()
     {
         return Homestay::with(['category', 'translate'])->where('is_active', 1)->paginate(5);
@@ -155,10 +228,10 @@ class HomeStayServices
         }
     }
 
-    public static function destroy($id)
+    /** Soft delete: baris tetap ada (deleted_at terisi) agar riwayat order tidak rusak. */
+    public static function destroy($id): bool
     {
-        $model = Homestay::find($id);
-        return $model->destroy($id);
+        return (bool) Homestay::findOrFail($id)->delete();
     }
 
     public static function pluck()

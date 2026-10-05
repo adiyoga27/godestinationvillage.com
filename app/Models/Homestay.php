@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -11,6 +12,8 @@ class Homestay extends Model
 {
     use HasFactory;
     use LogsActivity;
+    // Hapus dari admin = isi deleted_at; riwayat order tetap merujuk ke homestay ini.
+    use SoftDeletes;
     public $table = "homestay";
     protected $dates = ['deleted_at'];
 
@@ -34,6 +37,17 @@ class Homestay extends Model
     {
         return $this->belongsTo(CategoryHomestay::class);
     }
+    public function village()
+    {
+        return $this->belongsTo(VillageDetail::class, 'village_id');
+    }
+
+    /** Harga yang dibayar per malam: kolom disc = harga setelah diskon (0 = tanpa diskon). */
+    public function finalPrice(): int
+    {
+        return (int) ($this->disc > 0 ? $this->disc : $this->price);
+    }
+
     public function translate()
     {
         return $this->hasMany(HomestayTranslations::class, 'homestay_id', 'id');

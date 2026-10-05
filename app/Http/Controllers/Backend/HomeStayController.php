@@ -139,12 +139,17 @@ class HomeStayController extends Controller
     }
 
     public function destroy($id)
-    {  
-        $result = HomeStayServices::destroy($id);
+    {
+        try {
+            HomeStayServices::destroy($id);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return redirect(route('homestay.index'))->with('error', 'Homestay tidak ditemukan atau sudah dihapus.');
+        } catch (\Throwable $th) {
+            report($th);
 
-        if ($result)
-            return redirect(route('homestay.index'))->with('status', 'Successfully deleted');
-        else
-            return redirect(route('homestay.index'))->with('error','Failed to delete');
+            return redirect(route('homestay.index'))->with('error', 'Gagal menghapus homestay: '.$th->getMessage());
+        }
+
+        return redirect(route('homestay.index'))->with('status', 'Homestay berhasil dihapus');
     }
 }
