@@ -34,7 +34,7 @@
                     </div>
                     <label for="chooseFile" class="cursor-pointer text-sm font-semibold text-brand-600 hover:underline">{{ __('Click to upload a new picture') }}</label>
                     <input type="file" name="uploadfile" id="chooseFile" class="hidden" accept=".jpg,.jpeg,.png,.webp">
-                    <p class="text-xs text-ink-400">JPG, JPEG, PNG, WEBP · maks. 2 MB</p>
+                    <p class="text-xs text-ink-400">JPG, JPEG, PNG, WEBP · maks. 5 MB</p>
                     @error('uploadfile')<p class="text-xs font-semibold text-red-600">{{ $message }}</p>@enderror
                 </div>
             </div>

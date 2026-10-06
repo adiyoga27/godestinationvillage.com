@@ -16,7 +16,7 @@
 
     <aside class="gd-form__side">
         @include('backend.partials.form.card-open', ['icon' => 'image', 'title' => 'Gambar Kartu', 'desc' => 'Tampil penuh di kartu, rasio potret/persegi disarankan.'])
-            @include('backend.partials.form.image-upload', ['name' => 'image', 'current' => $card->image ? asset('storage/tag/'.$card->image) : null, 'required' => ! $card->exists, 'hint' => 'JPG / PNG / WEBP, maks. 2 MB'])
+            @include('backend.partials.form.image-upload', ['name' => 'image', 'current' => $card->image ? asset('storage/tag/'.$card->image) : null, 'required' => ! $card->exists, 'hint' => 'JPG / PNG / WEBP, maks. 5 MB'])
         @include('backend.partials.form.card-close')
 
         @include('backend.partials.form.card-open', ['icon' => 'sort', 'title' => 'Urutan & Status'])

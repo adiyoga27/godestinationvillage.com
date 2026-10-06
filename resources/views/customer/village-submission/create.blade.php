@@ -67,7 +67,7 @@
                         <input type="email" name="email" value="{{ old('email') }}" required class="input-gd">
                     </label>
                     <label class="block">
-                        <span class="label-gd">Dokumen Pendukung (JPG/PNG/WEBP maks 2MB, PDF maks 4MB)</span>
+                        <span class="label-gd">Dokumen Pendukung (JPG/PNG/WEBP/PDF maks 5MB)</span>
                         <input type="file" name="attachment" accept=".jpg,.jpeg,.png,.webp,.pdf" class="input-gd">
                     </label>
                 </div>

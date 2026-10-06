@@ -7,7 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-/** Upload gambar di seluruh situs: hanya JPG/JPEG/PNG/WEBP, maks. 2 MB. */
+/** Upload gambar di seluruh situs: hanya JPG/JPEG/PNG/WEBP, maks. 5 MB. */
 class ImageUploadRulesTest extends TestCase
 {
     private function upload(UploadedFile $file)
@@ -17,7 +17,7 @@ class ImageUploadRulesTest extends TestCase
         return $this->actingAs($admin)->post(route('tinymce.upload_image'), ['file' => $file]);
     }
 
-    public function test_allowed_image_formats_under_two_mb_are_accepted(): void
+    public function test_allowed_image_formats_under_five_mb_are_accepted(): void
     {
         Storage::fake('public');
 
@@ -39,12 +39,12 @@ class ImageUploadRulesTest extends TestCase
         $this->assertSame([], Storage::disk('public')->allFiles());
     }
 
-    public function test_images_over_two_mb_are_rejected(): void
+    public function test_images_over_five_mb_are_rejected(): void
     {
         Storage::fake('public');
 
-        $this->upload(UploadedFile::fake()->image('big.jpg', 40, 40)->size(2049))
-            ->assertStatus(422)->assertJsonPath('error.message', 'Ukuran gambar maksimal 2 MB.');
+        $this->upload(UploadedFile::fake()->image('big.jpg', 40, 40)->size(5121))
+            ->assertStatus(422)->assertJsonPath('error.message', 'Ukuran gambar maksimal 5 MB.');
     }
 
     public function test_form_upload_returns_field_error_and_documents_are_untouched(): void
@@ -59,7 +59,7 @@ class ImageUploadRulesTest extends TestCase
             ->assertSessionHasErrors(['attachment' => 'Format gambar harus JPG, JPEG, PNG, atau WEBP.'])
             ->assertSessionHas('error');
 
-        // PDF bukan gambar: batas 2 MB tidak berlaku (aturan form sendiri: maks 4 MB).
+        // PDF bukan gambar: batas gambar tidak berlaku (aturan form sendiri: maks 5 MB).
         $this->post(route('village-submission.store'), ['attachment' => UploadedFile::fake()->create('doc.pdf', 3000, 'application/pdf')])
             ->assertSessionDoesntHaveErrors(['attachment']);
     }

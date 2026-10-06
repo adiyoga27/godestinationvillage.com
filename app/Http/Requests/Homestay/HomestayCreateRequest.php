@@ -10,7 +10,7 @@ class HomestayCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'default_img' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'default_img' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ];
     }
 

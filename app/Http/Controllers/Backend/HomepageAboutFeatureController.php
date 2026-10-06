@@ -34,7 +34,7 @@ class HomepageAboutFeatureController extends Controller
             'title_id' => 'nullable|max:191',
             'desc' => 'nullable',
             'desc_id' => 'nullable',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'sort_order' => 'nullable|integer',
         ]);
 
@@ -66,7 +66,7 @@ class HomepageAboutFeatureController extends Controller
             'title_id' => 'nullable|max:191',
             'desc' => 'nullable',
             'desc_id' => 'nullable',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'sort_order' => 'nullable|integer',
         ]);
 

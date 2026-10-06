@@ -11,7 +11,7 @@ class CustomImage
 
     const ALLOWED_IMAGE_MIMES = ['image/jpeg', 'image/png', 'image/webp'];
 
-    const MAX_IMAGE_KB = 2048;
+    const MAX_IMAGE_KB = 5120;
 
     const ALLOWED_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
 

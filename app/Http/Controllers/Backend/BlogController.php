@@ -116,7 +116,7 @@ class BlogController extends Controller
     {
         $file = $request->file('file');
         if ($file) {
-            // Gambar non JPG/PNG/WEBP atau > 2 MB sudah ditolak middleware ValidateImageUploads;
+            // Gambar non JPG/PNG/WEBP atau > 5 MB sudah ditolak middleware ValidateImageUploads;
             // file non-gambar (mis. .php, .html) ditolak di sini.
             if (! in_array(strtolower($file->getClientOriginalExtension()), \App\Helpers\CustomImage::ALLOWED_IMAGE_EXTENSIONS, true)
                 || ! in_array($file->getMimeType(), \App\Helpers\CustomImage::ALLOWED_IMAGE_MIMES, true)) {

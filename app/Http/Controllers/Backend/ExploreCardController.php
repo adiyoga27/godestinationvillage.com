@@ -109,7 +109,7 @@ class ExploreCardController extends Controller
             'name_id' => 'nullable|string|max:191',
             'desc' => 'nullable|string|max:300',
             'desc_id' => 'nullable|string|max:300',
-            'image' => [$creating ? 'required' : 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image' => [$creating ? 'required' : 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'url' => ['nullable', 'string', 'max:255', 'not_regex:/^file:/i'],
             'sort_order' => 'nullable|integer|min:0',
             'status' => 'nullable|boolean',

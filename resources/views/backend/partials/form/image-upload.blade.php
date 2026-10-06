@@ -4,7 +4,7 @@
     <span class="gd-upload__empty" @if (! empty($current)) hidden @endif>
         <i class="mdi mdi-cloud-upload"></i>
         <strong>Pilih gambar</strong>
-        <small>{{ $hint ?? 'JPG / PNG / WEBP, maks. 2 MB, rasio lanskap disarankan' }}</small>
+        <small>{{ $hint ?? 'JPG / PNG / WEBP, maks. 5 MB, rasio lanskap disarankan' }}</small>
     </span>
     <span class="gd-upload__change"><i class="mdi mdi-camera"></i> Ganti gambar</span>
     <input type="file" name="{{ $name }}" accept="{{ $accept ?? '.jpg,.jpeg,.png,.webp' }}" class="gd-upload__input" @if (! empty($required) && empty($current)) required @endif>

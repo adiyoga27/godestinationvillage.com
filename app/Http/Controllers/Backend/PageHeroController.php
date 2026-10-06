@@ -38,7 +38,7 @@ class PageHeroController extends Controller
             'title_id' => 'nullable|max:191',
             'subtitle' => 'nullable',
             'subtitle_id' => 'nullable',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         if ($request->hasFile('image')) {

@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Aturan upload gambar seragam di seluruh situs (admin & publik):
- * hanya JPG/JPEG/PNG/WEBP, maksimal 2 MB. Berlaku untuk setiap file
+ * hanya JPG/JPEG/PNG/WEBP, maksimal 5 MB. Berlaku untuk setiap file
  * yang terdeteksi sebagai gambar; dokumen (PDF, DOCX, dll.) tidak disentuh.
  */
 class ValidateImageUploads
