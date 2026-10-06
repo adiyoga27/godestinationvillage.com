@@ -289,6 +289,59 @@
     <div class="container-gd">
         <div class="mx-auto mb-12 max-w-2xl text-center" data-vue="Reveal">
             <p class="eyebrow justify-center !gap-2">{{ \App\Helpers\Homepage::text('booklet', 'eyebrow', __('Company Profile')) }}</p>
+            @php
+                $portfolio = \App\Helpers\Homepage::services()->firstWhere('url', 'v-portofolio');
+            @endphp
+            @if ($portfolio)
+                @php
+                    $pItems = \App\Models\Portofolio::orderBy('dates', 'DESC')->get(['title', 'attachment', 'thumbnail']);
+                    $pThumbs = $pItems->map(fn ($f) => $f->attachment ?: $f->thumbnail)->filter()->take(3)->values();
+                @endphp
+                <a href="{{ \App\Helpers\Homepage::url($portfolio->url) }}"
+                    class="group relative mx-auto my-8 block max-w-2xl rounded-[1.75rem] bg-gradient-to-r from-brand-500 via-brand-300 to-forest-400 p-[1.5px] text-left shadow-soft transition-all duration-500 hover:-translate-y-1 hover:shadow-lift focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-200">
+                    <div class="relative flex flex-col items-center gap-6 overflow-hidden rounded-[calc(1.75rem-1.5px)] bg-white p-6 sm:flex-row sm:items-center sm:p-7">
+                        <div class="pointer-events-none absolute -left-16 -top-16 h-40 w-40 rounded-full bg-brand-100/70 blur-3xl"></div>
+                        <div class="pointer-events-none absolute -bottom-20 right-24 h-40 w-40 rounded-full bg-forest-100/70 blur-3xl"></div>
+
+                        {{-- Teks --}}
+                        <div class="relative flex-1 text-center sm:text-left">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-700 ring-1 ring-brand-100">
+                                <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-500"></span>
+                                {{ __('Our Portfolio') }}
+                            </span>
+                            <h3 class="mt-3 font-display text-2xl font-bold leading-tight text-ink-950">{{ __('Real impact, village by village') }}</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-ink-500">{{ __('Village tourism projects, studies and community programs we have delivered.') }}</p>
+
+                            <div class="mt-5 flex flex-wrap items-center justify-center gap-4 sm:justify-start">
+                                @if ($pThumbs->isNotEmpty())
+                                    <div class="flex items-center">
+                                        <div class="flex -space-x-3">
+                                            @foreach ($pThumbs as $thumb)
+                                                <img src="{{ asset('storage/portofolio/' . $thumb) }}" alt=""
+                                                    class="h-10 w-10 rounded-full object-cover ring-[3px] ring-white" loading="lazy">
+                                            @endforeach
+                                        </div>
+                                        <span class="ml-3 text-sm font-semibold text-ink-800">{{ __(':count+ projects', ['count' => $pItems->count()]) }}</span>
+                                    </div>
+                                @endif
+                                <span class="inline-flex items-center gap-2 rounded-full bg-ink-950 px-4 py-2 text-sm font-semibold text-white transition-colors duration-300 group-hover:bg-brand-600">
+                                    {{ __('View portfolio') }}
+                                    <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                                </span>
+                            </div>
+                        </div>
+
+                        {{-- Gambar --}}
+                        <div class="relative shrink-0">
+                            <div class="absolute inset-0 rotate-6 rounded-3xl bg-gradient-to-br from-brand-200 to-forest-200 transition-transform duration-500 group-hover:rotate-12"></div>
+                            <div class="relative grid h-32 w-32 place-items-center rounded-3xl bg-gradient-to-br from-white to-cream-100 shadow-soft ring-1 ring-ink-100 sm:h-36 sm:w-36">
+                                <img src="{{ \App\Helpers\Homepage::serviceImage($portfolio->image) }}" alt="{{ __('Our Portfolio') }}"
+                                    class="h-24 w-24 object-contain drop-shadow-lg transition-transform duration-500 group-hover:-rotate-3 group-hover:scale-110 sm:h-28 sm:w-28" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            @endif
             <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('booklet', 'title', __('Get to know GODEVI through our booklet')) }}</h2>
             <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('booklet', 'subtitle', __('Browse our vision, impact and village tourism programs — download the PDF.')) }}</p>
         </div>
