@@ -370,7 +370,7 @@
             @endif
         </div>
 
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="flex flex-wrap justify-center gap-6">
             @foreach (\App\Helpers\Homepage::services() as $i => $s)
                 @php
                     $sTitle = $isId ? ($s->title_id ?: $s->title) : $s->title;
@@ -393,7 +393,7 @@
                         data-file-label="{{ __('Download') }}"
                         data-buttons='@json($sBtns)'
                         @if ($sUrl) data-page="{{ $sUrl }}" data-page-label="{{ __('Learn more') }}" @endif
-                        class="group card card-hover p-6 text-center">
+                        class="group card card-hover w-full p-6 text-center sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
                         <div class="mx-auto flex h-40 w-40 items-center justify-center">
                             <img src="{{ \App\Helpers\Homepage::serviceImage($s->image) }}" alt="{{ $sTitle }}" class="h-full w-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-2 group-hover:scale-105" loading="lazy">
                         </div>
@@ -406,7 +406,7 @@
                 @else
                     <a data-vue="Reveal" data-props='{{ json_encode(['delay' => ($i % 4) * 80]) }}'
                         href="{{ $sUrl ?: url('services') }}"
-                        class="group card card-hover p-6 text-center">
+                        class="group card card-hover w-full p-6 text-center sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
                         <div class="mx-auto flex h-40 w-40 items-center justify-center">
                             <img src="{{ \App\Helpers\Homepage::serviceImage($s->image) }}" alt="{{ $sTitle }}" class="h-full w-full object-contain drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-2 group-hover:scale-105" loading="lazy">
                         </div>
