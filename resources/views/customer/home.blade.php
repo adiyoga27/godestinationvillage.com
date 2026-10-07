@@ -290,14 +290,16 @@
         <div class="mx-auto mb-12 max-w-2xl text-center" data-vue="Reveal">
             <p class="eyebrow justify-center !gap-2">{{ \App\Helpers\Homepage::text('booklet', 'eyebrow', __('Company Profile')) }}</p>
             @php
-                $portfolio = \App\Helpers\Homepage::services()->firstWhere('url', 'v-portofolio');
+                $portfolio = \App\Helpers\Homepage::services()->first(fn ($s) => str_contains(strtolower($s->url ?? ''), 'portofolio') || str_contains(strtolower($s->title ?? ''), 'portfol') || str_contains(strtolower($s->title_id ?? ''), 'portofolio'));
+                // Portofolio resmi tampil via godevi.org (locale-aware): https://godevi.org/id/v-portofolio
+                $portfolioUrl = 'https://godevi.org/' . (app()->getLocale() === 'id' ? 'id' : 'en') . '/v-portofolio';
+                $portfolioImg = $portfolio?->image ? \App\Helpers\Homepage::serviceImage($portfolio->image) : asset('assets/customer/img/etc/portofolio.png');
             @endphp
-            @if ($portfolio)
-                @php
-                    $pItems = \App\Models\Portofolio::orderBy('dates', 'DESC')->get(['title', 'attachment', 'thumbnail']);
-                    $pThumbs = $pItems->map(fn ($f) => $f->attachment ?: $f->thumbnail)->filter()->take(3)->values();
-                @endphp
-                <a href="{{ \App\Helpers\Homepage::url($portfolio->url) }}"
+            @php
+                $pItems = \App\Models\Portofolio::orderBy('dates', 'DESC')->get(['title', 'attachment', 'thumbnail']);
+                $pThumbs = $pItems->map(fn ($f) => $f->attachment ?: $f->thumbnail)->filter()->take(3)->values();
+            @endphp
+                <a href="{{ $portfolioUrl }}" target="_blank" rel="noopener"
                     class="group relative mx-auto my-8 block max-w-2xl rounded-[1.75rem] bg-gradient-to-r from-brand-500 via-brand-300 to-forest-400 p-[1.5px] text-left shadow-soft transition-all duration-500 hover:-translate-y-1 hover:shadow-lift focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-200">
                     <div class="relative flex flex-col items-center gap-6 overflow-hidden rounded-[calc(1.75rem-1.5px)] bg-white p-6 sm:flex-row sm:items-center sm:p-7">
                         <div class="pointer-events-none absolute -left-16 -top-16 h-40 w-40 rounded-full bg-brand-100/70 blur-3xl"></div>
@@ -335,13 +337,12 @@
                         <div class="relative shrink-0">
                             <div class="absolute inset-0 rotate-6 rounded-3xl bg-gradient-to-br from-brand-200 to-forest-200 transition-transform duration-500 group-hover:rotate-12"></div>
                             <div class="relative grid h-32 w-32 place-items-center rounded-3xl bg-gradient-to-br from-white to-cream-100 shadow-soft ring-1 ring-ink-100 sm:h-36 sm:w-36">
-                                <img src="{{ \App\Helpers\Homepage::serviceImage($portfolio->image) }}" alt="{{ __('Our Portfolio') }}"
+                                <img src="{{ $portfolioImg }}" alt="{{ __('Our Portfolio') }}"
                                     class="h-24 w-24 object-contain drop-shadow-lg transition-transform duration-500 group-hover:-rotate-3 group-hover:scale-110 sm:h-28 sm:w-28" loading="lazy">
                             </div>
                         </div>
                     </div>
                 </a>
-            @endif
             <h2 class="font-display text-3xl font-bold sm:text-4xl">{{ \App\Helpers\Homepage::text('booklet', 'title', __('Get to know GODEVI through our booklet')) }}</h2>
             <p class="mt-4 text-ink-500">{{ \App\Helpers\Homepage::text('booklet', 'subtitle', __('Browse our vision, impact and village tourism programs — download the PDF.')) }}</p>
         </div>
