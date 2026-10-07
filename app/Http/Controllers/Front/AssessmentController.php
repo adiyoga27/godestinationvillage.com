@@ -176,7 +176,7 @@ class AssessmentController extends Controller
             if (! $result->is_unlocked) {
                 $data['result'] = $result;
                 $data['pendingOrder'] = $result->latestOrder?->status === 'pending' && $result->latestOrder->gateway_ref ? $result->latestOrder : null;
-                $data['seo'] = Seo::make()->title('Pembayaran Asesmen: '.$result->track->name)->noindex()->toArray();
+                $data['seo'] = Seo::make()->title('Pembayaran Asesmen: '.$result->track->name)->description('Selesaikan pembayaran untuk membuka skor dan analisa lengkap asesmen '.$result->track->name.' dari GODEVI.')->image('assets/godevi-black.png')->noindex()->toArray();
 
                 return view('customer.assessment.payment', $data);
             }
@@ -215,7 +215,7 @@ class AssessmentController extends Controller
         $data['formConfig'] = AssessmentService::formFor($result->track);
         $data['pendingOrder'] = AssessmentOrder::where('assessment_result_id', $result->id)
             ->where('status', 'pending')->latest()->first();
-        $data['seo'] = Seo::make()->title('Hasil Asesmen: '.$result->track->name)->noindex()->toArray();
+        $data['seo'] = Seo::make()->title('Hasil Asesmen: '.$result->track->name)->description('Laporan hasil asesmen '.$result->track->name.' ('.($result->organization ?: $result->name).') — skor kesiapan, analisis kekuatan & tantangan, dan draf strategi dari GODEVI.')->image('assets/godevi-black.png')->noindex()->toArray();
 
         return view('customer.assessment.result', $data);
     }

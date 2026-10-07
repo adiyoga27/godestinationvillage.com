@@ -31,6 +31,18 @@
 
         {{-- ============ SKOR TOTAL ============ --}}
         <div class="relative z-10 -mt-20 overflow-hidden rounded-[1.75rem] border border-ink-100 bg-white shadow-[0_25px_50px_-12px_rgb(26_26_38/0.22)]">
+            {{-- Kop laporan: identitas resmi GODEVI (tetap tampil saat cetak/PDF) --}}
+            <div class="flex flex-wrap items-center gap-4 border-b border-ink-100 px-6 py-5 sm:px-10">
+                <img src="{{ url('assets/godevi-black.png') }}" alt="GODEVI - Go Destination Village" class="h-11 w-auto sm:h-12" width="200" height="48" loading="eager">
+                <div class="min-w-0 flex-1">
+                    <p class="font-display text-base font-bold leading-tight text-ink-950 sm:text-lg">Laporan Hasil Asesmen {{ $result->track->name }}</p>
+                    <p class="mt-0.5 truncate text-xs text-ink-500 sm:text-sm">{{ $result->organization ?: $result->name }}{{ $location ? ' · '.$location : '' }}</p>
+                </div>
+                <div class="text-right text-[11px] leading-relaxed text-ink-400 sm:text-xs">
+                    <p>{{ $result->created_at->format('d M Y') }}</p>
+                    <p class="font-mono">{{ \Illuminate\Support\Str::limit($result->uuid, 8, '') }}</p>
+                </div>
+            </div>
             <div class="grid gap-8 p-6 sm:p-10 md:grid-cols-[auto_1fr] md:items-center">
                 <div class="relative mx-auto h-48 w-48 sm:h-52 sm:w-52">
                     <svg viewBox="0 0 36 36" class="h-full w-full -rotate-90">
