@@ -290,10 +290,9 @@
         <div class="mx-auto mb-12 max-w-2xl text-center" data-vue="Reveal">
             <p class="eyebrow justify-center !gap-2">{{ \App\Helpers\Homepage::text('booklet', 'eyebrow', __('Company Profile')) }}</p>
             @php
-                $portfolio = \App\Helpers\Homepage::services()->first(fn ($s) => str_contains(strtolower($s->url ?? ''), 'portofolio') || str_contains(strtolower($s->title ?? ''), 'portfol') || str_contains(strtolower($s->title_id ?? ''), 'portofolio'));
                 // Portofolio resmi tampil via godevi.org (locale-aware): https://godevi.org/id/v-portofolio
                 $portfolioUrl = 'https://godevi.org/' . (app()->getLocale() === 'id' ? 'id' : 'en') . '/v-portofolio';
-                $portfolioImg = $portfolio?->image ? \App\Helpers\Homepage::serviceImage($portfolio->image) : asset('assets/customer/img/etc/portofolio.png');
+                $portfolioImg = asset('assets/customer/img/etc/portfolio-card.png');
             @endphp
             @php
                 $pItems = \App\Models\Portofolio::orderBy('dates', 'DESC')->get(['title', 'attachment', 'thumbnail']);
