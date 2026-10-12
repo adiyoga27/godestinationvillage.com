@@ -21,6 +21,7 @@ use App\Models\Homestay;
 use App\Models\OrderEvent;
 use App\Models\OrderHomestay;
 use App\Models\OurTeam;
+use App\Models\Partner;
 use App\Models\Portofolio;
 use App\PackageTranslations;
 use App\Models\Tag;
@@ -564,6 +565,8 @@ $data['recent'] = HomeStayServices::recent();
             ->websiteSchema()
             ->breadcrumbSchema(['Home' => '/', 'Our Partners' => '/our-partner'])
             ->toArray();
+
+        $data['partners'] = Partner::where('is_active', true)->orderBy('sort_order')->orderBy('id')->get();
 
         return view('customer/ourpartner', $data);
     }

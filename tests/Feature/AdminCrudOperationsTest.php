@@ -229,4 +229,33 @@ class AdminCrudOperationsTest extends TestCase
             DB::table('portofolios')->where('title', 'like', 'Porto Smoke%')->delete();
         }
     }
+
+    public function test_partner_crud(): void
+    {
+        $unique = 'Partner Smoke ' . time();
+        try {
+            $file = UploadedFile::fake()->image('partner.png', 100, 60);
+            $this->postStore('/administrator/partners', ['name' => $unique, 'url' => 'https://partner.test', 'is_active' => 1, 'logo' => $file])->assertSessionHasNoErrors();
+            $row = DB::table('partners')->where('name', $unique)->first();
+            $this->assertNotNull($row, 'partner tidak tersimpan');
+            $logo = $row->logo;
+            $this->get('/en/our-partner')->assertSee($unique);
+
+            $this->putUpdate('/administrator/partners/' . $row->id, ['name' => $unique, 'url' => 'javascript:alert(1)'])->assertSessionHasErrors('url');
+            $this->putUpdate('/administrator/partners/' . $row->id, ['name' => $unique . ' Upd', 'name_id' => $unique . ' ID'])->assertSessionHasNoErrors();
+            $this->assertSame(0, (int) DB::table('partners')->where('id', $row->id)->value('is_active'));
+            $this->get('/en/our-partner')->assertDontSee($unique . ' Upd');
+
+            $this->actingAs($this->admin)->post('/administrator/partners/' . $row->id . '/toggle')->assertSessionHasNoErrors();
+            $this->get('/id/our-partner')->assertSee($unique . ' ID');
+
+            $this->deleteRow('/administrator/partners/' . $row->id)->assertSessionHasNoErrors();
+            $this->assertNull(DB::table('partners')->where('id', $row->id)->first());
+        } finally {
+            if (! empty($logo)) {
+                @unlink(storage_path('app/public/partners/' . $logo));
+            }
+            DB::table('partners')->where('name', 'like', 'Partner Smoke%')->delete();
+        }
+    }
 }

@@ -39,6 +39,8 @@ class AdminCrudSmokeTest extends TestCase
             '/administrator/ourteam',
             '/administrator/boardexpert',
             '/administrator/portofolio',
+            '/administrator/partners',
+            '/administrator/partners/create',
             '/administrator/homestay',
             '/administrator/category-homestay',
             '/administrator/package',

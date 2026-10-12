@@ -27,6 +27,7 @@ use App\Http\Controllers\Backend\TranslationController;
 use App\Http\Controllers\Backend\ExploreCardController;
 use App\Http\Controllers\Backend\HomepageSectionController;
 use App\Http\Controllers\Backend\HomepageServiceController;
+use App\Http\Controllers\Backend\PartnerController;
 use App\Http\Controllers\Backend\HomeStayController;
 use App\Http\Controllers\Backend\InstagramController;
 use App\Http\Controllers\Backend\MembersController;
@@ -386,6 +387,8 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
     Route::resource('ourteam', OurTeamController::class);
     Route::resource('boardexpert', BoardExpertController::class);
     Route::resource('portofolio', PortofolioController::class);
+    Route::resource('partners', PartnerController::class);
+    Route::post('partners/{id}/toggle', [PartnerController::class, 'toggle'])->name('partners.toggle');
     Route::resource('homestay', HomeStayController::class);
     Route::resource('category-homestay', CategoryHomeStayController::class);
     Route::resource('package', PackagesController::class);

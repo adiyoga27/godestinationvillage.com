@@ -250,6 +250,7 @@
                   <li><a class="gd-subnav__link" href="{{ route('ourteam.index') }}">Our Team</a></li>
                   <li><a class="gd-subnav__link" href="{{ route('boardexpert.index') }}">Board Expert</a></li>
                   <li><a class="gd-subnav__link" href="{{ route('portofolio.index') }}">Portofolio</a></li>
+                  <li><a class="gd-subnav__link" href="{{ route('partners.index') }}">Our Partners</a></li>
                   <li><a class="gd-subnav__link" href="{{ route('system-log.index') }}">Log Sistem</a></li>
                 </ul>
               </div>
