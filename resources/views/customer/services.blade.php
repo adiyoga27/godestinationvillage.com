@@ -18,7 +18,7 @@
             <p class="mt-4 text-ink-600">{{ __('GODEVI supports tourism villages with end-to-end solutions — from planning and development to branding and research.') }}</p>
         </div>
 
-        <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-4">
+        <div class="flex flex-wrap justify-center gap-7">
             @php $isId = app()->getLocale() === 'id'; @endphp
             @forelse (\App\Helpers\Homepage::services() as $service)
                 @php
@@ -44,21 +44,21 @@
                         data-buttons='@json($sBtns)'
                         @if ($sUrl) data-page="{{ $sUrl }}" data-page-label="{{ __('Learn more') }}" @endif
                         data-vue="Reveal"
-                        class="group card card-hover flex flex-col items-center p-8 text-center">
+                        class="group card card-hover flex w-full flex-col items-center p-8 text-center md:w-[calc(50%-0.875rem)] lg:w-[calc(25%-1.3125rem)]">
                         <div class="flex h-40 w-40 items-center justify-center">
                             <img src="{{ $sImg }}" alt="{{ $sTitle }}" class="h-full w-full object-contain drop-shadow-lg transition duration-300 group-hover:scale-105" loading="lazy">
                         </div>
                         <h3 class="mt-6 font-display text-lg font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $sTitle }}</h3>
                     </button>
                 @elseif ($sUrl)
-                    <a href="{{ $sUrl }}" data-vue="Reveal" class="group card card-hover flex flex-col items-center p-8 text-center">
+                    <a href="{{ $sUrl }}" data-vue="Reveal" class="group card card-hover flex w-full flex-col items-center p-8 text-center md:w-[calc(50%-0.875rem)] lg:w-[calc(25%-1.3125rem)]">
                         <div class="flex h-40 w-40 items-center justify-center">
                             <img src="{{ $sImg }}" alt="{{ $sTitle }}" class="h-full w-full object-contain drop-shadow-lg transition duration-300 group-hover:scale-105" loading="lazy">
                         </div>
                         <h3 class="mt-6 font-display text-lg font-semibold text-ink-950 transition group-hover:text-brand-600">{{ $sTitle }}</h3>
                     </a>
                 @else
-                    <div data-vue="Reveal" class="group card flex flex-col items-center p-8 text-center">
+                    <div data-vue="Reveal" class="group card flex w-full flex-col items-center p-8 text-center md:w-[calc(50%-0.875rem)] lg:w-[calc(25%-1.3125rem)]">
                         <div class="flex h-40 w-40 items-center justify-center">
                             <img src="{{ $sImg }}" alt="{{ $sTitle }}" class="h-full w-full object-contain drop-shadow-lg transition duration-300 group-hover:scale-105" loading="lazy">
                         </div>
