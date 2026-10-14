@@ -39,7 +39,7 @@ class AiUsageLog extends Model
         try {
             self::create([
                 'driver' => config('ai.driver', 'deepseek'),
-                'model' => config('ai.model'),
+                'model' => \App\Services\AiReportService::model(),
                 'purpose' => $purpose,
                 'assessment_result_id' => $resultId,
                 'ok' => (bool) ($response['ok'] ?? false),

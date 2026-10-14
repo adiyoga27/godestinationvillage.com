@@ -15,6 +15,17 @@ use Illuminate\Support\Facades\Log;
  */
 class AiReportService
 {
+    /** Model dari AI yang sedang aktif (diatur di Asesmen > Pengaturan AI). */
+    public static function model(): string
+    {
+        return (string) (config('ai.driver', 'deepseek') === 'claude'
+            ? config('ai.claude_model', 'claude-opus-5-5')
+            : config('ai.deepseek_model', 'deepseek-flash'));
+    }
+
+    /** Model Claude yang menerima refusal fallback sisi server (fallbacks: "default"). */
+    private const CLAUDE_FALLBACK_MODELS = ['claude-fable-5-1', 'claude-opus-5-5', 'claude-opus-5', 'claude-sonnet-5-5'];
+
     public static function requiredKeys(string $slug): array
     {
         $base = ['ringkasan', 'kekuatan', 'tantangan', 'langkah_prioritas', 'layanan_godevi_disarankan'];
@@ -116,7 +127,7 @@ class AiReportService
         $prompt = self::buildPrompt($result, $computed);
         $meta = [
             'driver' => $driver,
-            'model' => config('ai.model'),
+            'model' => self::model(),
             'attempts' => [],
         ];
 
@@ -144,7 +155,7 @@ class AiReportService
                 Log::info('AI report OK', [
                     'result' => $result->uuid,
                     'driver' => $driver,
-                    'model' => config('ai.model'),
+                    'model' => self::model(),
                     'usage' => $res['usage'] ?? null,
                 ]);
 
@@ -182,7 +193,7 @@ class AiReportService
             {$json}
             PROMPT;
 
-        $meta = ['driver' => config('ai.driver', 'deepseek'), 'model' => config('ai.model'), 'attempts' => []];
+        $meta = ['driver' => config('ai.driver', 'deepseek'), 'model' => self::model(), 'attempts' => []];
         $err = null;
 
         for ($attempt = 1; $attempt <= 2; $attempt++) {
@@ -253,7 +264,7 @@ class AiReportService
             $resp = Http::timeout(config('ai.timeout', 120))
                 ->withToken(config('ai.deepseek_key'))
                 ->post(rtrim(config('ai.deepseek_base'), '/').'/chat/completions', [
-                    'model' => config('ai.model', 'deepseek-flash'),
+                    'model' => self::model(),
                     'messages' => [
                         ['role' => 'system', 'content' => $system],
                         ['role' => 'user', 'content' => $prompt],
@@ -283,24 +294,45 @@ class AiReportService
 
     protected static function callClaude(string $prompt, string $system): array
     {
+        if (blank(config('ai.claude_key'))) {
+            return ['ok' => false, 'error' => 'claude_api_key_belum_diisi (isi di Asesmen > Pengaturan AI)'];
+        }
+
+        $model = self::model();
+        $headers = [
+            'x-api-key' => config('ai.claude_key'),
+            'anthropic-version' => config('ai.claude_version', '2023-06-01'),
+        ];
+        $body = [
+            'model' => $model,
+            // Model Claude terbaru selalu "berpikir" sebelum menjawab; batas kecil memotong JSON.
+            'max_tokens' => 16000,
+            'system' => $system,
+            'messages' => [['role' => 'user', 'content' => $prompt]],
+        ];
+        // Bila model menolak (safety classifier), API mengulang otomatis di model lain.
+        if (in_array($model, self::CLAUDE_FALLBACK_MODELS, true)) {
+            $headers['anthropic-beta'] = 'server-side-fallback-2026-07-01';
+            $body['fallbacks'] = 'default';
+        }
+
         try {
-            $resp = Http::timeout(config('ai.timeout', 120))
-                ->withHeaders([
-                    'x-api-key' => config('ai.claude_key'),
-                    'anthropic-version' => config('ai.claude_version', '2023-06-01'),
-                ])
-                ->post(rtrim(config('ai.claude_base'), '/').'/v1/messages', [
-                    'model' => config('ai.model'),
-                    'max_tokens' => 3000,
-                    'system' => $system,
-                    'messages' => [['role' => 'user', 'content' => $prompt]],
-                ]);
+            $resp = Http::timeout(max(180, (int) config('ai.timeout', 120)))
+                ->withHeaders($headers)
+                ->post(rtrim(config('ai.claude_base'), '/').'/v1/messages', $body);
 
             if (! $resp->successful()) {
-                return ['ok' => false, 'error' => 'claude_http_'.$resp->status()];
+                $hint = ['401' => ' (API key ditolak)', '402' => ' (kredit Anthropic habis)', '429' => ' (rate limit)'][$resp->status()] ?? '';
+                $detail = $resp->json('error.message');
+
+                return ['ok' => false, 'error' => 'claude_http_'.$resp->status().$hint.($detail ? ': '.mb_substr($detail, 0, 150) : '')];
             }
 
             $json = $resp->json();
+            if (($json['stop_reason'] ?? null) === 'refusal') {
+                return ['ok' => false, 'error' => 'claude_refusal: '.($json['stop_details']['category'] ?? '-'), 'usage' => $json['usage'] ?? null];
+            }
+
             $text = '';
             foreach ($json['content'] ?? [] as $block) {
                 if (($block['type'] ?? '') === 'text') {

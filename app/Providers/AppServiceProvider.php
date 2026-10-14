@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Support\DatabaseTranslationLoader;
+use App\Support\AiSettings;
 use App\Support\Locales;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -25,5 +26,7 @@ class AppServiceProvider extends ServiceProvider
         // Semua url()/route() ke halaman publik otomatis berawalan bahasa aktif (/id/faq, /en/faq).
         URL::formatPathUsing(fn (string $path) => Locales::localizePath($path));
         URL::defaults(['locale' => Locales::DEFAULT]);
+        // Pengaturan AI dari admin panel menimpa nilai .env (config/ai.php).
+        AiSettings::apply();
     }
 }

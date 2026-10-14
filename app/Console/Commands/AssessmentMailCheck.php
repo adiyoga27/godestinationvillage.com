@@ -34,7 +34,9 @@ class AssessmentMailCheck extends Command
             ['SMTP password', filled($smtp['password'] ?? null) ? 'terisi' : 'KOSONG'],
             ['From', config('mail.from.address').' ('.config('mail.from.name').')'],
             ['QUEUE_CONNECTION', config('queue.default')],
-            ['DEEPSEEK_API_KEY', filled(config('ai.deepseek_key')) ? 'terisi' : 'KOSONG'],
+            ['AI aktif', config('ai.driver').' · '.\App\Services\AiReportService::model()],
+            ['DeepSeek API key', filled(config('ai.deepseek_key')) ? 'terisi' : 'KOSONG'],
+            ['Claude API key', filled(config('ai.claude_key')) ? 'terisi' : 'KOSONG'],
         ]);
 
         if (AssessmentMailer::isSimulated()) {

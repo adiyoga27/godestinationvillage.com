@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Backend\AdminsController;
 use App\Http\Controllers\Backend\AnalyticController;
+use App\Http\Controllers\Backend\AiSettingController;
 use App\Http\Controllers\Backend\AiUsageController;
 use App\Http\Controllers\Backend\AssessmentPriceController;
 use App\Http\Controllers\Backend\AssessmentQuestionController;
@@ -383,6 +384,9 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
         Route::post('/questions/translate', [AssessmentQuestionController::class, 'translate'])->name('translate');
     });
     Route::get('ai-usage', [AiUsageController::class, 'index'])->name('ai-usage.index');
+    Route::get('ai-settings', [AiSettingController::class, 'edit'])->name('ai-settings.edit');
+    Route::put('ai-settings', [AiSettingController::class, 'update'])->name('ai-settings.update');
+    Route::post('ai-settings/test/{driver}', [AiSettingController::class, 'test'])->name('ai-settings.test');
     // Asesmen: harga per jalur + kode voucher diskon
     Route::get('assessment-prices', [AssessmentPriceController::class, 'index'])->name('assessment-prices.index');
     Route::put('assessment-prices', [AssessmentPriceController::class, 'update'])->name('assessment-prices.update');
