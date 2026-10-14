@@ -257,7 +257,7 @@ class AiReportService
     protected static function callDeepSeek(string $prompt, string $system): array
     {
         if (blank(config('ai.deepseek_key'))) {
-            return ['ok' => false, 'error' => 'deepseek_api_key_belum_diisi (set DEEPSEEK_API_KEY di .env)'];
+            return ['ok' => false, 'error' => 'deepseek_api_key_belum_diisi (isi di Asesmen > Pengaturan AI)'];
         }
 
         try {

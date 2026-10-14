@@ -37,10 +37,11 @@ class AiSettingsTest extends TestCase
     {
         $this->actingAs($this->admin)->get(route('ai-settings.edit'))->assertOk()->assertSee('AI aktif untuk asesmen');
 
-        // Claude tanpa key tidak boleh dijadikan aktif.
+        // Claude tanpa key tetap tersimpan sebagai AI aktif, dengan peringatan.
         config(['ai.claude_key' => null]);
         $this->actingAs($this->admin)->put(route('ai-settings.update'), ['driver' => 'claude'])
-            ->assertSessionHasErrors('claude_key');
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('error', fn ($m) => str_contains($m, 'belum punya API key'));
 
         $this->actingAs($this->admin)->put(route('ai-settings.update'), [
             'driver' => 'claude', 'claude_key' => 'sk-ant-api-rahasia-1234', 'claude_model' => 'claude-sonnet-5-5', 'timeout' => 200,
@@ -70,7 +71,8 @@ class AiSettingsTest extends TestCase
         $staff = User::where('role_id', '!=', 1)->where('role_id', '!=', 3)->first() ?? User::where('role_id', 2)->first();
         $this->assertNotNull($staff);
         $this->actingAs($staff)->get(route('ai-settings.edit'))->assertForbidden();
-        $this->actingAs($staff)->get(route('ai-usage.index'))->assertForbidden();
+        // Halaman lama "Saldo & Pemakaian AI" kini bagian dari Pengaturan AI.
+        $this->actingAs($this->admin)->get(route('ai-usage.index'))->assertRedirect(route('ai-settings.edit').'#pemakaian');
     }
 
     public function test_report_is_generated_with_claude_when_active(): void
@@ -125,7 +127,8 @@ class AiSettingsTest extends TestCase
         AiSettings::save(['driver' => 'deepseek', 'deepseek_key' => 'sk-ds', 'claude_key' => 'sk-ant-api-x', 'claude_admin_key' => 'sk-ant-admin-x']);
         Http::fake([
             'api.deepseek.com/user/balance' => Http::response(['is_available' => true, 'balance_infos' => [['currency' => 'USD', 'total_balance' => '12.34', 'granted_balance' => '0.00', 'topped_up_balance' => '12.34']]]),
-            'api.anthropic.com/v1/models*' => Http::response(['data' => [['id' => 'claude-opus-5-5']]]),
+            'api.anthropic.com/v1/models*' => Http::response(['data' => [['id' => 'claude-opus-5-5', 'display_name' => 'Claude Opus 5.5']], 'has_more' => false]),
+            'api.deepseek.com/models' => Http::response(['data' => [['id' => 'deepseek-flash'], ['id' => 'deepseek-chat']]]),
             'api.anthropic.com/v1/organizations/cost_report*' => Http::response([
                 'data' => [
                     ['starting_at' => now('UTC')->startOfMonth()->format('Y-m-d\T00:00:00\Z'), 'results' => [['currency' => 'USD', 'amount' => '250.5']]],
@@ -135,14 +138,77 @@ class AiSettingsTest extends TestCase
             ]),
         ]);
 
-        $page = $this->actingAs($this->admin)->get(route('ai-usage.index', ['refresh' => 1]))->assertOk()
+        $page = $this->actingAs($this->admin)->get(route('ai-settings.edit', ['refresh' => 1]))->assertOk()
             ->assertSee('USD 12.34')
-            ->assertSee('API key valid');
-        // 250.5 + 100 sen = US$ 3.51 (hari ini US$ 1.00; tanggal 1 → keduanya hari ini).
-        now('UTC')->day === 1 ? $page->assertSee('US$ 3.51') : $page->assertSee('US$ 3.51')->assertSee('hari ini US$ 1.00');
+            ->assertSee('Terhubung')
+            ->assertSee('Pemakaian AI')
+            ->assertSee('assets/admin/ai/claude.svg', false)
+            // Model dipilih dari daftar API.
+            ->assertSee('<select name="claude_model"', false)
+            ->assertSee('Claude Opus 5.5 — claude-opus-5-5')
+            ->assertSee('<option value="deepseek-chat"', false);
+        // 250.5 + 100 sen = US$ 3.51 bulan ini; hari ini 100 sen (tanggal 1: kedua bucket = hari ini).
+        $page->assertSee('US$ 3.51')->assertSee('Hari ini US$ '.(now('UTC')->day === 1 ? '3.51' : '1.00'));
 
         Http::assertSent(fn (Request $r) => str_contains($r->url(), 'cost_report') && $r->hasHeader('x-api-key', 'sk-ant-admin-x'));
 
         $this->actingAs($this->admin)->post(route('ai-settings.test', 'claude'))->assertSessionHas('status', fn ($m) => str_contains($m, 'API key valid'));
+    }
+
+    public function test_model_can_be_typed_manually_when_not_listed(): void
+    {
+        AiSettings::save(['driver' => 'deepseek', 'deepseek_key' => 'sk-ds']);
+
+        $this->actingAs($this->admin)->put(route('ai-settings.update'), ['driver' => 'deepseek', 'deepseek_model' => '__custom'])
+            ->assertSessionHasErrors('deepseek_model_custom');
+
+        $this->actingAs($this->admin)->put(route('ai-settings.update'), [
+            'driver' => 'deepseek', 'deepseek_model' => '__custom', 'deepseek_model_custom' => 'deepseek-reasoner-x', 'tab' => 'claude',
+        ])->assertRedirect(route('ai-settings.edit'))->assertSessionHas('ai_tab', 'claude');
+
+        $this->assertSame('deepseek-reasoner-x', AiReportService::model());
+    }
+
+    /** Bug: key Claude ditolak (tidak tersimpan) karena AI aktif DeepSeek belum punya key. */
+    public function test_key_is_saved_even_if_active_ai_has_no_key(): void
+    {
+        config(['ai.deepseek_key' => null, 'ai.claude_key' => null]);
+
+        $this->actingAs($this->admin)->put(route('ai-settings.update'), [
+            'driver' => 'deepseek', 'claude_key' => 'sk-ant-api-tersimpan-5678', 'tab' => 'claude',
+        ])->assertSessionHasNoErrors();
+
+        $this->assertNotNull(DB::table('ai_settings')->where('key', 'claude_key')->value('value'));
+        $this->assertSame('sk-ant-api-tersimpan-5678', config('ai.claude_key'));
+        $this->actingAs($this->admin)->get(route('ai-settings.edit'))->assertOk()
+            ->assertSee('sk-ant…5678')
+            ->assertSee('Tersimpan di database (terenkripsi)');
+    }
+
+    /** Bug: "Tes koneksi" membuang key yang baru diketik. Sekarang simpan dulu, lalu tes. */
+    public function test_save_and_test_stores_the_typed_key_first(): void
+    {
+        Http::fake(['api.anthropic.com/v1/models*' => Http::response(['data' => [], 'has_more' => false])]);
+
+        $this->actingAs($this->admin)->put(route('ai-settings.update'), [
+            'driver' => 'deepseek', 'claude_key' => 'sk-ant-api-baru-4321', 'test' => 'claude',
+        ])->assertRedirect(route('ai-settings.edit'))
+            ->assertSessionHas('status', fn ($m) => str_contains($m, 'Pengaturan disimpan. Claude terhubung'));
+
+        $this->assertSame('sk-ant-api-baru-4321', config('ai.claude_key'));
+        Http::assertSent(fn (Request $r) => $r->hasHeader('x-api-key', 'sk-ant-api-baru-4321'));
+    }
+
+    /** API key tidak boleh tercatat polos di log aktivitas. */
+    public function test_api_keys_are_not_written_to_activity_log(): void
+    {
+        $this->actingAs($this->admin)->put(route('ai-settings.update'), [
+            'driver' => 'deepseek', 'deepseek_key' => 'sk-rahasia-log-1', 'claude_admin_key' => 'sk-ant-admin-rahasia-2',
+        ]);
+
+        $logged = DB::table('activity_log')->where('description', 'PUT administrator/ai-settings')->latest('id')->value('properties');
+        $this->assertNotNull($logged);
+        $this->assertStringNotContainsString('rahasia', $logged);
+        $this->assertStringContainsString('"driver":"deepseek"', $logged);
     }
 }

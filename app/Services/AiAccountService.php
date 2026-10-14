@@ -14,8 +14,58 @@ class AiAccountService
 {
     public static function forget(): void
     {
-        Cache::forget('ai-account.deepseek');
-        Cache::forget('ai-account.claude');
+        foreach (['deepseek', 'claude'] as $driver) {
+            Cache::forget('ai-account.'.$driver);
+            Cache::forget('ai-models.'.$driver);
+        }
+    }
+
+    /**
+     * Daftar model dari API penyedia (DeepSeek GET /models, Claude GET /v1/models), disimpan 1 jam.
+     *
+     * @return array{ok: bool, models: array<string, string>, error?: string} [id => label]
+     */
+    public static function models(string $driver, bool $fresh = false): array
+    {
+        $fresh && Cache::forget('ai-models.'.$driver);
+
+        return Cache::remember('ai-models.'.$driver, now()->addHour(), function () use ($driver) {
+            $key = config('ai.'.$driver.'_key');
+            if (blank($key)) {
+                return ['ok' => false, 'models' => [], 'error' => 'Isi API key untuk memuat daftar model.'];
+            }
+
+            try {
+                if ($driver === 'claude') {
+                    $models = [];
+                    $after = null;
+                    for ($i = 0; $i < 5; $i++) {
+                        $resp = Http::timeout(15)->withHeaders(['x-api-key' => $key, 'anthropic-version' => config('ai.claude_version', '2023-06-01')])
+                            ->get(rtrim(config('ai.claude_base'), '/').'/v1/models', array_filter(['limit' => 100, 'after_id' => $after]));
+                        if (! $resp->successful()) {
+                            return ['ok' => false, 'models' => [], 'error' => 'HTTP '.$resp->status()];
+                        }
+                        foreach ($resp->json('data') ?? [] as $m) {
+                            $models[$m['id']] = ($m['display_name'] ?? $m['id']).' — '.$m['id'];
+                        }
+                        if (! $resp->json('has_more')) {
+                            break;
+                        }
+                        $after = $resp->json('last_id');
+                    }
+                } else {
+                    $resp = Http::timeout(15)->withToken($key)->acceptJson()->get(rtrim(config('ai.deepseek_base'), '/').'/models');
+                    if (! $resp->successful()) {
+                        return ['ok' => false, 'models' => [], 'error' => 'HTTP '.$resp->status()];
+                    }
+                    $models = collect($resp->json('data') ?? [])->mapWithKeys(fn ($m) => [$m['id'] => $m['id']])->all();
+                }
+            } catch (\Throwable $e) {
+                return ['ok' => false, 'models' => [], 'error' => mb_substr($e->getMessage(), 0, 150)];
+            }
+
+            return ['ok' => true, 'models' => $models];
+        });
     }
 
     /** @return array{ok: bool, available?: bool, infos?: array, error?: string, checked_at: string} */

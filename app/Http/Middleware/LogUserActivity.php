@@ -40,6 +40,12 @@ class LogUserActivity
         '_token',
         'credit_card',
         'cvv',
+        // API key penyedia AI (Asesmen > Pengaturan AI).
+        'deepseek_key',
+        'claude_key',
+        'claude_admin_key',
+        'api_key',
+        'secret',
     ];
 
     public function handle(Request $request, Closure $next): Response
@@ -95,7 +101,21 @@ class LogUserActivity
             // menyimpan password/token.
             'input' => $request->isMethod('get')
                 ? []
-                : $request->except($this->sensitive),
+                : $this->withoutSecrets($request->except($this->sensitive)),
         ];
+    }
+
+    /** Buang juga field lain yang namanya mirip kredensial (…_key, …_secret, …_token, …password). */
+    protected function withoutSecrets(array $input): array
+    {
+        foreach ($input as $key => $value) {
+            if (is_string($key) && preg_match('/(_key|secret|_token|password)$/i', $key)) {
+                unset($input[$key]);
+            } elseif (is_array($value)) {
+                $input[$key] = $this->withoutSecrets($value);
+            }
+        }
+
+        return $input;
     }
 }
