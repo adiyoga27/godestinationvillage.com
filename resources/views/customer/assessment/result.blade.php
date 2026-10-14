@@ -15,13 +15,17 @@
     $hasAiReport = ! empty($result->ai_report);
     $canRetry = $result->is_unlocked && $result->canRetryReport();
     $reportPending = ! $hasAiReport && ! $canRetry;
+    // English: terjemahan laporan disusun di latar belakang; sementara tampil versi Indonesia.
+    $translationPending = $result->needsEnglishReport() && ! $result->englishTranslationFailed();
+    $translationFailed = $result->needsEnglishReport() && $result->englishTranslationFailed();
+    $trackName = $result->track->local('name');
 @endphp
 
 @include('customer.assessment._hero', [
     'title' => $result->organization ?: $result->name,
-    'subtitle' => 'Hasil asesmen '.$result->track->name.($location ? ' · '.$location : '').' — skor kesiapan, analisis kekuatan & tantangan, dan draf strategi.',
-    'eyebrow' => 'Hasil Asesmen '.$result->track->name,
-    'crumbs' => ['Asesmen' => route('assessment.index'), 'Hasil' => null],
+    'subtitle' => __('Hasil asesmen :track', ['track' => $trackName]).($location ? ' · '.$location : '').' — '.__('skor kesiapan, analisis kekuatan & tantangan, dan draf strategi.'),
+    'eyebrow' => __('Hasil Asesmen').' '.$trackName,
+    'crumbs' => [__('Asesmen') => route('assessment.index'), __('Hasil') => null],
     'image' => $formConfig['hero_image'] ?? null,
     'overlap' => true,
 ])
@@ -35,11 +39,11 @@
             <div class="flex flex-wrap items-center gap-4 border-b border-ink-100 px-6 py-5 sm:px-10">
                 <img src="{{ url('assets/godevi-black.png') }}" alt="GODEVI - Go Destination Village" class="h-11 w-auto sm:h-12" width="200" height="48" loading="eager">
                 <div class="min-w-0 flex-1">
-                    <p class="font-display text-base font-bold leading-tight text-ink-950 sm:text-lg">Laporan Hasil Asesmen {{ $result->track->name }}</p>
+                    <p class="font-display text-base font-bold leading-tight text-ink-950 sm:text-lg">{{ __('Laporan Hasil Asesmen :track', ['track' => $trackName]) }}</p>
                     <p class="mt-0.5 truncate text-xs text-ink-500 sm:text-sm">{{ $result->organization ?: $result->name }}{{ $location ? ' · '.$location : '' }}</p>
                 </div>
                 <div class="text-right text-[11px] leading-relaxed text-ink-400 sm:text-xs">
-                    <p>{{ $result->created_at->format('d M Y') }}</p>
+                    <p>{{ $result->created_at->translatedFormat('d M Y') }}</p>
                     <p class="font-mono">{{ \Illuminate\Support\Str::limit($result->uuid, 8, '') }}</p>
                 </div>
             </div>
@@ -52,16 +56,16 @@
                     </svg>
                     <div class="absolute inset-0 flex flex-col items-center justify-center">
                         <span class="font-display text-6xl font-bold text-ink-950" data-count="{{ $total }}">{{ $total }}</span>
-                        <span class="text-xs font-semibold uppercase tracking-wider text-ink-400">dari 100</span>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-ink-400">{{ __('dari 100') }}</span>
                     </div>
                 </div>
 
                 <div class="text-center md:text-left">
-                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-ink-400">Kategori kesiapan</p>
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-ink-400">{{ __('Kategori kesiapan') }}</p>
                     <h2 class="mt-1 font-display text-4xl font-bold text-brand-700 sm:text-5xl">{{ $computed['band'] }}</h2>
                     <p class="mt-3 max-w-xl leading-relaxed text-ink-600 md:max-w-none">{{ $computed['band_desc'] }}</p>
                     @if ($result->track->slug === 'daya-saing-destinasi')
-                        <p class="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left text-xs leading-relaxed text-amber-900">{{ \App\Services\AssessmentService::TTDI_DISCLAIMER }}</p>
+                        <p class="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left text-xs leading-relaxed text-amber-900">{{ __(\App\Services\AssessmentService::TTDI_DISCLAIMER) }}</p>
                     @endif
 
                     {{-- Tangga kategori --}}
@@ -78,13 +82,13 @@
                 </div>
             </div>
             <div class="flex flex-col gap-3 border-t border-ink-100 bg-cream-50/70 px-6 py-4 text-xs text-ink-500 sm:flex-row sm:items-center sm:justify-between sm:px-10">
-                <p>Kode hasil <code class="font-mono text-ink-700">{{ $result->uuid }}</code> · {{ $result->created_at->format('d M Y, H:i') }}</p>
+                <p>{{ __('Kode hasil') }} <code class="font-mono text-ink-700">{{ $result->uuid }}</code> · {{ $result->created_at->translatedFormat('d M Y, H:i') }}</p>
                 <div class="no-print flex flex-wrap gap-2">
                     <button type="button" onclick="window.print()" class="inline-flex items-center gap-1.5 rounded-full border border-ink-200 bg-white px-4 py-2 font-semibold text-ink-700 transition hover:border-brand-600 hover:text-brand-600">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z"/></svg>
-                        Cetak / PDF
+                        {{ __('Cetak / PDF') }}
                     </button>
-                    <a href="{{ route('assessment.status', ['phone' => $result->phone]) }}" class="inline-flex items-center gap-1.5 rounded-full border border-ink-200 bg-white px-4 py-2 font-semibold text-ink-700 transition hover:border-brand-600 hover:text-brand-600">Riwayat asesmen</a>
+                    <a href="{{ route('assessment.status', ['phone' => $result->phone]) }}" class="inline-flex items-center gap-1.5 rounded-full border border-ink-200 bg-white px-4 py-2 font-semibold text-ink-700 transition hover:border-brand-600 hover:text-brand-600">{{ __('Riwayat asesmen') }}</a>
                 </div>
             </div>
         </div>
@@ -96,28 +100,35 @@
             <div class="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{{ session('error') }}</div>
         @endif
         @if (auth()->check() && (int) auth()->user()->role_id !== 3)
-            <a href="{{ route('assessment-results.show', $result->id) }}" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 py-2 text-sm font-bold text-ink-800 transition hover:border-brand-600 hover:text-brand-600">Buka di panel admin →</a>
+            <a href="{{ route('assessment-results.show', $result->id) }}" class="mt-4 inline-flex items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 py-2 text-sm font-bold text-ink-800 transition hover:border-brand-600 hover:text-brand-600">{{ __('Buka di panel admin →') }}</a>
         @endif
 
         {{-- ============ LAPORAN STRATEGI (AI) ============ --}}
         <div id="laporan" class="mt-16 rounded-[1.75rem] border border-ink-100 bg-white p-7 shadow-[0_10px_30px_-12px_rgb(26_26_38/0.12)] sm:p-10">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <p class="eyebrow">Laporan Strategi</p>
-                    <h2 class="font-display text-3xl font-bold text-ink-950">Rekomendasi khusus untuk {{ $result->organization ?: 'Anda' }}</h2>
+                    <p class="eyebrow">{{ __('Laporan Strategi') }}</p>
+                    <h2 class="font-display text-3xl font-bold text-ink-950">{{ __('Rekomendasi khusus untuk :name', ['name' => $result->organization ?: __('Anda')]) }}</h2>
                 </div>
                 @if ($reportPending)
-                    <span class="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700"><span class="loc-spinner-sm"></span>Sedang disusun</span>
+                    <span class="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700"><span class="loc-spinner-sm"></span>{{ __('Sedang disusun') }}</span>
+                @elseif ($translationPending)
+                    <span class="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700"><span class="loc-spinner-sm"></span>{{ __('Translating to English') }}</span>
                 @endif
             </div>
                 @if (! empty($result->ai_report))
-                    @php $rep = $result->ai_report; @endphp
+                    @php $rep = $result->localReport(); @endphp
+                    @if ($translationPending)
+                        <p class="mt-4 rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-800">{{ __('The English version of this report is being prepared and will appear automatically. Meanwhile, the original Indonesian report is shown below.') }}</p>
+                    @elseif ($translationFailed)
+                        <p class="mt-4 rounded-2xl bg-cream-50 px-4 py-3 text-sm text-ink-600">{{ __('The English version of this report is not available yet. The original Indonesian report is shown below.') }}</p>
+                    @endif
                     <p class="mt-4 border-l-4 border-brand-600 pl-5 font-display text-lg italic leading-relaxed text-ink-800">{{ $rep['ringkasan'] ?? '' }}</p>
                     <div class="mt-8 grid gap-6 md:grid-cols-2">
                         <div class="rounded-3xl bg-forest-50 p-6">
                             <h3 class="flex items-center gap-2 font-bold text-forest-800">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                                Kekuatan utama
+                                {{ __('Kekuatan utama') }}
                             </h3>
                             <ul class="mt-3 space-y-2.5 text-sm leading-relaxed text-ink-700">
                                 @foreach ((array) ($rep['kekuatan'] ?? []) as $s)<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-forest-600"></span>{{ $s }}</li>@endforeach
@@ -126,14 +137,14 @@
                         <div class="rounded-3xl bg-brand-50 p-6">
                             <h3 class="flex items-center gap-2 font-bold text-brand-700">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
-                                Tantangan utama
+                                {{ __('Tantangan utama') }}
                             </h3>
                             <ul class="mt-3 space-y-2.5 text-sm leading-relaxed text-ink-700">
                                 @foreach ((array) ($rep['tantangan'] ?? []) as $c)<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600"></span>{{ $c }}</li>@endforeach
                             </ul>
                         </div>
                     </div>
-                    <h3 class="mt-8 font-display text-xl font-bold text-ink-950">5 langkah prioritas</h3>
+                    <h3 class="mt-8 font-display text-xl font-bold text-ink-950">{{ __('5 langkah prioritas') }}</h3>
                     <ol class="mt-4 space-y-4">
                         @foreach ((array) ($rep['langkah_prioritas'] ?? []) as $i => $s)
                             <li class="flex gap-4 rounded-2xl border border-ink-100 p-4">
@@ -144,14 +155,14 @@
                     </ol>
                     @foreach (['segmen_pasar' => 'Segmen pasar', 'strategi_pemasaran' => 'Strategi pemasaran', 'produk_unggulan_potensial' => 'Produk unggulan potensial', 'model_bisnis_disarankan' => 'Model bisnis disarankan', 'prioritas_kebijakan' => 'Prioritas kebijakan', 'rekomendasi_regeneratif' => 'Rekomendasi regeneratif', 'sertifikasi_relevan' => 'Sertifikasi relevan', 'layanan_godevi_disarankan' => 'Layanan GODEVI yang disarankan', 'catatan_kategori' => 'Catatan per subindeks'] as $key => $title)
                         @if (! empty($rep[$key]))
-                            <h3 class="mt-8 font-display text-xl font-bold text-ink-950">{{ $title }}</h3>
+                            <h3 class="mt-8 font-display text-xl font-bold text-ink-950">{{ __($title) }}</h3>
                             <ul class="mt-3 space-y-2.5 text-sm leading-relaxed text-ink-700">
                                 @foreach ((array) $rep[$key] as $s)<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink-400"></span>{{ $s }}</li>@endforeach
                             </ul>
                         @endif
                     @endforeach
                     @if (! empty($rep['opsi_branding']))
-                        <h3 class="mt-8 font-display text-xl font-bold text-ink-950">Opsi branding</h3>
+                        <h3 class="mt-8 font-display text-xl font-bold text-ink-950">{{ __('Opsi branding') }}</h3>
                         <div class="mt-3 grid gap-4 md:grid-cols-3">
                             @foreach ((array) $rep['opsi_branding'] as $b)
                                 <div class="rounded-3xl bg-ink-950 p-5 text-sm text-white">
@@ -165,30 +176,30 @@
                         </div>
                     @endif
                     @if (! empty($rep['posisi_spektrum']))
-                        <div class="mt-8 rounded-3xl bg-forest-600 p-6 text-sm leading-relaxed text-white"><span class="font-bold">Posisi spektrum: </span>{{ $rep['posisi_spektrum'] }}</div>
+                        <div class="mt-8 rounded-3xl bg-forest-600 p-6 text-sm leading-relaxed text-white"><span class="font-bold">{{ __('Posisi spektrum') }}: </span>{{ $rep['posisi_spektrum'] }}</div>
                     @endif
                     @if (! empty($rep['catatan_ttdi']))
                         <div class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-relaxed text-amber-900">{{ $rep['catatan_ttdi'] }}</div>
                     @endif
                 @elseif ($canRetry)
                     <div class="mt-5 rounded-2xl border border-red-100 bg-red-50 p-5">
-                        <p class="text-sm font-bold text-red-800">Laporan analisa belum berhasil disusun.</p>
-                        <p class="mt-1 text-sm leading-relaxed text-red-700">Skor Anda di bawah sudah tersimpan dan aman. Silakan coba susun ulang laporannya — bila masih gagal, tim kami akan menindaklanjuti (sebutkan kode hasil di atas).</p>
+                        <p class="text-sm font-bold text-red-800">{{ __('Laporan analisa belum berhasil disusun.') }}</p>
+                        <p class="mt-1 text-sm leading-relaxed text-red-700">{{ __('Skor Anda di bawah sudah tersimpan dan aman. Silakan coba susun ulang laporannya — bila masih gagal, tim kami akan menindaklanjuti (sebutkan kode hasil di atas).') }}</p>
                         <form action="{{ route('assessment.retry_report', $result->uuid) }}" method="post" class="mt-4" data-retry-form>
                             @csrf
                             <button type="submit" class="btn btn-primary inline-flex items-center gap-2 !py-3">
                                 <span data-label class="inline-flex items-center gap-2">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
-                                    Coba susun ulang laporan
+                                    {{ __('Coba susun ulang laporan') }}
                                 </span>
                                 <span data-loading class="hidden items-center gap-2">
                                     <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>
-                                    Menyusun laporan… (bisa sampai 1 menit)
+                                    {{ __('Menyusun laporan… (bisa sampai 1 menit)') }}
                                 </span>
                             </button>
                         </form>
                         @if (auth()->check() && (int) auth()->user()->role_id !== 3)
-                            <p class="mt-3 text-xs text-red-600">Info staf: {{ $result->report_error ?: 'proses macet' }}</p>
+                            <p class="mt-3 text-xs text-red-600">{{ __('Info staf') }}: {{ $result->report_error ?: __('proses macet') }}</p>
                         @endif
                     </div>
                 @else
@@ -197,7 +208,7 @@
                         <div class="report-skeleton h-4 w-4/5"></div>
                         <div class="report-skeleton h-4 w-2/3"></div>
                     </div>
-                    <p class="mt-5 text-sm text-ink-500">Analisa AI sedang disusun berdasarkan skor, profil, dan catatan Anda. Halaman ini akan memuat ulang otomatis.</p>
+                    <p class="mt-5 text-sm text-ink-500">{{ __('Analisa AI sedang disusun berdasarkan skor, profil, dan catatan Anda. Halaman ini akan memuat ulang otomatis.') }}</p>
                 @endif
         </div>
 
@@ -205,8 +216,8 @@
         <div class="mt-16">
             <div class="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <p class="eyebrow">Skor per Dimensi</p>
-                    <h2 class="font-display text-3xl font-bold text-ink-950">Peta kesiapan {{ $result->track->name }}</h2>
+                    <p class="eyebrow">{{ __('Skor per Dimensi') }}</p>
+                    <h2 class="font-display text-3xl font-bold text-ink-950">{{ __('Peta kesiapan :track', ['track' => $trackName]) }}</h2>
                 </div>
                 <div class="flex gap-4 text-xs font-semibold text-ink-500">
                     <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-forest-500"></span>≥ 60</span>
@@ -225,11 +236,11 @@
                             </span>
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-start justify-between gap-3">
-                                    <h3 class="font-bold leading-snug text-ink-950">{{ $name }}</h3>
+                                    <h3 class="font-bold leading-snug text-ink-950">{{ $dim['label'] ?? $name }}</h3>
                                     <span class="shrink-0 font-display text-2xl font-bold {{ $text }}">{{ number_format($dim['score'], 0) }}</span>
                                 </div>
                                 <p class="mt-0.5 text-xs text-ink-400">
-                                    Nilai rata-rata {{ $dim['average'] ?? '-' }}/5{{ $showWeight ? ' · Bobot '.round(($dim['weight'] ?? 0) / $totalWeight * 100).'%' : '' }}
+                                    {{ __('Nilai rata-rata') }} {{ $dim['average'] ?? '-' }}/5{{ $showWeight ? ' · '.__('Bobot').' '.round(($dim['weight'] ?? 0) / $totalWeight * 100).'%' : '' }}
                                 </p>
                             </div>
                         </div>
@@ -240,7 +251,7 @@
                             <p class="mt-4 text-sm leading-relaxed text-ink-600">{{ $dim['advice'] }}</p>
                         @endif
                         @if (! empty($result->dimension_notes[$name]))
-                            <p class="mt-3 rounded-2xl bg-cream-50 px-4 py-3 text-xs leading-relaxed text-ink-600"><span class="font-bold text-ink-800">Catatan Anda:</span> {{ $result->dimension_notes[$name] }}</p>
+                            <p class="mt-3 rounded-2xl bg-cream-50 px-4 py-3 text-xs leading-relaxed text-ink-600"><span class="font-bold text-ink-800">{{ __('Catatan Anda') }}:</span> {{ $result->dimension_notes[$name] }}</p>
                         @endif
                     </article>
                 @endforeach
@@ -249,7 +260,7 @@
 
         @if ($result->track->slug === 'daya-saing-destinasi' && ! empty($computed['subindexes']))
             <div class="mt-10 rounded-3xl border border-ink-100 bg-white p-7 sm:p-8">
-                <h3 class="font-display text-xl font-bold text-ink-950">Subskor per subindeks</h3>
+                <h3 class="font-display text-xl font-bold text-ink-950">{{ __('Subskor per subindeks') }}</h3>
                 <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($computed['subindexes'] as $sub => $score)
                         <div class="rounded-2xl bg-cream-50 p-5">
@@ -270,15 +281,15 @@
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>
                     </span>
                     <div>
-                        <h3 class="font-display text-xl font-bold text-forest-800">Kekuatan</h3>
-                        <p class="text-xs text-ink-500">Modal promosi & kemitraan</p>
+                        <h3 class="font-display text-xl font-bold text-forest-800">{{ __('Kekuatan') }}</h3>
+                        <p class="text-xs text-ink-500">{{ __('Modal promosi & kemitraan') }}</p>
                     </div>
                 </div>
                 <ul class="mt-6 space-y-3">
                     @foreach ($computed['strengths'] as $name)
                         <li class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-forest-100">
                             <div class="flex items-center justify-between gap-3">
-                                <p class="font-bold text-ink-900">{{ $name }}</p>
+                                <p class="font-bold text-ink-900">{{ $dims[$name]['label'] ?? $name }}</p>
                                 <span class="shrink-0 rounded-full bg-forest-50 px-2.5 py-0.5 text-xs font-bold text-forest-700">{{ number_format($dims[$name]['score'], 0) }}/100</span>
                             </div>
                         </li>
@@ -291,15 +302,15 @@
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
                     </span>
                     <div>
-                        <h3 class="font-display text-xl font-bold text-brand-800">Tantangan</h3>
-                        <p class="text-xs text-ink-500">Fokus perbaikan 3 bulan ke depan</p>
+                        <h3 class="font-display text-xl font-bold text-brand-800">{{ __('Tantangan') }}</h3>
+                        <p class="text-xs text-ink-500">{{ __('Fokus perbaikan 3 bulan ke depan') }}</p>
                     </div>
                 </div>
                 <ul class="mt-6 space-y-3">
                     @foreach ($computed['challenges'] as $name)
                         <li class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-brand-100">
                             <div class="flex items-center justify-between gap-3">
-                                <p class="font-bold text-ink-900">{{ $name }}</p>
+                                <p class="font-bold text-ink-900">{{ $dims[$name]['label'] ?? $name }}</p>
                                 <span class="shrink-0 rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-bold text-brand-700">{{ number_format($dims[$name]['score'], 0) }}/100</span>
                             </div>
                         </li>
@@ -310,9 +321,9 @@
 
         {{-- ============ STRATEGI ============ --}}
         <div class="mt-16 rounded-[1.75rem] border border-ink-100 bg-white p-7 shadow-[0_10px_30px_-12px_rgb(26_26_38/0.12)] sm:p-10">
-            <p class="eyebrow">Draf Strategi Prioritas</p>
-            <h2 class="font-display text-3xl font-bold text-ink-950">Langkah yang perlu didahulukan</h2>
-            <p class="mt-2 text-sm text-ink-500">Disusun dari penilaian dengan skor terendah.</p>
+            <p class="eyebrow">{{ __('Draf Strategi Prioritas') }}</p>
+            <h2 class="font-display text-3xl font-bold text-ink-950">{{ __('Langkah yang perlu didahulukan') }}</h2>
+            <p class="mt-2 text-sm text-ink-500">{{ __('Disusun dari penilaian dengan skor terendah.') }}</p>
 
             @if (count($computed['priority_actions']) > 0)
                 <ol class="relative mt-8 space-y-6 border-l-2 border-dashed border-ink-100 pl-8">
@@ -327,13 +338,13 @@
             @else
                 <div class="mt-6 flex items-start gap-3 rounded-2xl bg-forest-50 p-5 text-sm text-ink-700">
                     <svg class="h-6 w-6 shrink-0 text-forest-600" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <p>Tidak ada penilaian bernilai rendah. Pertahankan ritme dan naikkan target ke level berikutnya: sertifikasi, ekspansi pasar, dan kemitraan.</p>
+                    <p>{{ __('Tidak ada penilaian bernilai rendah. Pertahankan ritme dan naikkan target ke level berikutnya: sertifikasi, ekspansi pasar, dan kemitraan.') }}</p>
                 </div>
             @endif
 
             @if ($result->profile_description)
                 <div class="mt-10 rounded-2xl bg-cream-50 p-5 text-sm">
-                    <p class="font-bold text-ink-900">Profil aset & potensi yang Anda kirim</p>
+                    <p class="font-bold text-ink-900">{{ __('Profil aset & potensi yang Anda kirim') }}</p>
                     <p class="mt-2 whitespace-pre-line leading-relaxed text-ink-600">{{ $result->profile_description }}</p>
                 </div>
             @endif
@@ -347,12 +358,12 @@
             <div aria-hidden="true" class="pointer-events-none absolute -bottom-24 left-10 h-60 w-60 rounded-full bg-forest-500/20 blur-3xl"></div>
             <div class="relative grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
                 <div>
-                    <h3 class="font-display text-2xl font-bold text-white sm:text-3xl">Ingin didampingi menyusun strategi final?</h3>
-                    <p class="mt-3 max-w-xl text-white/70">Tim GODEVI mendampingi desa, UMKM/koperasi, dan pemda dari hasil asesmen hingga aksi. Sebutkan kode hasil di atas saat menghubungi kami.</p>
+                    <h3 class="font-display text-2xl font-bold text-white sm:text-3xl">{{ __('Ingin didampingi menyusun strategi final?') }}</h3>
+                    <p class="mt-3 max-w-xl text-white/70">{{ __('Tim GODEVI mendampingi desa, UMKM/koperasi, dan pemda dari hasil asesmen hingga aksi. Sebutkan kode hasil di atas saat menghubungi kami.') }}</p>
                 </div>
                 <div class="flex flex-wrap gap-3">
-                    <a href="{{ url('contact') }}" class="btn-white !px-7 !py-3.5">Hubungi Tim GODEVI</a>
-                    <a href="{{ route('assessment.index') }}" class="btn border border-white/30 !px-7 !py-3.5 text-white hover:bg-white/10">Coba Jalur Lain</a>
+                    <a href="{{ url('contact') }}" class="btn-white !px-7 !py-3.5">{{ __('Hubungi Tim GODEVI') }}</a>
+                    <a href="{{ route('assessment.index') }}" class="btn border border-white/30 !px-7 !py-3.5 text-white hover:bg-white/10">{{ __('Coba Jalur Lain') }}</a>
                 </div>
             </div>
         </div>
@@ -377,8 +388,8 @@
     }
 </style>
 <script>
-    @if ($reportPending)
-        // Laporan AI masih disusun di antrean → muat ulang berkala sampai selesai.
+    @if ($reportPending || $translationPending)
+        // Laporan AI (atau terjemahan English-nya) masih disusun di antrean → muat ulang berkala sampai selesai.
         setTimeout(function () { window.location.reload(); }, 15000);
     @endif
     document.querySelectorAll('[data-retry-form]').forEach(function (form) {

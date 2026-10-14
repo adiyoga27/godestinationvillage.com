@@ -128,6 +128,8 @@
               <div class="collapse" id="ui-asesmen">
                 <ul class="gd-subnav">
                   <li><a class="gd-subnav__link" href="{{ route('assessments.index') }}">Jalur & Soal</a></li>
+                  <li><a class="gd-subnav__link" href="{{ route('assessment-prices.index') }}">Harga Asesmen</a></li>
+                  <li><a class="gd-subnav__link" href="{{ route('assessment-vouchers.index') }}">Voucher Diskon</a></li>
                   <li><a class="gd-subnav__link" href="{{ route('assessment-results.index') }}">Hasil Masuk</a></li>
                 </ul>
               </div>

@@ -29,7 +29,7 @@ class AssessmentMailer
 
         try {
             $result->loadMissing('track');
-            Mail::to($to)->send(new AssessmentMail($type, $result, $order));
+            Mail::to($to)->locale($result->locale ?: 'id')->send(new AssessmentMail($type, $result, $order));
             $entry['ok'] = true;
         } catch (\Throwable $e) {
             Log::warning('Email asesmen gagal: '.$e->getMessage(), ['uuid' => $result->uuid, 'type' => $type]);

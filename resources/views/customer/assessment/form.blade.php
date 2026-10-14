@@ -9,14 +9,15 @@
     // Judul kelompok (mis. subindeks TTDI) ditampilkan sebelum dimensi pertama tiap kelompok.
     $sectionStarts = collect($formConfig['sections'] ?? [])->mapWithKeys(fn ($dims, $title) => [$dims[0] => $title]);
     $totalQuestions = $track->activeQuestions->count();
-    $unitLabel = $grouped->count() === $totalQuestions ? 'dimensi' : 'pernyataan';
+    $unitLabel = $grouped->count() === $totalQuestions ? __('dimensi') : __('pernyataan');
+    $trackName = $track->local('name');
 @endphp
 
 @include('customer.assessment._hero', [
-    'title' => $formConfig['title'] ?? 'Isi Asesmen '.$track->name,
-    'subtitle' => $formConfig['intro'] ?? 'Beri nilai 1–5 yang paling jujur menggambarkan kondisi saat ini.',
-    'eyebrow' => 'Langkah 2 dari 2 · '.$track->name,
-    'crumbs' => ['Asesmen' => route('assessment.index'), $track->name => route('assessment.intro', $track->slug), 'Penilaian' => null],
+    'title' => $formConfig['title'] ?? __('Isi Asesmen').' '.$trackName,
+    'subtitle' => $formConfig['intro'] ?? __('Beri nilai 1–5 yang paling jujur menggambarkan kondisi saat ini.'),
+    'eyebrow' => __('Langkah 2 dari 2').' · '.$trackName,
+    'crumbs' => [__('Asesmen') => route('assessment.index'), $trackName => route('assessment.intro', $track->slug), __('Penilaian') => null],
     'image' => $formConfig['hero_image'] ?? null,
     'overlap' => true,
 ])
@@ -36,13 +37,13 @@
                             <span data-progress-label class="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-ink-900">0%</span>
                         </div>
                         <div>
-                            <p class="font-bold text-ink-950"><span data-answered>0</span> dari {{ $totalQuestions }} {{ $unitLabel }} dinilai</p>
-                            <p class="text-xs text-ink-500">Jawaban tersimpan saat Anda menekan kirim.</p>
+                            <p class="font-bold text-ink-950">{!! __(':answered dari :total :unit dinilai', ['answered' => '<span data-answered>0</span>', 'total' => $totalQuestions, 'unit' => e($unitLabel)]) !!}</p>
+                            <p class="text-xs text-ink-500">{{ __('Jawaban tersimpan saat Anda menekan kirim.') }}</p>
                         </div>
                     </div>
                     <div class="hidden items-center gap-1.5 sm:flex">
                         @foreach ($grouped as $dimension => $questions)
-                            <a href="#dim-{{ $loop->iteration }}" data-dot="{{ $loop->iteration }}" title="{{ $dimension }}" class="h-2.5 w-7 rounded-full bg-ink-100 transition-all duration-300 hover:bg-ink-200"></a>
+                            <a href="#dim-{{ $loop->iteration }}" data-dot="{{ $loop->iteration }}" title="{{ $questions->first()->local('dimension') }}" class="h-2.5 w-7 rounded-full bg-ink-100 transition-all duration-300 hover:bg-ink-200"></a>
                         @endforeach
                     </div>
                 </div>
@@ -84,14 +85,14 @@
                         </span>
                         <div class="min-w-0 flex-1">
                             <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                                <p class="text-xs font-bold uppercase tracking-[0.16em] text-ink-400">Dimensi {{ $loop->iteration }}/{{ $grouped->count() }}</p>
+                                <p class="text-xs font-bold uppercase tracking-[0.16em] text-ink-400">{{ __('Dimensi') }} {{ $loop->iteration }}/{{ $grouped->count() }}</p>
                                 @if ($showWeight)
-                                    <span class="rounded-full bg-cream-100 px-2.5 py-0.5 text-[11px] font-bold text-ink-700">Bobot {{ round($weights[$dimension] / $totalWeight * 100) }}%</span>
+                                    <span class="rounded-full bg-cream-100 px-2.5 py-0.5 text-[11px] font-bold text-ink-700">{{ __('Bobot') }} {{ round($weights[$dimension] / $totalWeight * 100) }}%</span>
                                 @endif
                             </div>
-                            <h2 class="mt-1 font-display text-xl font-bold text-ink-950 sm:text-2xl">{{ $dimension }}</h2>
+                            <h2 class="mt-1 font-display text-xl font-bold text-ink-950 sm:text-2xl">{{ $questions->first()->local('dimension') }}</h2>
                             @if ($single && $questions->first()->help_text)
-                                <p class="mt-2 leading-relaxed text-ink-600">{{ $questions->first()->help_text }}</p>
+                                <p class="mt-2 leading-relaxed text-ink-600">{{ $questions->first()->local('help_text') }}</p>
                             @endif
                         </div>
                     </div>
@@ -99,11 +100,11 @@
                     <div class="mt-6 space-y-6">
                         @foreach ($questions as $q)
                             <fieldset data-question class="{{ $single ? '' : 'rounded-2xl bg-cream-50 p-4 sm:p-5' }}">
-                                <legend class="sr-only">{{ $q->question }}</legend>
+                                <legend class="sr-only">{{ $q->local('question') }}</legend>
                                 @unless ($single)
-                                    <p class="font-semibold leading-relaxed text-ink-900">{{ $loop->iteration }}. {{ $q->question }}</p>
+                                    <p class="font-semibold leading-relaxed text-ink-900">{{ $loop->iteration }}. {{ $q->local('question') }}</p>
                                     @if ($q->help_text)
-                                        <p class="mt-1 text-sm text-ink-500">{{ $q->help_text }}</p>
+                                        <p class="mt-1 text-sm text-ink-500">{{ $q->local('help_text') }}</p>
                                     @endif
                                 @endunless
                                 <div class="{{ $single ? '' : 'mt-4' }} grid grid-cols-5 gap-2 sm:gap-3">
@@ -124,11 +125,11 @@
                     <div class="mt-5">
                         <button type="button" data-note-toggle class="{{ $hasNote ? 'hidden' : '' }} inline-flex items-center gap-1.5 text-sm font-semibold text-ink-500 transition hover:text-brand-600">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                            Tambah catatan singkat <span class="font-normal text-ink-400">(opsional)</span>
+                            {{ __('Tambah catatan singkat') }} <span class="font-normal text-ink-400">{{ __('(opsional)') }}</span>
                         </button>
                         <label data-note class="{{ $hasNote ? '' : 'hidden' }} block">
-                            <span class="label-gd">Catatan singkat <span class="font-normal text-ink-400">(opsional)</span></span>
-                            <textarea name="notes[{{ $noteKey }}]" rows="2" maxlength="1000" class="input-gd" placeholder="Kondisi nyata, contoh, atau kendala di dimensi ini…">{{ old('notes.'.$noteKey) }}</textarea>
+                            <span class="label-gd">{{ __('Catatan singkat') }} <span class="font-normal text-ink-400">{{ __('(opsional)') }}</span></span>
+                            <textarea name="notes[{{ $noteKey }}]" rows="2" maxlength="1000" class="input-gd" placeholder="{{ __('Kondisi nyata, contoh, atau kendala di dimensi ini…') }}">{{ old('notes.'.$noteKey) }}</textarea>
                         </label>
                     </div>
                 </article>
@@ -138,13 +139,13 @@
                 <div aria-hidden="true" class="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-brand-600/30 blur-3xl"></div>
                 <div class="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <p data-submit-title class="font-display text-2xl font-bold">Hampir selesai!</p>
-                        <p data-submit-hint class="mt-1 text-sm text-white/60">Nilai semua {{ $unitLabel }} untuk melihat hasil.</p>
+                        <p data-submit-title class="font-display text-2xl font-bold">{{ __('Hampir selesai!') }}</p>
+                        <p data-submit-hint class="mt-1 text-sm text-white/60">{{ __('Nilai semua :unit untuk melihat hasil.', ['unit' => $unitLabel]) }}</p>
                     </div>
                     <div class="flex shrink-0 flex-col-reverse gap-3 sm:flex-row sm:items-center">
-                        <a href="{{ route('assessment.intro', $track->slug) }}" class="btn border border-white/25 !py-4 text-white hover:bg-white/10">← Kembali</a>
+                        <a href="{{ route('assessment.intro', $track->slug) }}" class="btn border border-white/25 !py-4 text-white hover:bg-white/10">← {{ __('Kembali') }}</a>
                         <button type="submit" class="btn-primary group !px-9 !py-4 text-base">
-                            {{ $formConfig['submit_label'] ?? ($track->price > 0 ? 'Kirim & Lanjut Pembayaran' : 'Kirim & Lihat Hasil') }}
+                            {{ $formConfig['submit_label'] ?? ($track->price > 0 ? __('Kirim & Lanjut Pembayaran') : __('Kirim & Lihat Hasil')) }}
                             <svg class="h-5 w-5 transition group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                         </button>
                     </div>
@@ -180,8 +181,17 @@
     [data-dot].is-done { background: #379868; }
     @keyframes dim-shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
 </style>
+@php
+    $jsText = [
+        'done' => __('Semua sudah dinilai'),
+        'almost' => __('Hampir selesai!'),
+        'review' => __('Periksa kembali bila perlu, lalu kirim jawaban Anda.'),
+        'left' => __('Masih :count penilaian lagi sebelum bisa dikirim.'),
+    ];
+@endphp
 <script>
     (function () {
+        var t = @json($jsText);
         var form = document.getElementById('assessment-form');
         var cards = Array.prototype.slice.call(document.querySelectorAll('.dim-card'));
         var fieldsets = document.querySelectorAll('[data-question]');
@@ -213,8 +223,8 @@
                 if (dot) dot.classList.toggle('is-done', done);
             });
             var left = total - answered;
-            title.textContent = left === 0 ? 'Semua sudah dinilai' : 'Hampir selesai!';
-            hint.textContent = left === 0 ? 'Periksa kembali bila perlu, lalu kirim jawaban Anda.' : 'Masih ' + left + ' penilaian lagi sebelum bisa dikirim.';
+            title.textContent = left === 0 ? t.done : t.almost;
+            hint.textContent = left === 0 ? t.review : t.left.replace(':count', left);
         }
 
         document.querySelectorAll('[data-question] input').forEach(function (input) {

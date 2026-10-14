@@ -31,17 +31,20 @@ class AssessmentMail extends Mailable
 
     public function envelope(): Envelope
     {
-        $suffix = $this->order ? ' — '.$this->order->code : ' — '.($this->result->track->name ?? 'GODEVI');
+        $suffix = $this->order ? ' — '.$this->order->code : ' — '.($this->result->track?->local('name') ?? 'GODEVI');
 
-        return new Envelope(subject: self::SUBJECTS[$this->type].$suffix);
+        return new Envelope(subject: __(self::SUBJECTS[$this->type]).$suffix);
     }
 
     public function content(): Content
     {
+        // Link mengikuti bahasa responden, bukan bahasa sesi admin yang mengirim ulang.
+        $locale = $this->result->locale ?: 'id';
+
         return new Content(view: 'emails.assessment', with: [
-            'subject' => self::SUBJECTS[$this->type],
-            'resultUrl' => route('assessment.result', $this->result->uuid),
-            'paymentUrl' => $this->order ? route('assessment.payment', $this->order->code) : null,
+            'subject' => __(self::SUBJECTS[$this->type]),
+            'resultUrl' => route('assessment.result', ['locale' => $locale, 'uuid' => $this->result->uuid]),
+            'paymentUrl' => $this->order ? route('assessment.payment', ['locale' => $locale, 'code' => $this->order->code]) : null,
         ]);
     }
 }

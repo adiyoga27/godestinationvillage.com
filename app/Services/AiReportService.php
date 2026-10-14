@@ -120,9 +120,7 @@ class AiReportService
         ];
 
         for ($attempt = 1; $attempt <= 2; $attempt++) {
-            $res = $driver === 'claude'
-                ? self::callClaude($prompt)
-                : self::callDeepSeek($prompt);
+            $res = self::call($prompt);
 
             if (! $res['ok']) {
                 Log::warning("AI report attempt $attempt gagal: ".$res['error']);
@@ -161,7 +159,80 @@ class AiReportService
         return ['ok' => false, 'error' => $err ?? ($res['error'] ?? 'unknown'), 'prompt' => $prompt, 'meta' => $meta];
     }
 
-    protected static function callDeepSeek(string $prompt): array
+    /**
+     * Terjemahkan laporan (Bahasa Indonesia) ke English dengan struktur JSON yang sama persis.
+     *
+     * @return array{ok: bool, report?: array, error?: string, meta: array}
+     */
+    public static function translateReport(array $report, string $slug): array
+    {
+        $json = json_encode($report, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        $prompt = <<<PROMPT
+            Translate every string value in the JSON below from Indonesian into natural, professional English for a consulting report.
+
+            RULES:
+            - Return ONLY valid JSON, no markdown, no text outside the JSON.
+            - Keep every key exactly as is (keys stay in Indonesian). Keep the same structure, nesting, and the same number of items in every array.
+            - Do not add, remove, merge, or summarize content. Do not change any numbers or scores.
+            - Keep proper nouns as they are: names of villages, regions, organizations, brands, GODEVI, and Indonesian institution names (e.g. BUMDes, Pokdarwis, Pemda). You may add a short English gloss in parentheses on first use.
+            - Brand names and taglines inside "opsi_branding" stay in their original language; translate only "alasan".
+
+            JSON:
+            {$json}
+            PROMPT;
+
+        $meta = ['driver' => config('ai.driver', 'deepseek'), 'model' => config('ai.model'), 'attempts' => []];
+        $err = null;
+
+        for ($attempt = 1; $attempt <= 2; $attempt++) {
+            $res = self::call($prompt, 'You are a professional Indonesian–English translator. Reply with valid JSON only, no markdown.');
+            if (! $res['ok']) {
+                $err = $res['error'];
+                $meta['attempts'][] = ['at' => now()->toIso8601String(), 'ok' => false, 'error' => $err];
+
+                continue;
+            }
+
+            $translated = self::extractJson($res['text']);
+            $err = self::validate($slug, $translated) ?? self::sameShape($report, $translated);
+            $meta['attempts'][] = ['at' => now()->toIso8601String(), 'ok' => $err === null, 'error' => $err, 'usage' => $res['usage'] ?? null];
+            if ($err === null) {
+                $meta['generated_at'] = now()->toIso8601String();
+
+                return ['ok' => true, 'report' => $translated, 'meta' => $meta];
+            }
+
+            Log::warning("AI translate attempt $attempt tidak valid: $err");
+        }
+
+        return ['ok' => false, 'error' => $err ?? 'unknown', 'meta' => $meta];
+    }
+
+    /** Kunci & jumlah item hasil terjemahan harus sama dengan laporan asli. */
+    protected static function sameShape(array $original, array $translated): ?string
+    {
+        foreach ($original as $key => $value) {
+            if (! array_key_exists($key, $translated)) {
+                return 'kunci_hilang:'.$key;
+            }
+            if (is_array($value) && (! is_array($translated[$key]) || count($value) !== count($translated[$key]))) {
+                return 'jumlah_salah:'.$key;
+            }
+        }
+
+        return null;
+    }
+
+    public static function call(string $prompt, ?string $system = null): array
+    {
+        $system ??= 'Anda konsultan senior GODEVI. Jawab hanya JSON valid tanpa markdown.';
+
+        return config('ai.driver', 'deepseek') === 'claude'
+            ? self::callClaude($prompt, $system)
+            : self::callDeepSeek($prompt, $system);
+    }
+
+    protected static function callDeepSeek(string $prompt, string $system): array
     {
         if (blank(config('ai.deepseek_key'))) {
             return ['ok' => false, 'error' => 'deepseek_api_key_belum_diisi (set DEEPSEEK_API_KEY di .env)'];
@@ -173,7 +244,7 @@ class AiReportService
                 ->post(rtrim(config('ai.deepseek_base'), '/').'/chat/completions', [
                     'model' => config('ai.model', 'deepseek-flash'),
                     'messages' => [
-                        ['role' => 'system', 'content' => 'Anda konsultan senior GODEVI. Jawab hanya JSON valid tanpa markdown.'],
+                        ['role' => 'system', 'content' => $system],
                         ['role' => 'user', 'content' => $prompt],
                     ],
                     'response_format' => ['type' => 'json_object'],
@@ -199,7 +270,7 @@ class AiReportService
         }
     }
 
-    protected static function callClaude(string $prompt): array
+    protected static function callClaude(string $prompt, string $system): array
     {
         try {
             $resp = Http::timeout(config('ai.timeout', 120))
@@ -210,7 +281,7 @@ class AiReportService
                 ->post(rtrim(config('ai.claude_base'), '/').'/v1/messages', [
                     'model' => config('ai.model'),
                     'max_tokens' => 3000,
-                    'system' => 'Anda konsultan senior GODEVI. Jawab hanya JSON valid tanpa markdown.',
+                    'system' => $system,
                     'messages' => [['role' => 'user', 'content' => $prompt]],
                 ]);
 
@@ -232,7 +303,7 @@ class AiReportService
         }
     }
 
-    protected static function extractJson(string $text): mixed
+    public static function extractJson(string $text): mixed
     {
         $text = trim($text);
         $decoded = json_decode($text, true);

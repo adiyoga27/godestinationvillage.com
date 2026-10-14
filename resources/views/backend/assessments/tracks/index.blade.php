@@ -29,7 +29,7 @@
                             @forelse ($tracks as $t)
                                 <tr>
                                     <td>{{ $t->sort_order }}</td>
-                                    <td><strong>{{ $t->name }}</strong><br><small>{{ $t->tagline }}</small></td>
+                                    <td><strong>{{ $t->name }}</strong><br><small>{{ $t->tagline }}</small>@if ($t->name_en)<br><small class="text-info">EN: {{ $t->name_en }}</small>@else<br><span class="badge badge-warning">EN belum ada</span>@endif</td>
                                     <td><code>{{ $t->slug }}</code></td>
                                     <td>{{ $t->questions_count }}</td>
                                     <td>{{ $t->results_count }}</td>

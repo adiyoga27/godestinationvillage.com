@@ -25,10 +25,18 @@ class LocalizedUrlsTest extends TestCase
         $this->post($this->abs('/contact/send'))->assertStatus(308)->assertRedirect('http://localhost/id/contact/send');
     }
 
-    public function test_assessment_is_indonesian_only(): void
+    public function test_assessment_is_available_in_both_languages(): void
     {
-        $this->get($this->abs('/en/asesmen'))->assertStatus(301)->assertRedirect('http://localhost/id/asesmen');
-        $this->get($this->abs('/id/asesmen'))->assertOk()->assertDontSee('<link rel="alternate" hreflang="en"', false);
+        $this->get($this->abs('/en/asesmen'))->assertOk()
+            ->assertSee('<html lang="en"', false)
+            ->assertSee('<link rel="alternate" hreflang="id" href="http://localhost/id/asesmen">', false)
+            ->assertSee('Readiness Assessment', false);
+        $this->get($this->abs('/id/asesmen'))->assertOk()
+            ->assertSee('<link rel="alternate" hreflang="en" href="http://localhost/en/asesmen">', false)
+            ->assertSee('Asesmen Kesiapan', false);
+
+        // Pemilih bahasa di halaman asesmen → halaman yang sama versi lain.
+        $this->get($this->abs('/id/asesmen'))->assertSee('href="http://localhost/en/asesmen" hreflang="en"', false);
     }
 
     public function test_transactional_and_admin_urls_keep_no_prefix(): void
@@ -75,6 +83,6 @@ class LocalizedUrlsTest extends TestCase
         $this->assertStringContainsString('<loc>http://localhost/en/faq</loc>', $xml);
         $this->assertStringContainsString('hreflang="x-default" href="http://localhost/id/faq"', $xml);
         $this->assertStringContainsString('<loc>http://localhost/id/asesmen</loc>', $xml);
-        $this->assertStringNotContainsString('/en/asesmen', $xml);
+        $this->assertStringContainsString('<loc>http://localhost/en/asesmen</loc>', $xml);
     }
 }

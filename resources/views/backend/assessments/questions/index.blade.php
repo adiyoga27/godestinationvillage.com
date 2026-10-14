@@ -21,7 +21,17 @@
                 <a href="{{ route('assessments.questions.create', $track->id) }}" class="btn btn-lg btn-gradient-danger mr-2">
                     <i class="mdi mdi-plus-circle-outline"></i> Tambah Soal
                 </a>
-                <br /><br />
+                <form action="{{ route('assessments.questions.translate', $track->id) }}" method="post" class="d-inline" onsubmit="this.querySelector('button').disabled = true; this.querySelector('button').innerText = 'Menerjemahkan… (bisa 1–2 menit)';">
+                    @csrf
+                    <button class="btn btn-lg btn-outline-primary"><i class="mdi mdi-translate"></i> Isi English Otomatis (AI)</button>
+                </form>
+                <p class="text-muted small mt-2 mb-0">
+                    Versi English: {{ $missingEn }} dari {{ $track->questions()->count() }} soal belum diterjemahkan.
+                    Tombol AI hanya mengisi kolom English yang kosong (nama jalur, dimensi, soal, teks bantuan) — terjemahan yang sudah ada tidak ditimpa.
+                </p>
+                @if (session('status'))<div class="alert alert-success mt-3 mb-0">{{ session('status') }}</div>@endif
+                @if (session('error'))<div class="alert alert-danger mt-3 mb-0">{{ session('error') }}</div>@endif
+                <br />
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead><tr><th>#</th><th>Dimensi</th><th>Pernyataan</th><th>Bobot</th><th>Aktif</th><th></th></tr></thead>
@@ -29,8 +39,15 @@
                             @forelse ($questions as $q)
                                 <tr>
                                     <td>{{ $q->sort_order }}</td>
-                                    <td><strong>{{ $q->dimension }}</strong></td>
-                                    <td>{{ $q->question }}@if ($q->help_text)<br><small class="text-muted">{{ $q->help_text }}</small>@endif</td>
+                                    <td><strong>{{ $q->dimension }}</strong>@if ($q->dimension_en)<br><small class="text-muted">EN: {{ $q->dimension_en }}</small>@endif</td>
+                                    <td>
+                                        {{ $q->question }}@if ($q->help_text)<br><small class="text-muted">{{ $q->help_text }}</small>@endif
+                                        @if ($q->question_en)
+                                            <br><small class="text-info">EN: {{ $q->question_en }}</small>
+                                        @else
+                                            <br><span class="badge badge-warning">EN belum ada</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $q->weight }}</td>
                                     <td>{{ $q->is_active ? 'Ya' : 'Tidak' }}</td>
                                     <td class="text-nowrap"><a href="{{ route('assessments.questions.edit', [$track->id, $q->id]) }}" class="btn btn-sm btn-primary">Edit</a></td>

@@ -86,7 +86,7 @@ class SitemapController extends Controller
 
     /**
      * Satu entri per bahasa (/id/... & /en/...) lengkap dengan hreflang alternates.
-     * Halaman khusus Bahasa Indonesia (asesmen) hanya /id/... tanpa alternates.
+     * Halaman khusus Bahasa Indonesia (Locales::ID_ONLY_SEGMENTS) hanya /id/... tanpa alternates.
      */
     private function perLocale(array $urls): array
     {

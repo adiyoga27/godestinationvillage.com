@@ -49,18 +49,18 @@ class AssessmentSubmissionService
         ];
 
         $messages = [
-            'agree_terms.accepted' => 'Anda perlu menyetujui Syarat & Ketentuan dan Kebijakan Privasi untuk melanjutkan.',
-            'province.required' => 'Pilih lokasi dari hasil pencarian '.$profile['location_label'].'.',
-            'regency.required' => 'Pilih lokasi dari hasil pencarian '.$profile['location_label'].'.',
+            'agree_terms.accepted' => __('Anda perlu menyetujui Syarat & Ketentuan dan Kebijakan Privasi untuk melanjutkan.'),
+            'province.required' => __('Pilih lokasi dari hasil pencarian :field.', ['field' => $profile['location_label']]),
+            'regency.required' => __('Pilih lokasi dari hasil pencarian :field.', ['field' => $profile['location_label']]),
         ];
 
         $attributes = [
             'organization' => $profile['organization_label'],
-            'institution' => 'Instansi/OPD Pengusul',
-            'business_type' => $profile['entity_field'] ? 'Jenis Entitas' : 'Jenis Badan Usaha',
-            'business_sector' => 'Sektor Usaha',
-            'member_count' => 'Jumlah Anggota/Pelaku Usaha',
-            'name' => 'Nama Kontak',
+            'institution' => __('Instansi/OPD Pengusul'),
+            'business_type' => $profile['entity_field'] ? __('Jenis Entitas') : __('Jenis Badan Usaha'),
+            'business_sector' => __('Sektor Usaha'),
+            'member_count' => __('Jumlah Anggota/Pelaku Usaha'),
+            'name' => __('Nama Kontak'),
             'phone' => $profile['phone_label'],
             'email' => 'Email',
             'profile_description' => $profile['description_label'],
@@ -122,6 +122,7 @@ class AssessmentSubmissionService
             'consent_contact' => (bool) ($identity['consent_contact'] ?? false),
             'consent_research' => (bool) ($identity['consent_research'] ?? false),
             'consent_ip' => $identity['consent_ip'] ?? null,
+            'locale' => 'id',
             'answers' => $answers,
             'dimension_scores' => $computed['dimensions'],
             'dimension_notes' => $notes ?: null,

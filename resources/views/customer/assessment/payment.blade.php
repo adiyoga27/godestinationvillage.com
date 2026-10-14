@@ -4,18 +4,22 @@
 
 @php
     $order = $result->latestOrder;
-    $amount = $pendingOrder->amount ?? $result->track->price;
+    // Invoice aktif (bisa sudah dipotong voucher) menentukan nominal yang dibayar.
+    $activeOrder = $order?->status === 'pending' ? $order : null;
+    $amount = $activeOrder->amount ?? $result->track->price;
+    $voucherOrder = $activeOrder?->voucher_id ? $activeOrder : null;
     $closed = in_array($order?->status, ['expired', 'failed'], true);
     $formConfig = \App\Services\AssessmentService::formFor($result->track);
-    $dimensionNames = array_keys($result->dimension_scores ?? []);
+    $dimensionNames = array_map(fn ($name) => $result->track->dimensionLabel($name), array_keys($result->dimension_scores ?? []));
+    $trackName = $result->track->local('name');
     $answered = collect($result->dimension_scores ?? [])->sum(fn ($d) => count($d['questions'] ?? []));
 @endphp
 
 @include('customer.assessment._hero', [
-    'title' => 'Satu langkah lagi untuk membuka hasil',
-    'subtitle' => 'Jawaban asesmen '.$result->organization.' sudah tersimpan dengan aman. Selesaikan pembayaran untuk membuka skor dan analisa lengkap.',
-    'eyebrow' => 'Asesmen '.$result->track->name,
-    'crumbs' => ['Asesmen' => route('assessment.index'), 'Pembayaran' => null],
+    'title' => __('Satu langkah lagi untuk membuka hasil'),
+    'subtitle' => __('Jawaban asesmen :organization sudah tersimpan dengan aman. Selesaikan pembayaran untuk membuka skor dan analisa lengkap.', ['organization' => $result->organization]),
+    'eyebrow' => __('Asesmen :track', ['track' => $trackName]),
+    'crumbs' => [__('Asesmen') => route('assessment.index'), __('Pembayaran') => null],
     'image' => $formConfig['hero_image'] ?? null,
     'overlap' => true,
 ])
@@ -35,8 +39,8 @@
                                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             </span>
                             <div>
-                                <p class="font-bold text-ink-950">Jawaban tersimpan</p>
-                                <p class="text-sm text-ink-500">{{ $answered }} penilaian · {{ $result->created_at->format('d M Y, H:i') }}</p>
+                                <p class="font-bold text-ink-950">{{ __('Jawaban tersimpan') }}</p>
+                                <p class="text-sm text-ink-500">{{ __(':count penilaian', ['count' => $answered]) }} · {{ $result->created_at->translatedFormat('d M Y, H:i') }}</p>
                             </div>
                         </div>
                         <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold {{ $closed ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700' }}">
@@ -46,10 +50,10 @@
 
                     <dl class="mt-6 grid gap-px overflow-hidden rounded-2xl bg-ink-100 text-sm sm:grid-cols-2">
                         @foreach ([
-                            'Nama Desa / DTW' => $result->organization,
-                            'Lokasi' => collect([$result->regency, $result->province])->filter()->implode(', ') ?: '-',
-                            'Kontak' => $result->name,
-                            'No. WhatsApp' => $result->phone,
+                            __('Nama Desa / DTW') => $result->organization,
+                            __('Lokasi') => collect([$result->regency, $result->province])->filter()->implode(', ') ?: '-',
+                            __('Kontak') => $result->name,
+                            __('No. WhatsApp') => $result->phone,
                         ] as $label => $value)
                             <div class="bg-white p-4">
                                 <dt class="text-xs font-semibold uppercase tracking-wider text-ink-400">{{ $label }}</dt>
@@ -61,7 +65,7 @@
 
                 {{-- Pratinjau laporan terkunci --}}
                 <div class="card relative p-6 sm:p-8">
-                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-ink-400">Isi laporan Anda</p>
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-ink-400">{{ __('Isi laporan Anda') }}</p>
                     <div class="mt-5 space-y-4 select-none blur-[5px]" aria-hidden="true">
                         <div class="flex items-center gap-5">
                             <div class="flex h-24 w-24 items-center justify-center rounded-full border-[8px] border-brand-100 font-display text-3xl font-bold text-brand-700">??</div>
@@ -82,8 +86,8 @@
                         <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-ink-950 text-white shadow-xl">
                             <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
                         </span>
-                        <p class="mt-4 font-display text-xl font-bold text-ink-950">Hasil terkunci</p>
-                        <p class="mt-1 max-w-sm text-sm text-ink-600">Skor, analisis kekuatan & tantangan, serta draf strategi terbuka otomatis setelah pembayaran berhasil.</p>
+                        <p class="mt-4 font-display text-xl font-bold text-ink-950">{{ __('Hasil terkunci') }}</p>
+                        <p class="mt-1 max-w-sm text-sm text-ink-600">{{ __('Skor, analisis kekuatan & tantangan, serta draf strategi terbuka otomatis setelah pembayaran berhasil.') }}</p>
                     </div>
                 </div>
             </div>
@@ -94,21 +98,58 @@
                     <div class="overflow-hidden rounded-3xl bg-ink-950 text-white shadow-[0_25px_50px_-12px_rgb(26_26_38/0.4)]">
                         <div class="relative p-7 sm:p-8">
                             <div aria-hidden="true" class="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand-600/35 blur-3xl"></div>
-                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/50">Total Pembayaran</p>
-                            <p class="mt-2 font-display text-4xl font-bold sm:text-5xl">Rp {{ number_format($amount, 0, ',', '.') }}</p>
-                            <p class="mt-2 text-sm text-white/60">Asesmen {{ $result->track->name }}{{ $order ? ' · '.$order->code : '' }}</p>
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/50">{{ __('Total Pembayaran') }}</p>
+                            @if ($voucherOrder)
+                                <p class="mt-2 text-base text-white/50 line-through">Rp {{ number_format($voucherOrder->original_amount, 0, ',', '.') }}</p>
+                            @endif
+                            <p class="{{ $voucherOrder ? 'mt-0.5' : 'mt-2' }} font-display text-4xl font-bold sm:text-5xl">Rp {{ number_format($amount, 0, ',', '.') }}</p>
+                            <p class="mt-2 text-sm text-white/60">{{ __('Asesmen :track', ['track' => $trackName]) }}{{ $order ? ' · '.$order->code : '' }}</p>
+
+                            {{-- Kode voucher --}}
+                            <div class="mt-6 rounded-2xl bg-white/[0.06] p-4 ring-1 ring-white/10">
+                                @if (session('status'))
+                                    <p class="mb-3 text-sm font-semibold text-forest-300">{{ session('status') }}</p>
+                                @endif
+                                @if ($voucherOrder)
+                                    <div class="flex items-center justify-between gap-3 text-sm">
+                                        <span>
+                                            <span class="block text-xs uppercase tracking-[0.14em] text-white/50">{{ __('Voucher') }}</span>
+                                            <span class="font-mono font-bold text-white">{{ $voucherOrder->voucher_code }}</span>
+                                            <span class="text-forest-300">− Rp {{ number_format($voucherOrder->discount_amount, 0, ',', '.') }}</span>
+                                        </span>
+                                        <form action="{{ route('assessment.voucher.remove', $result->uuid) }}" method="post">
+                                            @csrf
+                                            <button type="submit" class="text-xs font-semibold text-white/60 underline hover:text-white">{{ __('Lepas') }}</button>
+                                        </form>
+                                    </div>
+                                @else
+                                    <form action="{{ route('assessment.voucher', $result->uuid) }}" method="post">
+                                        @csrf
+                                        <label for="voucher_code" class="block text-xs font-bold uppercase tracking-[0.14em] text-white/50">{{ __('Punya kode voucher?') }}</label>
+                                        <div class="mt-2 flex gap-2">
+                                            <input id="voucher_code" type="text" name="voucher_code" value="{{ old('voucher_code') }}" maxlength="40" autocomplete="off" required
+                                                class="min-w-0 flex-1 rounded-xl border-0 bg-white px-3.5 py-2.5 font-mono text-sm uppercase text-ink-950 placeholder:normal-case placeholder:text-ink-400 focus:ring-2 focus:ring-brand-500" placeholder="{{ __('Masukkan kode') }}">
+                                            <button type="submit" class="shrink-0 rounded-xl bg-white/15 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-white/25">{{ __('Pakai') }}</button>
+                                        </div>
+                                        @if (session('voucher_error'))
+                                            <p class="mt-2 text-xs font-semibold text-red-300">{{ session('voucher_error') }}</p>
+                                        @endif
+                                        @error('voucher_code')<p class="mt-2 text-xs font-semibold text-red-300">{{ $message }}</p>@enderror
+                                    </form>
+                                @endif
+                            </div>
 
                             @php $cardIcon = '<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>'; @endphp
                             @if ($pendingOrder)
-                                <a href="{{ route('assessment.payment', $pendingOrder->code) }}" class="btn-primary mt-7 w-full !py-4 text-base">{!! $cardIcon !!} Lanjutkan Pembayaran</a>
+                                <a href="{{ route('assessment.payment', $pendingOrder->code) }}" class="btn-primary mt-7 w-full !py-4 text-base">{!! $cardIcon !!} {{ __('Lanjutkan Pembayaran') }}</a>
                             @else
                                 <form action="{{ route('assessment.checkout', $result->uuid) }}" method="post" class="mt-7">
                                     @csrf
-                                    <button type="submit" class="btn-primary w-full !py-4 text-base">{!! $cardIcon !!} {{ $closed ? 'Bayar Ulang' : 'Bayar Sekarang' }}</button>
+                                    <button type="submit" class="btn-primary w-full !py-4 text-base">{!! $cardIcon !!} {{ $closed ? __('Bayar Ulang') : __('Bayar Sekarang') }}</button>
                                 </form>
                             @endif
                             @if ($closed)
-                                <p class="mt-3 text-center text-xs text-white/50">Tagihan sebelumnya {{ strtolower($result->paymentLabel()) }} — invoice baru akan dibuat.</p>
+                                <p class="mt-3 text-center text-xs text-white/50">{{ __('Tagihan sebelumnya :status — invoice baru akan dibuat.', ['status' => mb_strtolower($result->paymentLabel())]) }}</p>
                             @endif
                         </div>
                         <ul class="space-y-3 border-t border-white/10 p-7 text-sm sm:p-8">
@@ -117,7 +158,7 @@
                                     <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-forest-500/20 text-forest-300">
                                         <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
                                     </span>
-                                    <span class="text-white/85">{{ $benefit }}</span>
+                                    <span class="text-white/85">{{ __($benefit) }}</span>
                                 </li>
                             @endforeach
                         </ul>
@@ -126,12 +167,12 @@
                     <div class="rounded-3xl border border-ink-100 bg-white p-6 text-sm">
                         <div class="flex items-center gap-3">
                             <svg class="h-6 w-6 shrink-0 text-forest-600" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                            <p class="font-semibold text-ink-900">Pembayaran aman via Midtrans</p>
+                            <p class="font-semibold text-ink-900">{{ __('Pembayaran aman via Midtrans') }}</p>
                         </div>
-                        <p class="mt-2 leading-relaxed text-ink-500">Transfer bank / VA, e-wallet, QRIS & kartu kredit.</p>
+                        <p class="mt-2 leading-relaxed text-ink-500">{{ __('Transfer bank / VA, e-wallet, QRIS & kartu kredit.') }}</p>
                         <div class="mt-4 rounded-2xl bg-cream-50 p-4 leading-relaxed text-ink-600">
-                            Sudah bayar tapi hasil belum terbuka? <button type="button" onclick="window.location.reload()" class="font-semibold text-brand-600 underline">Muat ulang</button> dalam beberapa saat. Buka lagi kapan saja lewat
-                            <a href="{{ route('assessment.status', ['phone' => $result->phone]) }}" class="font-semibold text-brand-600 underline">Cek Status Asesmen</a>.
+                            {{ __('Sudah bayar tapi hasil belum terbuka?') }} <button type="button" onclick="window.location.reload()" class="font-semibold text-brand-600 underline">{{ __('Muat ulang') }}</button> {{ __('dalam beberapa saat. Buka lagi kapan saja lewat') }}
+                            <a href="{{ route('assessment.status', ['phone' => $result->phone]) }}" class="font-semibold text-brand-600 underline">{{ __('Cek Status Asesmen') }}</a>.
                         </div>
                     </div>
                 </div>

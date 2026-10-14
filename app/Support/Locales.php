@@ -27,8 +27,11 @@ class Locales
         'news', 'search',
     ];
 
-    /** Halaman yang isinya hanya berbahasa Indonesia: selalu /id/..., /en/... dialihkan. */
-    public const ID_ONLY_SEGMENTS = ['asesmen'];
+    /**
+     * Halaman yang isinya hanya berbahasa Indonesia: selalu /id/..., /en/... dialihkan.
+     * Saat ini kosong — asesmen sudah dua bahasa.
+     */
+    public const ID_ONLY_SEGMENTS = [];
 
     public static function current(): string
     {

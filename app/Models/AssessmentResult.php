@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 
 class AssessmentResult extends Model
 {
@@ -13,6 +14,7 @@ class AssessmentResult extends Model
         'uuid',
         'track_id',
         'source',
+        'locale',
         'created_by',
         'name',
         'email',
@@ -44,6 +46,7 @@ class AssessmentResult extends Model
         'approval_note',
         'unlocked_at',
         'ai_report',
+        'ai_report_en',
         'ai_prompt',
         'ai_meta',
         'email_log',
@@ -59,6 +62,7 @@ class AssessmentResult extends Model
         'dimension_scores' => 'array',
         'dimension_notes' => 'array',
         'ai_report' => 'array',
+        'ai_report_en' => 'array',
         'computed_result' => 'array',
         'ai_meta' => 'array',
         'email_log' => 'array',
@@ -86,23 +90,49 @@ class AssessmentResult extends Model
         return $this->hasOne(AssessmentOrder::class, 'assessment_result_id')->latestOfMany();
     }
 
+    /**
+     * Laporan AI sesuai bahasa aktif. English belum diterjemahkan → versi Indonesia
+     * (lihat needsEnglishReport()).
+     */
+    public function localReport(): ?array
+    {
+        if (App::getLocale() === 'en' && ! empty($this->ai_report_en)) {
+            return $this->ai_report_en;
+        }
+
+        return $this->ai_report ?: null;
+    }
+
+    /** Pengunjung English sedang melihat laporan yang belum punya terjemahan. */
+    public function needsEnglishReport(): bool
+    {
+        return App::getLocale() === 'en' && ! empty($this->ai_report) && empty($this->ai_report_en);
+    }
+
+    /** Percobaan terjemahan English terakhir gagal (halaman berhenti memuat ulang otomatis). */
+    public function englishTranslationFailed(): bool
+    {
+        return ($this->ai_meta['translation_en']['ok'] ?? null) === false;
+    }
+
     /** Label status pembayaran untuk guest & admin. */
     public function paymentLabel(): string
     {
         if ($this->is_unlocked) {
-            return match (true) {
+            return __(match (true) {
                 $this->source === 'admin' => 'Input admin (tanpa bayar)',
+                $this->latestOrder?->gateway === 'voucher' => 'Gratis (voucher)',
                 $this->approved_by !== null => 'Lunas (approve manual)',
                 default => 'Lunas',
-            };
+            });
         }
 
-        return match ($this->latestOrder?->status) {
+        return __(match ($this->latestOrder?->status) {
             'expired' => 'Pembayaran kedaluwarsa',
             'failed' => 'Pembayaran gagal',
             'refunded' => 'Dana dikembalikan',
             default => 'Menunggu pembayaran',
-        };
+        });
     }
 
     public const EMAIL_TYPES = [

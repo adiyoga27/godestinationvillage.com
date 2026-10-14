@@ -19,10 +19,11 @@
         <div class="card"><div class="card-body">
             <form action="{{ route('assessments.store') }}" method="post">
                 @csrf
-                <div class="form-group"><label>Nama Jalur *</label><input type="text" name="name" value="{{ old('name') }}" class="form-control" required></div>
-                <div class="form-group"><label>Tagline</label><input type="text" name="tagline" value="{{ old('tagline') }}" class="form-control"></div>
-                <div class="form-group"><label>Deskripsi</label><textarea name="description" rows="4" class="form-control">{{ old('description') }}</textarea></div>
-                <div class="form-group"><label>Target Peserta</label><input type="text" name="target_audience" value="{{ old('target_audience') }}" class="form-control"></div>
+                <p class="text-muted small">Isi versi Indonesia (wajib) dan English (opsional — kosong = pengunjung English melihat versi Indonesia). Pindah bahasa lewat tombol <strong>ID / EN</strong>.</p>
+                @include('backend.assessments._bilingual', ['label' => 'Nama Jalur', 'field' => 'name', 'model' => null, 'required' => true])
+                @include('backend.assessments._bilingual', ['label' => 'Tagline', 'field' => 'tagline', 'model' => null])
+                @include('backend.assessments._bilingual', ['label' => 'Deskripsi', 'field' => 'description', 'model' => null, 'type' => 'textarea', 'rows' => 4])
+                @include('backend.assessments._bilingual', ['label' => 'Target Peserta', 'field' => 'target_audience', 'model' => null])
                 <div class="form-group"><label>Harga Asesmen (Rp) *</label><input type="number" name="price" value="{{ old('price', 199000) }}" class="form-control" min="0" required><small class="text-muted">Isi 0 bila gratis (hasil langsung terbuka tanpa pembayaran).</small></div>
                 <div class="form-row">
                     <div class="form-group col-md-4"><label>Estimasi (menit)</label><input type="number" name="estimated_minutes" value="{{ old('estimated_minutes', 10) }}" class="form-control" min="1"></div>

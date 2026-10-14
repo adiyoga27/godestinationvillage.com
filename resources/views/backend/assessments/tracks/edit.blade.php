@@ -20,11 +20,12 @@
             <form action="{{ route('assessments.update', $track->id) }}" method="post">
                 @csrf
                 @method('PUT')
-                <div class="form-group"><label>Nama Jalur *</label><input type="text" name="name" value="{{ old('name', $track->name) }}" class="form-control" required></div>
+                <p class="text-muted small">Isi versi Indonesia (wajib) dan English (opsional — kosong = pengunjung English melihat versi Indonesia). Pindah bahasa lewat tombol <strong>ID / EN</strong>.</p>
+                @include('backend.assessments._bilingual', ['label' => 'Nama Jalur', 'field' => 'name', 'model' => $track, 'required' => true])
                 <div class="form-group"><label>Slug (tidak dapat diubah)</label><input type="text" value="{{ $track->slug }}" class="form-control" disabled></div>
-                <div class="form-group"><label>Tagline</label><input type="text" name="tagline" value="{{ old('tagline', $track->tagline) }}" class="form-control"></div>
-                <div class="form-group"><label>Deskripsi</label><textarea name="description" rows="4" class="form-control">{{ old('description', $track->description) }}</textarea></div>
-                <div class="form-group"><label>Target Peserta</label><input type="text" name="target_audience" value="{{ old('target_audience', $track->target_audience) }}" class="form-control"></div>
+                @include('backend.assessments._bilingual', ['label' => 'Tagline', 'field' => 'tagline', 'model' => $track])
+                @include('backend.assessments._bilingual', ['label' => 'Deskripsi', 'field' => 'description', 'model' => $track, 'type' => 'textarea', 'rows' => 4])
+                @include('backend.assessments._bilingual', ['label' => 'Target Peserta', 'field' => 'target_audience', 'model' => $track])
                 <div class="form-group"><label>Harga Asesmen (Rp) *</label><input type="number" name="price" value="{{ old('price', $track->price) }}" class="form-control" min="0" required><small class="text-muted">Isi 0 bila gratis (hasil langsung terbuka tanpa pembayaran).</small></div>
                 <div class="form-row">
                     <div class="form-group col-md-4"><label>Estimasi (menit)</label><input type="number" name="estimated_minutes" value="{{ old('estimated_minutes', $track->estimated_minutes) }}" class="form-control" min="1"></div>

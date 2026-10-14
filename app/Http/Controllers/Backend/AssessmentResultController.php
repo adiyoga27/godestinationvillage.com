@@ -143,7 +143,7 @@ class AssessmentResultController extends Controller
             return back()->with('error', 'Laporan hanya dibuat untuk hasil yang sudah lunas / di-approve.');
         }
 
-        $result->update(['ai_report' => null, 'report_status' => 'pending', 'report_error' => null]);
+        $result->update(['ai_report' => null, 'ai_report_en' => null, 'report_status' => 'pending', 'report_error' => null]);
         GenerateAssessmentReport::dispatch($result->uuid);
 
         return back()->with('status', 'Laporan AI dijadwalkan ulang.');

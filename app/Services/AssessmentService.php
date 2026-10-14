@@ -258,14 +258,35 @@ class AssessmentService
         ],
     ];
 
-    public static function profileFor(AssessmentTrack $track): array
+    /** Label skala 1–5 dalam bahasa aktif. */
+    public static function scaleLabels(): array
     {
-        return array_merge(self::PROFILE_FORMS['default'], self::PROFILE_FORMS[$track->slug] ?? []);
+        return array_map(fn ($label) => __($label), self::SCALE_LABELS);
     }
 
+    /** Teks form profil jalur, diterjemahkan ke bahasa aktif. */
+    public static function profileFor(AssessmentTrack $track): array
+    {
+        return self::translateTexts(array_merge(self::PROFILE_FORMS['default'], self::PROFILE_FORMS[$track->slug] ?? []));
+    }
+
+    /** Tampilan form jalur; judul, pengantar & label tombol diterjemahkan ke bahasa aktif. */
     public static function formFor(AssessmentTrack $track): array
     {
-        return self::TRACK_FORMS[$track->slug] ?? [];
+        $form = self::TRACK_FORMS[$track->slug] ?? [];
+        foreach (['title', 'intro', 'submit_label'] as $key) {
+            if (isset($form[$key])) {
+                $form[$key] = __($form[$key]);
+            }
+        }
+
+        return $form;
+    }
+
+    /** Terjemahkan nilai string (bukan bool/null) pada array konfigurasi teks. */
+    private static function translateTexts(array $texts): array
+    {
+        return array_map(fn ($v) => is_string($v) ? __($v) : $v, $texts);
     }
 
     /**
@@ -328,19 +349,20 @@ class AssessmentService
         return ['min' => 0, 'label' => 'Rintisan', 'desc' => ''];
     }
 
-    public static function dimensionAdvice(string $dimension, float $score): string
+    /**
+     * Saran singkat per dimensi. $locale null = bahasa aktif; hasil yang disimpan ke
+     * database selalu Bahasa Indonesia ('id').
+     */
+    public static function dimensionAdvice(string $dimension, float $score, ?string $locale = null): string
     {
-        if ($score >= 80) {
-            return "Pertahankan dan dokumentasikan praktik baik pada dimensi {$dimension} sebagai keunggulan untuk promosi dan kemitraan.";
-        }
-        if ($score >= 60) {
-            return "Dimensi {$dimension} sudah berjalan — standarkan prosedurnya agar konsisten meski pengelola berganti.";
-        }
-        if ($score >= 40) {
-            return "Dimensi {$dimension} perlu penguatan bertahap: tetapkan penanggung jawab, target 3 bulan, dan evaluasi rutin.";
-        }
+        $template = match (true) {
+            $score >= 80 => 'Pertahankan dan dokumentasikan praktik baik pada dimensi :dimension sebagai keunggulan untuk promosi dan kemitraan.',
+            $score >= 60 => 'Dimensi :dimension sudah berjalan — standarkan prosedurnya agar konsisten meski pengelola berganti.',
+            $score >= 40 => 'Dimensi :dimension perlu penguatan bertahap: tetapkan penanggung jawab, target 3 bulan, dan evaluasi rutin.',
+            default => 'Dimensi :dimension adalah prioritas utama: mulai dari langkah terkecil yang bisa dikerjakan minggu ini dengan sumber daya yang ada.',
+        };
 
-        return "Dimensi {$dimension} adalah prioritas utama: mulai dari langkah terkecil yang bisa dikerjakan minggu ini dengan sumber daya yang ada.";
+        return __($template, ['dimension' => $dimension], $locale);
     }
 
     /**
@@ -382,7 +404,7 @@ class AssessmentService
                 'score' => $score,
                 'average' => round($avg, 2),
                 'weight' => round($weight, 3),
-                'advice' => self::dimensionAdvice($name, $score),
+                'advice' => self::dimensionAdvice($name, $score, 'id'),
                 'questions' => $agg['questions'],
             ];
         }

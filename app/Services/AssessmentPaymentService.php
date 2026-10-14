@@ -6,6 +6,7 @@ use App\Helpers\BotHelper;
 use App\Jobs\GenerateAssessmentReport;
 use App\Models\AssessmentOrder;
 use App\Models\AssessmentResult;
+use App\Models\AssessmentVoucher;
 use App\Services\Midtrans\CreateSnapTokenService;
 use App\Services\Midtrans\Midtrans;
 use Illuminate\Support\Facades\DB;
@@ -88,7 +89,8 @@ class AssessmentPaymentService
         });
 
         try {
-            BotHelper::sendTelegram("Godevi - Payment Asesmen Success, \n\nInvoice : {$order->code} \nNominal : {$order->amount}.\n");
+            $voucher = $order->voucher_code ? "\nVoucher : {$order->voucher_code} (-{$order->discount_amount})" : '';
+            BotHelper::sendTelegram("Godevi - Payment Asesmen Success, \n\nInvoice : {$order->code} \nNominal : {$order->amount}.{$voucher}\n");
         } catch (\Throwable $e) {
             Log::error('Telegram ASM error: '.$e->getMessage());
         }
@@ -136,9 +138,113 @@ class AssessmentPaymentService
             ?? $result->orders()->create([
                 'code' => AssessmentOrder::generateCode(),
                 'amount' => $amount,
+                'original_amount' => $amount,
                 'gateway' => 'midtrans',
                 'status' => 'pending',
             ]);
+    }
+
+    /**
+     * Pakai kode voucher pada invoice hasil ini. Voucher 100% → langsung lunas & hasil terbuka.
+     *
+     * @return array{ok: bool, message: string}
+     */
+    public static function applyVoucher(AssessmentResult $result, ?string $code): array
+    {
+        $result->loadMissing('track');
+        $price = (int) ($result->track->price ?? 0);
+        $code = AssessmentVoucher::normalizeCode($code);
+
+        if ($result->is_unlocked || $price <= 0) {
+            return ['ok' => false, 'message' => __('Hasil asesmen ini sudah terbuka.')];
+        }
+        if ($code === '') {
+            return ['ok' => false, 'message' => __('Masukkan kode voucher.')];
+        }
+
+        return DB::transaction(function () use ($result, $code, $price) {
+            // Kunci baris voucher agar kuota tidak terlampaui oleh pemakaian bersamaan.
+            $voucher = AssessmentVoucher::where('code', $code)->lockForUpdate()->first();
+            if (! $voucher) {
+                return ['ok' => false, 'message' => __('Kode voucher tidak ditemukan.')];
+            }
+            if ($reason = $voucher->rejectionFor($result->track)) {
+                return ['ok' => false, 'message' => $reason];
+            }
+
+            $discount = $voucher->discountFor($price);
+            $order = self::replacePendingOrder($result, [
+                'amount' => $price - $discount,
+                'original_amount' => $price,
+                'discount_amount' => $discount,
+                'voucher_id' => $voucher->id,
+                'voucher_code' => $voucher->code,
+                'gateway' => $price - $discount > 0 ? 'midtrans' : 'voucher',
+            ]);
+            if (! $order) {
+                return ['ok' => false, 'message' => __('Pembayaran untuk asesmen ini sudah diterima.')];
+            }
+
+            if ($order->amount === 0) {
+                self::markPaid($order, 'voucher');
+
+                return ['ok' => true, 'message' => __('Voucher :code dipakai — asesmen gratis, hasil sudah terbuka.', ['code' => $voucher->code])];
+            }
+
+            return ['ok' => true, 'message' => __('Voucher :code dipakai — hemat Rp :amount.', ['code' => $voucher->code, 'amount' => number_format($discount, 0, ',', '.')])];
+        });
+    }
+
+    /** Lepas voucher dari invoice yang belum dibayar → kembali ke harga normal. */
+    public static function removeVoucher(AssessmentResult $result): void
+    {
+        $result->loadMissing('track');
+        $pending = $result->orders()->where('status', 'pending')->latest('id')->first();
+        if ($result->is_unlocked || ! $pending?->voucher_id) {
+            return;
+        }
+
+        $price = (int) ($result->track->price ?? 0);
+        self::replacePendingOrder($result, [
+            'amount' => $price,
+            'original_amount' => $price,
+            'discount_amount' => 0,
+            'voucher_id' => null,
+            'voucher_code' => null,
+            'gateway' => 'midtrans',
+        ]);
+    }
+
+    /**
+     * Ubah nominal invoice yang belum dibayar. Snap token Midtrans terikat pada nominal lama,
+     * jadi invoice yang sudah punya token dibatalkan dan diganti invoice baru.
+     * Mengembalikan null bila ternyata invoice lama sudah lunas.
+     */
+    protected static function replacePendingOrder(AssessmentResult $result, array $attributes): ?AssessmentOrder
+    {
+        $pending = $result->orders()->where('status', 'pending')->latest('id')->first();
+
+        if ($pending?->gateway_ref) {
+            // Guest mungkin sudah membayar invoice lama → cek dulu ke Midtrans.
+            if (self::sync($pending)->status === 'paid') {
+                return null;
+            }
+            if ($pending->status === 'pending') {
+                $pending->update(['status' => 'cancelled']);
+            }
+            $pending = null;
+        }
+
+        if ($pending) {
+            $pending->update($attributes);
+
+            return $pending;
+        }
+
+        return $result->orders()->create($attributes + [
+            'code' => AssessmentOrder::generateCode(),
+            'status' => 'pending',
+        ]);
     }
 
     /**

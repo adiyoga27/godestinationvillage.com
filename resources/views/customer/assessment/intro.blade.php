@@ -4,8 +4,9 @@
 
 @php
     $heroImage = $formConfig['hero_image'] ?? 'assets/customer/img/page-title-area/services.jpg';
-    $priceLabel = $track->price > 0 ? 'Rp '.number_format($track->price, 0, ',', '.') : 'Gratis';
-    $unitLabel = $dimensions->count() === $track->questions_count ? 'dimensi' : 'pernyataan';
+    $priceLabel = $track->price > 0 ? 'Rp '.number_format($track->price, 0, ',', '.') : __('Gratis');
+    $unitLabel = $dimensions->count() === $track->questions_count ? __('dimensi') : __('pernyataan');
+    $trackName = $track->local('name');
     $icons = \App\Services\AssessmentService::DIMENSION_ICONS;
 @endphp
 
@@ -21,23 +22,23 @@
             <nav aria-label="Breadcrumb" class="text-xs font-semibold uppercase tracking-wider text-white/50">
                 <a href="{{ url('/') }}" class="transition hover:text-white">Home</a>
                 <span class="mx-1.5">/</span>
-                <a href="{{ route('assessment.index') }}" class="transition hover:text-white">Asesmen</a>
+                <a href="{{ route('assessment.index') }}" class="transition hover:text-white">{{ __('Asesmen') }}</a>
                 <span class="mx-1.5">/</span>
-                <span class="text-brand-400">{{ $track->name }}</span>
+                <span class="text-brand-400">{{ $trackName }}</span>
             </nav>
             <p class="mt-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-white/80 backdrop-blur">
                 <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-400 opacity-75"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-brand-500"></span></span>
-                {{ $track->tagline }}
+                {{ $track->local('tagline') }}
             </p>
             <h1 class="mt-5 font-display text-4xl font-bold leading-tight text-white text-balance sm:text-5xl lg:text-6xl">
-                Asesmen {{ $track->name }}
+                {{ __('Asesmen :track', ['track' => $trackName]) }}
             </h1>
-            <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/70">{{ $track->description }}</p>
+            <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/70">{{ $track->local('description') }}</p>
 
             <div class="mt-7 flex flex-wrap gap-2.5 text-sm font-semibold text-white/85">
                 <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur">
                     <svg class="h-4 w-4 text-brand-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    ±{{ $track->estimated_minutes }} menit
+                    {{ __('±:count menit', ['count' => $track->estimated_minutes]) }}
                 </span>
                 <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur">
                     <svg class="h-4 w-4 text-brand-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"/></svg>
@@ -45,16 +46,16 @@
                 </span>
                 <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur">
                     <svg class="h-4 w-4 text-brand-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-                    Tanpa login
+                    {{ __('Tanpa login') }}
                 </span>
             </div>
 
             <div class="mt-9 flex flex-wrap items-center gap-4">
                 <a href="#form-asesmen" class="btn-primary !px-8 !py-4 text-base">
-                    Mulai Asesmen
+                    {{ __('Mulai Asesmen') }}
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"/></svg>
                 </a>
-                <a href="{{ route('assessment.status') }}" class="text-sm font-semibold text-white/70 underline-offset-4 transition hover:text-white hover:underline">Sudah pernah mengisi? Cek status →</a>
+                <a href="{{ route('assessment.status') }}" class="text-sm font-semibold text-white/70 underline-offset-4 transition hover:text-white hover:underline">{{ __('Sudah pernah mengisi? Cek status →') }}</a>
             </div>
         </div>
 
@@ -62,8 +63,8 @@
         <div class="relative hidden lg:col-span-5 lg:block">
             <div class="animate-float rounded-[1.75rem] border border-white/15 bg-white/95 p-7 shadow-[0_40px_80px_-20px_rgb(0_0_0/0.6)] backdrop-blur">
                 <div class="flex items-center justify-between">
-                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-ink-400">Contoh Laporan</p>
-                    <span class="rounded-full bg-forest-50 px-3 py-1 text-xs font-bold text-forest-700">Siap</span>
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-ink-400">{{ __('Contoh Laporan') }}</p>
+                    <span class="rounded-full bg-forest-50 px-3 py-1 text-xs font-bold text-forest-700">{{ __('Siap') }}</span>
                 </div>
                 <div class="mt-5 flex items-center gap-5">
                     <div class="relative h-28 w-28 shrink-0">
@@ -73,12 +74,12 @@
                         </svg>
                         <div class="absolute inset-0 flex flex-col items-center justify-center">
                             <span class="font-display text-3xl font-bold text-ink-950">72</span>
-                            <span class="text-[10px] font-semibold text-ink-400">dari 100</span>
+                            <span class="text-[10px] font-semibold text-ink-400">{{ __('dari 100') }}</span>
                         </div>
                     </div>
                     <div>
-                        <p class="font-display text-lg font-bold text-ink-950">Skor Kesiapan</p>
-                        <p class="mt-1 text-sm leading-snug text-ink-500">Lengkap dengan analisis kekuatan, tantangan & draf strategi.</p>
+                        <p class="font-display text-lg font-bold text-ink-950">{{ __('Skor Kesiapan') }}</p>
+                        <p class="mt-1 text-sm leading-snug text-ink-500">{{ __('Lengkap dengan analisis kekuatan, tantangan & draf strategi.') }}</p>
                     </div>
                 </div>
                 <div class="mt-6 space-y-3.5">
@@ -100,7 +101,7 @@
                     </div>
                     <div class="absolute inset-0 flex items-center justify-center gap-2 text-xs font-bold text-ink-700">
                         <svg class="h-4 w-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-                        Draf strategi prioritas
+                        {{ __('Draf strategi prioritas') }}
                     </div>
                 </div>
             </div>
@@ -109,7 +110,7 @@
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/></svg>
                 </span>
                 <div>
-                    <p class="text-xs text-white/60">Biaya analisa</p>
+                    <p class="text-xs text-white/60">{{ __('Biaya analisa') }}</p>
                     <p class="font-display text-lg font-bold">{{ $priceLabel }}</p>
                 </div>
             </div>
@@ -123,14 +124,14 @@
         <div class="grid gap-px overflow-hidden rounded-3xl bg-ink-100 shadow-[0_25px_50px_-12px_rgb(26_26_38/0.22)] sm:grid-cols-3">
             @foreach ([
                 $profile['business_fields']
-                    ? ['Isi profil usaha', 'Nama usaha, jenis & sektor, lokasi, dan kontak pengurus.']
+                    ? [__('Isi profil usaha'), __('Nama usaha, jenis & sektor, lokasi, dan kontak pengurus.')]
                     : ($profile['destination_fields']
-                        ? ['Isi profil kawasan', 'Nama kawasan, kabupaten/provinsi, instansi pengusul, dan kontak.']
+                        ? [__('Isi profil kawasan'), __('Nama kawasan, kabupaten/provinsi, instansi pengusul, dan kontak.')]
                         : ($profile['entity_field']
-                            ? ['Isi profil entitas', 'Nama usaha/entitas, jenis entitas, lokasi, dan kontak.']
-                            : ['Isi profil desa', 'Nama desa/DTW, lokasi, dan kontak pengelola.'])),
-                ['Nilai '.$track->questions_count.' '.$unitLabel, 'Skala 1–5 sesuai kondisi nyata saat ini.'],
-                ['Terima analisa', $adminMode ? 'Input admin — tanpa pembayaran, hasil langsung terbuka.' : ($track->price > 0 ? 'Bayar '.$priceLabel.', hasil langsung terbuka.' : 'Hasil langsung terbuka.')],
+                            ? [__('Isi profil entitas'), __('Nama usaha/entitas, jenis entitas, lokasi, dan kontak.')]
+                            : [__('Isi profil desa'), __('Nama desa/DTW, lokasi, dan kontak pengelola.')])),
+                [__('Nilai :count :unit', ['count' => $track->questions_count, 'unit' => $unitLabel]), __('Skala 1–5 sesuai kondisi nyata saat ini.')],
+                [__('Terima analisa'), $adminMode ? __('Input admin — tanpa pembayaran, hasil langsung terbuka.') : ($track->price > 0 ? __('Bayar :price, hasil langsung terbuka.', ['price' => $priceLabel]) : __('Hasil langsung terbuka.'))],
             ] as $i => [$title, $desc])
                 <div data-vue="Reveal" style="--reveal-delay: {{ $i * 120 }}ms" class="flex items-start gap-4 bg-white p-6 sm:p-7">
                     <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-50 font-display text-lg font-bold text-brand-600">{{ $i + 1 }}</span>
@@ -148,9 +149,9 @@
 <section class="bg-white pb-8 pt-20 sm:pt-24">
     <div class="container-gd">
         <div class="mx-auto max-w-2xl text-center">
-            <p class="eyebrow justify-center">{{ $formConfig['title'] ?? 'Yang Dinilai' }}</p>
-            <h2 class="font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ $dimensions->count() }} dimensi kesiapan destinasi</h2>
-            <p class="mt-4 text-ink-600">{{ $formConfig['intro'] ?? 'Setiap dimensi dinilai dengan skala 1–5 dan menjadi dasar rekomendasi.' }}</p>
+            <p class="eyebrow justify-center">{{ $formConfig['title'] ?? __('Yang Dinilai') }}</p>
+            <h2 class="font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ __(':count dimensi kesiapan destinasi', ['count' => $dimensions->count()]) }}</h2>
+            <p class="mt-4 text-ink-600">{{ $formConfig['intro'] ?? __('Setiap dimensi dinilai dengan skala 1–5 dan menjadi dasar rekomendasi.') }}</p>
         </div>
 
         <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -168,7 +169,7 @@
                     <p class="mt-2 text-sm leading-relaxed text-ink-500">{{ $dim['description'] }}</p>
                     @if ($showWeight)
                         <div class="mt-5">
-                            <div class="flex justify-between text-[11px] font-semibold uppercase tracking-wider text-ink-400"><span>Bobot</span><span>{{ $dim['weight'] }}%</span></div>
+                            <div class="flex justify-between text-[11px] font-semibold uppercase tracking-wider text-ink-400"><span>{{ __('Bobot') }}</span><span>{{ $dim['weight'] }}%</span></div>
                             <div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-ink-100">
                                 <div class="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-700" style="width: {{ min(100, $dim['weight'] * 4) }}%"></div>
                             </div>
@@ -203,7 +204,7 @@
                         </span>
                         <div>
                             <h2 class="font-display text-2xl font-bold text-ink-950">{{ $profile['title'] }}</h2>
-                            <p class="text-sm text-ink-500">{{ $profile['subtitle'] ?? 'Langkah 1 dari 2 — setelah ini Anda menilai '.$track->questions_count.' '.$unitLabel.'.' }}</p>
+                            <p class="text-sm text-ink-500">{{ $profile['subtitle'] ?? __('Langkah 1 dari 2 — setelah ini Anda menilai :count :unit.', ['count' => $track->questions_count, 'unit' => $unitLabel]) }}</p>
                         </div>
                     </div>
 
@@ -232,22 +233,22 @@
                                 {{-- Rincian lokasi terpilih --}}
                                 <dl id="location-detail" class="mt-3 hidden grid-cols-2 gap-x-4 gap-y-2 rounded-2xl bg-cream-50 p-4 text-sm sm:grid-cols-5">
                                     @foreach (['subdistrict' => 'Kelurahan', 'district' => 'Kecamatan', 'city' => 'Kota/Kab', 'province' => 'Provinsi', 'postal' => 'Kode Pos'] as $key => $label)
-                                        <div><dt class="text-[11px] font-bold uppercase tracking-wider text-ink-400">{{ $label }}</dt><dd data-loc="{{ $key }}" class="font-semibold text-ink-900">-</dd></div>
+                                        <div><dt class="text-[11px] font-bold uppercase tracking-wider text-ink-400">{{ __($label) }}</dt><dd data-loc="{{ $key }}" class="font-semibold text-ink-900">-</dd></div>
                                     @endforeach
                                 </dl>
                             </div>
 
                             @if ($profile['destination_fields'])
-                                <label class="block"><span class="label-gd">Instansi/OPD Pengusul <span class="text-brand-600">*</span></span><input type="text" name="institution" value="{{ old('institution') }}" required class="input-gd !py-3.5" placeholder="mis. Dinas Pariwisata Kabupaten Bangli"></label>
+                                <label class="block"><span class="label-gd">{{ __('Instansi/OPD Pengusul') }} <span class="text-brand-600">*</span></span><input type="text" name="institution" value="{{ old('institution') }}" required class="input-gd !py-3.5" placeholder="{{ __('mis. Dinas Pariwisata Kabupaten Bangli') }}"></label>
                             @endif
 
                             @if ($profile['entity_field'])
                                 <label class="block">
-                                    <span class="label-gd">Jenis Entitas <span class="text-brand-600">*</span></span>
+                                    <span class="label-gd">{{ __('Jenis Entitas') }} <span class="text-brand-600">*</span></span>
                                     <select name="business_type" required class="input-gd !py-3.5">
-                                        <option value="" disabled {{ old('business_type') ? '' : 'selected' }}>Pilih...</option>
+                                        <option value="" disabled {{ old('business_type') ? '' : 'selected' }}>{{ __('Pilih...') }}</option>
                                         @foreach (\App\Services\AssessmentService::ENTITY_TYPES as $opt)
-                                            <option value="{{ $opt }}" {{ old('business_type') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
+                                            <option value="{{ $opt }}" {{ old('business_type') === $opt ? 'selected' : '' }}>{{ __($opt) }}</option>
                                         @endforeach
                                     </select>
                                 </label>
@@ -256,27 +257,27 @@
                             @if ($profile['business_fields'])
                                 <div class="grid gap-5 sm:grid-cols-2">
                                     <label class="block">
-                                        <span class="label-gd">Jenis Badan Usaha <span class="text-brand-600">*</span></span>
+                                        <span class="label-gd">{{ __('Jenis Badan Usaha') }} <span class="text-brand-600">*</span></span>
                                         <select name="business_type" required class="input-gd !py-3.5">
-                                            <option value="" disabled {{ old('business_type') ? '' : 'selected' }}>Pilih...</option>
+                                            <option value="" disabled {{ old('business_type') ? '' : 'selected' }}>{{ __('Pilih...') }}</option>
                                             @foreach (\App\Services\AssessmentService::BUSINESS_TYPES as $opt)
-                                                <option value="{{ $opt }}" {{ old('business_type') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
+                                                <option value="{{ $opt }}" {{ old('business_type') === $opt ? 'selected' : '' }}>{{ __($opt) }}</option>
                                             @endforeach
                                         </select>
                                     </label>
                                     <label class="block">
-                                        <span class="label-gd">Sektor Usaha <span class="text-brand-600">*</span></span>
+                                        <span class="label-gd">{{ __('Sektor Usaha') }} <span class="text-brand-600">*</span></span>
                                         <select name="business_sector" required class="input-gd !py-3.5">
-                                            <option value="" disabled {{ old('business_sector') ? '' : 'selected' }}>Pilih...</option>
+                                            <option value="" disabled {{ old('business_sector') ? '' : 'selected' }}>{{ __('Pilih...') }}</option>
                                             @foreach (\App\Services\AssessmentService::BUSINESS_SECTORS as $opt)
-                                                <option value="{{ $opt }}" {{ old('business_sector') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
+                                                <option value="{{ $opt }}" {{ old('business_sector') === $opt ? 'selected' : '' }}>{{ __($opt) }}</option>
                                             @endforeach
                                         </select>
                                     </label>
                                 </div>
                                 <label class="block sm:max-w-xs">
-                                    <span class="label-gd">Jumlah Anggota/Pelaku Usaha <span class="font-normal text-ink-400">(opsional)</span></span>
-                                    <input type="number" name="member_count" value="{{ old('member_count') }}" min="1" inputmode="numeric" class="input-gd !py-3.5" placeholder="mis. 25">
+                                    <span class="label-gd">{{ __('Jumlah Anggota/Pelaku Usaha') }} <span class="font-normal text-ink-400">{{ __('(opsional)') }}</span></span>
+                                    <input type="number" name="member_count" value="{{ old('member_count') }}" min="1" inputmode="numeric" class="input-gd !py-3.5" placeholder="{{ __('mis. 25') }}">
                                 </label>
                             @endif
                         </div>
@@ -290,13 +291,13 @@
                             <label class="block">
                                 <span class="label-gd">{{ $profile['phone_label'] }} <span class="text-brand-600">*</span></span>
                                 <input type="tel" name="phone" value="{{ old('phone') }}" required class="input-gd !py-3.5" placeholder="08xx-xxxx-xxxx">
-                                <span class="mt-1.5 block text-xs text-ink-400">Dipakai untuk cek status & membuka hasil kembali.</span>
+                                <span class="mt-1.5 block text-xs text-ink-400">{{ __('Dipakai untuk cek status & membuka hasil kembali.') }}</span>
                             </label>
                             <label class="block sm:col-span-2">
-                                <span class="label-gd">Email @if ($adminMode)<span class="font-normal text-ink-400">(opsional)</span>@else<span class="text-brand-600">*</span>@endif</span>
+                                <span class="label-gd">Email @if ($adminMode)<span class="font-normal text-ink-400">{{ __('(opsional)') }}</span>@else<span class="text-brand-600">*</span>@endif</span>
                                 {{-- Mode admin: jangan isi email admin; ini email responden. --}}
-                                <input type="email" name="email" value="{{ old('email', $adminMode ? '' : (auth()->user()->email ?? '')) }}" @unless ($adminMode) required @endunless autocomplete="email" class="input-gd !py-3.5" placeholder="nama@email.com">
-                                <span class="mt-1.5 block text-xs text-ink-400">{{ $adminMode ? 'Email responden. Bila diisi, laporan hasil & strategi dikirim ke email ini.' : 'Invoice, bukti pembayaran, dan laporan hasil & strategi dikirim ke email ini.' }}</span>
+                                <input type="email" name="email" value="{{ old('email', $adminMode ? '' : (auth()->user()->email ?? '')) }}" @unless ($adminMode) required @endunless autocomplete="email" class="input-gd !py-3.5" placeholder="{{ __('nama@email.com') }}">
+                                <span class="mt-1.5 block text-xs text-ink-400">{{ $adminMode ? __('Email responden. Bila diisi, laporan hasil & strategi dikirim ke email ini.') : __('Invoice, bukti pembayaran, dan laporan hasil & strategi dikirim ke email ini.') }}</span>
                             </label>
                         </div>
                     </fieldset>
@@ -305,7 +306,7 @@
                     <fieldset class="mt-9">
                         <legend class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-ink-400"><span class="h-px w-6 bg-ink-200"></span>{{ $profile['description_group'] }}</legend>
                         <label class="mt-4 block">
-                            <span class="label-gd">{{ $profile['description_label'] }} <span class="font-normal text-ink-400">(opsional)</span></span>
+                            <span class="label-gd">{{ $profile['description_label'] }} <span class="font-normal text-ink-400">{{ __('(opsional)') }}</span></span>
                             <textarea name="profile_description" id="profile-description" rows="4" maxlength="3000" class="input-gd" placeholder="{{ $profile['description_placeholder'] }}">{{ old('profile_description') }}</textarea>
                             <span class="mt-1.5 flex justify-between gap-4 text-xs text-ink-400">
                                 <span class="inline-flex items-center gap-1.5"><svg class="h-3.5 w-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 1l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 14.6 4.6 17.5l1.2-6L1.3 7.3l6.1-.7L10 1z"/></svg>{{ $profile['description_hint'] }}</span>
@@ -317,31 +318,31 @@
                     {{-- Persetujuan (guest saja; bukti disimpan dengan timestamp) --}}
                     @unless ($adminMode)
                         <fieldset class="mt-9 space-y-3 rounded-2xl border border-ink-100 bg-ink-50/60 p-5">
-                            <legend class="sr-only">Persetujuan</legend>
+                            <legend class="sr-only">{{ __('Persetujuan') }}</legend>
                             <label class="flex items-start gap-3 text-sm text-ink-700">
                                 <input type="checkbox" name="agree_terms" value="1" required {{ old('agree_terms') ? 'checked' : '' }} class="mt-0.5 h-4 w-4 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-brand-500">
-                                <span>Saya menyetujui <a href="{{ url('term') }}" target="_blank" rel="noopener" class="font-semibold text-brand-600 hover:underline">Syarat &amp; Ketentuan</a> dan <a href="{{ url('term') }}#privacy-policy" target="_blank" rel="noopener" class="font-semibold text-brand-600 hover:underline">Kebijakan Privasi</a>. <span class="text-brand-600">*</span></span>
+                                <span>{{ __('Saya menyetujui') }} <a href="{{ url('term') }}" target="_blank" rel="noopener" class="font-semibold text-brand-600 hover:underline">{{ __('Syarat & Ketentuan') }}</a> {{ __('dan') }} <a href="{{ url('term') }}#privacy-policy" target="_blank" rel="noopener" class="font-semibold text-brand-600 hover:underline">{{ __('Kebijakan Privasi') }}</a>. <span class="text-brand-600">*</span></span>
                             </label>
                             @error('agree_terms')<p class="pl-6 text-xs font-semibold text-red-600">{{ $message }}</p>@enderror
                             <label class="flex items-start gap-3 text-sm text-ink-700">
                                 <input type="checkbox" name="consent_contact" value="1" {{ old('consent_contact') ? 'checked' : '' }} class="mt-0.5 h-4 w-4 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-brand-500">
-                                <span>Saya bersedia dihubungi Tim GODEVI untuk tindak lanjut hasil asesmen. <span class="text-ink-400">(opsional)</span></span>
+                                <span>{{ __('Saya bersedia dihubungi Tim GODEVI untuk tindak lanjut hasil asesmen.') }} <span class="text-ink-400">{{ __('(opsional)') }}</span></span>
                             </label>
                             <label class="flex items-start gap-3 text-sm text-ink-700">
                                 <input type="checkbox" name="consent_research" value="1" {{ old('consent_research') ? 'checked' : '' }} class="mt-0.5 h-4 w-4 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-brand-500">
-                                <span>Data saya boleh dipakai secara anonim untuk keperluan riset. <span class="text-ink-400">(opsional)</span></span>
+                                <span>{{ __('Data saya boleh dipakai secara anonim untuk keperluan riset.') }} <span class="text-ink-400">{{ __('(opsional)') }}</span></span>
                             </label>
                         </fieldset>
                     @endunless
 
                     <div class="mt-10 flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
-                        <a href="{{ $adminMode ? route('assessment-results.create') : route('assessment.index') }}" class="btn-secondary !py-4 sm:!px-7">← Batal</a>
+                        <a href="{{ $adminMode ? route('assessment-results.create') : route('assessment.index') }}" class="btn-secondary !py-4 sm:!px-7">← {{ __('Batal') }}</a>
                         <button type="submit" class="btn-primary group flex-1 !py-4 text-base">
-                            {{ $profile['submit_label'] ?? 'Lanjut Menilai '.ucfirst($unitLabel) }}
+                            {{ $profile['submit_label'] ?? __('Lanjut Menilai :unit', ['unit' => ucfirst($unitLabel)]) }}
                             <svg class="h-5 w-5 transition group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                         </button>
                     </div>
-                    <p class="mt-4 text-center text-xs text-ink-400">Data hanya dipakai untuk analisa & tindak lanjut tim GODEVI.</p>
+                    <p class="mt-4 text-center text-xs text-ink-400">{{ __('Data hanya dipakai untuk analisa & tindak lanjut tim GODEVI.') }}</p>
                 </form>
             </div>
 
@@ -351,12 +352,12 @@
                     <div class="overflow-hidden rounded-3xl bg-ink-950 text-white shadow-[0_25px_50px_-12px_rgb(26_26_38/0.35)]">
                         <div class="relative p-7">
                             <div aria-hidden="true" class="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-brand-600/30 blur-2xl"></div>
-                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/50">Biaya Analisa</p>
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/50">{{ __('Biaya Analisa') }}</p>
                             <p class="mt-2 font-display text-4xl font-bold">{{ $priceLabel }}</p>
-                            <p class="mt-1 text-sm text-white/60">Sekali bayar · per asesmen</p>
+                            <p class="mt-1 text-sm text-white/60">{{ __('Sekali bayar · per asesmen') }}</p>
                         </div>
                         <ul class="space-y-3.5 border-t border-white/10 p-7 text-sm">
-                            @foreach (['Skor kesiapan total & kategori', 'Skor per dimensi '.($showWeight ? 'berbobot' : ''), 'Analisis kekuatan & tantangan', 'Draf strategi prioritas', 'Bisa dibuka ulang kapan saja'] as $benefit)
+                            @foreach ([__('Skor kesiapan total & kategori'), $showWeight ? __('Skor per dimensi berbobot') : __('Skor per dimensi'), __('Analisis kekuatan & tantangan'), __('Draf strategi prioritas'), __('Bisa dibuka ulang kapan saja')] as $benefit)
                                 <li class="flex items-start gap-3">
                                     <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-forest-500/20 text-forest-300">
                                         <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
@@ -370,9 +371,10 @@
                     <div class="rounded-3xl border border-ink-100 bg-cream-50 p-6 text-sm">
                         <div class="flex items-center gap-3">
                             <svg class="h-6 w-6 shrink-0 text-forest-600" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                            <p class="font-semibold text-ink-900">Pembayaran aman via Midtrans</p>
+                            <p class="font-semibold text-ink-900">{{ __('Pembayaran aman via Midtrans') }}</p>
                         </div>
-                        <p class="mt-2 leading-relaxed text-ink-500">Transfer bank, e-wallet, QRIS & kartu. Jawaban tersimpan dulu, bayar setelah selesai menilai.</p>
+                        <p class="mt-2 leading-relaxed text-ink-500">{{ __('Transfer bank, e-wallet, QRIS & kartu. Jawaban tersimpan dulu, bayar setelah selesai menilai.') }}</p>
+                        <p class="mt-2 leading-relaxed text-ink-500">{{ __('Punya kode voucher? Masukkan di halaman pembayaran setelah selesai menilai.') }}</p>
                     </div>
                 </div>
             </aside>
@@ -396,8 +398,17 @@
     @keyframes loc-drop { from { opacity: 0; transform: translateY(-4px) scaleY(.97); } to { opacity: 1; transform: none; } }
     @keyframes loc-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 </style>
+@php
+    $jsText = [
+        'notFound' => __('Lokasi tidak ditemukan. Coba kata kunci lain.'),
+        'postal' => __('Kode Pos'),
+        'failed' => __('Gagal memuat lokasi. Coba lagi.'),
+        'pick' => __('Pilih lokasi dari hasil pencarian terlebih dahulu.'),
+    ];
+@endphp
 <script>
 (function () {
+    const t = @json($jsText);
     const input = document.getElementById('location-search');
     const list = document.getElementById('location-results');
     const detail = document.getElementById('location-detail');
@@ -462,7 +473,7 @@
     };
 
     const render = (items) => {
-        if (!items.length) return message('Lokasi tidak ditemukan. Coba kata kunci lain.');
+        if (!items.length) return message(t.notFound);
         list.innerHTML = '';
         items.forEach((item) => {
             const li = document.createElement('li');
@@ -473,7 +484,7 @@
             main.textContent = placeLine(parts);
             const sub = document.createElement('div');
             sub.className = 'mt-0.5 text-xs text-ink-500';
-            sub.textContent = parts.postal ? 'Kode Pos ' + parts.postal : '';
+            sub.textContent = parts.postal ? t.postal + ' ' + parts.postal : '';
             li.append(main, sub);
             li.addEventListener('mousedown', (e) => {
                 e.preventDefault();
@@ -511,7 +522,7 @@
                 .catch((err) => {
                     if (err.name === 'AbortError') return;
                     loading(false);
-                    message('Gagal memuat lokasi. Coba lagi.');
+                    message(t.failed);
                 });
         }, 350);
     });
@@ -523,7 +534,7 @@
         if (!fields.province.value || !fields.city.value) {
             e.preventDefault();
             input.focus();
-            message('Pilih lokasi dari hasil pencarian terlebih dahulu.');
+            message(t.pick);
         }
     });
 

@@ -24,8 +24,8 @@ class AssessmentSubmitRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'answers.required' => 'Mohon isi seluruh pernyataan asesmen.',
-            'answers.*.required' => 'Masih ada pernyataan yang belum dijawab.',
+            'answers.required' => __('Mohon isi seluruh pernyataan asesmen.'),
+            'answers.*.required' => __('Masih ada pernyataan yang belum dijawab.'),
         ];
     }
 }

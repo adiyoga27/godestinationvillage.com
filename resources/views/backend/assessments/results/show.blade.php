@@ -7,7 +7,8 @@
             <h3 class="page-title mb-0">{{ $result->organization ?: $result->name }}</h3>
         </div>
         <div class="d-flex flex-wrap" style="gap:.5rem">
-            <a href="{{ route('assessment.result', $result->uuid) }}" target="_blank" rel="noopener" class="gd-btn gd-btn--ghost"><i class="mdi mdi-open-in-new"></i> Halaman guest</a>
+            <a href="{{ route('assessment.result', ['locale' => 'id', 'uuid' => $result->uuid]) }}" target="_blank" rel="noopener" class="gd-btn gd-btn--ghost"><i class="mdi mdi-open-in-new"></i> Halaman guest (ID)</a>
+            <a href="{{ route('assessment.result', ['locale' => 'en', 'uuid' => $result->uuid]) }}" target="_blank" rel="noopener" class="gd-btn gd-btn--ghost" title="Membuka versi English juga memicu terjemahan laporan bila belum ada"><i class="mdi mdi-open-in-new"></i> Halaman guest (EN)</a>
             @if ($result->is_unlocked)
                 <form action="{{ route('assessment-results.regenerate', $result->id) }}" method="post" onsubmit="return confirm('Buat ulang laporan AI? Laporan lama akan diganti.')">
                     @csrf
@@ -67,6 +68,10 @@
             <span class="gd-pill {{ $result->is_unlocked ? 'gd-pill--green' : 'gd-pill--amber' }}">{{ $result->paymentLabel() }}</span>
             <span class="gd-pill gd-pill--ink">{{ $result->source === 'admin' ? 'Input admin'.($result->creator ? ' · '.$result->creator->name : '') : 'Diisi guest' }}</span>
             <span class="gd-pill gd-pill--ink">{{ $result->created_at?->format('d M Y H:i') }}</span>
+            <span class="gd-pill gd-pill--ink">Bahasa responden: {{ strtoupper($result->locale ?: 'id') }}</span>
+            @if (! empty($result->ai_report))
+                <span class="gd-pill {{ ! empty($result->ai_report_en) ? 'gd-pill--green' : ($result->englishTranslationFailed() ? 'gd-pill--red' : 'gd-pill--amber') }}">Laporan English: {{ ! empty($result->ai_report_en) ? 'tersedia' : ($result->englishTranslationFailed() ? 'gagal diterjemahkan' : 'belum ada') }}</span>
+            @endif
             @if ($result->report_status)
                 <span class="gd-pill {{ ['done' => 'gd-pill--green', 'failed' => 'gd-pill--red', 'generating' => 'gd-pill--blue'][$result->report_status] ?? 'gd-pill--amber' }}">Laporan AI: {{ ['done' => 'selesai', 'failed' => 'gagal', 'generating' => 'diproses', 'pending' => 'menunggu'][$result->report_status] ?? $result->report_status }}</span>
             @endif
@@ -222,9 +227,12 @@
                 <div class="gd-invoice">
                     <div class="gd-invoice__head">
                         <strong>{{ $o->code }}</strong>
-                        <span class="gd-pill {{ ['paid' => 'gd-pill--green', 'pending' => 'gd-pill--amber'][$o->status] ?? 'gd-pill--red' }}">{{ ['paid' => 'Lunas', 'pending' => 'Menunggu', 'expired' => 'Kedaluwarsa', 'failed' => 'Gagal', 'refunded' => 'Refund'][$o->status] ?? $o->status }}</span>
+                        <span class="gd-pill {{ ['paid' => 'gd-pill--green', 'pending' => 'gd-pill--amber'][$o->status] ?? 'gd-pill--red' }}">{{ ['paid' => 'Lunas', 'pending' => 'Menunggu', 'expired' => 'Kedaluwarsa', 'failed' => 'Gagal', 'refunded' => 'Refund', 'cancelled' => 'Diganti'][$o->status] ?? $o->status }}</span>
                     </div>
                     <div class="gd-invoice__amount">{{ $rupiah($o->amount) }}</div>
+                    @if ($o->voucher_code)
+                        <div class="gd-table__meta">Voucher <strong>{{ $o->voucher_code }}</strong> · potong {{ $rupiah($o->discount_amount) }} dari {{ $rupiah($o->original_amount) }}</div>
+                    @endif
                     <div class="gd-table__meta">{{ strtoupper($o->gateway) }}{{ $o->payment_type ? ' · '.str_replace('_', ' ', $o->payment_type) : '' }}</div>
                     <div class="gd-table__meta">Dibuat {{ $o->created_at?->format('d M Y H:i') }}{{ $o->paid_at ? ' · Lunas '.$o->paid_at->format('d M Y H:i') : '' }}</div>
                 </div>

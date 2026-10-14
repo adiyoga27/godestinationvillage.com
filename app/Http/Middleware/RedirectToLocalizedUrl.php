@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * URL halaman publik tanpa awalan bahasa (/faq, /village/x) → /id/... (301).
- * /en/asesmen/... (isi hanya Bahasa Indonesia) → /id/asesmen/....
+ * /en/{segmen khusus Bahasa Indonesia}/... (Locales::ID_ONLY_SEGMENTS) → /id/....
  * Non-GET memakai 308 agar method & isi form ikut (form lama yang masih terbuka).
  */
 class RedirectToLocalizedUrl

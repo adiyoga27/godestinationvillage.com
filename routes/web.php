@@ -4,9 +4,11 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Backend\AdminsController;
 use App\Http\Controllers\Backend\AnalyticController;
+use App\Http\Controllers\Backend\AssessmentPriceController;
 use App\Http\Controllers\Backend\AssessmentQuestionController;
 use App\Http\Controllers\Backend\AssessmentResultController;
 use App\Http\Controllers\Backend\AssessmentTrackController;
+use App\Http\Controllers\Backend\AssessmentVoucherController;
 use App\Http\Controllers\Backend\BankAccountsController;
 use App\Http\Controllers\Backend\BlogController;
 use App\Http\Controllers\Backend\BoardExpertController;
@@ -223,22 +225,23 @@ Route::prefix('{locale}')->where(['locale' => 'id|en'])->group(function () {
     Route::get('/news/{slug}', [PageController::class, 'detailpost']);
     Route::post('/news/comment/{slug}', [PageController::class, 'postComment'])->middleware(['auth', 'log.activity']);
     Route::get('/search', [SearchController::class, 'searchHome']);
-});
-
-// Isi asesmen hanya berbahasa Indonesia → selalu /id/asesmen (/en/asesmen dialihkan).
-Route::prefix('id/asesmen')->group(function () {
-    Route::get('/', [AssessmentController::class, 'index'])->name('assessment.index');
-    Route::get('/cek', [AssessmentController::class, 'status'])->middleware('throttle:20,1')->name('assessment.status');
-    Route::get('/hasil/{uuid}', [AssessmentController::class, 'result'])->name('assessment.result');
-    Route::post('/hasil/{uuid}/checkout', [AssessmentController::class, 'checkout'])->name('assessment.checkout');
-    Route::post('/hasil/{uuid}/coba-lagi', [AssessmentController::class, 'retryReport'])->middleware('throttle:5,10')->name('assessment.retry_report');
-    Route::get('/bayar/{code}', [AssessmentController::class, 'payment'])->name('assessment.payment');
-    Route::post('/hasil/{uuid}/unlock-staff', [AssessmentController::class, 'unlockStaff'])
-        ->middleware('auth')->name('assessment.unlock_staff');
-    Route::get('/{slug}', [AssessmentController::class, 'intro'])->name('assessment.intro');
-    Route::post('/{slug}/mulai', [AssessmentController::class, 'start'])->name('assessment.start');
-    Route::get('/{slug}/soal', [AssessmentController::class, 'form'])->name('assessment.form');
-    Route::post('/{slug}/kirim', [AssessmentController::class, 'submit'])->name('assessment.submit');
+    // Asesmen dua bahasa: /id/asesmen & /en/asesmen.
+    Route::prefix('asesmen')->group(function () {
+        Route::get('/', [AssessmentController::class, 'index'])->name('assessment.index');
+        Route::get('/cek', [AssessmentController::class, 'status'])->middleware('throttle:20,1')->name('assessment.status');
+        Route::get('/hasil/{uuid}', [AssessmentController::class, 'result'])->name('assessment.result');
+        Route::post('/hasil/{uuid}/checkout', [AssessmentController::class, 'checkout'])->name('assessment.checkout');
+        Route::post('/hasil/{uuid}/coba-lagi', [AssessmentController::class, 'retryReport'])->middleware('throttle:5,10')->name('assessment.retry_report');
+        Route::post('/hasil/{uuid}/voucher', [AssessmentController::class, 'applyVoucher'])->middleware('throttle:10,1')->name('assessment.voucher');
+        Route::post('/hasil/{uuid}/voucher/hapus', [AssessmentController::class, 'removeVoucher'])->name('assessment.voucher.remove');
+        Route::get('/bayar/{code}', [AssessmentController::class, 'payment'])->name('assessment.payment');
+        Route::post('/hasil/{uuid}/unlock-staff', [AssessmentController::class, 'unlockStaff'])
+            ->middleware('auth')->name('assessment.unlock_staff');
+        Route::get('/{slug}', [AssessmentController::class, 'intro'])->name('assessment.intro');
+        Route::post('/{slug}/mulai', [AssessmentController::class, 'start'])->name('assessment.start');
+        Route::get('/{slug}/soal', [AssessmentController::class, 'form'])->name('assessment.form');
+        Route::post('/{slug}/kirim', [AssessmentController::class, 'submit'])->name('assessment.submit');
+    });
 });
 
 // check update
@@ -376,7 +379,15 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
         Route::get('/questions/{id}/edit', [AssessmentQuestionController::class, 'edit'])->name('edit');
         Route::put('/questions/{id}', [AssessmentQuestionController::class, 'update'])->name('update');
         Route::delete('/questions/{id}', [AssessmentQuestionController::class, 'destroy'])->name('destroy');
+        Route::post('/questions/translate', [AssessmentQuestionController::class, 'translate'])->name('translate');
     });
+    // Asesmen: harga per jalur + kode voucher diskon
+    Route::get('assessment-prices', [AssessmentPriceController::class, 'index'])->name('assessment-prices.index');
+    Route::put('assessment-prices', [AssessmentPriceController::class, 'update'])->name('assessment-prices.update');
+    Route::get('assessment-vouchers/export', [AssessmentVoucherController::class, 'export'])->name('assessment-vouchers.export');
+    Route::post('assessment-vouchers/batch-toggle', [AssessmentVoucherController::class, 'toggleBatch'])->name('assessment-vouchers.batch-toggle');
+    Route::resource('assessment-vouchers', AssessmentVoucherController::class, ['except' => ['show']]);
+    Route::post('assessment-vouchers/{id}/toggle', [AssessmentVoucherController::class, 'toggle'])->name('assessment-vouchers.toggle');
     // Asesmen: inbox hasil + tindak lanjut tim
     Route::resource('assessment-results', AssessmentResultController::class, ['only' => ['index', 'create', 'show', 'update', 'destroy']]);
     Route::get('assessment-results/input/{slug}', [AssessmentResultController::class, 'input'])->name('assessment-results.input');

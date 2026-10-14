@@ -16,6 +16,10 @@ class AssessmentOrder extends Model
         'assessment_result_id',
         'code',
         'amount',
+        'original_amount',
+        'discount_amount',
+        'voucher_id',
+        'voucher_code',
         'gateway',
         'gateway_ref',
         'status',
@@ -25,12 +29,19 @@ class AssessmentOrder extends Model
 
     protected $casts = [
         'amount' => 'integer',
+        'original_amount' => 'integer',
+        'discount_amount' => 'integer',
         'paid_at' => 'datetime',
     ];
 
     public function result()
     {
         return $this->belongsTo(AssessmentResult::class, 'assessment_result_id');
+    }
+
+    public function voucher()
+    {
+        return $this->belongsTo(AssessmentVoucher::class, 'voucher_id');
     }
 
     public static function generateCode(): string

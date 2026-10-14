@@ -11,10 +11,10 @@
     <div class="container-gd relative z-10 py-16 sm:py-20 lg:py-24">
         <nav aria-label="Breadcrumb">
             <ol class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-white/50">
-                <li><a href="{{ url('/') }}" class="transition hover:text-white">Beranda</a></li>
+                <li><a href="{{ url('/') }}" class="transition hover:text-white">{{ __('Beranda') }}</a></li>
                 <li class="flex items-center gap-1.5">
                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-                    <span class="text-brand-400" aria-current="page">Asesmen</span>
+                    <span class="text-brand-400" aria-current="page">{{ __('Asesmen') }}</span>
                 </li>
             </ol>
         </nav>
@@ -23,28 +23,27 @@
             <div data-vue="Reveal">
                 <p class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-brand-400">
                     <span class="h-1.5 w-1.5 rounded-full bg-brand-400"></span>
-                    Asesmen Kesiapan GODEVI
+                    {{ __('Asesmen Kesiapan GODEVI') }}
                 </p>
                 <h1 class="mt-5 font-display text-4xl font-bold leading-[1.08] text-white sm:text-5xl lg:text-6xl">
-                    Ukur kesiapanmu,<br>
-                    <span class="italic text-brand-400">rancang langkah</span> berikutnya.
+                    {{ __('Ukur kesiapanmu,') }}<br>
+                    <span class="italic text-brand-400">{{ __('rancang langkah') }}</span> {{ __('berikutnya.') }}
                 </h1>
                 <p class="mt-5 max-w-xl leading-relaxed text-white/70">
-                    Empat jalur penilaian mandiri untuk desa wisata, usaha desa, kawasan, dan produk regeneratif.
-                    Skor berskala 1–5, hasil & draf strategi terbuka setelah pembayaran.
+                    {{ __('Empat jalur penilaian mandiri untuk desa wisata, usaha desa, kawasan, dan produk regeneratif. Skor berskala 1–5, hasil & draf strategi terbuka setelah pembayaran.') }}
                 </p>
                 <div class="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm text-white/70">
                     <span class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-forest-300" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        Tanpa login
+                        {{ __('Tanpa login') }}
                     </span>
                     <span class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-forest-300" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        ±10–15 menit
+                        {{ __('±10–15 menit') }}
                     </span>
                     <span class="flex items-center gap-2">
                         <svg class="h-5 w-5 text-forest-300" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-                        Laporan strategi AI
+                        {{ __('Laporan strategi AI') }}
                     </span>
                 </div>
             </div>
@@ -54,8 +53,8 @@
                         <li class="flex items-center gap-4 rounded-2xl px-5 py-4 {{ $i === 0 ? 'bg-white/[0.07]' : '' }}">
                             <span class="font-display text-2xl font-bold {{ $i === 0 ? 'text-brand-400' : 'text-white/25' }}">0{{ $i + 1 }}</span>
                             <span>
-                                <span class="block text-sm font-bold text-white">{{ $s[0] }}</span>
-                                <span class="block text-xs text-white/50">{{ $s[1] }}</span>
+                                <span class="block text-sm font-bold text-white">{{ __($s[0]) }}</span>
+                                <span class="block text-xs text-white/50">{{ __($s[1]) }}</span>
                             </span>
                         </li>
                     @endforeach
@@ -70,10 +69,10 @@
     <div class="container-gd">
         <div class="mb-12 flex flex-wrap items-end justify-between gap-6" data-vue="Reveal">
             <div class="max-w-xl">
-                <p class="eyebrow">Empat Jalur</p>
-                <h2 class="mt-2 font-display text-3xl font-bold text-ink-950 sm:text-4xl">Mulai dari yang paling sesuai</h2>
+                <p class="eyebrow">{{ __('Empat Jalur') }}</p>
+                <h2 class="mt-2 font-display text-3xl font-bold text-ink-950 sm:text-4xl">{{ __('Mulai dari yang paling sesuai') }}</h2>
             </div>
-            <p class="max-w-sm text-sm leading-relaxed text-ink-500">Skor kesiapan dan laporan strategi lengkap terbuka dengan satu pembayaran per asesmen.</p>
+            <p class="max-w-sm text-sm leading-relaxed text-ink-500">{{ __('Skor kesiapan dan laporan strategi lengkap terbuka dengan satu pembayaran per asesmen.') }}</p>
         </div>
 
         <div class="grid gap-6 md:grid-cols-2">
@@ -96,28 +95,28 @@
                             </span>
                             <span class="font-display text-5xl font-bold leading-none text-ink-100 transition group-hover:text-ink-200">0{{ $i + 1 }}</span>
                         </div>
-                        <h3 class="mt-6 font-display text-2xl font-bold leading-tight text-ink-950">{{ $track->name }}</h3>
-                        <p class="mt-2 text-xs font-bold uppercase tracking-[0.18em] {{ $a['text'] }}">{{ $track->tagline }}</p>
-                        <p class="mt-3 flex-1 text-[15px] leading-relaxed text-ink-600">{{ $track->description }}</p>
+                        <h3 class="mt-6 font-display text-2xl font-bold leading-tight text-ink-950">{{ $track->local('name') }}</h3>
+                        <p class="mt-2 text-xs font-bold uppercase tracking-[0.18em] {{ $a['text'] }}">{{ $track->local('tagline') }}</p>
+                        <p class="mt-3 flex-1 text-[15px] leading-relaxed text-ink-600">{{ $track->local('description') }}</p>
                         <dl class="mt-6 grid grid-cols-3 divide-x divide-ink-100 rounded-2xl bg-cream-50 py-4 text-center">
                             <div class="px-2">
-                                <dt class="sr-only">Untuk</dt>
-                                <dd class="truncate text-xs font-semibold text-ink-700" title="{{ $track->target_audience }}">{{ $track->target_audience }}</dd>
+                                <dt class="sr-only">{{ __('Untuk') }}</dt>
+                                <dd class="truncate text-xs font-semibold text-ink-700" title="{{ $track->local('target_audience') }}">{{ $track->local('target_audience') }}</dd>
                             </div>
                             <div class="px-2">
-                                <dt class="sr-only">Durasi</dt>
-                                <dd class="text-xs font-semibold text-ink-700">±{{ $track->estimated_minutes }} mnt</dd>
+                                <dt class="sr-only">{{ __('Durasi') }}</dt>
+                                <dd class="text-xs font-semibold text-ink-700">{{ __('±:count mnt', ['count' => $track->estimated_minutes]) }}</dd>
                             </div>
                             <div class="px-2">
-                                <dt class="sr-only">Pernyataan</dt>
-                                <dd class="text-xs font-semibold text-ink-700">{{ $track->questions_count }} soal</dd>
+                                <dt class="sr-only">{{ __('Pernyataan') }}</dt>
+                                <dd class="text-xs font-semibold text-ink-700">{{ __(':count soal', ['count' => $track->questions_count]) }}</dd>
                             </div>
                         </dl>
                         <div class="mt-6 flex items-center justify-between gap-4 border-t border-dashed border-ink-100 pt-5">
-                            <p class="text-sm text-ink-500">Skor + laporan <strong class="text-ink-900">Rp {{ number_format($track->price ?? 199000, 0, ',', '.') }}</strong></p>
+                            <p class="text-sm text-ink-500">{{ __('Skor + laporan') }} <strong class="text-ink-900">Rp {{ number_format($track->price ?? 199000, 0, ',', '.') }}</strong></p>
                             <a href="{{ route('assessment.intro', $track->slug) }}"
                                 class="inline-flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white transition group-hover:gap-3 {{ $a['bg'] }}">
-                                Mulai
+                                {{ __('Mulai') }}
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
                             </a>
                         </div>
@@ -127,10 +126,9 @@
         </div>
 
         <p class="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-ink-500" data-vue="Reveal">
-            Data profil Anda dilindungi UU Pelindungan Data Pribadi. Hasil asesmen bersifat penilaian mandiri —
-            tim GODEVI siap mendampingi tindak lanjutnya.
+            {{ __('Data profil Anda dilindungi UU Pelindungan Data Pribadi. Hasil asesmen bersifat penilaian mandiri — tim GODEVI siap mendampingi tindak lanjutnya.') }}
         </p>
-        <p class="mt-4 text-center text-sm text-ink-500">Sudah pernah mengisi? <a href="{{ route('assessment.status') }}" class="font-semibold text-brand-600 underline underline-offset-2">Cek status & hasil asesmen</a></p>
+        <p class="mt-4 text-center text-sm text-ink-500">{{ __('Sudah pernah mengisi?') }} <a href="{{ route('assessment.status') }}" class="font-semibold text-brand-600 underline underline-offset-2">{{ __('Cek status & hasil asesmen') }}</a></p>
     </div>
 </section>
 @endsection
