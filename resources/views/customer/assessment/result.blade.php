@@ -38,6 +38,7 @@
             {{-- Kop laporan: identitas resmi GODEVI (tetap tampil saat cetak/PDF) --}}
             <div class="flex flex-wrap items-center gap-4 border-b border-ink-100 px-6 py-5 sm:px-10">
                 <img src="{{ url('assets/godevi-black.png') }}" alt="GODEVI - Go Destination Village" class="h-11 w-auto sm:h-12" width="200" height="48" loading="eager">
+                <img src="{{ url('assets/logo-konsorsium.png') }}" alt="Logo Konsorsium" class="h-11 w-auto sm:h-12" loading="eager">
                 <div class="min-w-0 flex-1">
                     <p class="font-display text-base font-bold leading-tight text-ink-950 sm:text-lg">{{ __('Laporan Hasil Asesmen :track', ['track' => $trackName]) }}</p>
                     <p class="mt-0.5 truncate text-xs text-ink-500 sm:text-sm">{{ $result->organization ?: $result->name }}{{ $location ? ' · '.$location : '' }}</p>
