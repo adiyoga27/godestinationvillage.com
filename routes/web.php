@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Backend\AdminsController;
 use App\Http\Controllers\Backend\AnalyticController;
+use App\Http\Controllers\Backend\AiUsageController;
 use App\Http\Controllers\Backend\AssessmentPriceController;
 use App\Http\Controllers\Backend\AssessmentQuestionController;
 use App\Http\Controllers\Backend\AssessmentResultController;
@@ -381,6 +382,7 @@ Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'log.activit
         Route::delete('/questions/{id}', [AssessmentQuestionController::class, 'destroy'])->name('destroy');
         Route::post('/questions/translate', [AssessmentQuestionController::class, 'translate'])->name('translate');
     });
+    Route::get('ai-usage', [AiUsageController::class, 'index'])->name('ai-usage.index');
     // Asesmen: harga per jalur + kode voucher diskon
     Route::get('assessment-prices', [AssessmentPriceController::class, 'index'])->name('assessment-prices.index');
     Route::put('assessment-prices', [AssessmentPriceController::class, 'update'])->name('assessment-prices.update');

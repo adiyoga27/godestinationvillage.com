@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AiUsageLog;
 use App\Models\AssessmentResult;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -120,7 +121,7 @@ class AiReportService
         ];
 
         for ($attempt = 1; $attempt <= 2; $attempt++) {
-            $res = self::call($prompt);
+            $res = self::call($prompt, null, 'report', $result->id);
 
             if (! $res['ok']) {
                 Log::warning("AI report attempt $attempt gagal: ".$res['error']);
@@ -164,7 +165,7 @@ class AiReportService
      *
      * @return array{ok: bool, report?: array, error?: string, meta: array}
      */
-    public static function translateReport(array $report, string $slug): array
+    public static function translateReport(array $report, string $slug, ?int $resultId = null): array
     {
         $json = json_encode($report, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
         $prompt = <<<PROMPT
@@ -185,7 +186,7 @@ class AiReportService
         $err = null;
 
         for ($attempt = 1; $attempt <= 2; $attempt++) {
-            $res = self::call($prompt, 'You are a professional Indonesian–English translator. Reply with valid JSON only, no markdown.');
+            $res = self::call($prompt, 'You are a professional Indonesian–English translator. Reply with valid JSON only, no markdown.', 'translate_report', $resultId);
             if (! $res['ok']) {
                 $err = $res['error'];
                 $meta['attempts'][] = ['at' => now()->toIso8601String(), 'ok' => false, 'error' => $err];
@@ -223,13 +224,23 @@ class AiReportService
         return null;
     }
 
-    public static function call(string $prompt, ?string $system = null): array
+    /**
+     * Satu panggilan ke penyedia AI aktif; token yang terpakai dicatat ke ai_usage_logs.
+     *
+     * @param  string  $purpose  lihat AiUsageLog::PURPOSES
+     */
+    public static function call(string $prompt, ?string $system = null, string $purpose = 'report', ?int $resultId = null): array
     {
         $system ??= 'Anda konsultan senior GODEVI. Jawab hanya JSON valid tanpa markdown.';
+        $started = microtime(true);
 
-        return config('ai.driver', 'deepseek') === 'claude'
+        $res = config('ai.driver', 'deepseek') === 'claude'
             ? self::callClaude($prompt, $system)
             : self::callDeepSeek($prompt, $system);
+
+        AiUsageLog::record($res, $purpose, $resultId, (int) round((microtime(true) - $started) * 1000));
+
+        return $res;
     }
 
     protected static function callDeepSeek(string $prompt, string $system): array

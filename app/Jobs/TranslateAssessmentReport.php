@@ -47,7 +47,7 @@ class TranslateAssessmentReport implements ShouldQueue
             return;
         }
 
-        $out = AiReportService::translateReport($result->ai_report, $result->track->slug);
+        $out = AiReportService::translateReport($result->ai_report, $result->track->slug, $result->id);
 
         $meta = $result->ai_meta ?? [];
         $meta['translation_en'] = $out['meta'] + ['ok' => $out['ok'], 'error' => $out['error'] ?? null];

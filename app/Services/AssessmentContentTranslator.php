@@ -124,7 +124,7 @@ class AssessmentContentTranslator
 
         $err = 'unknown';
         for ($attempt = 1; $attempt <= 2; $attempt++) {
-            $res = AiReportService::call($prompt, 'You are a professional Indonesian–English translator. Reply with valid JSON only, no markdown.');
+            $res = AiReportService::call($prompt, 'You are a professional Indonesian–English translator. Reply with valid JSON only, no markdown.', 'translate_content');
             if (! $res['ok']) {
                 $err = $res['error'];
 
