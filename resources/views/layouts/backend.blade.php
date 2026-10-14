@@ -131,7 +131,7 @@
                   <li><a class="gd-subnav__link" href="{{ route('assessment-prices.index') }}">Harga Asesmen</a></li>
                   <li><a class="gd-subnav__link" href="{{ route('assessment-vouchers.index') }}">Voucher Diskon</a></li>
                   @if (Auth::user()->role_id == 1)
-                    <li><a class="gd-subnav__link" href="{{ route('ai-settings.edit') }}"><i class="mdi mdi-creation mr-1"></i>Pengaturan AI</a></li>
+                    <li><a class="gd-subnav__link" href="{{ route('ai-settings.edit') }}">Pengaturan AI</a></li>
                   @endif
                   <li><a class="gd-subnav__link" href="{{ route('assessment-results.index') }}">Hasil Masuk</a></li>
                 </ul>
