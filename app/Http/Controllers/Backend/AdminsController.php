@@ -60,11 +60,11 @@ class AdminsController extends Controller
         $html = $htmlBuilder
               ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'', 'orderable'=>false, 'searchable'=>false])
               ->addColumn(['data' => 'rownum', 'name'=>'rownum', 'title'=>'No','searchable'=>false])
-              ->addColumn(['data' => 'name', 'name' => 'name', 'title' => 'Nama' ])
-              ->addColumn(['data' => 'email', 'name' => 'email', 'title' => 'Email' ])
-              ->addColumn(['data' => 'phone', 'name' => 'phone', 'title' => 'No. Telp' ])
-              ->addColumn(['data' => 'created_at', 'name' => 'created_at', 'title' => 'Tanggal Dibuat' ])
-              ->addColumn(['data' => 'is_active', 'name' => 'is_active', 'title' => 'Status' ])
+              ->addColumn(['data' => 'name', 'name' => 'users.name', 'title' => 'Nama' ])
+              ->addColumn(['data' => 'email', 'name' => 'users.email', 'title' => 'Email' ])
+              ->addColumn(['data' => 'phone', 'name' => 'users.phone', 'title' => 'No. Telp' ])
+              ->addColumn(['data' => 'created_at', 'name' => 'users.created_at', 'title' => 'Tanggal Dibuat' ])
+              ->addColumn(['data' => 'is_active', 'name' => 'users.is_active', 'title' => 'Status' ])
               ->parameters([
                 'scrollX' => true,
                 'order' => [5, 'desc']

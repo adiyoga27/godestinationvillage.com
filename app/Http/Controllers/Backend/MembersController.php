@@ -63,14 +63,14 @@ class MembersController extends Controller
         $html = $htmlBuilder
               ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'', 'orderable'=>false, 'searchable'=>false])
               ->addColumn(['data' => 'rownum', 'name'=>'rownum', 'title'=>'No','searchable'=>false])
-              ->addColumn(['data' => 'name', 'name' => 'name', 'title' => 'Nama' ])
-              ->addColumn(['data' => 'email', 'name' => 'email', 'title' => 'Email' ])
-              ->addColumn(['data' => 'phone', 'name' => 'phone', 'title' => 'No. Telp' ])
-              ->addColumn(['data' => 'country', 'name' => 'country', 'title' => 'Negara' ])
-              ->addColumn(['data' => 'village_name', 'name' => 'village_name', 'title' => 'Village' ])
+              ->addColumn(['data' => 'name', 'name' => 'users.name', 'title' => 'Nama' ])
+              ->addColumn(['data' => 'email', 'name' => 'users.email', 'title' => 'Email' ])
+              ->addColumn(['data' => 'phone', 'name' => 'users.phone', 'title' => 'No. Telp' ])
+              ->addColumn(['data' => 'country', 'name' => 'users.country', 'title' => 'Negara' ])
+              ->addColumn(['data' => 'village_name', 'name' => 'village_details.village_name', 'title' => 'Village' ])
 
-              ->addColumn(['data' => 'created_at', 'name' => 'created_at', 'title' => 'Tanggal Dibuat' ])
-              ->addColumn(['data' => 'is_active', 'name' => 'is_active', 'title' => 'Status' ])
+              ->addColumn(['data' => 'created_at', 'name' => 'users.created_at', 'title' => 'Tanggal Dibuat' ])
+              ->addColumn(['data' => 'is_active', 'name' => 'users.is_active', 'title' => 'Status' ])
               ->parameters([
                 'scrollX' => true,
                 'order' => [5, 'desc']
@@ -135,7 +135,7 @@ class MembersController extends Controller
               ->addColumn(['data' => 'action', 'name'=>'action', 'title'=>'', 'orderable'=>false, 'searchable'=>false])
               ->addColumn(['data' => 'rownum', 'name'=>'rownum', 'title'=>'No','searchable'=>false])
               ->addColumn(['data' => 'code', 'name' => 'code', 'title' => 'No. Order' ])
-              ->addColumn(['data' => 'created_at', 'name' => 'created_at', 'title' => 'Tanggal Pemesanan' ])
+              ->addColumn(['data' => 'created_at', 'name' => 'users.created_at', 'title' => 'Tanggal Pemesanan' ])
               ->addColumn(['data' => 'package_name', 'name' => 'package_name', 'title' => 'Nama Paket' ])
               // ->addColumn(['data' => 'package_price', 'name' => 'package_price', 'title' => 'Harga Paket' ])
               // ->addColumn(['data' => 'package_discount', 'name' => 'package_discount', 'title' => 'Diskon' ])
