@@ -118,13 +118,31 @@
                 @endif
             </div>
                 @if (! empty($result->ai_report))
-                    @php $rep = $result->localReport(); @endphp
+                    @php
+                        $rep = $result->localReport();
+                        // Isi laporan AI kadang berupa objek/array bersarang → ratakan jadi teks agar tidak error.
+                        $txt = function ($v) use (&$txt) {
+                            if (! is_array($v)) {
+                                return (string) $v;
+                            }
+                            $parts = [];
+                            foreach ($v as $k => $x) {
+                                $t = $txt($x);
+                                if ($t === '') {
+                                    continue;
+                                }
+                                $parts[] = is_string($k) ? str_replace('_', ' ', ucfirst($k)).': '.$t : $t;
+                            }
+
+                            return implode('; ', $parts);
+                        };
+                    @endphp
                     @if ($translationPending)
                         <p class="mt-4 rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-800">{{ __('The English version of this report is being prepared and will appear automatically. Meanwhile, the original Indonesian report is shown below.') }}</p>
                     @elseif ($translationFailed)
                         <p class="mt-4 rounded-2xl bg-cream-50 px-4 py-3 text-sm text-ink-600">{{ __('The English version of this report is not available yet. The original Indonesian report is shown below.') }}</p>
                     @endif
-                    <p class="mt-4 border-l-4 border-brand-600 pl-5 font-display text-lg italic leading-relaxed text-ink-800">{{ $rep['ringkasan'] ?? '' }}</p>
+                    <p class="mt-4 border-l-4 border-brand-600 pl-5 font-display text-lg italic leading-relaxed text-ink-800">{{ $txt($rep['ringkasan'] ?? '') }}</p>
                     <div class="mt-8 grid gap-6 md:grid-cols-2">
                         <div class="rounded-3xl bg-forest-50 p-6">
                             <h3 class="flex items-center gap-2 font-bold text-forest-800">
@@ -132,7 +150,7 @@
                                 {{ __('Kekuatan utama') }}
                             </h3>
                             <ul class="mt-3 space-y-2.5 text-sm leading-relaxed text-ink-700">
-                                @foreach ((array) ($rep['kekuatan'] ?? []) as $s)<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-forest-600"></span>{{ $s }}</li>@endforeach
+                                @foreach ((array) ($rep['kekuatan'] ?? []) as $s)<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-forest-600"></span>{{ $txt($s) }}</li>@endforeach
                             </ul>
                         </div>
                         <div class="rounded-3xl bg-brand-50 p-6">
@@ -141,7 +159,7 @@
                                 {{ __('Tantangan utama') }}
                             </h3>
                             <ul class="mt-3 space-y-2.5 text-sm leading-relaxed text-ink-700">
-                                @foreach ((array) ($rep['tantangan'] ?? []) as $c)<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600"></span>{{ $c }}</li>@endforeach
+                                @foreach ((array) ($rep['tantangan'] ?? []) as $c)<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600"></span>{{ $txt($c) }}</li>@endforeach
                             </ul>
                         </div>
                     </div>
@@ -150,7 +168,7 @@
                         @foreach ((array) ($rep['langkah_prioritas'] ?? []) as $i => $s)
                             <li class="flex gap-4 rounded-2xl border border-ink-100 p-4">
                                 <span class="font-display text-2xl font-bold text-brand-600">{{ $i + 1 }}</span>
-                                <span class="text-sm leading-relaxed text-ink-700">{{ $s }}</span>
+                                <span class="text-sm leading-relaxed text-ink-700">{{ $txt($s) }}</span>
                             </li>
                         @endforeach
                     </ol>
@@ -158,7 +176,7 @@
                         @if (! empty($rep[$key]))
                             <h3 class="mt-8 font-display text-xl font-bold text-ink-950">{{ __($title) }}</h3>
                             <ul class="mt-3 space-y-2.5 text-sm leading-relaxed text-ink-700">
-                                @foreach ((array) $rep[$key] as $s)<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink-400"></span>{{ $s }}</li>@endforeach
+                                @foreach ((array) $rep[$key] as $s)<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ink-400"></span>{{ $txt($s) }}</li>@endforeach
                             </ul>
                         @endif
                     @endforeach
@@ -167,20 +185,20 @@
                         <div class="mt-3 grid gap-4 md:grid-cols-3">
                             @foreach ((array) $rep['opsi_branding'] as $b)
                                 <div class="rounded-3xl bg-ink-950 p-5 text-sm text-white">
-                                    <p class="font-display text-base font-bold">{{ is_array($b) ? ($b['nama'] ?? '') : $b }}</p>
+                                    <p class="font-display text-base font-bold">{{ is_array($b) ? $txt($b['nama'] ?? '') : $b }}</p>
                                     @if (is_array($b))
-                                        <p class="mt-1 italic text-brand-400">"{{ $b['tagline'] ?? '' }}"</p>
-                                        <p class="mt-2 text-white/65">{{ $b['alasan'] ?? '' }}</p>
+                                        <p class="mt-1 italic text-brand-400">"{{ $txt($b['tagline'] ?? '') }}"</p>
+                                        <p class="mt-2 text-white/65">{{ $txt($b['alasan'] ?? '') }}</p>
                                     @endif
                                 </div>
                             @endforeach
                         </div>
                     @endif
                     @if (! empty($rep['posisi_spektrum']))
-                        <div class="mt-8 rounded-3xl bg-forest-600 p-6 text-sm leading-relaxed text-white"><span class="font-bold">{{ __('Posisi spektrum') }}: </span>{{ $rep['posisi_spektrum'] }}</div>
+                        <div class="mt-8 rounded-3xl bg-forest-600 p-6 text-sm leading-relaxed text-white"><span class="font-bold">{{ __('Posisi spektrum') }}: </span>{{ $txt($rep['posisi_spektrum']) }}</div>
                     @endif
                     @if (! empty($rep['catatan_ttdi']))
-                        <div class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-relaxed text-amber-900">{{ $rep['catatan_ttdi'] }}</div>
+                        <div class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-relaxed text-amber-900">{{ $txt($rep['catatan_ttdi']) }}</div>
                     @endif
                 @elseif ($canRetry)
                     <div class="mt-5 rounded-2xl border border-red-100 bg-red-50 p-5">
