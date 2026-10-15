@@ -14,7 +14,7 @@ class UniqueUserEmail implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $user = User::withTrashed()
+        $user = User::query()
             ->where('email', $value)
             ->when($this->ignoreId, fn ($q) => $q->where('id', '!=', $this->ignoreId))
             ->orderBy('id')
@@ -25,7 +25,6 @@ class UniqueUserEmail implements ValidationRule
         }
 
         $role = self::ROLES[$user->role_id] ?? 'role #' . $user->role_id;
-        $fail('Email sudah digunakan oleh akun ' . $role . ' (ID ' . $user->id . ', ' . $user->name . ')'
-            . ($user->trashed() ? ' yang sudah dihapus' : '') . '.');
+        $fail('Email sudah digunakan oleh akun ' . $role . ' (ID ' . $user->id . ', ' . $user->name . ').');
     }
 }

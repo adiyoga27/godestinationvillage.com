@@ -56,6 +56,26 @@ class UserService
         ])->where('role_id', $role_id);
     }
 
+    /**
+     * Akun yang sudah dihapus (soft delete) tidak boleh menghalangi email dipakai ulang,
+     * jadi emailnya dilepas dulu agar tidak bentrok dengan unique index.
+     */
+    protected static function releaseTrashedEmail($email, $exceptId = null)
+    {
+        if (empty($email)) {
+            return;
+        }
+
+        User::onlyTrashed()
+            ->where('email', $email)
+            ->when($exceptId, fn ($q) => $q->where('id', '!=', $exceptId))
+            ->get()
+            ->each(function ($u) {
+                $u->email = 'deleted_' . $u->id . '_' . $u->email;
+                $u->saveQuietly();
+            });
+    }
+
     public static function create($payload)
     {
      
@@ -67,6 +87,8 @@ class UserService
             $upload = CustomImage::storeImage($payload['avatar'], 'users');
             $payload['avatar'] = $upload['name'];
         }
+
+        self::releaseTrashedEmail($payload['email'] ?? null);
 
         $model = User::create($payload);
         $role = DB::table('model_has_roles')
@@ -93,6 +115,8 @@ class UserService
             $upload = CustomImage::storeImage($payload['avatar'], 'users');
             $payload['avatar'] = $upload['name'];
         }
+
+        self::releaseTrashedEmail($payload['email'] ?? null, $id);
 
         $role = DB::table('model_has_roles')->where('model_id', $id)
                     ->update([
