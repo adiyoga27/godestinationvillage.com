@@ -18,7 +18,7 @@ class AiUsageLog extends Model
 
     protected $fillable = [
         'driver', 'model', 'purpose', 'assessment_result_id', 'ok', 'error',
-        'prompt_tokens', 'cache_hit_tokens', 'completion_tokens', 'reasoning_tokens', 'total_tokens', 'duration_ms',
+        'prompt_tokens', 'cache_hit_tokens', 'completion_tokens', 'reasoning_tokens', 'total_tokens', 'cost', 'charged', 'duration_ms',
     ];
 
     protected $casts = ['ok' => 'boolean'];
@@ -37,8 +37,14 @@ class AiUsageLog extends Model
         $usage = $response['usage'] ?? [];
 
         try {
+            $driver = config('ai.driver', 'deepseek');
+            $prompt = (int) ($usage['prompt_tokens'] ?? $usage['input_tokens'] ?? 0);
+            $cacheHit = (int) ($usage['prompt_cache_hit_tokens'] ?? $usage['cache_read_input_tokens'] ?? 0);
+            $completion = (int) ($usage['completion_tokens'] ?? $usage['output_tokens'] ?? 0);
+            $price = AiCredit::price($driver, $prompt, $cacheHit, $completion);
+
             self::create([
-                'driver' => config('ai.driver', 'deepseek'),
+                'driver' => $driver,
                 'model' => \App\Services\AiReportService::model(),
                 'purpose' => $purpose,
                 'assessment_result_id' => $resultId,
@@ -49,8 +55,11 @@ class AiUsageLog extends Model
                 'completion_tokens' => (int) ($usage['completion_tokens'] ?? $usage['output_tokens'] ?? 0),
                 'reasoning_tokens' => (int) ($usage['completion_tokens_details']['reasoning_tokens'] ?? 0),
                 'total_tokens' => (int) ($usage['total_tokens'] ?? (($usage['input_tokens'] ?? 0) + ($usage['output_tokens'] ?? 0))),
+                'cost' => $price['cost'],
+                'charged' => $price['charged'],
                 'duration_ms' => $durationMs,
             ]);
+            AiCredit::deduct($driver, $price['charged']);
         } catch (\Throwable $e) {
             Log::warning('Gagal mencatat pemakaian AI: '.$e->getMessage());
         }

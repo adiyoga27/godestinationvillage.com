@@ -9,7 +9,7 @@
                 <p class="gd-subtitle">AI penyusun laporan strategi &amp; terjemahan asesmen — penyedia aktif, API key, model, saldo, dan pemakaian.</p>
             </div>
         </div>
-        <a href="{{ route('ai-settings.edit', ['refresh' => 1]) }}" class="gd-btn gd-btn--ghost"><i class="mdi mdi-refresh"></i> Perbarui saldo &amp; model</a>
+        <a href="{{ route('ai-settings.edit', ['refresh' => 1]) }}" class="gd-btn gd-btn--ghost"><i class="mdi mdi-refresh"></i> Perbarui status &amp; model</a>
     </div>
 @endsection
 
@@ -29,6 +29,7 @@
         'env' => ['dari .env', 'gd-pill--blue'],
         default => ['belum diisi', 'gd-pill--ink'],
     };
+    $usd = fn ($v) => 'US$ '.number_format((float) $v, 2, ',', '.');
     $deepseek = $accounts['deepseek'];
     $claude = $accounts['claude'];
     $keyOk = ['deepseek' => $deepseek['ok'], 'claude' => $claude['key_ok']];
@@ -62,28 +63,10 @@
                 </div>
 
                 <div class="ai-provider__money">
-                    @if ($key === 'deepseek')
-                        @if ($deepseek['ok'] && ! empty($deepseek['infos']))
-                            @php $info = $deepseek['infos'][0]; @endphp
-                            <span class="ai-provider__label">Sisa saldo</span>
-                            <strong>{{ $info['currency'] }} {{ $info['total_balance'] }}</strong>
-                            <span class="ai-provider__sub">Top up {{ $info['topped_up_balance'] ?? '-' }} · Bonus {{ $info['granted_balance'] ?? '-' }}</span>
-                        @else
-                            <span class="ai-provider__label">Sisa saldo</span>
-                            <strong class="is-muted">—</strong>
-                            <span class="ai-provider__sub text-danger">{{ $deepseek['error'] ?? 'Saldo tidak tersedia.' }}</span>
-                        @endif
-                    @else
-                        @if (! empty($claude['cost']['ok']))
-                            <span class="ai-provider__label">Biaya bulan ini</span>
-                            <strong>US$ {{ number_format($claude['cost']['month_usd'], 2) }}</strong>
-                            <span class="ai-provider__sub">Hari ini US$ {{ number_format($claude['cost']['today_usd'], 2) }} · data bisa tertunda beberapa jam</span>
-                        @else
-                            <span class="ai-provider__label">Biaya bulan ini</span>
-                            <strong class="is-muted">—</strong>
-                            <span class="ai-provider__sub">{{ isset($claude['cost']) ? 'Gagal membaca biaya: '.$claude['cost']['error'] : 'Isi Admin API key untuk melihat biaya.' }}</span>
-                        @endif
-                    @endif
+                    @php $credit = $credits[$key] ?? null; @endphp
+                    <span class="ai-provider__label">Sisa kredit layanan</span>
+                    <strong class="{{ ($credit->balance ?? 0) <= 0 ? 'is-muted' : '' }}">{{ $usd($credit->balance ?? 0) }}</strong>
+                    <span class="ai-provider__sub">Terpakai bulan ini {{ $usd($month->charged ?? 0) }}</span>
                 </div>
 
                 <div class="ai-provider__foot">
@@ -94,8 +77,8 @@
                     @else
                         <span class="gd-pill gd-pill--red"><i class="mdi mdi-alert-circle"></i> Gagal terhubung</span>
                     @endif
-                    @if ($key === 'deepseek' && $deepseek['ok'] && ! $deepseek['available'])
-                        <span class="gd-pill gd-pill--red">Saldo habis</span>
+                    @if (($credits[$key]->balance ?? 0) <= 0)
+                        <span class="gd-pill gd-pill--red">Kredit habis</span>
                     @endif
                     <span class="ai-provider__usage">{{ $n($month->calls ?? 0) }} panggilan · {{ $compact($month->total ?? 0) }} token bulan ini</span>
                 </div>
@@ -103,9 +86,6 @@
             </label>
         @endforeach
     </div>
-    @unless (isset($claude['cost']))
-        <p class="gd-hint mt-2"><i class="mdi mdi-information-outline"></i> Anthropic tidak menyediakan API sisa saldo; sisa kredit Claude dicek di <a href="https://console.anthropic.com/settings/billing" target="_blank" rel="noopener">Console › Billing</a>.</p>
-    @endunless
 
     {{-- ============ KREDENSIAL & MODEL ============ --}}
     <section class="gd-card mt-4">
@@ -211,7 +191,7 @@
 
 {{-- ============ PEMAKAIAN ============ --}}
 <h2 class="gd-section-title mt-5" id="pemakaian"><i class="mdi mdi-chart-box-outline"></i> Pemakaian AI</h2>
-<p class="gd-subtitle mb-3">Dicatat dari setiap panggilan API (laporan, terjemahan laporan, terjemahan soal). Saldo dicek {{ $deepseek['checked_at'] }}, disimpan 5 menit.</p>
+<p class="gd-subtitle mb-3">Dicatat dari setiap panggilan API (laporan, terjemahan laporan, terjemahan soal).</p>
 
 <div class="gd-stats">
     @foreach ($periods as $label => $p)
@@ -220,7 +200,7 @@
             <div>
                 <p class="gd-stat__label">{{ $label }}</p>
                 <p class="gd-stat__value">{{ $compact($p->total) }} <small class="ai-unit">token</small></p>
-                <p class="gd-stat__hint">{{ $n($p->calls) }} panggilan @if ($p->failed)· <span class="text-danger">{{ $n($p->failed) }} gagal</span>@endif</p>
+                <p class="gd-stat__hint">{{ $usd($p->charged) }} · {{ $n($p->calls) }} panggilan @if ($p->failed)· <span class="text-danger">{{ $n($p->failed) }} gagal</span>@endif</p>
             </div>
         </div>
     @endforeach
@@ -280,7 +260,7 @@
     <div class="gd-card__body pt-2">
         <div class="table-responsive">
             <table class="table gd-table">
-                <thead><tr><th>Waktu</th><th>AI</th><th>Kegunaan</th><th>Hasil asesmen</th><th class="text-right">Token</th><th class="text-right">Durasi</th><th>Status</th></tr></thead>
+                <thead><tr><th>Waktu</th><th>AI</th><th>Kegunaan</th><th>Hasil asesmen</th><th class="text-right">Token</th><th class="text-right">Kredit</th><th class="text-right">Durasi</th><th>Status</th></tr></thead>
                 <tbody>
                 @forelse ($recent as $log)
                     @php $p = $providers[$log->driver] ?? null; @endphp
@@ -293,6 +273,7 @@
                         <td><span class="gd-table__meta">{{ \App\Models\AiUsageLog::PURPOSES[$log->purpose] ?? $log->purpose }}</span></td>
                         <td>@if ($log->result)<a href="{{ route('assessment-results.show', $log->result->id) }}" class="gd-table__title">{{ $log->result->organization ?: $log->result->name }}</a>@else<span class="gd-table__meta">—</span>@endif</td>
                         <td class="text-right"><span class="gd-table__meta-strong">{{ $n($log->total_tokens) }}</span>@if ($log->reasoning_tokens)<br><span class="gd-table__meta">{{ $compact($log->reasoning_tokens) }} reasoning</span>@endif</td>
+                        <td class="text-right"><span class="gd-table__meta-strong">{{ number_format($log->charged, 4, ',', '.') }}</span></td>
                         <td class="text-right"><span class="gd-table__meta">{{ $log->duration_ms ? number_format($log->duration_ms / 1000, 1, ',', '.').' dtk' : '—' }}</span></td>
                         <td>
                             @if ($log->ok)
@@ -304,7 +285,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="7"><div class="gd-empty"><i class="mdi mdi-robot-outline"></i><p>Belum ada panggilan AI.</p></div></td></tr>
+                    <tr><td colspan="8"><div class="gd-empty"><i class="mdi mdi-robot-outline"></i><p>Belum ada panggilan AI.</p></div></td></tr>
                 @endforelse
                 </tbody>
             </table>

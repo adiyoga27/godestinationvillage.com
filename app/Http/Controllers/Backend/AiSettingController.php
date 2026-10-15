@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\AiCredit;
 use App\Models\AiUsageLog;
 use App\Services\AiAccountService;
 use App\Support\AiSettings;
@@ -30,7 +31,7 @@ class AiSettingController extends Controller
     public function edit(Request $request)
     {
         $fresh = $request->boolean('refresh');
-        $sum = fn ($q) => $q->selectRaw('count(*) calls, sum(ok = 0) failed, sum(prompt_tokens) prompt, sum(cache_hit_tokens) cache_hit, sum(completion_tokens) completion, sum(reasoning_tokens) reasoning, sum(total_tokens) total')->first();
+        $sum = fn ($q) => $q->selectRaw('count(*) calls, sum(ok = 0) failed, sum(prompt_tokens) prompt, sum(cache_hit_tokens) cache_hit, sum(completion_tokens) completion, sum(reasoning_tokens) reasoning, sum(total_tokens) total, sum(charged) charged')->first();
 
         return view('backend.ai_settings.edit', [
             'sources' => collect(array_keys(AiSettings::FIELDS))->mapWithKeys(fn ($k) => [$k => AiSettings::source($k)]),
@@ -42,8 +43,9 @@ class AiSettingController extends Controller
             ],
             'accounts' => ['deepseek' => AiAccountService::deepseek($fresh), 'claude' => AiAccountService::claude($fresh)],
             'models' => ['deepseek' => AiAccountService::models('deepseek', $fresh), 'claude' => AiAccountService::models('claude', $fresh)],
+            'credits' => AiCredit::all()->keyBy('driver'),
             'monthByDriver' => AiUsageLog::where('created_at', '>=', now()->startOfMonth())
-                ->selectRaw('driver, count(*) calls, sum(total_tokens) total')->groupBy('driver')->get()->keyBy('driver'),
+                ->selectRaw('driver, count(*) calls, sum(total_tokens) total, sum(charged) charged')->groupBy('driver')->get()->keyBy('driver'),
             'periods' => [
                 'Hari ini' => $sum(AiUsageLog::where('created_at', '>=', today())),
                 '7 hari' => $sum(AiUsageLog::where('created_at', '>=', today()->subDays(6))),
