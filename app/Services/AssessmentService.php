@@ -297,7 +297,7 @@ class AssessmentService
      */
     public static function displayWeights(AssessmentTrack $track, Collection $grouped): Collection
     {
-        $configured = self::weightsFor($track);
+        $configured = self::usableWeights($track, $grouped->keys()->all());
         $equal = $grouped->count() > 0 ? 100 / $grouped->count() : 0;
 
         return $grouped->map(fn ($qs, $name) => (float) ($configured[$name] ?? $equal));
@@ -306,6 +306,28 @@ class AssessmentService
     public static function weightsFor(AssessmentTrack $track): array
     {
         return self::DIMENSION_WEIGHTS[$track->slug] ?? [];
+    }
+
+    /**
+     * Bobot konfigurasi hanya dipakai bila SEMUA nama dimensi pertanyaan punya bobot.
+     * Admin bisa mengganti nama dimensi di bank soal; tanpa pengaman ini bobot tak cocok bernilai 0
+     * dan skor total jatuh ke 0/100. Bila tak cocok → kembali ke bobot setara.
+     *
+     * @param  array<int, string>  $dimensionNames
+     */
+    public static function usableWeights(AssessmentTrack $track, array $dimensionNames): array
+    {
+        $configured = self::weightsFor($track);
+        if (empty($configured) || empty($dimensionNames)) {
+            return [];
+        }
+        foreach ($dimensionNames as $name) {
+            if (! isset($configured[$name])) {
+                return [];
+            }
+        }
+
+        return $configured;
     }
 
     public static function bandsFor(AssessmentTrack $track): array
@@ -388,7 +410,7 @@ class AssessmentService
             ];
         }
 
-        $configured = self::weightsFor($track);
+        $configured = self::usableWeights($track, array_keys($byDimension));
         $useEqual = empty($configured);
         $equalWeight = count($byDimension) > 0 ? 100 / count($byDimension) : 0;
 
