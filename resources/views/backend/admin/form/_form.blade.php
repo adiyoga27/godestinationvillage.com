@@ -21,7 +21,7 @@
     <div class="form-group row">
       <label class="col-sm-3 col-form-label">Password @if(empty($admin))(*)@endif</label>
       <div class="col-sm-9">
-        {!! Form::password('password', ['class'=>'form-control']) !!}
+        {!! Form::password('password', ['class'=>'form-control', 'autocomplete'=>'new-password']) !!}
     	{!! $errors->first('password', '<p class="text-danger">:message</p>') !!}
       </div>
     </div>
@@ -29,7 +29,7 @@
     <div class="form-group row">
       <label class="col-sm-3 col-form-label">Konfrimasi Password @if(empty($admin))(*)@endif</label>
       <div class="col-sm-9">
-        {!! Form::password('password_confirmation', ['class'=>'form-control']) !!}
+        {!! Form::password('password_confirmation', ['class'=>'form-control', 'autocomplete'=>'new-password']) !!}
         @if(!empty($admin))<small>* Konfirmasi Password harus diisi ketika kolom password terisi</small>@endif
      	{!! $errors->first('password_confirmation', '<p class="text-danger">:message</p>') !!}
       </div>
