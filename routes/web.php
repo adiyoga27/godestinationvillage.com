@@ -234,6 +234,7 @@ Route::prefix('{locale}')->where(['locale' => 'id|en'])->group(function () {
         Route::post('/hasil/{uuid}/checkout', [AssessmentController::class, 'checkout'])->name('assessment.checkout');
         Route::post('/hasil/{uuid}/coba-lagi', [AssessmentController::class, 'retryReport'])->middleware('throttle:5,10')->name('assessment.retry_report');
         Route::post('/hasil/{uuid}/voucher', [AssessmentController::class, 'applyVoucher'])->middleware('throttle:10,1')->name('assessment.voucher');
+        Route::post('/hasil/{uuid}/voucher/cek', [AssessmentController::class, 'checkVoucher'])->middleware('throttle:40,1')->name('assessment.voucher.check');
         Route::post('/hasil/{uuid}/voucher/hapus', [AssessmentController::class, 'removeVoucher'])->name('assessment.voucher.remove');
         Route::get('/bayar/{code}', [AssessmentController::class, 'payment'])->name('assessment.payment');
         Route::post('/hasil/{uuid}/unlock-staff', [AssessmentController::class, 'unlockStaff'])

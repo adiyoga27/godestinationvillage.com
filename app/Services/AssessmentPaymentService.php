@@ -195,6 +195,46 @@ class AssessmentPaymentService
         });
     }
 
+    /**
+     * Cek voucher tanpa mengubah apa pun (dipakai pengecekan langsung di halaman bayar).
+     *
+     * @return array{ok: bool, message: string, original?: int, discount?: int, final?: int, code?: string}
+     */
+    public static function previewVoucher(AssessmentResult $result, ?string $code): array
+    {
+        $result->loadMissing('track');
+        $price = (int) ($result->track->price ?? 0);
+        $code = AssessmentVoucher::normalizeCode($code);
+
+        if ($result->is_unlocked || $price <= 0) {
+            return ['ok' => false, 'message' => __('Hasil asesmen ini sudah terbuka.')];
+        }
+        if ($code === '') {
+            return ['ok' => false, 'message' => __('Masukkan kode voucher.')];
+        }
+
+        $voucher = AssessmentVoucher::where('code', $code)->first();
+        if (! $voucher) {
+            return ['ok' => false, 'message' => __('Kode voucher tidak ditemukan.')];
+        }
+        if ($reason = $voucher->rejectionFor($result->track)) {
+            return ['ok' => false, 'message' => $reason];
+        }
+
+        $discount = $voucher->discountFor($price);
+
+        return [
+            'ok' => true,
+            'code' => $voucher->code,
+            'original' => $price,
+            'discount' => $discount,
+            'final' => $price - $discount,
+            'message' => $price - $discount > 0
+                ? __('Voucher valid — hemat Rp :amount.', ['amount' => number_format($discount, 0, ',', '.')])
+                : __('Voucher valid — asesmen ini gratis.'),
+        ];
+    }
+
     /** Lepas voucher dari invoice yang belum dibayar → kembali ke harga normal. */
     public static function removeVoucher(AssessmentResult $result): void
     {

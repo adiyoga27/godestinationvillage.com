@@ -99,10 +99,8 @@
                         <div class="relative p-7 sm:p-8">
                             <div aria-hidden="true" class="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-brand-600/35 blur-3xl"></div>
                             <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/50">{{ __('Total Pembayaran') }}</p>
-                            @if ($voucherOrder)
-                                <p class="mt-2 text-base text-white/50 line-through">Rp {{ number_format($voucherOrder->original_amount, 0, ',', '.') }}</p>
-                            @endif
-                            <p class="{{ $voucherOrder ? 'mt-0.5' : 'mt-2' }} font-display text-4xl font-bold sm:text-5xl">Rp {{ number_format($amount, 0, ',', '.') }}</p>
+                            <p id="price_original" class="mt-2 text-base text-white/50 line-through {{ $voucherOrder ? '' : 'hidden' }}">@if ($voucherOrder)Rp {{ number_format($voucherOrder->original_amount, 0, ',', '.') }}@endif</p>
+                            <p id="price_final" class="{{ $voucherOrder ? 'mt-0.5' : 'mt-2' }} font-display text-4xl font-bold sm:text-5xl">Rp {{ number_format($amount, 0, ',', '.') }}</p>
                             <p class="mt-2 text-sm text-white/60">{{ __('Asesmen :track', ['track' => $trackName]) }}{{ $order ? ' · '.$order->code : '' }}</p>
 
                             {{-- Kode voucher --}}
@@ -123,31 +121,22 @@
                                         </form>
                                     </div>
                                 @else
-                                    <form action="{{ route('assessment.voucher', $result->uuid) }}" method="post">
-                                        @csrf
-                                        <label for="voucher_code" class="block text-xs font-bold uppercase tracking-[0.14em] text-white/50">{{ __('Punya kode voucher?') }}</label>
-                                        <div class="mt-2 flex gap-2">
-                                            <input id="voucher_code" type="text" name="voucher_code" value="{{ old('voucher_code') }}" maxlength="40" autocomplete="off" required
-                                                class="min-w-0 flex-1 rounded-xl border-0 bg-white px-3.5 py-2.5 font-mono text-sm uppercase text-ink-950 placeholder:normal-case placeholder:text-ink-400 focus:ring-2 focus:ring-brand-500" placeholder="{{ __('Masukkan kode') }}">
-                                            <button type="submit" class="shrink-0 rounded-xl bg-white/15 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-white/25">{{ __('Pakai') }}</button>
-                                        </div>
-                                        @if (session('voucher_error'))
-                                            <p class="mt-2 text-xs font-semibold text-red-300">{{ session('voucher_error') }}</p>
-                                        @endif
-                                        @error('voucher_code')<p class="mt-2 text-xs font-semibold text-red-300">{{ $message }}</p>@enderror
-                                    </form>
+                                    <label for="voucher_code" class="block text-xs font-bold uppercase tracking-[0.14em] text-white/50">{{ __('Punya kode voucher? (opsional)') }}</label>
+                                    <div class="relative mt-2">
+                                        <input id="voucher_code" form="checkout-form" type="text" name="voucher_code" value="{{ old('voucher_code') }}" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false"
+                                            class="w-full rounded-xl border-0 bg-white py-2.5 pl-3.5 pr-10 font-mono text-sm uppercase text-ink-950 placeholder:normal-case placeholder:text-ink-400 focus:ring-2 focus:ring-brand-500" placeholder="{{ __('Masukkan kode') }}">
+                                        <span id="voucher_icon" class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold"></span>
+                                    </div>
+                                    <p id="voucher_msg" class="mt-2 text-xs font-semibold {{ session('voucher_error') ? 'text-red-300' : 'hidden' }}" role="status" aria-live="polite">{{ session('voucher_error') }}</p>
+                                    @error('voucher_code')<p class="mt-2 text-xs font-semibold text-red-300">{{ $message }}</p>@enderror
                                 @endif
                             </div>
 
                             @php $cardIcon = '<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>'; @endphp
-                            @if ($pendingOrder)
-                                <a href="{{ route('assessment.payment', $pendingOrder->code) }}" class="btn-primary mt-7 w-full !py-4 text-base">{!! $cardIcon !!} {{ __('Lanjutkan Pembayaran') }}</a>
-                            @else
-                                <form action="{{ route('assessment.checkout', $result->uuid) }}" method="post" class="mt-7">
-                                    @csrf
-                                    <button type="submit" class="btn-primary w-full !py-4 text-base">{!! $cardIcon !!} {{ $closed ? __('Bayar Ulang') : __('Bayar Sekarang') }}</button>
-                                </form>
-                            @endif
+                            <form id="checkout-form" action="{{ route('assessment.checkout', $result->uuid) }}" method="post" class="mt-7">
+                                @csrf
+                                <button id="pay_btn" type="submit" class="btn-primary w-full !py-4 text-base disabled:cursor-not-allowed disabled:opacity-50">{!! $cardIcon !!} <span id="pay_label">{{ $pendingOrder ? __('Lanjutkan Pembayaran') : ($closed ? __('Bayar Ulang') : __('Bayar Sekarang')) }}</span></button>
+                            </form>
                             @if ($closed)
                                 <p class="mt-3 text-center text-xs text-white/50">{{ __('Tagihan sebelumnya :status — invoice baru akan dibuat.', ['status' => mb_strtolower($result->paymentLabel())]) }}</p>
                             @endif
@@ -180,4 +169,68 @@
         </div>
     </div>
 </section>
+@unless ($voucherOrder)
+<script>
+(function () {
+    var input = document.getElementById('voucher_code');
+    if (!input) return;
+    var msg = document.getElementById('voucher_msg'), icon = document.getElementById('voucher_icon');
+    var btn = document.getElementById('pay_btn'), label = document.getElementById('pay_label');
+    var priceFinal = document.getElementById('price_final'), priceOrig = document.getElementById('price_original');
+    var baseLabel = label.textContent, basePrice = priceFinal.textContent, timer = null, ctrl = null, seq = 0;
+    var fmt = function (n) { return 'Rp ' + Number(n).toLocaleString('id-ID'); };
+    var iconBase = 'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold ';
+
+    function show(text, ok) {
+        msg.textContent = text;
+        msg.className = 'mt-2 text-xs font-semibold ' + (ok ? 'text-forest-300' : 'text-red-300');
+    }
+    function reset() {
+        msg.className = 'hidden'; icon.textContent = '';
+        priceOrig.classList.add('hidden'); priceFinal.textContent = basePrice;
+        priceFinal.classList.remove('mt-0.5'); priceFinal.classList.add('mt-2');
+        label.textContent = baseLabel; btn.disabled = false;
+    }
+    function check() {
+        var code = input.value.replace(/\s+/g, '').toUpperCase();
+        if (code === '') { seq++; reset(); return; }
+        btn.disabled = true; icon.textContent = '…'; icon.className = iconBase + 'text-ink-400';
+        msg.className = 'hidden';
+        var my = ++seq;
+        if (ctrl) ctrl.abort();
+        ctrl = new AbortController();
+        fetch(@json(route('assessment.voucher.check', $result->uuid)), {
+            method: 'POST', signal: ctrl.signal,
+            headers: {'X-CSRF-TOKEN': @json(csrf_token()), 'Accept': 'application/json', 'Content-Type': 'application/json'},
+            body: JSON.stringify({voucher_code: code})
+        }).then(function (r) { return r.json(); }).then(function (d) {
+            if (my !== seq) return;
+            if (d.ok) {
+                show(d.message, true); icon.textContent = '✓'; icon.className = iconBase + 'text-forest-600';
+                priceOrig.textContent = fmt(d.original); priceOrig.classList.remove('hidden');
+                priceFinal.textContent = fmt(d.final);
+                priceFinal.classList.remove('mt-2'); priceFinal.classList.add('mt-0.5');
+                label.textContent = d.final === 0 ? @json(__('Buka Hasil Gratis')) : baseLabel;
+                btn.disabled = false;
+            } else {
+                show(d.message, false); icon.textContent = '✕'; icon.className = iconBase + 'text-red-600';
+                priceOrig.classList.add('hidden'); priceFinal.textContent = basePrice;
+                priceFinal.classList.remove('mt-0.5'); priceFinal.classList.add('mt-2');
+                label.textContent = baseLabel; btn.disabled = true;
+            }
+        }).catch(function (e) {
+            if (e.name === 'AbortError' || my !== seq) return;
+            show(@json(__('Voucher belum bisa dicek. Coba lagi.')), false); icon.textContent = ''; btn.disabled = true;
+        });
+    }
+    input.addEventListener('input', function () {
+        clearTimeout(timer);
+        btn.disabled = input.value.trim() !== '';   // belum bisa bayar sebelum hasil cek keluar
+        timer = setTimeout(check, 450);
+    });
+    if (input.value.trim() !== '') check();
+})();
+</script>
+@endunless
+
 @endsection

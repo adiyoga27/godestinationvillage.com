@@ -9,6 +9,7 @@ use App\Jobs\GenerateAssessmentReport;
 use App\Jobs\TranslateAssessmentReport;
 use App\Models\AssessmentOrder;
 use App\Models\AssessmentResult;
+use App\Models\AssessmentVoucher;
 use App\Models\AssessmentTrack;
 use App\Services\AssessmentPaymentService;
 use App\Services\AssessmentMailer;
@@ -254,6 +255,23 @@ class AssessmentController extends Controller
             return redirect()->route('assessment.result', $result->uuid);
         }
 
+        // Kode voucher (opsional) ikut dikirim bersama tombol bayar — tanpa langkah "Pakai" terpisah.
+        $voucherCode = AssessmentVoucher::normalizeCode($request->input('voucher_code'));
+        if ($voucherCode !== '') {
+            $current = $result->orders()->where('status', 'pending')->latest('id')->first();
+            if (! $current || $current->voucher_code !== $voucherCode) {
+                $out = AssessmentPaymentService::applyVoucher($result, $voucherCode);
+                if (! $out['ok']) {
+                    return redirect()->route('assessment.result', $result->uuid)
+                        ->withInput($request->only('voucher_code'))
+                        ->with('voucher_error', $out['message']);
+                }
+                if ($result->refresh()->is_unlocked) { // voucher gratis → langsung terbuka
+                    return redirect()->route('assessment.result', $result->uuid)->with('status', $out['message']);
+                }
+            }
+        }
+
         // Pakai invoice yang sudah dibuat saat submit (nomor tetap sama dengan di email).
         $order = AssessmentPaymentService::ensureInvoice($result);
         if (! $order) {
@@ -317,6 +335,14 @@ class AssessmentController extends Controller
         return redirect()->route('assessment.result', $result->uuid)
             ->withInput($out['ok'] ? [] : $request->only('voucher_code'))
             ->with($out['ok'] ? 'status' : 'voucher_error', $out['message']);
+    }
+
+    /** Cek kode voucher secara langsung (tanpa mengubah invoice). */
+    public function checkVoucher(Request $request, string $uuid)
+    {
+        $result = AssessmentResult::with('track')->where('uuid', $uuid)->firstOrFail();
+
+        return response()->json(AssessmentPaymentService::previewVoucher($result, $request->input('voucher_code')));
     }
 
     public function removeVoucher(string $uuid)
