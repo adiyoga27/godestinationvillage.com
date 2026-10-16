@@ -138,6 +138,31 @@ class AssessmentEnglishTest extends TestCase
         $this->assertStringContainsString('/en/asesmen/hasil/'.$result->uuid, $html);
     }
 
+    public function test_indonesian_respondent_report_is_stored_in_both_languages(): void
+    {
+        Mail::fake();
+        $this->fakeAi('pariwisata');
+        $track = AssessmentTrack::where('slug', 'pariwisata')->firstOrFail();
+        $result = AssessmentResult::create([
+            'uuid' => (string) Str::uuid(), 'track_id' => $track->id, 'name' => 'Guest', 'email' => 'id@example.com', 'organization' => 'Desa Dua Bahasa',
+            'answers' => [], 'dimension_scores' => [], 'total_score' => 70, 'band' => 'Siap',
+            'is_unlocked' => true, 'unlocked_at' => now(), 'locale' => 'id',
+        ]);
+
+        (new GenerateAssessmentReport($result->uuid))->handle();
+        $this->assertNull($result->fresh()->ai_report_en); // email Indonesia tidak menunggu terjemahan
+        $this->app->terminate(); // terjemahan English jalan setelah respons terkirim
+        $result->refresh();
+
+        $this->assertSame('ID summary', $result->ai_report['ringkasan']);
+        $this->assertSame('EN summary', $result->ai_report_en['ringkasan']);
+        Mail::assertSent(AssessmentMail::class, fn ($mail) => $mail->type === 'report' && $mail->locale === 'id');
+
+        $this->get($this->abs('/en/asesmen/hasil/'.$result->uuid))->assertOk()
+            ->assertSee('EN summary')
+            ->assertDontSee('Translating to English');
+    }
+
     public function test_english_view_of_indonesian_report_queues_translation_once(): void
     {
         Bus::fake([TranslateAssessmentReport::class]);

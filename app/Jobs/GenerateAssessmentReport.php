@@ -52,11 +52,16 @@ class GenerateAssessmentReport implements ShouldQueue
 
         if ($out['ok']) {
             $result->update(['ai_report' => $out['report'], 'ai_report_en' => null, 'report_status' => 'done'] + $audit);
+            // Laporan selalu disimpan dua bahasa (ai_report + ai_report_en).
             // Responden English: terjemahkan dulu agar email laporan langsung berbahasa English.
             if ($result->locale === 'en') {
                 (new TranslateAssessmentReport($result->uuid))->handle();
             }
             \App\Services\AssessmentMailer::send($result->fresh('track'), 'report', $result->latestPaidOrder);
+            // Responden Indonesia: versi English disusun setelah email terkirim (tidak menunda respons).
+            if ($result->locale !== 'en') {
+                TranslateAssessmentReport::dispatchOnce($result, fresh: true);
+            }
         } else {
             $result->update(['report_status' => 'failed', 'report_error' => $out['error'] ?? 'unknown'] + $audit);
             \App\Services\AssessmentNotifier::reportFailed($result, $out['error'] ?? 'unknown');

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Terjemahkan laporan AI (Bahasa Indonesia) ke English → assessment_results.ai_report_en.
- * Dipicu setelah laporan jadi (responden English) atau saat halaman hasil dibuka dalam English.
+ * Dipicu setiap kali laporan jadi (semua responden) dan, sebagai cadangan, saat halaman hasil dibuka dalam English.
  */
 class TranslateAssessmentReport implements ShouldQueue
 {
@@ -27,9 +27,13 @@ class TranslateAssessmentReport implements ShouldQueue
     /**
      * Dispatch sekali per 5 menit per hasil (halaman hasil memuat ulang berkala).
      * Antrean sync → jalan setelah respons terkirim agar halaman tidak menunggu AI.
+     * $fresh: laporan baru saja dibuat (ulang) → abaikan kunci dari percobaan sebelumnya.
      */
-    public static function dispatchOnce(AssessmentResult $result): void
+    public static function dispatchOnce(AssessmentResult $result, bool $fresh = false): void
     {
+        if ($fresh) {
+            Cache::forget('assessment-translate:'.$result->uuid);
+        }
         if (! Cache::add('assessment-translate:'.$result->uuid, true, now()->addMinutes(5))) {
             return;
         }
